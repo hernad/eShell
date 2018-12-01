@@ -2586,7 +2586,7 @@ export const EDITOR_DEFAULTS: IValidatedEditorOptions = {
 			mouseWheelScrollSensitivity: 1,
 		},
 		minimap: {
-			enabled: true,
+			enabled: false,
 			side: 'right',
 			showSlider: 'mouseover',
 			renderCharacters: true,
