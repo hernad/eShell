@@ -972,72 +972,6 @@ declare module 'vscode' {
 	}
 	//#endregion
 
-	//#region Signature Help
-	/**
-	 * How a [Signature provider](#SignatureHelpProvider) was triggered
-	 */
-	export enum SignatureHelpTriggerReason {
-		/**
-		 * Signature help was invoked manually by the user or by a command.
-		 */
-		Invoke = 1,
-
-		/**
-		 * Signature help was triggered by a trigger character.
-		 */
-		TriggerCharacter = 2,
-
-		/**
-		 * Signature help was triggered by the cursor moving or by the document content changing.
-		 */
-		ContentChange = 3,
-	}
-
-	/**
-	 * Contains additional information about the context in which a
-	 * [signature help provider](#SignatureHelpProvider.provideSignatureHelp) is triggered.
-	 */
-	export interface SignatureHelpContext {
-		/**
-		 * Action that caused signature help to be requested.
-		 */
-		readonly triggerReason: SignatureHelpTriggerReason;
-
-		/**
-		 * Character that caused signature help to be requested.
-		 *
-		 * This is `undefined` when signature help is not triggered by typing, such as when invoking signature help
-		 * or when moving the cursor.
-		 */
-		readonly triggerCharacter?: string;
-
-		/**
-		 * Whether or not signature help was previously showing when triggered.
-		 *
-		 * Retriggers occur when the signature help is already active and can be caused by typing a trigger character
-		 * or by a cursor move.
-		 */
-		readonly isRetrigger: boolean;
-	}
-
-	export interface SignatureHelpProvider {
-		provideSignatureHelp(document: TextDocument, position: Position, token: CancellationToken, context: SignatureHelpContext): ProviderResult<SignatureHelp>;
-	}
-
-	export interface SignatureHelpProviderMetadata {
-		readonly triggerCharacters: ReadonlyArray<string>;
-		readonly retriggerCharacters: ReadonlyArray<string>;
-	}
-
-	namespace languages {
-		export function registerSignatureHelpProvider(
-			selector: DocumentSelector,
-			provider: SignatureHelpProvider,
-			metadata: SignatureHelpProviderMetadata
-		): Disposable;
-	}
-	//#endregion
-
 	//#region Alex - OnEnter enhancement
 	export interface OnEnterRule {
 		/**
@@ -1087,31 +1021,6 @@ declare module 'vscode' {
 		 * @param collapsibleState [TreeItemCollapsibleState](#TreeItemCollapsibleState) of the tree item. Default is [TreeItemCollapsibleState.None](#TreeItemCollapsibleState.None)
 		 */
 		constructor(label: TreeItemLabel, collapsibleState?: TreeItemCollapsibleState);
-	}
-	//#endregion
-
-	//#region Task
-	export enum RerunBehavior {
-		reevaluate = 1,
-		useEvaluated = 2,
-	}
-
-
-	export interface RunOptions {
-		/**
-		 * Controls the behavior of a task when it is rerun.
-		 */
-		rerunBehavior?: RerunBehavior;
-	}
-
-	/**
-	 * A task to execute
-	 */
-	export class Task2 extends Task {
-		/**
-		 * Run options for the task.  Defaults to an empty literal.
-		 */
-		runOptions: RunOptions;
 	}
 	//#endregion
 
