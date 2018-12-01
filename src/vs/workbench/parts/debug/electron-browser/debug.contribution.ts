@@ -13,7 +13,7 @@ import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { KeybindingWeight, IKeybindings } from 'vs/platform/keybinding/common/keybindingsRegistry';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
 import { IWorkbenchActionRegistry, Extensions as WorkbenchActionRegistryExtensions } from 'vs/workbench/common/actions';
-import { ShowViewletAction, Extensions as ViewletExtensions, ViewletRegistry, ViewletDescriptor } from 'vs/workbench/browser/viewlet';
+import { ShowViewletAction } from 'vs/workbench/browser/viewlet';
 import { TogglePanelAction, Extensions as PanelExtensions, PanelRegistry, PanelDescriptor } from 'vs/workbench/browser/panel';
 import { StatusbarItemDescriptor, IStatusbarRegistry, Extensions as StatusExtensions } from 'vs/workbench/browser/parts/statusbar/statusbar';
 import { StatusbarAlignment } from 'vs/platform/statusbar/common/statusbar';
@@ -45,7 +45,7 @@ import { ViewsRegistry } from 'vs/workbench/common/views';
 import { isMacintosh } from 'vs/base/common/platform';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
 import { URI } from 'vs/base/common/uri';
-import { DebugViewlet } from 'vs/workbench/parts/debug/browser/debugViewlet';
+// import { DebugViewlet } from 'vs/workbench/parts/debug/browser/debugViewlet';
 import { Repl, ClearReplAction } from 'vs/workbench/parts/debug/electron-browser/repl';
 import { DebugQuickOpenHandler } from 'vs/workbench/parts/debug/browser/debugQuickOpen';
 import { DebugStatus } from 'vs/workbench/parts/debug/browser/debugStatus';
@@ -85,6 +85,7 @@ class OpenDebugPanelAction extends TogglePanelAction {
 }
 
 // register viewlet
+/*
 Registry.as<ViewletRegistry>(ViewletExtensions.Viewlets).registerViewlet(new ViewletDescriptor(
 	DebugViewlet,
 	VIEWLET_ID,
@@ -92,6 +93,7 @@ Registry.as<ViewletRegistry>(ViewletExtensions.Viewlets).registerViewlet(new Vie
 	'debug',
 	3
 ));
+*/
 
 const openViewletKb: IKeybindings = {
 	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_D
