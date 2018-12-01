@@ -1,24 +1,24 @@
 {
-	"nameShort": "Code - OSS",
-	"nameLong": "Code - OSS",
-	"applicationName": "code-oss",
-	"dataFolderName": ".vscode-oss",
-	"win32MutexName": "vscodeoss",
+	"nameShort": "eShell",
+	"nameLong": "eShell",
+	"applicationName": "eshell",
+	"dataFolderName": ".eshell",
+	"win32MutexName": "eshell",
 	"licenseName": "MIT",
 	"licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
-	"win32DirName": "Microsoft Code OSS",
-	"win32NameVersion": "Microsoft Code OSS",
-	"win32RegValueName": "CodeOSS",
+	"win32DirName": "bring.out eShell",
+	"win32NameVersion": "bring.out eShell",
+	"win32RegValueName": "eShell",
 	"win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
 	"win32x64AppId": "{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
 	"win32UserAppId": "{{C6065F05-9603-4FC4-8101-B9781A25D88E}",
 	"win32x64UserAppId": "{{C6065F05-9603-4FC4-8101-B9781A25D88E}",
-	"win32AppUserModelId": "Microsoft.CodeOSS",
-	"win32ShellNameShort": "C&ode - OSS",
-	"darwinBundleIdentifier": "com.visualstudio.code.oss",
+	"win32AppUserModelId": "bringout.eShell",
+	"win32ShellNameShort": "e&Shell",
+	"darwinBundleIdentifier": "ba.out.bring.eshell",
 	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
-	"urlProtocol": "code-oss",
+	"urlProtocol": "eshell",
 	"extensionAllowedProposedApi": [
-		"ms-vscode.references-view"
+		"bout-eshell.references-view"
 	]
 }

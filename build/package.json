@@ -1,5 +1,5 @@
 {
-  "name": "code-oss-dev-build",
+  "name": "eshell-dev-build",
   "version": "1.0.0",
   "devDependencies": {
     "@types/azure": "0.9.19",
