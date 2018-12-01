@@ -38,7 +38,7 @@ import * as service from 'vs/workbench/parts/debug/electron-browser/debugService
 import { DebugContentProvider } from 'vs/workbench/parts/debug/browser/debugContentProvider';
 import 'vs/workbench/parts/debug/electron-browser/debugEditorContribution';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { registerCommands, ADD_CONFIGURATION_ID, TOGGLE_INLINE_BREAKPOINT_ID } from 'vs/workbench/parts/debug/browser/debugCommands';
+import { registerCommands, TOGGLE_INLINE_BREAKPOINT_ID } from 'vs/workbench/parts/debug/browser/debugCommands';
 import { IQuickOpenRegistry, Extensions as QuickOpenExtensions, QuickOpenHandlerDescriptor } from 'vs/workbench/browser/quickopen';
 import { StatusBarColorProvider } from 'vs/workbench/parts/debug/browser/statusbarColorProvider';
 import { ViewsRegistry } from 'vs/workbench/common/views';
@@ -53,7 +53,7 @@ import { LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
 import { launchSchemaId } from 'vs/workbench/services/configuration/common/configuration';
 import { IEditorGroupsService } from 'vs/workbench/services/group/common/editorGroupsService';
 import { LoadedScriptsView } from 'vs/workbench/parts/debug/browser/loadedScriptsView';
-import { TOGGLE_LOG_POINT_ID, TOGGLE_CONDITIONAL_BREAKPOINT_ID, TOGGLE_BREAKPOINT_ID } from 'vs/workbench/parts/debug/browser/debugEditorActions';
+import { TOGGLE_LOG_POINT_ID, TOGGLE_CONDITIONAL_BREAKPOINT_ID } from 'vs/workbench/parts/debug/browser/debugEditorActions';
 
 class OpenDebugViewletAction extends ShowViewletAction {
 	public static readonly ID = VIEWLET_ID;
@@ -245,6 +245,7 @@ MenuRegistry.appendMenuItem(MenuId.MenubarViewMenu, {
 	order: 2
 });
 
+/*
 // Debug menu
 
 MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
@@ -354,6 +355,7 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
 	},
 	order: 1
 });
+*/
 
 MenuRegistry.appendMenuItem(MenuId.MenubarNewBreakpointMenu, {
 	group: '1_breakpoints',
@@ -391,6 +393,7 @@ MenuRegistry.appendMenuItem(MenuId.MenubarNewBreakpointMenu, {
 	order: 4
 });
 
+/*
 MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
 	group: '4_new_breakpoint',
 	title: nls.localize({ key: 'miNewBreakpoint', comment: ['&& denotes a mnemonic'] }, "&&New Breakpoint"),
@@ -435,6 +438,7 @@ MenuRegistry.appendMenuItem(MenuId.MenubarDebugMenu, {
 	},
 	order: 1
 });
+*/
 
 // Touch Bar
 if (isMacintosh) {

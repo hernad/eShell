@@ -63,9 +63,9 @@ import 'vs/workbench/parts/scm/electron-browser/scm.contribution';
 import 'vs/workbench/parts/scm/electron-browser/scmViewlet';
 
 import 'vs/workbench/parts/debug/electron-browser/debug.contribution';
-import 'vs/workbench/parts/debug/browser/debugQuickOpen';
-import 'vs/workbench/parts/debug/electron-browser/repl';
-import 'vs/workbench/parts/debug/browser/debugViewlet';
+// import 'vs/workbench/parts/debug/browser/debugQuickOpen';
+// import 'vs/workbench/parts/debug/electron-browser/repl';
+// import 'vs/workbench/parts/debug/browser/debugViewlet';
 
 import 'vs/workbench/parts/markers/electron-browser/markers.contribution';
 import 'vs/workbench/parts/comments/electron-browser/comments.contribution';

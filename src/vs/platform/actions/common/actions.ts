@@ -71,7 +71,7 @@ export const enum MenuId {
 	EmptyEditorGroupContext,
 	ExplorerContext,
 	MenubarAppearanceMenu,
-	MenubarDebugMenu,
+	// MenubarDebugMenu,
 	MenubarEditMenu,
 	MenubarFileMenu,
 	MenubarGoMenu,

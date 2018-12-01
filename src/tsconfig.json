@@ -3,14 +3,16 @@
 	"compilerOptions": {
 		"removeComments": false,
 		"preserveConstEnums": true,
-		"sourceMap": false,
-		"outDir": "../out"
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"outDir": "../out/vs"
 	},
 	"include": [
 		"./typings",
 		"./vs"
 	],
 	"exclude": [
+		"node_modules",
 		"./typings/require-monaco.d.ts"
 	]
 }
