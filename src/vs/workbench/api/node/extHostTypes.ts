@@ -1956,49 +1956,6 @@ export class SourceBreakpoint extends Breakpoint {
 	}
 }
 
-export class FunctionBreakpoint extends Breakpoint {
-	readonly functionName: string;
-
-	constructor(functionName: string, enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string) {
-		super(enabled, condition, hitCondition, logMessage);
-		if (!functionName) {
-			throw illegalArgument('functionName');
-		}
-		this.functionName = functionName;
-	}
-}
-
-export class DebugAdapterExecutable implements vscode.DebugAdapterExecutable {
-	readonly command: string;
-	readonly args: string[];
-	readonly options?: vscode.DebugAdapterExecutableOptions;
-
-	constructor(command: string, args: string[], options?: vscode.DebugAdapterExecutableOptions) {
-		this.command = command;
-		this.args = args || [];
-		this.options = options;
-	}
-}
-
-export class DebugAdapterServer implements vscode.DebugAdapterServer {
-	readonly port: number;
-	readonly host?: string;
-
-	constructor(port: number, host?: string) {
-		this.port = port;
-		this.host = host;
-	}
-}
-
-/*
-export class DebugAdapterImplementation implements vscode.DebugAdapterImplementation {
-	readonly implementation: any;
-
-	constructor(transport: any) {
-		this.implementation = transport;
-	}
-}
-*/
 
 export enum LogLevel {
 	Trace = 1,

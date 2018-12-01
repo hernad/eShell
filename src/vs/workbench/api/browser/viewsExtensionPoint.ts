@@ -18,7 +18,7 @@ import { Registry } from 'vs/platform/registry/common/platform';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { VIEWLET_ID as EXPLORER } from 'vs/workbench/parts/files/common/files';
 import { VIEWLET_ID as SCM } from 'vs/workbench/parts/scm/common/scm';
-import { VIEWLET_ID as DEBUG } from 'vs/workbench/parts/debug/common/debug';
+// import { VIEWLET_ID as DEBUG } from 'vs/workbench/parts/debug/common/debug';
 
 interface IUserFriendlyViewDescriptor {
 	id: string;
@@ -54,12 +54,14 @@ const viewsContribution: IJSONSchema = {
 			items: viewDescriptor,
 			default: []
 		},
+		/*
 		'debug': {
 			description: localize('views.debug', "Contributes views to Debug container in the Activity bar"),
 			type: 'array',
 			items: viewDescriptor,
 			default: []
 		},
+		*/
 		'scm': {
 			description: localize('views.scm', "Contributes views to SCM container in the Activity bar"),
 			type: 'array',
@@ -172,7 +174,7 @@ class ViewsContainersExtensionHandler implements IWorkbenchContribution {
 	private getViewContainer(value: string): ViewContainer {
 		switch (value) {
 			case 'explorer': return this.viewContainersRegistry.get(EXPLORER);
-			case 'debug': return this.viewContainersRegistry.get(DEBUG);
+			// case 'debug': return this.viewContainersRegistry.get(DEBUG);
 			case 'scm': return this.viewContainersRegistry.get(SCM);
 			default: return this.viewContainersRegistry.get(`workbench.view.extension.${value}`);
 		}
@@ -182,7 +184,7 @@ class ViewsContainersExtensionHandler implements IWorkbenchContribution {
 		switch (container.id) {
 			case EXPLORER:
 			case SCM:
-			case DEBUG:
+			// case DEBUG:
 				return true;
 		}
 		return false;

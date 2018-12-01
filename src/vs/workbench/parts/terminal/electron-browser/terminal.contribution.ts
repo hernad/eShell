@@ -7,7 +7,7 @@ import 'vs/css!./media/scrollbar';
 import 'vs/css!./media/terminal';
 import 'vs/css!./media/xterm';
 import 'vs/css!./media/widgets';
-import * as debugActions from 'vs/workbench/parts/debug/browser/debugActions';
+// import * as debugActions from 'vs/workbench/parts/debug/browser/debugActions';
 import * as nls from 'vs/nls';
 import * as panel from 'vs/workbench/browser/panel';
 import * as platform from 'vs/base/common/platform';
@@ -322,15 +322,15 @@ configurationRegistry.registerConfiguration({
 				'workbench.action.focusSixthEditorGroup',
 				'workbench.action.focusSeventhEditorGroup',
 				'workbench.action.focusEighthEditorGroup',
-				debugActions.StartAction.ID,
-				debugActions.StopAction.ID,
-				debugActions.RunAction.ID,
-				debugActions.RestartAction.ID,
-				debugActions.ContinueAction.ID,
-				debugActions.PauseAction.ID,
-				debugActions.StepIntoAction.ID,
-				debugActions.StepOutAction.ID,
-				debugActions.StepOverAction.ID,
+				// debugActions.StartAction.ID,
+				// debugActions.StopAction.ID,
+				// debugActions.RunAction.ID,
+				// debugActions.RestartAction.ID,
+				// debugActions.ContinueAction.ID,
+				// debugActions.PauseAction.ID,
+				// debugActions.StepIntoAction.ID,
+				// debugActions.StepOutAction.ID,
+				// debugActions.StepOverAction.ID,
 				OpenNextRecentlyUsedEditorInGroupAction.ID,
 				OpenPreviousRecentlyUsedEditorInGroupAction.ID,
 				FocusActiveGroupAction.ID,

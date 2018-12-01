@@ -502,67 +502,6 @@ declare module 'vscode' {
 
 	//#endregion
 
-	//#region André: debug
-
-	/**
-	 * A Debug Adapter Tracker is a means to track the communication between VS Code and a Debug Adapter.
-	 */
-	export interface DebugAdapterTracker {
-		// VS Code -> Debug Adapter
-		startDebugAdapter?(): void;
-		toDebugAdapter?(message: any): void;
-		stopDebugAdapter?(): void;
-
-		// Debug Adapter -> VS Code
-		fromDebugAdapter?(message: any): void;
-		debugAdapterError?(error: Error): void;
-		debugAdapterExit?(code?: number, signal?: string): void;
-	}
-
-	export interface DebugAdapterTrackerFactory {
-		/**
-		 * The method 'createDebugAdapterTracker' is called at the start of a debug session in order
-		 * to return a "tracker" object that provides read-access to the communication between VS Code and a debug adapter.
-		 *
-		 * @param session The [debug session](#DebugSession) for which the debug adapter tracker will be used.
-		 * @return A [debug adapter tracker](#DebugAdapterTracker) or undefined.
-		 */
-		createDebugAdapterTracker(session: DebugSession): ProviderResult<DebugAdapterTracker>;
-	}
-
-	export namespace debug {
-		/**
-		 * Register a debug adapter tracker factory for the given debug type.
-		 *
-		 * @param debugType The debug type for which the factory is registered or '*' for matching all debug types.
-		 * @param factory The [debug adapter tracker factory](#DebugAdapterTrackerFactory) to register.
-		 * @return A [disposable](#Disposable) that unregisters this factory when being disposed.
-		 */
-		export function registerDebugAdapterTrackerFactory(debugType: string, factory: DebugAdapterTrackerFactory): Disposable;
-	}
-
-	// deprecated
-
-	export interface DebugConfigurationProvider {
-		/**
-		 * Deprecated, use DebugAdapterDescriptorFactory.provideDebugAdapter instead.
-		 * @deprecated Use DebugAdapterDescriptorFactory.createDebugAdapterDescriptor instead
-		 */
-		debugAdapterExecutable?(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<DebugAdapterExecutable>;
-
-		/**
-		 * Deprecated, use DebugAdapterTrackerFactory.createDebugAdapterTracker instead.
-		 * @deprecated Use DebugAdapterTrackerFactory.createDebugAdapterTracker instead
-		 *
-		 * The optional method 'provideDebugAdapterTracker' is called at the start of a debug session to provide a tracker that gives access to the communication between VS Code and a Debug Adapter.
-		 * @param session The [debug session](#DebugSession) for which the tracker will be used.
-		 * @param token A cancellation token.
-		 */
-		provideDebugAdapterTracker?(session: DebugSession, workspaceFolder: WorkspaceFolder | undefined, config: DebugConfiguration, token?: CancellationToken): ProviderResult<DebugAdapterTracker>;
-	}
-
-	//#endregion
-
 	//#region Rob, Matt: logging
 
 	/**

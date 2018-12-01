@@ -62,7 +62,7 @@ import 'vs/workbench/parts/search/browser/openAnythingHandler';
 import 'vs/workbench/parts/scm/electron-browser/scm.contribution';
 import 'vs/workbench/parts/scm/electron-browser/scmViewlet';
 
-import 'vs/workbench/parts/debug/electron-browser/debug.contribution';
+// import 'vs/workbench/parts/debug/electron-browser/debug.contribution';
 // import 'vs/workbench/parts/debug/browser/debugQuickOpen';
 // import 'vs/workbench/parts/debug/electron-browser/repl';
 // import 'vs/workbench/parts/debug/browser/debugViewlet';

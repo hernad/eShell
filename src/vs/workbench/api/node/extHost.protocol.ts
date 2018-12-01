@@ -33,7 +33,6 @@ import { EndOfLine, IFileOperationOptions, TextEditorLineNumbersStyle } from 'vs
 import { EditorViewColumn } from 'vs/workbench/api/shared/editor';
 import { TaskDTO, TaskExecutionDTO, TaskFilterDTO, TaskHandleDTO, TaskProcessEndedDTO, TaskProcessStartedDTO, TaskSystemInfoDTO } from 'vs/workbench/api/shared/tasks';
 import { ITreeItem, IRevealOptions } from 'vs/workbench/common/views';
-import { IAdapterDescriptor, IConfig, ITerminalSettings } from 'vs/workbench/parts/debug/common/debug';
 import { ITextQueryBuilderOptions } from 'vs/workbench/parts/search/common/queryBuilder';
 import { TaskSet } from 'vs/workbench/parts/tasks/common/tasks';
 import { ITerminalDimensions } from 'vs/workbench/parts/terminal/common/terminal';
@@ -597,24 +596,7 @@ export interface MainThreadSCMShape extends IDisposable {
 
 export type DebugSessionUUID = string;
 
-export interface MainThreadDebugServiceShape extends IDisposable {
-	$registerDebugTypes(debugTypes: string[]): void;
-	$acceptDAMessage(handle: number, message: DebugProtocol.ProtocolMessage): void;
-	$acceptDAError(handle: number, name: string, message: string, stack: string): void;
-	$acceptDAExit(handle: number, code: number, signal: string): void;
-	$registerDebugConfigurationProvider(type: string, hasProvideMethod: boolean, hasResolveMethod: boolean, hasProvideDaMethod: boolean, hasProvideTrackerMethod: boolean, handle: number): Thenable<void>;
-	$registerDebugAdapterDescriptorFactory(type: string, handle: number): Thenable<void>;
-	$registerDebugAdapterTrackerFactory(type: string, handle: number);
-	$unregisterDebugConfigurationProvider(handle: number): void;
-	$unregisterDebugAdapterDescriptorFactory(handle: number): void;
-	$unregisterDebugAdapterTrackerFactory(handle: number): void;
-	$startDebugging(folder: UriComponents | undefined, nameOrConfig: string | vscode.DebugConfiguration): Thenable<boolean>;
-	$customDebugAdapterRequest(id: DebugSessionUUID, command: string, args: any): Thenable<any>;
-	$appendDebugConsole(value: string): void;
-	$startBreakpointEvents(): void;
-	$registerBreakpoints(breakpoints: (ISourceMultiBreakpointDto | IFunctionBreakpointDto)[]): Thenable<void>;
-	$unregisterBreakpoints(breakpointIds: string[], functionBreakpointIds: string[]): Thenable<void>;
-}
+
 
 export interface MainThreadWindowShape extends IDisposable {
 	$getWindowVisibility(): Thenable<boolean>;
@@ -931,7 +913,6 @@ export interface ExtHostTaskShape {
 	$onDidStartTaskProcess(value: TaskProcessStartedDTO): void;
 	$onDidEndTaskProcess(value: TaskProcessEndedDTO): void;
 	$OnDidEndTask(execution: TaskExecutionDTO): void;
-	$resolveVariables(workspaceFolder: UriComponents, toResolve: { process?: { name: string; cwd?: string }, variables: string[] }): Thenable<{ process?: string; variables: { [key: string]: string } }>;
 }
 
 export interface IBreakpointDto {
@@ -973,33 +954,6 @@ export interface ISourceMultiBreakpointDto {
 		line: number;
 		character: number;
 	}[];
-}
-
-export interface IDebugSessionFullDto {
-	id: DebugSessionUUID;
-	type: string;
-	name: string;
-	folderUri: UriComponents | undefined;
-	configuration: IConfig;
-}
-
-export type IDebugSessionDto = IDebugSessionFullDto | DebugSessionUUID;
-
-export interface ExtHostDebugServiceShape {
-	$substituteVariables(folder: UriComponents | undefined, config: IConfig): Thenable<IConfig>;
-	$runInTerminal(args: DebugProtocol.RunInTerminalRequestArguments, config: ITerminalSettings): Thenable<number | undefined>;
-	$startDASession(handle: number, session: IDebugSessionDto): Thenable<void>;
-	$stopDASession(handle: number): Thenable<void>;
-	$sendDAMessage(handle: number, message: DebugProtocol.ProtocolMessage): void;
-	$resolveDebugConfiguration(handle: number, folder: UriComponents | undefined, debugConfiguration: IConfig): Thenable<IConfig>;
-	$provideDebugConfigurations(handle: number, folder: UriComponents | undefined): Thenable<IConfig[]>;
-	$legacyDebugAdapterExecutable(handle: number, folderUri: UriComponents | undefined): Thenable<IAdapterDescriptor>; // TODO@AW legacy
-	$provideDebugAdapter(handle: number, session: IDebugSessionDto): Thenable<IAdapterDescriptor>;
-	$acceptDebugSessionStarted(session: IDebugSessionDto): void;
-	$acceptDebugSessionTerminated(session: IDebugSessionDto): void;
-	$acceptDebugSessionActiveChanged(session: IDebugSessionDto): void;
-	$acceptDebugSessionCustomEvent(session: IDebugSessionDto, event: any): void;
-	$acceptBreakpointsDelta(delta: IBreakpointsDeltaDto): void;
 }
 
 
@@ -1055,7 +1009,7 @@ export const MainContext = {
 	MainThreadCommands: <ProxyIdentifier<MainThreadCommandsShape>>createMainId<MainThreadCommandsShape>('MainThreadCommands'),
 	MainThreadComments: createMainId<MainThreadCommentsShape>('MainThreadComments'),
 	MainThreadConfiguration: createMainId<MainThreadConfigurationShape>('MainThreadConfiguration'),
-	MainThreadDebugService: createMainId<MainThreadDebugServiceShape>('MainThreadDebugService'),
+	// MainThreadDebugService: createMainId<MainThreadDebugServiceShape>('MainThreadDebugService'),
 	MainThreadDecorations: createMainId<MainThreadDecorationsShape>('MainThreadDecorations'),
 	MainThreadDiagnostics: createMainId<MainThreadDiagnosticsShape>('MainThreadDiagnostics'),
 	MainThreadDialogs: createMainId<MainThreadDiaglogsShape>('MainThreadDiaglogs'),
@@ -1089,7 +1043,7 @@ export const ExtHostContext = {
 	ExtHostCommands: createExtId<ExtHostCommandsShape>('ExtHostCommands'),
 	ExtHostConfiguration: createExtId<ExtHostConfigurationShape>('ExtHostConfiguration'),
 	ExtHostDiagnostics: createExtId<ExtHostDiagnosticsShape>('ExtHostDiagnostics'),
-	ExtHostDebugService: createExtId<ExtHostDebugServiceShape>('ExtHostDebugService'),
+	// ExtHostDebugService: createExtId<ExtHostDebugServiceShape>('ExtHostDebugService'),
 	ExtHostDecorations: createExtId<ExtHostDecorationsShape>('ExtHostDecorations'),
 	ExtHostDocumentsAndEditors: createExtId<ExtHostDocumentsAndEditorsShape>('ExtHostDocumentsAndEditors'),
 	ExtHostDocuments: createExtId<ExtHostDocumentsShape>('ExtHostDocuments'),

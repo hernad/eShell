@@ -33,7 +33,7 @@ import { isNonEmptyArray } from 'vs/base/common/arrays';
 import { Event } from 'vs/base/common/event';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { RuntimeExtensionsInput } from 'vs/workbench/services/extensions/electron-browser/runtimeExtensionsInput';
-import { IDebugService } from 'vs/workbench/parts/debug/common/debug';
+// import { IDebugService } from 'vs/workbench/parts/debug/common/debug';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { randomPort } from 'vs/base/node/ports';
 import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
@@ -550,7 +550,7 @@ export class DebugExtensionHostAction extends Action {
 	static CSS_CLASS = 'debug-extension-host';
 
 	constructor(
-		@IDebugService private readonly _debugService: IDebugService,
+		// @IDebugService private readonly _debugService: IDebugService,
 		@IWindowsService private readonly _windowsService: IWindowsService,
 		@IDialogService private readonly _dialogService: IDialogService,
 		@IExtensionService private readonly _extensionService: IExtensionService,
@@ -574,12 +574,7 @@ export class DebugExtensionHostAction extends Action {
 			}
 		}
 
-		return this._debugService.startDebugging(null, {
-			type: 'node',
-			name: nls.localize('debugExtensionHost.launch.name', "Attach Extension Host"),
-			request: 'attach',
-			port: inspectPort
-		});
+		return () => {};
 	}
 }
 

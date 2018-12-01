@@ -179,7 +179,10 @@ export class PanelPart extends CompositePart<Panel> implements IPanelService {
 		title.style.borderTopColor = this.getColor(PANEL_BORDER) || this.getColor(contrastBorder);
 	}
 
+
+
 	openPanel(id: string, focus?: boolean): Panel {
+
 		if (this.blockOpeningPanel) {
 			return null; // Workaround against a potential race condition
 		}

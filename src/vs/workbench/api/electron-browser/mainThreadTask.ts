@@ -21,7 +21,6 @@ import {
 } from 'vs/workbench/parts/tasks/common/tasks';
 
 
-import { ResolveSet, ResolvedVariables } from 'vs/workbench/parts/tasks/common/taskSystem';
 import { ITaskService, TaskFilter, ITaskProvider } from 'vs/workbench/parts/tasks/common/taskService';
 
 import { TaskDefinition } from 'vs/workbench/parts/tasks/node/tasks';
@@ -520,21 +519,7 @@ export class MainThreadTask implements MainThreadTaskShape {
 				return URI.parse(`${info.scheme}://${info.authority}${path}`);
 			},
 			context: this._extHostContext,
-			resolveVariables: (workspaceFolder: IWorkspaceFolder, toResolve: ResolveSet): Promise<ResolvedVariables> => {
-				let vars: string[] = [];
-				toResolve.variables.forEach(item => vars.push(item));
-				return Promise.resolve(this._proxy.$resolveVariables(workspaceFolder.uri, { process: toResolve.process, variables: vars })).then(values => {
-					let result = {
-						process: undefined as string,
-						variables: new Map<string, string>()
-					};
-					Object.keys(values.variables).forEach(key => result.variables.set(key, values.variables[key]));
-					if (Types.isString(values.process)) {
-						result.process = values.process;
-					}
-					return result;
-				});
-			}
+
 		});
 	}
 }

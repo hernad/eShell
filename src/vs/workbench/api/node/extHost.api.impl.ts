@@ -25,7 +25,6 @@ import { ExtHostClipboard } from 'vs/workbench/api/node/extHostClipboard';
 import { ExtHostCommands } from 'vs/workbench/api/node/extHostCommands';
 import { ExtHostComments } from 'vs/workbench/api/node/extHostComments';
 import { ExtHostConfiguration } from 'vs/workbench/api/node/extHostConfiguration';
-import { ExtHostDebugService } from 'vs/workbench/api/node/extHostDebugService';
 import { ExtHostDecorations } from 'vs/workbench/api/node/extHostDecorations';
 import { ExtHostDiagnostics } from 'vs/workbench/api/node/extHostDiagnostics';
 import { ExtHostDialogs } from 'vs/workbench/api/node/extHostDialogs';
@@ -111,7 +110,6 @@ export function createApiFactory(
 	const extHostFileSystemEvent = rpcProtocol.set(ExtHostContext.ExtHostFileSystemEventService, new ExtHostFileSystemEventService(rpcProtocol, extHostDocumentsAndEditors));
 	const extHostQuickOpen = rpcProtocol.set(ExtHostContext.ExtHostQuickOpen, new ExtHostQuickOpen(rpcProtocol, extHostWorkspace, extHostCommands));
 	const extHostTerminalService = rpcProtocol.set(ExtHostContext.ExtHostTerminalService, new ExtHostTerminalService(rpcProtocol, extHostConfiguration, extHostLogService));
-	const extHostDebugService = rpcProtocol.set(ExtHostContext.ExtHostDebugService, new ExtHostDebugService(rpcProtocol, extHostWorkspace, extensionService, extHostDocumentsAndEditors, extHostConfiguration, extHostTerminalService, extHostCommands));
 	const extHostSCM = rpcProtocol.set(ExtHostContext.ExtHostSCM, new ExtHostSCM(rpcProtocol, extHostCommands, extHostLogService));
 	const extHostSearch = rpcProtocol.set(ExtHostContext.ExtHostSearch, new ExtHostSearch(rpcProtocol, schemeTransformer, extHostLogService, extHostConfiguration));
 	const extHostTask = rpcProtocol.set(ExtHostContext.ExtHostTask, new ExtHostTask(rpcProtocol, extHostWorkspace, extHostDocumentsAndEditors, extHostConfiguration));
@@ -649,51 +647,6 @@ export function createApiFactory(
 			}
 		};
 
-		// namespace: debug
-		const debug: typeof vscode.debug = {
-			get activeDebugSession() {
-				return extHostDebugService.activeDebugSession;
-			},
-			get activeDebugConsole() {
-				return extHostDebugService.activeDebugConsole;
-			},
-			get breakpoints() {
-				return extHostDebugService.breakpoints;
-			},
-			onDidStartDebugSession(listener, thisArg?, disposables?) {
-				return extHostDebugService.onDidStartDebugSession(listener, thisArg, disposables);
-			},
-			onDidTerminateDebugSession(listener, thisArg?, disposables?) {
-				return extHostDebugService.onDidTerminateDebugSession(listener, thisArg, disposables);
-			},
-			onDidChangeActiveDebugSession(listener, thisArg?, disposables?) {
-				return extHostDebugService.onDidChangeActiveDebugSession(listener, thisArg, disposables);
-			},
-			onDidReceiveDebugSessionCustomEvent(listener, thisArg?, disposables?) {
-				return extHostDebugService.onDidReceiveDebugSessionCustomEvent(listener, thisArg, disposables);
-			},
-			onDidChangeBreakpoints(listener, thisArgs?, disposables?) {
-				return extHostDebugService.onDidChangeBreakpoints(listener, thisArgs, disposables);
-			},
-			registerDebugConfigurationProvider(debugType: string, provider: vscode.DebugConfigurationProvider) {
-				return extHostDebugService.registerDebugConfigurationProvider(debugType, provider);
-			},
-			registerDebugAdapterDescriptorFactory(debugType: string, factory: vscode.DebugAdapterDescriptorFactory) {
-				return extHostDebugService.registerDebugAdapterDescriptorFactory(extension, debugType, factory);
-			},
-			registerDebugAdapterTrackerFactory(debugType: string, factory: vscode.DebugAdapterTrackerFactory) {
-				return extHostDebugService.registerDebugAdapterTrackerFactory(debugType, factory);
-			},
-			startDebugging(folder: vscode.WorkspaceFolder | undefined, nameOrConfig: string | vscode.DebugConfiguration) {
-				return extHostDebugService.startDebugging(folder, nameOrConfig);
-			},
-			addBreakpoints(breakpoints: vscode.Breakpoint[]) {
-				return extHostDebugService.addBreakpoints(breakpoints);
-			},
-			removeBreakpoints(breakpoints: vscode.Breakpoint[]) {
-				return extHostDebugService.removeBreakpoints(breakpoints);
-			}
-		};
 
 		const tasks: typeof vscode.tasks = {
 			registerTaskProvider: (type: string, provider: vscode.TaskProvider) => {
@@ -726,7 +679,6 @@ export function createApiFactory(
 			version: pkg.version,
 			// namespaces
 			commands,
-			debug,
 			env,
 			extensions,
 			languages,
@@ -750,8 +702,6 @@ export function createApiFactory(
 			CompletionList: extHostTypes.CompletionList,
 			CompletionTriggerKind: extHostTypes.CompletionTriggerKind,
 			ConfigurationTarget: extHostTypes.ConfigurationTarget,
-			DebugAdapterExecutable: extHostTypes.DebugAdapterExecutable,
-			DebugAdapterServer: extHostTypes.DebugAdapterServer,
 			DecorationRangeBehavior: extHostTypes.DecorationRangeBehavior,
 			Diagnostic: extHostTypes.Diagnostic,
 			DiagnosticRelatedInformation: extHostTypes.DiagnosticRelatedInformation,
@@ -769,7 +719,6 @@ export function createApiFactory(
 			FileType: files.FileType,
 			FoldingRange: extHostTypes.FoldingRange,
 			FoldingRangeKind: extHostTypes.FoldingRangeKind,
-			FunctionBreakpoint: extHostTypes.FunctionBreakpoint,
 			Hover: extHostTypes.Hover,
 			IndentAction: languageConfiguration.IndentAction,
 			Location: extHostTypes.Location,
