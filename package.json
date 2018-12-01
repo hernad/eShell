@@ -1,9 +1,9 @@
 {
-  "name": "eshell",
+  "name": "eShell",
   "version": "1.30.0",
   "distro": "fba0cf41ab9929feb43552b523058b9ed60f5827",
   "author": {
-    "name": "Microsoft Corporation"
+    "name": "bring.out"
   },
   "main": "./out/main",
   "private": true,
