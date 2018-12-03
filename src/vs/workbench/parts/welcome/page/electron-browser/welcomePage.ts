@@ -273,10 +273,12 @@ class WelcomePage {
 
 		const recentlyOpened = this.windowService.getRecentlyOpened();
 		const installedExtensions = this.instantiationService.invokeFunction(getInstalledExtensions);
-		const resource = URI.parse(require.toUrl('./vs_code_welcome_page'))
+		// const resource = URI.parse(require.toUrl('./vs_code_welcome_page'))
+		const resource = URI.parse(require.toUrl('./dva'))
 			.with({
 				scheme: Schemas.walkThrough,
-				query: JSON.stringify({ moduleId: 'vs/workbench/parts/welcome/page/electron-browser/vs_code_welcome_page' })
+				// query: JSON.stringify({ moduleId: 'vs/workbench/parts/welcome/page/electron-browser/vs_code_welcome_page' })
+				query: JSON.stringify({ moduleId: 'vs/workbench/parts/welcome/page/electron-browser/dva' })
 			});
 		this.editorInput = this.instantiationService.createInstance(WalkThroughInput, {
 			typeId: welcomeInputTypeId,

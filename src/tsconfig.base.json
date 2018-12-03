@@ -13,7 +13,8 @@
 		"paths": {
 			"vs/*": [
 				"./vs/*"
-			]
+			],
+			"*": ["../node_modules/*"]
 		},
 		"types": [
 			"keytar",

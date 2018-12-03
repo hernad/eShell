@@ -1,9 +1,9 @@
 {
 	"nameShort": "eShell",
 	"nameLong": "eShell",
-	"applicationName": "eshell",
-	"dataFolderName": ".eshell",
-	"win32MutexName": "eshell",
+	"applicationName": "eShell",
+	"dataFolderName": ".eShell",
+	"win32MutexName": "eShell",
 	"licenseName": "MIT",
 	"licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
 	"win32DirName": "bring.out eShell",
@@ -17,8 +17,9 @@
 	"win32ShellNameShort": "e&Shell",
 	"darwinBundleIdentifier": "ba.out.bring.eshell",
 	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
-	"urlProtocol": "eshell",
+	"keyboardShortcutsUrlLinux" : "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf",
+	"urlProtocol": "vscode",
 	"extensionAllowedProposedApi": [
-		"bout-eshell.references-view"
+		"ms-vscode.references-view"
 	]
 }

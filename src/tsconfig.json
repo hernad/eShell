@@ -5,13 +5,14 @@
 		"preserveConstEnums": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
-		"outDir": "../out/vs"
+		"outDir": "../out"
 	},
 	"include": [
 		"./typings",
 		"./vs"
 	],
 	"exclude": [
+		"./vs/**/employee.js",
 		"node_modules",
 		"./typings/require-monaco.d.ts"
 	]
