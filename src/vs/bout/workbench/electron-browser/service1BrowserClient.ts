@@ -81,7 +81,8 @@ export class Service1BrowserClient implements IWorkbenchContribution {
 			pingRequest,
 			event1Handler,
 			fireRequest,
-			fireRequest2
+			fireRequest2,
+			service.harbourVersion().then( ret => console.log('harbour version:', ret))
 		]).then(() => {
 			console.log('bye bye service1 client');
 			client.dispose();

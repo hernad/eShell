@@ -16,6 +16,7 @@ export interface IService1 {
 	event1Fire(): Thenable<string>;
 	ping(pong: string): Thenable<{ incoming: string, outgoing: string }>;
 	cancelMe(): Thenable<boolean>;
+	harbourVersion(): Thenable<string>;
 }
 
 export const IService1 = createDecorator<IService1>(SERVICE1_ID);
@@ -43,6 +44,10 @@ export class Service1 implements IService1 {
 	cancelMe(): Thenable<boolean> {
 		return Promise.resolve(timeout(100)).then(() => true);
 	}
+
+	harbourVersion(): Thenable<string> {
+	   return Promise.resolve(timeout(2000)).then( () => '0.0.0.0');
+	}
 }
 
 export class Service1Channel implements IServerChannel {
@@ -65,6 +70,7 @@ export class Service1Channel implements IServerChannel {
 			case 'ping': return this.service.ping(args[0]);
 			case 'cancelMe': return this.service.cancelMe();
 			case 'event1Fire': return this.service.event1Fire();
+			case 'harbourVersion': return this.service.harbourVersion();
 			default: return Promise.reject(new Error(`command not found: ${command}`));
 		}
 	}
@@ -87,4 +93,9 @@ export class Service1Client implements IService1 {
 	cancelMe(): Thenable<boolean> {
 		return this.channel.call('cancelMe');
 	}
+
+	harbourVersion(): Thenable<string> {
+		return this.channel.call('harbourVersion');
+	}
 }
+
