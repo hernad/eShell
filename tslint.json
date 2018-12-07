@@ -492,6 +492,7 @@
 					"**/vs/platform/**/{common,browser,node,electron-main}/**",
 					"**/vs/code/**/{common,browser,node,electron-main}/**",
 					"**/vs/code/code.main",
+					"**/bout/*",
 					"*" // node modules
 				]
 			},
