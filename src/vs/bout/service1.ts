@@ -1,55 +1,11 @@
 import { IChannel, IServerChannel } from 'vs/base/parts/ipc/node/ipc';
-import { Event, Emitter } from 'vs/base/common/event';
-import { timeout } from 'vs/base/common/async';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { Event } from 'vs/base/common/event';
+// import { timeout } from 'vs/base/common/async';
 
-export const SERVICE1_ID = 'service1';
-
-export interface IService1Event1 {
-	answer: string;
-}
+import { IService1, IService1Event1 } from 'vs/bout/common/service1';
 
 
-export interface IService1 {
-
-	onEvent1: Event<IService1Event1>;
-	event1Fire(): Thenable<string>;
-	ping(pong: string): Thenable<{ incoming: string, outgoing: string }>;
-	cancelMe(): Thenable<boolean>;
-	harbourVersion(): Thenable<string>;
-}
-
-export const IService1 = createDecorator<IService1>(SERVICE1_ID);
-
-
-export class Service1 implements IService1 {
-
-
-	private _onEvent1 = new Emitter<IService1Event1>();
-
-	// ožičavam enEvent1 sa instancom event emitera
-	onEvent1: Event<IService1Event1> = this._onEvent1.event;
-
-	// komanda koja aktivira 'event1-fired'
-	event1Fire(): Thenable<string> {
-		this._onEvent1.fire({ answer: 'ODGOVARAM SA FIRE!' });
-		return Promise.resolve('event1-resolved');
-	}
-
-
-	ping(pong: string): Thenable<{ incoming: string, outgoing: string }> {
-		return Promise.resolve({ incoming: pong, outgoing: 'pong' });
-	}
-
-	cancelMe(): Thenable<boolean> {
-		return Promise.resolve(timeout(100)).then(() => true);
-	}
-
-	harbourVersion(): Thenable<string> {
-	   return Promise.resolve(timeout(2000)).then( () => '0.0.0.0');
-	}
-}
-
+// klijentska strana
 export class Service1Channel implements IServerChannel {
 
 	constructor(private service: IService1) { }
@@ -94,7 +50,9 @@ export class Service1Client implements IService1 {
 		return this.channel.call('cancelMe');
 	}
 
-	harbourVersion(): Thenable<string> {
+	harbourVersion(): Thenable<boolean> {
+		console.log('hb Service1Client:', process.type);
+
 		return this.channel.call('harbourVersion');
 	}
 }

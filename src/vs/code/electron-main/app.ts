@@ -101,6 +101,7 @@ export class CodeApplication extends Disposable {
 		@ILabelService private labelService: ILabelService
 	) {
 		super();
+		console.log('CodeApplication processType:', process.type, process.debugPort);
 
 		this._register(mainIpcServer);
 		this._register(configurationService);

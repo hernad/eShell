@@ -18,6 +18,8 @@ const product = require('../product.json');
 // @ts-ignore
 const app = require('electron').app;
 
+console.log('main.js processType:', process.type, process.debugPort);
+
 // Enable portable support
 const portable = bootstrap.configurePortable();
 

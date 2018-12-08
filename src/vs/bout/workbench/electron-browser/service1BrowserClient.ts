@@ -10,7 +10,9 @@ import { Client } from 'vs/base/parts/ipc/node/ipc.cp';
 import { getPathFromAmdModule } from 'vs/base/common/amd';
 // import { always } from 'vs/base/common/async';
 
-import {Service1Client, SERVICE1_ID} from 'vs/bout/service1';
+import {SERVICE1_ID} from 'vs/bout/common/service1';
+import {Service1Client} from 'vs/bout/service1';
+import { ILogService } from 'vs/platform/log/common/log';
 
 
 function createClient(): Client {
@@ -26,14 +28,18 @@ export class Service1BrowserClient implements IWorkbenchContribution {
 
 	// private welcomePageURL: string;
 	// private appName: string;
+	private _logService: ILogService;
 
 
 	constructor(
 		// @IStorageService private storageService: IStorageService,
 		@IEnvironmentService environmentService: IEnvironmentService,
+		@ILogService logService: ILogService
 		// @ITelemetryService private telemetryService: ITelemetryService
 	) {
 		// this.appName = product.nameLong;
+		this._logService = logService;
+
 
 
 		if (environmentService.isExtensionDevelopment) {
@@ -57,24 +63,47 @@ export class Service1BrowserClient implements IWorkbenchContribution {
 
 
 		const event1Handler = service.onEvent1(({ answer }) => {
-			console.log(`obrađujem onEvent1: ${answer}`);
+			this._logService.info(`obrađujem onEvent1: ${answer}`);
 		});
 
 		// servis -> server
 		const pingRequest = service.ping('ping').then(response => {
-			console.log( response.incoming, response.outgoing);
+			this._logService.info( response.incoming, response.outgoing);
 		});
 
 		console.log( 'ispaljujem event1Fire!');
 		fireRequest = service.event1Fire().then( (answer) => {
-			console.log(`event1Fire().then answer treba biti event1-resolved: ${answer}`);
-			// if (!disposed) {
-			// }
+			this._logService.info(`event1Fire().then answer treba biti event1-resolved: ${answer}`);
 		});
 
 		fireRequest2 = service.event1Fire().then( (answer) => {
-			console.log(`event1Fire().then2: ${answer}`);
+			this._logService.info(`event1Fire().then2: ${answer}`);
 		});
+
+
+		// while( true ) {
+
+		/*
+			service.ping('ping').then(
+				(response) => {
+					this._logService.info( 'ping-1', response.incoming, response.outgoing);
+				}
+			).then(
+				() => setTimeout( () => {
+					console.log('cekamo 7000');
+					service.ping('ping2').then(
+						(response) => {
+							this._logService.info( 'ping-2', response.incoming, response.outgoing);
+						}
+					)
+			}, 7000));
+
+		*/
+
+
+
+
+		// }
 
 
 		Promise.all([
@@ -84,9 +113,17 @@ export class Service1BrowserClient implements IWorkbenchContribution {
 			fireRequest2,
 			service.harbourVersion().then( ret => console.log('harbour version:', ret))
 		]).then(() => {
-			console.log('bye bye service1 client');
+			this._logService.info('bye bye service1 client');
 			client.dispose();
 		});
+
+		/*
+		console.log(pingRequest,
+			event1Handler,
+			fireRequest,
+			fireRequest2);
+		*/
+
 
 		// kad se svi ovi promisi zavrse, dispozati klijenta
 		/*

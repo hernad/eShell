@@ -247,6 +247,7 @@ export class EnvironmentService implements IEnvironmentService {
 		}
 
 		this.logsPath = process.env['VSCODE_LOGS']!;
+		console.log('environment service process.type:', process.type, process.debugPort);
 	}
 }
 

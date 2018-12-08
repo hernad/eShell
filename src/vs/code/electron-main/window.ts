@@ -88,6 +88,8 @@ export class CodeWindow extends Disposable implements ICodeWindow {
 	) {
 		super();
 
+		console.log('CodeWindow processType:', process.type, process.debugPort);
+
 		this.touchBarGroups = [];
 		this._lastFocusTime = -1;
 		this._readyState = ReadyState.NONE;

@@ -493,6 +493,7 @@
 					"**/vs/code/**/{common,browser,node,electron-main}/**",
 					"**/vs/code/code.main",
 					"**/bout/*",
+					"**/bout/{common,node}/*",
 					"*" // node modules
 				]
 			},

@@ -50,7 +50,8 @@ import { CommandLineDialogService } from 'vs/platform/dialogs/node/dialogService
 import { ILabelService, LabelService } from 'vs/platform/label/common/label';
 import { createWaitMarkerFile } from 'vs/code/node/wait';
 
-import { IService1, Service1 } from 'vs/bout/service1';
+import { IService1 } from 'vs/bout/common/service1';
+import { Service1 } from 'vs/bout/node/service1';
 
 function createServices(args: ParsedArgs, bufferLogService: BufferLogService): IInstantiationService {
 	const services = new ServiceCollection();
@@ -75,7 +76,7 @@ function createServices(args: ParsedArgs, bufferLogService: BufferLogService): I
 	services.set(IDialogService, new SyncDescriptor(CommandLineDialogService));
 	services.set(IDiagnosticsService, new SyncDescriptor(DiagnosticsService));
 
-	services.set(IService1, new SyncDescriptor(Service1));
+	services.set(IService1, new Service1());
 
 	return new InstantiationService(services, true);
 }
