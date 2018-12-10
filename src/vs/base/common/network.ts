@@ -26,6 +26,8 @@ export namespace Schemas {
 	 */
 	export const walkThrough: string = 'walkThrough';
 
+	export const terminalF18: string = 'terminalF18';
+
 	/**
 	 * An embedded code snippet.
 	 */

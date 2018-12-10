@@ -83,6 +83,8 @@ import 'vs/workbench/parts/extensions/electron-browser/extensionsViewlet';
 
 import 'vs/workbench/parts/welcome/page/electron-browser/welcomePage.contribution';
 
+import 'vs/workbench/parts/welcome/page/electron-browser/terminalEditor.contribution';
+
 import 'vs/workbench/parts/output/electron-browser/output.contribution';
 import 'vs/workbench/parts/output/browser/outputPanel';
 
