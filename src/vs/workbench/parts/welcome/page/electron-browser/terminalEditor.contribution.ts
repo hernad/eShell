@@ -73,8 +73,32 @@ MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
 	order: 1
 });
 
+
+MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
+	group: '1_welcome',
+	command: {
+		id: 'workbench.action.showMyEditor',
+		title: localize({ key: 'miMyEditor', comment: ['&& denotes a mnemonic'] }, "&&My Editor")
+	},
+	order: 1
+});
+
 import { TerminalEditorContentProvider } from 'vs/workbench/parts/welcome/walkThrough/node/terminalEditorContentProvider';
 
 
 Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench)
 	.registerWorkbenchContribution(TerminalEditorContentProvider, LifecyclePhase.Starting);
+
+
+import { MyEditor, MyEditorInput, MyEditorAction } from 'vs/workbench/browser/parts/editor/myEditor';
+
+Registry.as<IEditorRegistry>(EditorExtensionsBrowser.Editors)
+	.registerEditor(new EditorDescriptor(
+		MyEditor,
+		MyEditor.ID,
+		localize('my.editor.label', "MY editor"),
+	),
+		[new SyncDescriptor(MyEditorInput)]);
+
+		Registry.as<IWorkbenchActionRegistry>(ActionExtensions.WorkbenchActions)
+		.registerWorkbenchAction(new SyncActionDescriptor(MyEditorAction, MyEditorAction.ID, MyEditorAction.LABEL), 'MyEditor: Start MyEditor', localize('my.editor.local', "My Editor"));

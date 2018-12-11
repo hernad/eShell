@@ -7,6 +7,9 @@ import 'vs/css!./media/editorgroupview';
 import { TPromise } from 'vs/base/common/winjs.base';
 import { EditorGroup, IEditorOpenOptions, EditorCloseEvent, ISerializedEditorGroup, isSerializedEditorGroup } from 'vs/workbench/common/editor/editorGroup';
 import { EditorInput, EditorOptions, GroupIdentifier, ConfirmResult, SideBySideEditorInput, CloseDirection, IEditorCloseEvent, EditorGroupActiveEditorDirtyContext } from 'vs/workbench/common/editor';
+
+// import { IEditorModel } from 'vs/platform/editor/common/editor';
+
 import { Event, Emitter, once, Relay } from 'vs/base/common/event';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 import { addClass, addClasses, Dimension, trackFocus, toggleClass, removeClass, addDisposableListener, EventType, EventHelper, findParentWithClass, clearNode, isAncestor } from 'vs/base/browser/dom';
@@ -34,7 +37,7 @@ import { EventType as TouchEventType, GestureEvent } from 'vs/base/browser/touch
 import { TitleControl } from 'vs/workbench/browser/parts/editor/titleControl';
 import { IEditorGroupsAccessor, IEditorGroupView, IEditorPartOptionsChangeEvent, getActiveTextEditorOptions, IEditorOpeningEvent } from 'vs/workbench/browser/parts/editor/editor';
 import { IUntitledEditorService } from 'vs/workbench/services/untitled/common/untitledEditorService';
-import { join } from 'vs/base/common/paths';
+// import { join } from 'vs/base/common/paths';
 import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { ActionRunner, IAction, Action } from 'vs/base/common/actions';
@@ -45,7 +48,7 @@ import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
 import { fillInContextMenuActions } from 'vs/platform/actions/browser/menuItemActionItem';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
 import { isErrorWithActions, IErrorWithActions } from 'vs/base/common/errorsWithActions';
-import { URI } from 'vs/base/common/uri';
+// import { URI } from 'vs/base/common/uri';
 
 export class EditorGroupView extends Themable implements IEditorGroupView {
 
@@ -805,6 +808,12 @@ export class EditorGroupView extends Themable implements IEditorGroupView {
 			openEditorPromise = TPromise.as(void 0);
 		}
 
+		// const myEditorResolve = Promise.resolve(new EditorModel()) as Thenable<IEditorModel>;
+		//const content = Promise.resolve(() => {});
+		//const resolve = content.then( () => new EditorModel() );
+		// const myResolve : () => Thenable<IEditorModel> = () => Promise.resolve( null );
+		// editor.resolve = myResolve;
+
 		// Show in title control after editor control because some actions depend on it
 		this.titleAreaControl.openEditor(editor);
 
@@ -1442,6 +1451,7 @@ export interface EditorReplacement {
 
 registerThemingParticipant((theme, collector, environment) => {
 
+	/*
 	// Letterpress
 	const letterpress = `resources/letterpress${theme.type === 'dark' ? '-dark' : theme.type === 'hc' ? '-hc' : ''}.svg`;
 	collector.addRule(`
@@ -1449,6 +1459,7 @@ registerThemingParticipant((theme, collector, environment) => {
 			background-image: url('${URI.file(join(environment.appRoot, letterpress)).toString()}')
 		}
 	`);
+	*/
 
 	// Focused Empty Group Border
 	const focusedEmptyGroupBorder = theme.getColor(EDITOR_GROUP_FOCUSED_EMPTY_BORDER);

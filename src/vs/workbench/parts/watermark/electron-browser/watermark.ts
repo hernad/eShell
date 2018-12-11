@@ -160,6 +160,8 @@ export class WatermarkContribution implements IWorkbenchContribution {
 			.filter(entry => !('mac' in entry) || entry.mac === isMacintosh);
 		const update = () => {
 			dom.clearNode(box);
+			const h1 = dom.append(box, $('h1'));
+			h1.textContent = 'h1 header';
 			selected.map(entry => {
 				const dl = dom.append(box, $('dl'));
 				const dt = dom.append(dl, $('dt'));
