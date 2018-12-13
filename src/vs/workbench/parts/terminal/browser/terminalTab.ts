@@ -10,6 +10,7 @@ import { Event, Emitter, anyEvent } from 'vs/base/common/event';
 import { IDisposable, Disposable } from 'vs/base/common/lifecycle';
 import { SplitView, Orientation, IView, Sizing } from 'vs/base/browser/ui/splitview/splitview';
 import { IPartService, Position } from 'vs/workbench/services/part/common/partService';
+// import * as DOM from 'vs/base/browser/dom';
 
 const SPLIT_PANE_MIN_SIZE = 120;
 const TERMINAL_MIN_USEFUL_SIZE = 250;
@@ -337,9 +338,13 @@ export class TerminalTab extends Disposable implements ITerminalTab {
 
 	public attachToElement(element: HTMLElement): void {
 		this._container = element;
+		// this._container = DOM.findParentWithClass( this._partService.getContainer( Parts.EDITOR_PART ), 'monaco-workbench');
 		this._tabElement = document.createElement('div');
 		this._tabElement.classList.add('terminal-tab');
+		// this._tabElement.style.width = '1000px';
+		// this._tabElement.style.height = '200px';
 		this._container.appendChild(this._tabElement);
+
 		if (!this._splitPaneContainer) {
 			this._panelPosition = this._partService.getPanelPosition();
 			const orientation = this._panelPosition === Position.BOTTOM ? Orientation.HORIZONTAL : Orientation.VERTICAL;

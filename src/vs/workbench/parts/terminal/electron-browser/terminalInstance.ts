@@ -21,7 +21,7 @@ import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
 import { TabFocus } from 'vs/editor/common/config/commonEditorConfig';
 import { TerminalConfigHelper } from 'vs/workbench/parts/terminal/electron-browser/terminalConfigHelper';
 import { TerminalLinkHandler } from 'vs/workbench/parts/terminal/electron-browser/terminalLinkHandler';
-import { TerminalWidgetManager } from 'vs/workbench/parts/terminal/browser/terminalWidgetManager';
+// import { TerminalWidgetManager } from 'vs/workbench/parts/terminal/browser/terminalWidgetManager';
 import { registerThemingParticipant, ITheme, ICssStyleCollector, IThemeService } from 'vs/platform/theme/common/themeService';
 import { scrollbarSliderBackground, scrollbarSliderHoverBackground, scrollbarSliderActiveBackground, activeContrastBorder } from 'vs/platform/theme/common/colorRegistry';
 import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
@@ -42,6 +42,8 @@ const SLOW_CANVAS_RENDER_THRESHOLD = 50;
 const NUMBER_OF_FRAMES_TO_MEASURE = 20;
 
 let Terminal: typeof XTermTerminal;
+
+let $ = dom.$;
 
 export class TerminalInstance implements ITerminalInstance {
 	private static readonly EOL_REGEX = /\r?\n/g;
@@ -73,7 +75,7 @@ export class TerminalInstance implements ITerminalInstance {
 	private _disposables: lifecycle.IDisposable[];
 	private _messageTitleDisposable: lifecycle.IDisposable;
 
-	private _widgetManager: TerminalWidgetManager;
+	// private _widgetManager: TerminalWidgetManager;
 	private _linkHandler: TerminalLinkHandler;
 	private _commandTracker: TerminalCommandTracker;
 
@@ -154,6 +156,10 @@ export class TerminalInstance implements ITerminalInstance {
 		} else {
 			this.setTitle(this._shellLaunchConfig.name, false);
 		}
+
+
+		this._container = $('.editor-instance');
+		dom.append(this._container, $('div')).innerHTML = '<h1>INSTANCE</h1>';
 
 		this._xtermReadyPromise = this._createXterm();
 		this._xtermReadyPromise.then(() => {
@@ -331,9 +337,9 @@ export class TerminalInstance implements ITerminalInstance {
 	}
 
 	public reattachToElement(container: HTMLElement): void {
-		if (!this._wrapperElement) {
-			throw new Error('The terminal instance has not been attached to a container yet');
-		}
+		// if (!this._wrapperElement) {
+		//	throw new Error('The terminal instance has not been attached to a container yet');
+		// }
 
 		if (this._wrapperElement.parentNode) {
 			this._wrapperElement.parentNode.removeChild(this._wrapperElement);
@@ -349,10 +355,12 @@ export class TerminalInstance implements ITerminalInstance {
 		}
 
 		// Attach has not occured yet
+		// ne kontam ko je inicijalizirao wrapperElement
 		if (!this._wrapperElement) {
 			this._attachToElement(container);
 			return;
 		}
+
 
 		// The container changed, reattach
 		this._container.removeChild(this._wrapperElement);
@@ -453,15 +461,18 @@ export class TerminalInstance implements ITerminalInstance {
 			this._wrapperElement.appendChild(this._xtermElement);
 			this._container.appendChild(this._wrapperElement);
 
+			/*
 			if (this._processManager) {
 				this._widgetManager = new TerminalWidgetManager(this._wrapperElement);
 				this._linkHandler.setWidgetManager(this._widgetManager);
 			}
+			*/
 
 			const computedStyle = window.getComputedStyle(this._container);
 			const width = parseInt(computedStyle.getPropertyValue('width').replace('px', ''), 10);
 			const height = parseInt(computedStyle.getPropertyValue('height').replace('px', ''), 10);
-			this.layout(new dom.Dimension(width, height));
+
+			this.layout(new dom.Dimension(width, height < 100 ? 200 : height ));
 			this.setVisible(this._isVisible);
 			this.updateConfig();
 
@@ -581,7 +592,7 @@ export class TerminalInstance implements ITerminalInstance {
 		this._windowsShellHelper = lifecycle.dispose(this._windowsShellHelper);
 		this._linkHandler = lifecycle.dispose(this._linkHandler);
 		this._commandTracker = lifecycle.dispose(this._commandTracker);
-		this._widgetManager = lifecycle.dispose(this._widgetManager);
+		// this._widgetManager = lifecycle.dispose(this._widgetManager);
 
 		if (this._xterm && this._xterm.element) {
 			this._hadFocusOnExit = dom.hasClass(this._xterm.element, 'focus');
@@ -726,6 +737,8 @@ export class TerminalInstance implements ITerminalInstance {
 				const computedStyle = window.getComputedStyle(this._container.parentElement);
 				const width = parseInt(computedStyle.getPropertyValue('width').replace('px', ''), 10);
 				const height = parseInt(computedStyle.getPropertyValue('height').replace('px', ''), 10);
+				console.log( '_container width height', width, height);
+
 				this.layout(new dom.Dimension(width, height));
 				// HACK: Trigger another async layout to ensure xterm's CharMeasure is ready to use,
 				// this hack can be removed when https://github.com/xtermjs/xterm.js/issues/702 is
@@ -802,9 +815,9 @@ export class TerminalInstance implements ITerminalInstance {
 	}
 
 	private _onProcessData(data: string): void {
-		if (this._widgetManager) {
-			this._widgetManager.closeMessage();
-		}
+		// if (this._widgetManager) {
+		//	this._widgetManager.closeMessage();
+		// }
 		if (this._xterm) {
 			this._xterm.write(data);
 		}
@@ -1062,7 +1075,12 @@ export class TerminalInstance implements ITerminalInstance {
 		}
 
 		if (this._processManager) {
-			this._processManager.ptyProcessReady.then(() => this._processManager.setDimensions(cols, rows));
+			this._processManager.ptyProcessReady.then(() => {
+				if (rows.toString() === 'NaN') {
+					rows = 10;
+				}
+				this._processManager.setDimensions(cols, rows);
+			});
 		}
 	}
 
