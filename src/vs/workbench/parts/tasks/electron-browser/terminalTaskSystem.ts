@@ -369,7 +369,6 @@ export class TerminalTaskSystem implements ITaskSystem {
 			}
 		}
 
-		let resolvedVariables: Promise<ResolvedVariables>;
 		if (taskSystemInfo) {
 			let resolveSet: ResolveSet = {
 				variables
@@ -384,6 +383,9 @@ export class TerminalTaskSystem implements ITaskSystem {
 					resolveSet.process.path = envPath;
 				}
 			}
+
+			return new Promise(() => { return undefined; });
+
 		} else {
 			let variablesArray = new Array<string>();
 			variables.forEach(variable => variablesArray.push(variable));

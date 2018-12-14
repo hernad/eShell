@@ -10,7 +10,7 @@ import { generateUuid } from 'vs/base/common/uuid';
 import * as Objects from 'vs/base/common/objects';
 import * as Types from 'vs/base/common/types';
 import * as Platform from 'vs/base/common/platform';
-import { IStringDictionary, forEach } from 'vs/base/common/collections';
+import { IStringDictionary } from 'vs/base/common/collections';
 import { IDisposable } from 'vs/base/common/lifecycle';
 
 import { IWorkspaceContextService, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
@@ -32,7 +32,6 @@ import {
 	ProcessExecutionDTO, ShellExecutionDTO, ShellExecutionOptionsDTO, TaskDTO, TaskSourceDTO, TaskHandleDTO, TaskFilterDTO, TaskProcessStartedDTO, TaskProcessEndedDTO, TaskSystemInfoDTO,
 	RunOptionsDTO
 } from 'vs/workbench/api/shared/tasks';
-import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
 
 namespace TaskExecutionDTO {
 	export function from(value: TaskExecution): TaskExecutionDTO {
@@ -48,6 +47,7 @@ namespace TaskExecutionDTO {
 		};
 	}
 }
+
 
 namespace TaskProcessStartedDTO {
 	export function from(value: TaskExecution, processId: number): TaskProcessStartedDTO {
@@ -381,8 +381,7 @@ export class MainThreadTask implements MainThreadTaskShape {
 	constructor(
 		extHostContext: IExtHostContext,
 		@ITaskService private readonly _taskService: ITaskService,
-		@IWorkspaceContextService private readonly _workspaceContextServer: IWorkspaceContextService,
-		@IConfigurationResolverService private readonly _configurationResolverService: IConfigurationResolverService
+		@IWorkspaceContextService private readonly _workspaceContextServer: IWorkspaceContextService
 	) {
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostTask);
 		this._providers = new Map();
