@@ -307,6 +307,7 @@ export interface MainThreadLanguageFeaturesShape extends IDisposable {
 	$registerDocumentLinkProvider(handle: number, selector: ISerializedDocumentFilter[]): void;
 	$registerDocumentColorProvider(handle: number, selector: ISerializedDocumentFilter[]): void;
 	$registerFoldingRangeProvider(handle: number, selector: ISerializedDocumentFilter[]): void;
+	$registerSelectionRangeProvider(handle: number, selector: ISerializedDocumentFilter[]): void;
 	$setLanguageConfiguration(handle: number, languageId: string, configuration: ISerializedLanguageConfiguration): void;
 }
 
@@ -867,6 +868,7 @@ export interface ExtHostLanguageFeaturesShape {
 	$provideDocumentColors(handle: number, resource: UriComponents, token: CancellationToken): Thenable<IRawColorInfo[]>;
 	$provideColorPresentations(handle: number, resource: UriComponents, colorInfo: IRawColorInfo, token: CancellationToken): Thenable<modes.IColorPresentation[]>;
 	$provideFoldingRanges(handle: number, resource: UriComponents, context: modes.FoldingContext, token: CancellationToken): Thenable<modes.FoldingRange[]>;
+	$provideSelectionRanges(handle: number, resource: UriComponents, position: IPosition, token: CancellationToken): Thenable<IRange[]>;
 }
 
 export interface ExtHostQuickOpenShape {

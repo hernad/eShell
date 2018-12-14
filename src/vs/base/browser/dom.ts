@@ -13,6 +13,7 @@ import { onUnexpectedError } from 'vs/base/common/errors';
 import { Emitter, Event } from 'vs/base/common/event';
 import { Disposable, IDisposable, dispose } from 'vs/base/common/lifecycle';
 import * as platform from 'vs/base/common/platform';
+import { coalesce } from 'vs/base/common/arrays';
 
 export function clearNode(node: HTMLElement): void {
 	while (node.firstChild) {
@@ -225,6 +226,7 @@ class DomListener implements IDisposable {
 		this._handler = null!;
 	}
 }
+
 export function addDisposableListener<K extends keyof GlobalEventHandlersEventMap>(node: Element | Window | Document, type: K, handler: (event: GlobalEventHandlersEventMap[K]) => void, useCapture?: boolean): IDisposable;
 export function addDisposableListener(node: Element | Window | Document, type: string, handler: (event: any) => void, useCapture?: boolean): IDisposable;
 export function addDisposableListener(node: Element | Window | Document, type: string, handler: (event: any) => void, useCapture?: boolean): IDisposable {
@@ -1024,8 +1026,7 @@ export function $<T extends HTMLElement>(description: string, attrs?: { [key: st
 		}
 	});
 
-	children
-		.filter(child => !!child)
+	coalesce(children)
 		.forEach(child => {
 			if (child instanceof Node) {
 				result.appendChild(child);
