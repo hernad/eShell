@@ -23,6 +23,7 @@ import * as Tasks from '../common/tasks';
 import { TaskDefinitionRegistry } from '../common/taskDefinitionRegistry';
 
 import { TaskDefinition } from 'vs/workbench/parts/tasks/node/tasks';
+import { ConfiguredInput } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
 
 export const enum ShellQuoting {
 	/**
@@ -451,6 +452,11 @@ export interface BaseTaskRunnerConfiguration {
 	 * Problem matcher declarations
 	 */
 	declares?: ProblemMatcherConfig.NamedProblemMatcher[];
+
+	/**
+	 * Optional user input varaibles.
+	 */
+	inputs?: ConfiguredInput[];
 }
 
 /**
@@ -821,7 +827,7 @@ namespace CommandConfiguration {
 					clear = presentation.clear;
 				}
 			}
-			if (echo === void 0 && reveal === void 0 && focus === void 0 && panel === void 0 && showReuseMessage === void 0) {
+			if (echo === void 0 && reveal === void 0 && focus === void 0 && panel === void 0 && showReuseMessage === void 0 && clear === void 0) {
 				return undefined;
 			}
 			return { echo, reveal, focus, panel, showReuseMessage, clear };

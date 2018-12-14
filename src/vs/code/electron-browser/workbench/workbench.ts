@@ -56,11 +56,7 @@ function showPartsSplash(configuration) {
 
 	let data;
 	try {
-		// TODO@Ben remove me after a while
-		perf.mark('willReadLocalStorage');
-		let raw = window.localStorage.getItem('storage://global/parts-splash-data');
-		perf.mark('didReadLocalStorage');
-		data = JSON.parse(raw);
+		data = JSON.parse(configuration.partsSplashData);
 	} catch (e) {
 		// ignore
 	}

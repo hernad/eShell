@@ -183,8 +183,10 @@ export interface IWindowService {
 
 	_serviceBrand: any;
 
-	onDidChangeFocus: Event<boolean>;
-	onDidChangeMaximize: Event<boolean>;
+	readonly onDidChangeFocus: Event<boolean>;
+	readonly onDidChangeMaximize: Event<boolean>;
+
+	readonly hasFocus: boolean;
 
 	getConfiguration(): IWindowConfiguration;
 	getCurrentWindowId(): number;
@@ -388,6 +390,7 @@ export interface IWindowConfiguration extends ParsedArgs {
 	highContrast?: boolean;
 	frameless?: boolean;
 	accessibilitySupport?: boolean;
+	partsSplashData?: string;
 
 	perfStartTime?: number;
 	perfAppReady?: number;

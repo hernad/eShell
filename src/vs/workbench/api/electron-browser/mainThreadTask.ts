@@ -10,7 +10,7 @@ import { generateUuid } from 'vs/base/common/uuid';
 import * as Objects from 'vs/base/common/objects';
 import * as Types from 'vs/base/common/types';
 import * as Platform from 'vs/base/common/platform';
-import { IStringDictionary } from 'vs/base/common/collections';
+import { IStringDictionary, forEach } from 'vs/base/common/collections';
 import { IDisposable } from 'vs/base/common/lifecycle';
 
 import { IWorkspaceContextService, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
@@ -32,6 +32,7 @@ import {
 	ProcessExecutionDTO, ShellExecutionDTO, ShellExecutionOptionsDTO, TaskDTO, TaskSourceDTO, TaskHandleDTO, TaskFilterDTO, TaskProcessStartedDTO, TaskProcessEndedDTO, TaskSystemInfoDTO,
 	RunOptionsDTO
 } from 'vs/workbench/api/shared/tasks';
+import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
 
 namespace TaskExecutionDTO {
 	export function from(value: TaskExecution): TaskExecutionDTO {
@@ -380,7 +381,8 @@ export class MainThreadTask implements MainThreadTaskShape {
 	constructor(
 		extHostContext: IExtHostContext,
 		@ITaskService private readonly _taskService: ITaskService,
-		@IWorkspaceContextService private readonly _workspaceContextServer: IWorkspaceContextService
+		@IWorkspaceContextService private readonly _workspaceContextServer: IWorkspaceContextService,
+		@IConfigurationResolverService private readonly _configurationResolverService: IConfigurationResolverService
 	) {
 		this._proxy = extHostContext.getProxy(ExtHostContext.ExtHostTask);
 		this._providers = new Map();
@@ -459,7 +461,9 @@ export class MainThreadTask implements MainThreadTaskShape {
 			if (TaskHandleDTO.is(value)) {
 				let workspaceFolder = this._workspaceContextServer.getWorkspaceFolder(URI.revive(value.workspaceFolder));
 				this._taskService.getTask(workspaceFolder, value.id, true).then((task: Task) => {
-					this._taskService.run(task);
+					this._taskService.run(task).then(undefined, reason => {
+						// eat the error, it has already been surfaced to the user and we don't care about it here
+					});
 					let result: TaskExecutionDTO = {
 						id: value.id,
 						task: TaskDTO.from(task)
@@ -470,7 +474,9 @@ export class MainThreadTask implements MainThreadTaskShape {
 				});
 			} else {
 				let task = TaskDTO.to(value, this._workspaceContextServer, true);
-				this._taskService.run(task);
+				this._taskService.run(task).then(undefined, reason => {
+					// eat the error, it has already been surfaced to the user and we don't care about it here
+				});
 				let result: TaskExecutionDTO = {
 					id: task._id,
 					task: TaskDTO.from(task)
@@ -519,7 +525,6 @@ export class MainThreadTask implements MainThreadTaskShape {
 				return URI.parse(`${info.scheme}://${info.authority}${path}`);
 			},
 			context: this._extHostContext,
-
 		});
 	}
 }

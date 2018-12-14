@@ -16,9 +16,24 @@
 
 declare module 'vscode' {
 
-	export namespace window {
-		export function sampleFunction(): Thenable<any>;
+	//#region Joh - selection range provider
+
+	export interface SelectionRangeProvider {
+		/**
+		 * Provide selection ranges starting at a given position. The first range must [contain](#Range.contains)
+		 * position and subsequent ranges must contain the previous range.
+		 * @param document
+		 * @param position
+		 * @param token
+		 */
+		provideSelectionRanges(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Range[]>;
 	}
+
+	export namespace languages {
+		export function registerSelectionRangeProvider(selector: DocumentSelector, provider: SelectionRangeProvider): Disposable;
+	}
+
+	//#endregion
 
 	//#region Joh - read/write in chunks
 
@@ -194,6 +209,12 @@ declare module 'vscode' {
 		 * The maximum number of results to be returned.
 		 */
 		maxResults?: number;
+
+		/**
+		 * A CancellationToken that represents the session for this search query. If the provider chooses to, this object can be used as the key for a cache,
+		 * and searches with the same session object can search the same cache. When the token is cancelled, the session is complete and the cache can be cleared.
+		 */
+		session?: CancellationToken;
 	}
 
 	/**
