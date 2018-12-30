@@ -85,7 +85,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 	public loadWorkspaceConfigPromise: Promise<any>;
 	private proactiveRecommendationsFetched: boolean = false;
 
-	private readonly _onRecommendationChange: Emitter<RecommendationChangeNotification> = new Emitter<RecommendationChangeNotification>();
+	private readonly _onRecommendationChange = new Emitter<RecommendationChangeNotification>();
 	onRecommendationChange: Event<RecommendationChangeNotification> = this._onRecommendationChange.event;
 	private sessionSeed: number;
 
@@ -259,7 +259,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 	 */
 	private fetchWorkspaceRecommendations(): Promise<void> {
 
-		if (!this.isEnabled) { return Promise.resolve(null); }
+		if (!this.isEnabled) { return Promise.resolve(void 0); }
 
 		return this.fetchExtensionRecommendationContents()
 			.then(result => this.validateExtensions(result.map(({ contents }) => contents))
@@ -635,8 +635,8 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 			recommendationsToSuggest = recommendationsToSuggest.filter(id => importantRecommendationsIgnoreList.indexOf(id) === -1 && this.isExtensionAllowedToBeRecommended(id));
 
 			const importantTipsPromise = recommendationsToSuggest.length === 0 ? Promise.resolve(null) : this.extensionWorkbenchService.queryLocal().then(local => {
-				const localExtensions = local.map(e => e.id);
-				recommendationsToSuggest = recommendationsToSuggest.filter(id => localExtensions.every(local => local !== id.toLowerCase()));
+				const localExtensions = local.map(e => e.identifier);
+				recommendationsToSuggest = recommendationsToSuggest.filter(id => localExtensions.every(local => !areSameExtensions(local, { id })));
 				if (!recommendationsToSuggest.length) {
 					return;
 				}
@@ -854,7 +854,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 
 			fetchPromise = new Promise((c, e) => {
 				setTimeout(() => {
-					Promise.all([this.fetchExecutableRecommendations(), this.fetchDynamicWorkspaceRecommendations()]).then(() => c(null));
+					Promise.all([this.fetchExecutableRecommendations(), this.fetchDynamicWorkspaceRecommendations()]).then(() => c(void 0));
 				}, calledDuringStartup ? 10000 : 0);
 			});
 
@@ -949,7 +949,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 			|| !this.fileService.canHandleResource(this.contextService.getWorkspace().folders[0].uri)
 			|| this._dynamicWorkspaceRecommendations.length
 			|| !this._extensionsRecommendationsUrl) {
-			return Promise.resolve(null);
+			return Promise.resolve(void 0);
 		}
 
 		const storageKey = 'extensionsAssistant/dynamicWorkspaceRecommendations';

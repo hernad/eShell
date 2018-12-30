@@ -198,9 +198,9 @@ configurationRegistry.registerConfiguration({
 			default: 1000
 		},
 		'terminal.integrated.setLocaleVariables': {
-			markdownDescription: nls.localize('terminal.integrated.setLocaleVariables', "Controls whether locale variables are set at startup of the terminal, this defaults to `true` on macOS, `false` on other platforms."),
+			markdownDescription: nls.localize('terminal.integrated.setLocaleVariables', "Controls whether locale variables are set at startup of the terminal."),
 			type: 'boolean',
-			default: platform.isMacintosh
+			default: true
 		},
 		'terminal.integrated.rendererType': {
 			type: 'string',
@@ -397,6 +397,11 @@ configurationRegistry.registerConfiguration({
 			],
 			default: 'inherited'
 		},
+		'terminal.integrated.windowsEnableConpty': {
+			description: nls.localize('terminal.integrated.windowsEnableConpty', "Whether to use ConPTY for Windows terminal process communication (requires Windows 10 build number 17692+). The default is to enable this on Windows 10 build number 17692+. Winpty will be used if this is false."),
+			type: 'boolean',
+			default: true
+		}
 	}
 });
 

@@ -467,7 +467,7 @@ export class SettingsTargetsWidget extends Widget {
 
 	private _settingsTarget: SettingsTarget;
 
-	private readonly _onDidTargetChange: Emitter<SettingsTarget> = new Emitter<SettingsTarget>();
+	private readonly _onDidTargetChange = new Emitter<SettingsTarget>();
 	public readonly onDidTargetChange: Event<SettingsTarget> = this._onDidTargetChange.event;
 
 	constructor(
@@ -554,7 +554,7 @@ export class SettingsTargetsWidget extends Widget {
 			this.settingsTarget = settingsTarget;
 			this._onDidTargetChange.fire(this.settingsTarget);
 		}
-		return Promise.resolve(null);
+		return Promise.resolve(void 0);
 	}
 
 	private update(): void {
@@ -715,7 +715,7 @@ export class EditPreferenceWidget<T> extends Disposable {
 
 	private _editPreferenceDecoration: string[];
 
-	private readonly _onClick: Emitter<IEditorMouseEvent> = new Emitter<IEditorMouseEvent>();
+	private readonly _onClick = new Emitter<IEditorMouseEvent>();
 	public get onClick(): Event<IEditorMouseEvent> { return this._onClick.event; }
 
 	constructor(private editor: ICodeEditor

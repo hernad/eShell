@@ -7,7 +7,7 @@ import 'vs/css!./media/workbench';
 
 import { localize } from 'vs/nls';
 import { IDisposable, dispose, Disposable } from 'vs/base/common/lifecycle';
-import { Event, Emitter, once } from 'vs/base/common/event';
+import { Event, Emitter } from 'vs/base/common/event';
 import * as DOM from 'vs/base/browser/dom';
 import { RunOnceScheduler, runWhenIdle } from 'vs/base/common/async';
 import * as browser from 'vs/base/browser/browser';
@@ -50,7 +50,6 @@ import { IKeybindingEditingService, KeybindingsEditingService } from 'vs/workben
 import { RawContextKey, IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
 import { IActivityService } from 'vs/workbench/services/activity/common/activity';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { ViewletService } from 'vs/workbench/services/viewlet/browser/viewletService';
 import { RemoteFileService } from 'vs/workbench/services/files/electron-browser/remoteFileService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
@@ -114,6 +113,7 @@ import { IWorkbenchThemeService } from 'vs/workbench/services/themes/common/work
 import { IFileDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { FileDialogService } from 'vs/workbench/services/dialogs/electron-browser/dialogService';
 import { LogStorageAction } from 'vs/platform/storage/node/storageService';
+import { IEditor } from 'vs/editor/common/editorCommon';
 
 interface WorkbenchParams {
 	configuration: IWindowConfiguration;
@@ -126,6 +126,7 @@ interface IZenModeSettings {
 	hideTabs: boolean;
 	hideActivityBar: boolean;
 	hideStatusBar: boolean;
+	hideLineNumbers: boolean;
 	restore: boolean;
 }
 
@@ -192,7 +193,6 @@ export class Workbench extends Disposable implements IPartService {
 
 	private editorService: EditorService;
 	private editorGroupService: IEditorGroupsService;
-	private viewletService: IViewletService;
 	private contextViewService: ContextViewService;
 	private contextKeyService: IContextKeyService;
 	private keybindingService: IKeybindingService;
@@ -255,7 +255,7 @@ export class Workbench extends Disposable implements IPartService {
 			(configuration.filesToDiff && configuration.filesToDiff.length > 0);
 	}
 
-	startup(): Thenable<IWorkbenchStartedInfo> {
+	startup(): Promise<IWorkbenchStartedInfo> {
 		this.workbenchStarted = true;
 
 		// Create Workbench Container
@@ -368,8 +368,7 @@ export class Workbench extends Disposable implements IPartService {
 		this.sidebarPart = this.instantiationService.createInstance(SidebarPart, Identifiers.SIDEBAR_PART);
 
 		// Viewlet service
-		this.viewletService = this.instantiationService.createInstance(ViewletService, this.sidebarPart);
-		serviceCollection.set(IViewletService, this.viewletService);
+		serviceCollection.set(IViewletService, this.sidebarPart);
 
 		// Panel service (panel part)
 		this.panelPart = this.instantiationService.createInstance(PanelPart, Identifiers.PANEL_PART);
@@ -665,7 +664,7 @@ export class Workbench extends Disposable implements IPartService {
 
 			if (isInputFocused) {
 				const tracker = DOM.trackFocus(document.activeElement as HTMLElement);
-				once(tracker.onDidBlur)(() => {
+				Event.once(tracker.onDidBlur)(() => {
 					inputFocused.set(activeElementIsInput());
 
 					tracker.dispose();
@@ -703,8 +702,8 @@ export class Workbench extends Disposable implements IPartService {
 		updateSplitEditorsVerticallyContext();
 	}
 
-	private restoreParts(): Thenable<IWorkbenchStartedInfo> {
-		const restorePromises: Thenable<any>[] = [];
+	private restoreParts(): Promise<IWorkbenchStartedInfo> {
+		const restorePromises: Promise<any>[] = [];
 
 		// Restore Editorpart
 		perf.mark('willRestoreEditors');
@@ -737,12 +736,12 @@ export class Workbench extends Disposable implements IPartService {
 			}
 
 			if (!viewletIdToRestore) {
-				viewletIdToRestore = this.viewletService.getDefaultViewletId();
+				viewletIdToRestore = this.sidebarPart.getDefaultViewletId();
 			}
 
 			perf.mark('willRestoreViewlet');
-			restorePromises.push(this.viewletService.openViewlet(viewletIdToRestore)
-				.then(viewlet => viewlet || this.viewletService.openViewlet(this.viewletService.getDefaultViewletId()))
+			restorePromises.push(this.sidebarPart.openViewlet(viewletIdToRestore)
+				.then(viewlet => viewlet || this.sidebarPart.openViewlet(this.sidebarPart.getDefaultViewletId()))
 				.then(() => perf.mark('didRestoreViewlet')));
 		}
 
@@ -807,7 +806,7 @@ export class Workbench extends Disposable implements IPartService {
 		return this.lifecycleService.startupKind === StartupKind.ReloadedWindow;
 	}
 
-	private resolveEditorsToOpen(): Thenable<IResourceEditor[]> | IResourceEditor[] {
+	private resolveEditorsToOpen(): Promise<IResourceEditor[]> | IResourceEditor[] {
 		const config = this.workbenchParams.configuration;
 
 		// Files to open, diff or create
@@ -850,7 +849,7 @@ export class Workbench extends Disposable implements IPartService {
 		return [];
 	}
 
-	private toInputs(paths: IPath[], isNew: boolean): (IResourceInput | IUntitledResourceInput)[] {
+	private toInputs(paths: IPath[], isNew: boolean): Array<IResourceInput | IUntitledResourceInput> {
 		if (!paths || !paths.length) {
 			return [];
 		}
@@ -1239,6 +1238,14 @@ export class Workbench extends Disposable implements IPartService {
 		// Check if zen mode transitioned to full screen and if now we are out of zen mode
 		// -> we need to go out of full screen (same goes for the centered editor layout)
 		let toggleFullScreen = false;
+		const setLineNumbers = (lineNumbers: any) => {
+			this.editorService.visibleControls.forEach(editor => {
+				const control = <IEditor>editor.getControl();
+				if (control) {
+					control.updateOptions({ lineNumbers });
+				}
+			});
+		};
 
 		// Zen Mode Active
 		if (this.zenMode.active) {
@@ -1259,6 +1266,11 @@ export class Workbench extends Disposable implements IPartService {
 
 			if (config.hideStatusBar) {
 				this.setStatusBarHidden(true, true);
+			}
+
+			if (config.hideLineNumbers) {
+				setLineNumbers('off');
+				this.zenMode.transitionDisposeables.push(this.editorService.onDidVisibleEditorsChange(() => setLineNumbers('off')));
 			}
 
 			if (config.hideTabs && this.editorPart.partOptions.showTabs) {
@@ -1283,6 +1295,7 @@ export class Workbench extends Disposable implements IPartService {
 			if (this.zenMode.transitionedToCenteredEditorLayout) {
 				this.centerEditorLayout(false, true);
 			}
+			setLineNumbers(this.configurationService.getValue('editor.lineNumbers'));
 
 			// Status bar and activity bar visibility come from settings -> update their visibility.
 			this.onDidUpdateConfiguration(true);
@@ -1382,9 +1395,9 @@ export class Workbench extends Disposable implements IPartService {
 		else if (!hidden && !this.sidebarPart.getActiveViewlet()) {
 			const viewletToOpen = this.sidebarPart.getLastActiveViewletId();
 			if (viewletToOpen) {
-				const viewlet = this.viewletService.openViewlet(viewletToOpen, true);
+				const viewlet = this.sidebarPart.openViewlet(viewletToOpen, true);
 				if (!viewlet) {
-					this.viewletService.openViewlet(this.viewletService.getDefaultViewletId(), true);
+					this.sidebarPart.openViewlet(this.sidebarPart.getDefaultViewletId(), true);
 				}
 			}
 		}

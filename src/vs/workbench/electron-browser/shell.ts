@@ -101,7 +101,7 @@ import { IDownloadService } from 'vs/platform/download/common/download';
 import { DownloadService } from 'vs/platform/download/node/downloadService';
 import { DownloadServiceChannel } from 'vs/platform/download/node/downloadIpc';
 import { TextResourcePropertiesService } from 'vs/workbench/services/textfile/electron-browser/textResourcePropertiesService';
-import { MulitExtensionManagementService } from 'vs/platform/extensionManagement/node/multiExtensionManagement';
+import { MultiExtensionManagementService } from 'vs/platform/extensionManagement/node/multiExtensionManagement';
 import { IRemoteAuthorityResolverService } from 'vs/platform/remote/common/remoteAuthorityResolver';
 import { RemoteAuthorityResolverService } from 'vs/platform/remote/electron-browser/remoteAuthorityResolverService';
 
@@ -291,7 +291,7 @@ export class WorkbenchShell extends Disposable {
 				loggedStorageErrors.add(errorStr);
 
 				/* __GDPR__
-					"sqliteStorageError6" : {
+					"sqliteStorageError5" : {
 						"appReadyTime" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 						"workbenchReadyTime" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 						"workspaceRequireTime" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
@@ -347,7 +347,7 @@ export class WorkbenchShell extends Disposable {
 		}
 
 		/* __GDPR__
-			"sqliteStorageTimers6" : {
+			"sqliteStorageTimers5" : {
 				"appReadyTime" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 				"workbenchReadyTime" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 				"workspaceRequireTime" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
@@ -394,7 +394,7 @@ export class WorkbenchShell extends Disposable {
 		serviceCollection.set(IWorkspaceContextService, this.contextService);
 		serviceCollection.set(IConfigurationService, this.configurationService);
 		serviceCollection.set(IEnvironmentService, this.environmentService);
-		serviceCollection.set(ILabelService, new SyncDescriptor(LabelService));
+		serviceCollection.set(ILabelService, new SyncDescriptor(LabelService, undefined, true));
 		serviceCollection.set(ILogService, this._register(this.logService));
 		serviceCollection.set(IStorageService, this.storageService);
 
@@ -420,7 +420,7 @@ export class WorkbenchShell extends Disposable {
 		});
 
 		// Hash
-		serviceCollection.set(IHashService, new SyncDescriptor(HashService));
+		serviceCollection.set(IHashService, new SyncDescriptor(HashService, undefined, true));
 
 		// Telemetry
 		if (!this.environmentService.isExtensionDevelopment && !this.environmentService.args['disable-telemetry'] && !!product.enableTelemetry) {
@@ -454,9 +454,9 @@ export class WorkbenchShell extends Disposable {
 		serviceCollection.set(ILifecycleService, lifecycleService);
 		this.lifecycleService = lifecycleService;
 
-		serviceCollection.set(IRequestService, new SyncDescriptor(RequestService));
-		serviceCollection.set(IDownloadService, new SyncDescriptor(DownloadService));
-		serviceCollection.set(IExtensionGalleryService, new SyncDescriptor(ExtensionGalleryService));
+		serviceCollection.set(IRequestService, new SyncDescriptor(RequestService, undefined, true));
+		serviceCollection.set(IDownloadService, new SyncDescriptor(DownloadService, undefined, true));
+		serviceCollection.set(IExtensionGalleryService, new SyncDescriptor(ExtensionGalleryService, undefined, true));
 
 		const remoteAuthorityResolverService = new RemoteAuthorityResolverService();
 		serviceCollection.set(IRemoteAuthorityResolverService, remoteAuthorityResolverService);
@@ -474,7 +474,7 @@ export class WorkbenchShell extends Disposable {
 		const extensionManagementChannel = getDelayedChannel(sharedProcess.then(c => c.getChannel('extensions')));
 		const extensionManagementChannelClient = new ExtensionManagementChannelClient(extensionManagementChannel);
 		serviceCollection.set(IExtensionManagementServerService, new SyncDescriptor(ExtensionManagementServerService, [extensionManagementChannelClient]));
-		serviceCollection.set(IExtensionManagementService, new SyncDescriptor(MulitExtensionManagementService));
+		serviceCollection.set(IExtensionManagementService, new SyncDescriptor(MultiExtensionManagementService));
 
 		const extensionEnablementService = this._register(instantiationService.createInstance(ExtensionEnablementService));
 		serviceCollection.set(IExtensionEnablementService, extensionEnablementService);
@@ -484,9 +484,9 @@ export class WorkbenchShell extends Disposable {
 		this.themeService = instantiationService.createInstance(WorkbenchThemeService, document.body);
 		serviceCollection.set(IWorkbenchThemeService, this.themeService);
 
-		serviceCollection.set(ICommandService, new SyncDescriptor(CommandService));
+		serviceCollection.set(ICommandService, new SyncDescriptor(CommandService, undefined, true));
 
-		serviceCollection.set(IMarkerService, new SyncDescriptor(MarkerService));
+		serviceCollection.set(IMarkerService, new SyncDescriptor(MarkerService, undefined, true));
 
 		serviceCollection.set(IModeService, new SyncDescriptor(WorkbenchModeServiceImpl));
 
@@ -494,11 +494,11 @@ export class WorkbenchShell extends Disposable {
 
 		serviceCollection.set(ITextResourcePropertiesService, new SyncDescriptor(TextResourcePropertiesService));
 
-		serviceCollection.set(IModelService, new SyncDescriptor(ModelServiceImpl));
+		serviceCollection.set(IModelService, new SyncDescriptor(ModelServiceImpl, undefined, true));
 
 		serviceCollection.set(IEditorWorkerService, new SyncDescriptor(EditorWorkerServiceImpl));
 
-		serviceCollection.set(IUntitledEditorService, new SyncDescriptor(UntitledEditorService));
+		serviceCollection.set(IUntitledEditorService, new SyncDescriptor(UntitledEditorService, undefined, true));
 
 		serviceCollection.set(ITextMateService, new SyncDescriptor(TextMateService));
 
@@ -510,7 +510,7 @@ export class WorkbenchShell extends Disposable {
 
 		serviceCollection.set(ICodeEditorService, new SyncDescriptor(CodeEditorService));
 
-		serviceCollection.set(IOpenerService, new SyncDescriptor(OpenerService));
+		serviceCollection.set(IOpenerService, new SyncDescriptor(OpenerService, undefined, true));
 
 		serviceCollection.set(IIntegrityService, new SyncDescriptor(IntegrityServiceImpl));
 

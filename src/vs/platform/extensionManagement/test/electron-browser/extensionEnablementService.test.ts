@@ -45,12 +45,12 @@ suite('ExtensionEnablementService Test', () => {
 	let instantiationService: TestInstantiationService;
 	let testObject: IExtensionEnablementService;
 
-	const didUninstallEvent: Emitter<DidUninstallExtensionEvent> = new Emitter<DidUninstallExtensionEvent>();
-	const didInstallEvent: Emitter<DidInstallExtensionEvent> = new Emitter<DidInstallExtensionEvent>();
+	const didUninstallEvent = new Emitter<DidUninstallExtensionEvent>();
+	const didInstallEvent = new Emitter<DidInstallExtensionEvent>();
 
 	setup(() => {
 		instantiationService = new TestInstantiationService();
-		instantiationService.stub(IExtensionManagementService, { onDidUninstallExtension: didUninstallEvent.event, onDidInstallExtension: didInstallEvent.event, getInstalled: () => Promise.resolve([]) } as IExtensionManagementService);
+		instantiationService.stub(IExtensionManagementService, { onDidUninstallExtension: didUninstallEvent.event, onDidInstallExtension: didInstallEvent.event, getInstalled: () => Promise.resolve([] as ILocalExtension[]) } as IExtensionManagementService);
 		testObject = new TestExtensionEnablementService(instantiationService);
 	});
 

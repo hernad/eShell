@@ -74,7 +74,7 @@ export class CodeWindow extends Disposable implements ICodeWindow {
 	private currentConfig: IWindowConfiguration;
 	private pendingLoadConfig: IWindowConfiguration;
 
-	private marketplaceHeadersPromise: Thenable<object>;
+	private marketplaceHeadersPromise: Promise<object>;
 
 	private touchBarGroups: Electron.TouchBarSegmentedControl[];
 
@@ -273,11 +273,11 @@ export class CodeWindow extends Disposable implements ICodeWindow {
 
 		// inform all waiting promises that we are ready now
 		while (this.whenReadyCallbacks.length) {
-			this.whenReadyCallbacks.pop()(this);
+			this.whenReadyCallbacks.pop()!(this);
 		}
 	}
 
-	ready(): Thenable<ICodeWindow> {
+	ready(): Promise<ICodeWindow> {
 		return new Promise<ICodeWindow>(resolve => {
 			if (this.isReady) {
 				return resolve(this);
@@ -543,12 +543,9 @@ export class CodeWindow extends Disposable implements ICodeWindow {
 		}
 	}
 
-	reload(configuration?: IWindowConfiguration, cli?: ParsedArgs): void {
-
+	reload(configurationIn?: IWindowConfiguration, cli?: ParsedArgs): void {
 		// If config is not provided, copy our current one
-		if (!configuration) {
-			configuration = objects.mixin({}, this.currentConfig);
-		}
+		const configuration = configurationIn ? configurationIn : objects.mixin({}, this.currentConfig);
 
 		// Delete some properties we do not want during reload
 		delete configuration.filesToOpen;
@@ -713,7 +710,7 @@ export class CodeWindow extends Disposable implements ICodeWindow {
 		return state;
 	}
 
-	private validateWindowState(state: IWindowState): IWindowState {
+	private validateWindowState(state: IWindowState): IWindowState | null {
 		if (!state) {
 			return null;
 		}
@@ -854,6 +851,10 @@ export class CodeWindow extends Disposable implements ICodeWindow {
 		const windowConfig = this.configurationService.getValue<IWindowSettings>('window');
 		if (!windowConfig || typeof windowConfig.nativeFullScreen !== 'boolean') {
 			return true; // default
+		}
+
+		if (windowConfig.nativeTabs) {
+			return true; // https://github.com/electron/electron/issues/16142
 		}
 
 		return windowConfig.nativeFullScreen !== false;
@@ -1028,7 +1029,7 @@ export class CodeWindow extends Disposable implements ICodeWindow {
 
 	private createTouchBarGroupSegments(items: ISerializableCommandAction[] = []): ITouchBarSegment[] {
 		const segments: ITouchBarSegment[] = items.map(item => {
-			let icon: Electron.NativeImage;
+			let icon: Electron.NativeImage | undefined;
 			if (item.iconLocation && item.iconLocation.dark.scheme === 'file') {
 				icon = nativeImage.createFromPath(URI.revive(item.iconLocation.dark).fsPath);
 				if (icon.isEmpty()) {

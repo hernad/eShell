@@ -19,6 +19,7 @@ import { IInstantiationService } from 'vs/platform/instantiation/common/instanti
 import { VIEWLET_ID as EXPLORER } from 'vs/workbench/parts/files/common/files';
 import { VIEWLET_ID as SCM } from 'vs/workbench/parts/scm/common/scm';
 // import { VIEWLET_ID as DEBUG } from 'vs/workbench/parts/debug/common/debug';
+import { CanonicalExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
 interface IUserFriendlyViewDescriptor {
 	id: string;
@@ -84,7 +85,11 @@ const viewsContribution: IJSONSchema = {
 };
 
 
-const viewsExtensionPoint: IExtensionPoint<{ [loc: string]: IUserFriendlyViewDescriptor[] }> = ExtensionsRegistry.registerExtensionPoint<{ [loc: string]: IUserFriendlyViewDescriptor[] }>('views', [viewsContainersExtensionPoint], viewsContribution);
+const viewsExtensionPoint: IExtensionPoint<{ [loc: string]: IUserFriendlyViewDescriptor[] }> = ExtensionsRegistry.registerExtensionPoint<{ [loc: string]: IUserFriendlyViewDescriptor[] }>({
+	extensionPoint: 'views',
+	deps: [viewsContainersExtensionPoint],
+	jsonSchema: viewsContribution
+});
 
 class ViewsContainersExtensionHandler implements IWorkbenchContribution {
 
@@ -134,7 +139,7 @@ class ViewsContainersExtensionHandler implements IWorkbenchContribution {
 							canToggleVisibility: true,
 							collapsed: this.showCollapsed(container),
 							treeView: this.instantiationService.createInstance(CustomTreeView, item.id, container),
-							order: extension.description.id === container.extensionId ? index + 1 : void 0
+							order: CanonicalExtensionIdentifier.equals(extension.description.identifier, container.extensionId) ? index + 1 : void 0
 						};
 
 						viewIds.push(viewDescriptor.id);

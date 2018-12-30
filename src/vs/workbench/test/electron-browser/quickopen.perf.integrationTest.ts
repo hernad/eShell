@@ -135,9 +135,9 @@ suite.skip('QuickOpen performance (integration)', () => {
 				if (testWorkspaceArg || verboseResults) { // Don't measure by default
 					const cachedEvents: Timer.ITimerEvent[] = [];
 					let i = n;
-					return (function iterate(): Thenable<Timer.ITimerEvent> {
+					return (function iterate(): Promise<Timer.ITimerEvent> {
 						if (!i--) {
-							return undefined;
+							return undefined!;
 						}
 						return measure()
 							.then(([uncachedEvent, cachedEvent]) => {
@@ -166,7 +166,7 @@ class TestTelemetryService implements ITelemetryService {
 
 	public publicLog(eventName: string, data?: any): Promise<void> {
 		this.events.push({ name: eventName, data: data });
-		return Promise.resolve(null);
+		return Promise.resolve(void 0);
 	}
 
 	public getTelemetryInfo(): Promise<ITelemetryInfo> {

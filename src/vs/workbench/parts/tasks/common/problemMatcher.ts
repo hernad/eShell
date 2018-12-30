@@ -146,7 +146,7 @@ export interface NamedMultiLineProblemPattern {
 	patterns: MultiLineProblemPattern;
 }
 
-export function isNamedProblemMatcher(value: ProblemMatcher): value is NamedProblemMatcher {
+export function isNamedProblemMatcher(value: ProblemMatcher | undefined): value is NamedProblemMatcher {
 	return value && Types.isString((<NamedProblemMatcher>value).name) ? true : false;
 }
 
@@ -792,7 +792,7 @@ export namespace Config {
 		background?: BackgroundMonitor;
 	}
 
-	export type ProblemMatcherType = string | ProblemMatcher | (string | ProblemMatcher)[];
+	export type ProblemMatcherType = string | ProblemMatcher | Array<string | ProblemMatcher>;
 
 	export interface NamedProblemMatcher extends ProblemMatcher {
 		/**
@@ -1086,14 +1086,17 @@ export namespace Schemas {
 	};
 }
 
-let problemPatternExtPoint = ExtensionsRegistry.registerExtensionPoint<Config.NamedProblemPatterns>('problemPatterns', [], {
-	description: localize('ProblemPatternExtPoint', 'Contributes problem patterns'),
-	type: 'array',
-	items: {
-		anyOf: [
-			Schemas.NamedProblemPattern,
-			Schemas.NamedMultiLineProblemPattern
-		]
+const problemPatternExtPoint = ExtensionsRegistry.registerExtensionPoint<Config.NamedProblemPatterns>({
+	extensionPoint: 'problemPatterns',
+	jsonSchema: {
+		description: localize('ProblemPatternExtPoint', 'Contributes problem patterns'),
+		type: 'array',
+		items: {
+			anyOf: [
+				Schemas.NamedProblemPattern,
+				Schemas.NamedMultiLineProblemPattern
+			]
+		}
 	}
 });
 
@@ -1283,10 +1286,10 @@ export class ProblemMatcherParser extends Parser {
 		super(logger);
 	}
 
-	public parse(json: Config.ProblemMatcher): ProblemMatcher | null {
+	public parse(json: Config.ProblemMatcher): ProblemMatcher | undefined {
 		let result = this.createProblemMatcher(json);
 		if (!this.checkProblemMatcherValid(json, result)) {
-			return null;
+			return undefined;
 		}
 		this.addWatchingMatcher(json, result);
 
@@ -1659,10 +1662,14 @@ export namespace Schemas {
 	};
 }
 
-let problemMatchersExtPoint = ExtensionsRegistry.registerExtensionPoint<Config.NamedProblemMatcher[]>('problemMatchers', [problemPatternExtPoint], {
-	description: localize('ProblemMatcherExtPoint', 'Contributes problem matchers'),
-	type: 'array',
-	items: Schemas.NamedProblemMatcher
+const problemMatchersExtPoint = ExtensionsRegistry.registerExtensionPoint<Config.NamedProblemMatcher[]>({
+	extensionPoint: 'problemMatchers',
+	deps: [problemPatternExtPoint],
+	jsonSchema: {
+		description: localize('ProblemMatcherExtPoint', 'Contributes problem matchers'),
+		type: 'array',
+		items: Schemas.NamedProblemMatcher
+	}
 });
 
 export interface IProblemMatcherRegistry {

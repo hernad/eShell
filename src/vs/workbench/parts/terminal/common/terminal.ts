@@ -102,6 +102,7 @@ export interface ITerminalConfiguration {
 	showExitAlert: boolean;
 	experimentalBufferImpl: 'JsArray' | 'TypedArray';
 	splitCwd: 'workspaceRoot' | 'initial' | 'inherited';
+	windowsEnableConpty: boolean;
 }
 
 export interface ITerminalConfigHelper {
@@ -122,6 +123,10 @@ export interface ITerminalFont {
 	lineHeight: number;
 	charWidth?: number;
 	charHeight?: number;
+}
+
+export interface ITerminalEnvironment {
+	[key: string]: string | null;
 }
 
 export interface IShellLaunchConfig {
@@ -146,13 +151,13 @@ export interface IShellLaunchConfig {
 	 * The current working directory of the terminal, this overrides the `terminal.integrated.cwd`
 	 * settings key.
 	 */
-	cwd?: string;
+	cwd?: string | URI;
 
 	/**
 	 * A custom environment for the terminal, if this is not set the environment will be inherited
 	 * from the VS Code process.
 	 */
-	env?: { [key: string]: string };
+	env?: ITerminalEnvironment;
 
 	/**
 	 * Whether to ignore a custom cwd from the `terminal.integrated.cwd` settings key (eg. if the
@@ -292,6 +297,10 @@ interface ISearchOptions {
 	 * Whether find should pay attention to case.
 	 */
 	caseSensitive?: boolean;
+	/**
+	 * Whether the search should start at the current search position (not the next row)
+	 */
+	incremental?: boolean;
 }
 
 export interface ITerminalInstance {
@@ -417,6 +426,11 @@ export interface ITerminalInstance {
 	 * get cut off. If immediate kill any terminal processes immediately.
 	 */
 	dispose(immediate?: boolean): void;
+
+	/**
+	 * Forces the terminal to redraw its viewport.
+	 */
+	forceRedraw(): void;
 
 	/**
 	 * Registers a link matcher, allowing custom link patterns to be matched and handled.
@@ -580,7 +594,7 @@ export interface ITerminalInstance {
 	 *
 	 * @param shell The new launch configuration.
 	 */
-	reuseTerminal(shell?: IShellLaunchConfig): void;
+	reuseTerminal(shell: IShellLaunchConfig): void;
 
 	/**
 	 * Sets the title of the terminal instance.

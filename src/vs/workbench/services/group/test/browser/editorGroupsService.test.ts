@@ -20,10 +20,17 @@ import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
 import { TestThemeService } from 'vs/platform/theme/test/common/testThemeService';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
+import { CancellationToken } from 'vs/base/common/cancellation';
 
 export class TestEditorControl extends BaseEditor {
 
 	constructor(@ITelemetryService telemetryService: ITelemetryService) { super('MyFileEditorForEditorGroupService', NullTelemetryService, new TestThemeService(), new TestStorageService()); }
+
+	setInput(input: EditorInput, options: EditorOptions, token: CancellationToken): Promise<void> {
+		super.setInput(input, options, token);
+
+		return input.resolve().then(() => void 0);
+	}
 
 	getId(): string { return 'MyFileEditorForEditorGroupService'; }
 	layout(): void { }
@@ -35,10 +42,10 @@ export class TestEditorInput extends EditorInput implements IFileEditorInput {
 	constructor(private resource: URI) { super(); }
 
 	getTypeId() { return 'testEditorInputForEditorGroupService'; }
-	resolve(): Thenable<IEditorModel> { return Promise.resolve(); }
+	resolve(): Promise<IEditorModel> { return Promise.resolve(); }
 	matches(other: TestEditorInput): boolean { return other && this.resource.toString() === other.resource.toString() && other instanceof TestEditorInput; }
 	setEncoding(encoding: string) { }
-	getEncoding(): string { return null; }
+	getEncoding(): string { return null!; }
 	setPreferredEncoding(encoding: string) { }
 	getResource(): URI { return this.resource; }
 	setForceOpenAsBinary(): void { }
@@ -218,12 +225,12 @@ suite('Editor groups service', () => {
 		assert.equal(mru[0], rightGroup);
 		assert.equal(mru[1], rootGroup);
 
-		let rightGroupInstantiator: IInstantiationService;
+		let rightGroupInstantiator!: IInstantiationService;
 		part.activeGroup.invokeWithinContext(accessor => {
 			rightGroupInstantiator = accessor.get(IInstantiationService);
 		});
 
-		let rootGroupInstantiator: IInstantiationService;
+		let rootGroupInstantiator!: IInstantiationService;
 		rootGroup.invokeWithinContext(accessor => {
 			rootGroupInstantiator = accessor.get(IInstantiationService);
 		});
@@ -346,8 +353,8 @@ suite('Editor groups service', () => {
 	test('options', () => {
 		const part = createPart();
 
-		let oldOptions: IEditorPartOptions;
-		let newOptions: IEditorPartOptions;
+		let oldOptions!: IEditorPartOptions;
+		let newOptions!: IEditorPartOptions;
 		part.onDidEditorPartOptionsChange(event => {
 			oldOptions = event.oldPartOptions;
 			newOptions = event.newPartOptions;
@@ -445,6 +452,7 @@ suite('Editor groups service', () => {
 		assert.equal(activeEditorChangeCounter, 2);
 		assert.equal(group.activeEditor, inputInactive);
 
+		await group.openEditor(input);
 		await group.closeEditor(inputInactive);
 
 		assert.equal(activeEditorChangeCounter, 3);
