@@ -1,3 +1,6 @@
+trigger:
+- shell
+
 jobs:
 - job: Windows
   pool:
