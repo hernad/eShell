@@ -14,8 +14,8 @@ jobs:
   steps:
   - template: build/azure-pipelines/linux/continuous-build-linux.yml
 
-- job: macOS
-  pool:
-    vmImage: macOS 10.13
-  steps:
-  - template: build/azure-pipelines/darwin/continuous-build-darwin.yml
+#- job: macOS
+#  pool:
+#    vmImage: macOS 10.13
+#  steps:
+#  - template: build/azure-pipelines/darwin/continuous-build-darwin.yml
