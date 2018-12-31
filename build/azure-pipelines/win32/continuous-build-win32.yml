@@ -53,12 +53,15 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    #rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/win32-ia32/VSCode-win32-ia32.zip'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-win32-ia32'
     includeRootFolder: false
-    artifactName: drop-win32-ia32
+
 
 - task: PublishBuildArtifacts@1
-#  inputs:
+  inputs:
+     artifactName: drop-win32-ia32
+
 #    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
 #    artifactName: drop
 

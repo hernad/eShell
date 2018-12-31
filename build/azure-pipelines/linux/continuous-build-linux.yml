@@ -51,7 +51,8 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    #rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/linux/'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-linux-x64'
     includeRootFolder: false
 
 - task: PublishBuildArtifacts@1
