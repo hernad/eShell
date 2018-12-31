@@ -53,8 +53,9 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    #rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/win32-ia32/VSCode-win32-ia32.zip'
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-win32-ia32'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/win32-ia32/VSCode-win32-ia32.zip'
+    #rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-win32-ia32'
+
     includeRootFolder: false
 
 
