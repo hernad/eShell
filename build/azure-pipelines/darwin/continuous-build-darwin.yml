@@ -11,9 +11,9 @@ steps:
 - script: |
     yarn gulp electron-x64
   displayName: Download Electron
-- script: |
-    yarn gulp hygiene
-  displayName: Run Hygiene Checks
+# - script: |
+#    yarn gulp hygiene
+#  displayName: Run Hygiene Checks
 - script: |
     yarn monaco-compile-check
   displayName: Run Monaco Editor Checks
