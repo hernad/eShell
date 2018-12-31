@@ -55,6 +55,7 @@ steps:
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
+    artifactName: drop-win32-ia32
 
 - task: PublishBuildArtifacts@1
 #  inputs:
@@ -80,3 +81,17 @@ steps:
     #isDraft: false # Optional
     #isPreRelease: false # Optional
     #addChangeLog: true # Optional
+
+
+# - task: GithubRelease@0
+#  inputs:
+#    gitHubConnection: hernad
+#    repositoryName: hernad/eShell
+#    assets: $(build.artifactstagingdirectory)/*.zip
+#    action: 'create'
+#    target: '$(build.sourceVersion)'
+#    tagSource: 'manual'
+#    tag: '$(myVariableForUserDefinedTag)'
+#    title: 'Tag Title'
+#    assetUploadMode: 'delete'
+#    isDraft: true

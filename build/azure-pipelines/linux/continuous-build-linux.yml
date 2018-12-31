@@ -55,6 +55,6 @@ steps:
     includeRootFolder: false
 
 - task: PublishBuildArtifacts@1
-#  inputs:
-#    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-#    artifactName: drop
+  inputs:
+    #pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: drop-linux-x64
