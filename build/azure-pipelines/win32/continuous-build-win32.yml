@@ -51,11 +51,16 @@ steps:
     yarn gulp vscode-win32-ia32-archive
   displayName: "win32 build ia32 archive"
 
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/win32-ia32/archive/VSCode-win32-ia32.zip'
+#- task: ArchiveFiles@2
+#  inputs:
+#    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/win32-ia32/archive/VSCode-win32-ia32.zip'
     #rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-win32-ia32'
-    includeRootFolder: false
+#    includeRootFolder: false
+
+- task: CopyFiles@2
+  inputs:
+    contents: .build\win32-ia32\archive\*.zip
+    targetFolder: $(Build.ArtifactStagingDirectory)
 
 
 - task: PublishBuildArtifacts@1

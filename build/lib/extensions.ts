@@ -178,8 +178,8 @@ function fromLocalNormal(extensionPath: string): Stream {
 }
 
 const baseHeaders = {
-	'X-Market-Client-Id': 'VSCode Build',
-	'User-Agent': 'VSCode Build',
+	'X-Market-Client-Id': 'VSCode 1.30.1',
+	'User-Agent': 'VSCode 1.30.1',
 	'X-Market-User-Id': '291C1CD0-051A-4123-9B4B-30D60EF52EE2',
 };
 

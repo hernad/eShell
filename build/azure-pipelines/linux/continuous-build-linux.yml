@@ -50,11 +50,16 @@ steps:
     find .
   displayName: "Linux build x64 rpm"
 
-- task: ArchiveFiles@2
-  inputs:
+#- task: ArchiveFiles@2
+#  inputs:
     # rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-linux-x64'
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/linux/rpm/x86_64/rpmbuild/RPMS/x86_64/*.rpm'
-    includeRootFolder: false
+#   rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/linux/rpm/x86_64/rpmbuild/RPMS/x86_64/*.rpm'
+#    includeRootFolder: false
+
+- task: CopyFiles@2
+  inputs:
+    contents: .build/linux/rpm/x86_64/*.rpm
+    targetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: PublishBuildArtifacts@1
   inputs:
