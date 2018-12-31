@@ -33,15 +33,15 @@ steps:
 - powershell: |
     yarn download-builtin-extensions
   displayName: Download Built-in Extensions
-- powershell: |
-    .\scripts\test.bat --tfs "Unit Tests"
-  displayName: Run Unit Tests
-- powershell: |
-    .\scripts\test-integration.bat --tfs "Integration Tests"
-  displayName: Run Integration Tests
-- task: PublishTestResults@2
-  displayName: Publish Tests Results
-  inputs:
-    testResultsFiles: '*-results.xml'
-    searchFolder: '$(Build.ArtifactStagingDirectory)/test-results'
-  condition: succeededOrFailed()
+#- powershell: |
+#    .\scripts\test.bat --tfs "Unit Tests"
+#  displayName: Run Unit Tests
+#- powershell: |
+#    .\scripts\test-integration.bat --tfs "Integration Tests"
+#  displayName: Run Integration Tests
+#- task: PublishTestResults@2
+#  displayName: Publish Tests Results
+#  inputs:
+#    testResultsFiles: '*-results.xml'
+#    searchFolder: '$(Build.ArtifactStagingDirectory)/test-results'
+#  condition: succeededOrFailed()
