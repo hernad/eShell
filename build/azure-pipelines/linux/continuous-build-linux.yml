@@ -45,11 +45,10 @@ steps:
 #  condition: succeededOrFailed()
 
 - script: |
+    yarn gulp vscode-linux-x64
     yarn gulp vscode-linux-x64-build-rpm
   displayName: "Linux build x64 rpm"
 
-- script: |
-    yarn gulp
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)'

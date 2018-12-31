@@ -45,3 +45,14 @@ steps:
 #    testResultsFiles: '*-results.xml'
 #    searchFolder: '$(Build.ArtifactStagingDirectory)/test-results'
 #  condition: succeededOrFailed()
+
+- powershell: |
+    yarn gulp vscode-win32-ia32
+    yarn gulp vscode-win32-ia32-archive
+  displayName: "win32 build ia32 archive"
+
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: drop
