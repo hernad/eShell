@@ -10,14 +10,8 @@ jobs:
 
 - job: Linux
   pool:
-    name: 'local'
+    name: local
   #  vmImage: 'Ubuntu-16.04'
   #  vmImage: 'xps13'
   steps:
   - template: build/azure-pipelines/linux/continuous-build-linux.yml
-
-#- job: macOS
-#  pool:
-#    vmImage: macOS 10.13
-#  steps:
-#  - template: build/azure-pipelines/darwin/continuous-build-darwin.yml
