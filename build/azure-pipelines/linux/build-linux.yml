@@ -14,6 +14,10 @@ steps:
 #  inputs:
 #    versionSpec: "1.10.1"
 - script: |
+  displayName: hernad - Install yarn with npm
+    npm install -g yarn
+
+- script: |
     yarn
   displayName: Install Dependencies
 - script: |
