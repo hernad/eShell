@@ -149,20 +149,5 @@
     "windows-foreground-love": "0.1.0",
     "windows-mutex": "0.2.1",
     "windows-process-tree": "0.2.3"
-  },
-  "extensionsGallery": {
-    "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
-    "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
-    "itemUrl": "https://marketplace.visualstudio.com/items"
-  },
-  "nameShort": "eShell",
-  "nameLong": "eShell",
-  "applicationName": "eshell",
-  "win32MutexName": "eshell",
-  "win32DirName": "eShell",
-  "win32NameVersion": "eShell",
-  "win32RegValueName": "eShell",
-  "win32AppUserModelId": "bringout.eShell",
-  "win32ShellNameShort": "e&Shell",
-  "urlProtocol": "vscode"
+  }
 }

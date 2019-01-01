@@ -1,25 +1,30 @@
 {
 	"nameShort": "eShell",
 	"nameLong": "eShell",
-	"applicationName": "eShell",
+	"applicationName": "eshell",
 	"dataFolderName": ".eShell",
-	"win32MutexName": "eShell",
+	"win32MutexName": "eshell",
 	"licenseName": "MIT",
 	"licenseUrl": "https://github.com/Microsoft/vscode/blob/master/LICENSE.txt",
-	"win32DirName": "bring.out eShell",
-	"win32NameVersion": "bring.out eShell",
-	"win32RegValueName": "eShell",
 	"win32AppId": "{{E34003BB-9E10-4501-8C11-BE3FAA83F23F}",
 	"win32x64AppId": "{{D77B7E06-80BA-4137-BCF4-654B95CCEBC5}",
 	"win32UserAppId": "{{C6065F05-9603-4FC4-8101-B9781A25D88E}",
 	"win32x64UserAppId": "{{C6065F05-9603-4FC4-8101-B9781A25D88E}",
-	"win32AppUserModelId": "bringout.eShell",
-	"win32ShellNameShort": "e&Shell",
 	"darwinBundleIdentifier": "ba.out.bring.eshell",
 	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
 	"keyboardShortcutsUrlLinux" : "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf",
-	"urlProtocol": "vscode",
 	"extensionAllowedProposedApi": [
 		"ms-vscode.references-view"
-	]
+	],
+	"extensionsGallery": {
+		"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
+		"cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
+		"itemUrl": "https://marketplace.visualstudio.com/items"
+	},
+	"win32DirName": "eShell",
+	"win32NameVersion": "eShell",
+	"win32RegValueName": "eShell",
+	"win32AppUserModelId": "bringout.eShell",
+	"win32ShellNameShort": "e&Shell",
+	"urlProtocol": "vscode"
 }
