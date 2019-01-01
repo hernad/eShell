@@ -6,6 +6,9 @@ steps:
 #- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
 #  inputs:
 #    versionSpec: "1.10.1"
+- powershell: |
+    npm install -g yarn
+  displayName: hernad - Install yarn with npm
 
 - script: |
     set -e
