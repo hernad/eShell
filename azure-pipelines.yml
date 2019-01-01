@@ -11,7 +11,7 @@ jobs:
 - job: Linux
   pool:
   #  vmImage: 'Ubuntu-16.04'
-    vmImage: 'local'
+    vmImage: 'xps13'
   steps:
   - template: build/azure-pipelines/linux/continuous-build-linux.yml
 
