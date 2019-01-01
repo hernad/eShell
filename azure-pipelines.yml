@@ -12,13 +12,13 @@ resources:
 
 
 jobs:
-- job: Windows x64
+- job: Windows_x64
   pool:
     vmImage: VS2017-Win2016
   steps:
   - template: build/azure-pipelines/win32/build-win32-x64.yml
 
-- job: Windows ia32
+- job: Windows_ia32
   pool:
     vmImage: VS2017-Win2016
   steps:
