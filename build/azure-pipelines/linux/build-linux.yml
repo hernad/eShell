@@ -51,7 +51,6 @@ steps:
 - script: |
     yarn gulp vscode-linux-x64-min
     yarn gulp vscode-linux-x64-build-rpm
-    find .
   displayName: "Linux build x64 rpm"
 
 #- task: ArchiveFiles@2
