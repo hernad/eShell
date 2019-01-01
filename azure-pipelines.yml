@@ -14,3 +14,4 @@ jobs:
   #  vmImage: 'Ubuntu-16.04'
   steps:
   - template: build/azure-pipelines/linux/continuous-build-linux.yml
+
