@@ -1,7 +1,7 @@
 {
 	"nameShort": "eShell",
 	"nameLong": "eShell",
-	"applicationName": "eshell",
+	"applicationName": "eShell",
 	"dataFolderName": ".eShell",
 	"win32MutexName": "eshell",
 	"licenseName": "MIT",
