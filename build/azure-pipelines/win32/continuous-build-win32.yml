@@ -47,9 +47,17 @@ steps:
 #  condition: succeededOrFailed()
 
 - powershell: |
-    yarn gulp vscode-win32-ia32
-    yarn gulp vscode-win32-ia32-archive
-  displayName: "win32 build ia32 archive"
+    # yarn gulp vscode-win32-ia32-min
+    # yarn gulp vscode-win32-ia32-archive
+
+    npx gulp vscode-win32-x64-min
+    npx gulp vscode-win32-x64-copy-inno-updater
+    npx gulp vscode-win32-x64-inno-updater
+    # npx gulp vscode-win32-x64-system-setup
+    npx gulp vscode-win32-x64-user-setup
+    npx gulp vscode-win32-x64-archive
+
+  displayName: "win32 build x64 archive"
 
 #- task: ArchiveFiles@2
 #  inputs:
@@ -59,13 +67,18 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    contents: .build\win32-ia32\archive\*.zip
+    contents: .build\win32-x64\archive\*.zip
+    targetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@2
+  inputs:
+    contents: .build\win32-x64\**\*.exe
     targetFolder: $(Build.ArtifactStagingDirectory)
 
 
 - task: PublishBuildArtifacts@1
   inputs:
-     artifactName: drop-win32-ia32
+     artifactName: drop-win32-x64
 
 #    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
 #    artifactName: drop
