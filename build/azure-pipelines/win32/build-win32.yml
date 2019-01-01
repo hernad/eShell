@@ -47,9 +47,15 @@ steps:
 #  condition: succeededOrFailed()
 
 - powershell: |
-    # yarn gulp vscode-win32-ia32-min
-    # yarn gulp vscode-win32-ia32-archive
+    npx gulp vscode-win32-ia32-min
+    npx gulp vscode-win32-ia32-copy-inno-updater
+    npx gulp vscode-win32-ia32-inno-updater
+    npx gulp vscode-win32-ia32-user-setup
+    npx gulp vscode-win32-ia32-archive
 
+  displayName: "win32 build ia32 archive"
+
+- powershell: |
     npx gulp vscode-win32-x64-min
     npx gulp vscode-win32-x64-copy-inno-updater
     npx gulp vscode-win32-x64-inno-updater
@@ -65,11 +71,21 @@ steps:
     #rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-win32-ia32'
 #    includeRootFolder: false
 
+
+- task: CopyFiles@2
+  inputs:
+    contents: .build\win32-ia32\archive\*.zip
+    targetFolder: $(Build.ArtifactStagingDirectory)
+- task: CopyFiles@2
+  inputs:
+    contents: .build\win32-ia32\**\*.exe
+    targetFolder: $(Build.ArtifactStagingDirectory)
+
+
 - task: CopyFiles@2
   inputs:
     contents: .build\win32-x64\archive\*.zip
     targetFolder: $(Build.ArtifactStagingDirectory)
-
 - task: CopyFiles@2
   inputs:
     contents: .build\win32-x64\**\*.exe
@@ -78,7 +94,7 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-     artifactName: drop-win32-x64
+     artifactName: drop-win32-x64-ia32
 
 #    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
 #    artifactName: drop
@@ -102,17 +118,3 @@ steps:
     #isDraft: false # Optional
     #isPreRelease: false # Optional
     #addChangeLog: true # Optional
-
-
-# - task: GithubRelease@0
-#  inputs:
-#    gitHubConnection: hernad
-#    repositoryName: hernad/eShell
-#    assets: $(build.artifactstagingdirectory)/*.zip
-#    action: 'create'
-#    target: '$(build.sourceVersion)'
-#    tagSource: 'manual'
-#    tag: '$(myVariableForUserDefinedTag)'
-#    title: 'Tag Title'
-#    assetUploadMode: 'delete'
-#    isDraft: true
