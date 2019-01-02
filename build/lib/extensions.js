@@ -150,8 +150,8 @@ function fromLocalNormal(extensionPath) {
     return result.pipe(stats_1.createStatsStream(path.basename(extensionPath)));
 }
 const baseHeaders = {
-    'X-Market-Client-Id': 'VSCode Build',
-    'User-Agent': 'VSCode Build',
+    'X-Market-Client-Id': 'VSCode 1.30.1',
+    'User-Agent': 'VSCode 1.30.1',
     'X-Market-User-Id': '291C1CD0-051A-4123-9B4B-30D60EF52EE2',
 };
 function fromMarketplace(extensionName, version, metadata) {

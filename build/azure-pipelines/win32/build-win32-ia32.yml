@@ -47,23 +47,16 @@ steps:
 #  condition: succeededOrFailed()
 
 - powershell: |
+    # https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md
+    yarn add dev electron-rebuild
+    node_modules\.bin\electron-rebuild --version $(ELECTRON_VERSION) --arch ia32
     npx gulp vscode-win32-ia32-min
     npx gulp vscode-win32-ia32-copy-inno-updater
     npx gulp vscode-win32-ia32-inno-updater
     npx gulp vscode-win32-ia32-user-setup
-    npx gulp vscode-win32-ia32-archive
+    # npx gulp vscode-win32-ia32-archive
 
   displayName: "win32 build ia32 archive"
-
-- powershell: |
-    npx gulp vscode-win32-x64-min
-    npx gulp vscode-win32-x64-copy-inno-updater
-    npx gulp vscode-win32-x64-inno-updater
-    # npx gulp vscode-win32-x64-system-setup
-    npx gulp vscode-win32-x64-user-setup
-    npx gulp vscode-win32-x64-archive
-
-  displayName: "win32 build x64 archive"
 
 #- task: ArchiveFiles@2
 #  inputs:
@@ -85,4 +78,3 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
      artifactName: drop-win32-ia32
-

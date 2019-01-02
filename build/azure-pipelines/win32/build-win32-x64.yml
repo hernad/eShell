@@ -52,7 +52,7 @@ steps:
     npx gulp vscode-win32-x64-inno-updater
     # npx gulp vscode-win32-x64-system-setup
     npx gulp vscode-win32-x64-user-setup
-    npx gulp vscode-win32-x64-archive
+    # npx gulp vscode-win32-x64-archive
   displayName: "win32 build x64 archive"
 
 #- task: ArchiveFiles@2

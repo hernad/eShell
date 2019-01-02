@@ -1,6 +1,9 @@
 trigger:
 - shell
 
+variables:
+  ELECTRON_VERSION: 3.0.13
+
 resources:
   containers:
   - container: vscode-x64
