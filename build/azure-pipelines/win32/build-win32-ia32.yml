@@ -48,7 +48,7 @@ steps:
 
 - powershell: |
     # https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md
-    yarn add dev electron-rebuild
+    yarn add --dev electron-rebuild
     node_modules\.bin\electron-rebuild --version $(ELECTRON_VERSION) --arch ia32
     npx gulp vscode-win32-ia32-min
     npx gulp vscode-win32-ia32-copy-inno-updater
