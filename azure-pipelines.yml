@@ -18,12 +18,16 @@ jobs:
 - job: Windows_x64
   pool:
     vmImage: VS2017-Win2016
+  variables:
+    VSCODE_ARCH: x64
   steps:
   - template: build/azure-pipelines/win32/build-win32-x64.yml
 
 - job: Windows_ia32
   pool:
     vmImage: VS2017-Win2016
+  variables:
+    VSCODE_ARCH: ia32
   steps:
   - template: build/azure-pipelines/win32/build-win32-ia32.yml
 
