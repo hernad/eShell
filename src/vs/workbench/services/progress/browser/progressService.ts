@@ -87,9 +87,9 @@ export class ScopedProgressService extends ScopedService implements IProgressSer
 
 		// Replay Infinite Progress from Promise
 		if (this.progressState.whilePromise) {
-			let delay: number;
-			if (this.progressState.whileDelay > 0) {
-				const remainingDelay = this.progressState.whileDelay - (Date.now() - this.progressState.whileStart);
+			let delay: number | undefined;
+			if (typeof this.progressState.whileDelay === 'number' && this.progressState.whileDelay > 0) {
+				const remainingDelay = this.progressState.whileDelay - (Date.now() - this.progressState.whileStart!);
 				if (remainingDelay > 0) {
 					delay = remainingDelay;
 				}
@@ -116,20 +116,20 @@ export class ScopedProgressService extends ScopedService implements IProgressSer
 	}
 
 	private clearProgressState(): void {
-		this.progressState.infinite = void 0;
-		this.progressState.done = void 0;
-		this.progressState.worked = void 0;
-		this.progressState.total = void 0;
-		this.progressState.whilePromise = void 0;
-		this.progressState.whileStart = void 0;
-		this.progressState.whileDelay = void 0;
+		this.progressState.infinite = undefined;
+		this.progressState.done = undefined;
+		this.progressState.worked = undefined;
+		this.progressState.total = undefined;
+		this.progressState.whilePromise = undefined;
+		this.progressState.whileStart = undefined;
+		this.progressState.whileDelay = undefined;
 	}
 
 	show(infinite: boolean, delay?: number): IProgressRunner;
 	show(total: number, delay?: number): IProgressRunner;
 	show(infiniteOrTotal: boolean | number, delay?: number): IProgressRunner {
-		let infinite: boolean;
-		let total: number;
+		let infinite: boolean | undefined;
+		let total: number | undefined;
 
 		// Sort out Arguments
 		if (typeof infiniteOrTotal === 'boolean') {
@@ -188,8 +188,8 @@ export class ScopedProgressService extends ScopedService implements IProgressSer
 				// Otherwise the progress bar does not support worked(), we fallback to infinite() progress
 				else {
 					this.progressState.infinite = true;
-					this.progressState.worked = void 0;
-					this.progressState.total = void 0;
+					this.progressState.worked = undefined;
+					this.progressState.total = undefined;
 					this.progressbar.infinite().show();
 				}
 			},

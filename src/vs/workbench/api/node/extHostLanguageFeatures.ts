@@ -25,7 +25,7 @@ import { ISelection, Selection } from 'vs/editor/common/core/selection';
 import { IExtensionDescription } from 'vs/workbench/services/extensions/common/extensions';
 import { ILogService } from 'vs/platform/log/common/log';
 import { CancellationToken } from 'vs/base/common/cancellation';
-import { CanonicalExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
 // --- adapter
 
@@ -53,10 +53,10 @@ class OutlineAdapter {
 		});
 	}
 
-	private static _asDocumentSymbolTree(resource: URI, info: SymbolInformation[]): modes.DocumentSymbol[] {
+	private static _asDocumentSymbolTree(resource: URI, infos: SymbolInformation[]): modes.DocumentSymbol[] {
 		// first sort by start (and end) and then loop over all elements
 		// and build a tree based on containment.
-		info = info.slice(0).sort((a, b) => {
+		infos = infos.slice(0).sort((a, b) => {
 			let res = a.location.range.start.compareTo(b.location.range.start);
 			if (res === 0) {
 				res = b.location.range.end.compareTo(a.location.range.end);
@@ -65,13 +65,13 @@ class OutlineAdapter {
 		});
 		let res: modes.DocumentSymbol[] = [];
 		let parentStack: modes.DocumentSymbol[] = [];
-		for (let i = 0; i < info.length; i++) {
+		for (const info of infos) {
 			let element = <modes.DocumentSymbol>{
-				name: info[i].name,
-				kind: typeConvert.SymbolKind.from(info[i].kind),
-				containerName: info[i].containerName,
-				range: typeConvert.Range.from(info[i].location.range),
-				selectionRange: typeConvert.Range.from(info[i].location.range),
+				name: info.name,
+				kind: typeConvert.SymbolKind.from(info.kind),
+				containerName: info.containerName,
+				range: typeConvert.Range.from(info.location.range),
+				selectionRange: typeConvert.Range.from(info.location.range),
 				children: []
 			};
 
@@ -290,7 +290,7 @@ class CodeActionAdapter {
 		private readonly _diagnostics: ExtHostDiagnostics,
 		private readonly _provider: vscode.CodeActionProvider,
 		private readonly _logService: ILogService,
-		private readonly _extensionId: CanonicalExtensionIdentifier
+		private readonly _extensionId: ExtensionIdentifier
 	) { }
 
 	provideCodeActions(resource: URI, rangeOrSelection: IRange | ISelection, context: modes.CodeActionContext, token: CancellationToken): Promise<CodeActionDto[]> {
@@ -840,7 +840,7 @@ class FoldingProviderAdapter {
 		const doc = this._documents.getDocumentData(resource).document;
 		return asPromise(() => this._provider.provideFoldingRanges(doc, context, token)).then(ranges => {
 			if (!Array.isArray(ranges)) {
-				return void 0;
+				return undefined;
 			}
 			return ranges.map(typeConvert.FoldingRange.from);
 		});
@@ -1082,7 +1082,7 @@ export class ExtHostLanguageFeatures implements ExtHostLanguageFeaturesShape {
 
 	// --- extra info
 
-	registerHoverProvider(extension: IExtensionDescription, selector: vscode.DocumentSelector, provider: vscode.HoverProvider, extensionId?: CanonicalExtensionIdentifier): vscode.Disposable {
+	registerHoverProvider(extension: IExtensionDescription, selector: vscode.DocumentSelector, provider: vscode.HoverProvider, extensionId?: ExtensionIdentifier): vscode.Disposable {
 		const handle = this._addNewAdapter(new HoverAdapter(this._documents, provider), extension);
 		this._proxy.$registerHoverProvider(handle, this._transformDocumentSelector(selector));
 		return this._createDisposable(handle);

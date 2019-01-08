@@ -332,7 +332,7 @@ export class ReferenceWidget extends PeekViewWidget {
 		this._previewNotAvailableMessage = TextModel.createFromString(nls.localize('missingPreviewMessage', "no preview available"));
 
 		// sash
-		this._sash = new VSash(containerElement, this.layoutData.ratio || .8);
+		this._sash = new VSash(containerElement, this.layoutData.ratio || 0.8);
 		this._sash.onDidChangePercentages(() => {
 			let [left, right] = this._sash.percentages;
 			this._previewContainer.style.width = left;
@@ -462,7 +462,7 @@ export class ReferenceWidget extends PeekViewWidget {
 			this.setTitle('');
 			this._messageContainer.innerHTML = nls.localize('noResults', "No results");
 			dom.show(this._messageContainer);
-			return Promise.resolve(void 0);
+			return Promise.resolve(undefined);
 		}
 
 		dom.hide(this._messageContainer);

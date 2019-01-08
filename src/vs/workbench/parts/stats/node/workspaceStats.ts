@@ -207,14 +207,14 @@ export class WorkspaceStats implements IWorkbenchContribution {
 	private static DISABLE_WORKSPACE_PROMPT_KEY = 'workspaces.dontPromptToOpen';
 
 	constructor(
-		@IFileService private fileService: IFileService,
-		@IWorkspaceContextService private contextService: IWorkspaceContextService,
-		@ITelemetryService private telemetryService: ITelemetryService,
-		@IEnvironmentService private environmentService: IEnvironmentService,
-		@IWindowService private windowService: IWindowService,
-		@INotificationService private notificationService: INotificationService,
-		@IQuickInputService private quickInputService: IQuickInputService,
-		@IStorageService private storageService: IStorageService
+		@IFileService private readonly fileService: IFileService,
+		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
+		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		@IEnvironmentService private readonly environmentService: IEnvironmentService,
+		@IWindowService private readonly windowService: IWindowService,
+		@INotificationService private readonly notificationService: INotificationService,
+		@IQuickInputService private readonly quickInputService: IQuickInputService,
+		@IStorageService private readonly storageService: IStorageService
 	) {
 		this.report();
 	}
@@ -319,7 +319,7 @@ export class WorkspaceStats implements IWorkbenchContribution {
 		let workspaceId: string | undefined;
 		switch (state) {
 			case WorkbenchState.EMPTY:
-				workspaceId = void 0;
+				workspaceId = undefined;
 				break;
 			case WorkbenchState.FOLDER:
 				workspaceId = crypto.createHash('sha1').update(workspace.folders[0].uri.scheme === Schemas.file ? workspace.folders[0].uri.fsPath : workspace.folders[0].uri.toString()).digest('hex');
@@ -687,7 +687,7 @@ export class WorkspaceStats implements IWorkbenchContribution {
 				*/
 				this.telemetryService.publicLog('workspace.azure', tags);
 			}
-		}).then(void 0, onUnexpectedError);
+		}).then(undefined, onUnexpectedError);
 	}
 
 	private reportCloudStats(): void {
@@ -712,6 +712,6 @@ export class WorkspaceStats implements IWorkbenchContribution {
 					}
 				*/
 				this.telemetryService.publicLog('resolveProxy.stats', { type });
-			}).then(void 0, onUnexpectedError);
+			}).then(undefined, onUnexpectedError);
 	}
 }

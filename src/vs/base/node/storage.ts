@@ -11,7 +11,7 @@ import { isUndefinedOrNull } from 'vs/base/common/types';
 import { mapToString, setToString } from 'vs/base/common/map';
 import { basename } from 'path';
 import { mark } from 'vs/base/common/performance';
-import { rename, unlinkIgnoreError, copy, renameIgnoreError } from 'vs/base/node/pfs';
+import { rename, copy, renameIgnoreError } from 'vs/base/node/pfs';
 
 export enum StorageHint {
 
@@ -325,6 +325,8 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 	private name: string;
 	private logger: SQLiteStorageDatabaseLogger;
 
+	private isCorrupt: boolean;
+
 	private whenOpened: Promise<IOpenDatabaseResult>;
 
 	constructor(path: string, options: ISQLiteStorageDatabaseOptions = Object.create(null)) {
@@ -374,6 +376,15 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 						request.insert!.forEach((value, key) => {
 							stmt.run([key, value]);
 						});
+					}, () => {
+						const keys: string[] = [];
+						let length = 0;
+						request.insert!.forEach((value, key) => {
+							keys.push(key);
+							length += value.length;
+						});
+
+						return `Keys: ${keys.join(', ')} Length: ${length}`;
 					});
 				}
 
@@ -382,6 +393,13 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 						request.delete!.forEach(key => {
 							stmt.run(key);
 						});
+					}, () => {
+						const keys: string[] = [];
+						request.delete!.forEach(key => {
+							keys.push(key);
+						});
+
+						return `Keys: ${keys.join(', ')}`;
 					});
 				}
 			});
@@ -395,15 +413,16 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 			return new Promise((resolve, reject) => {
 				result.db.close(error => {
 					if (error) {
-						this.logger.error(`[storage ${this.name}] close(): ${error}`);
+						this.handleSQLiteError(error, `[storage ${this.name}] close(): ${error}`);
 
 						return reject(error);
 					}
 
 					// If the DB closed successfully and we are not running in-memory
-					// make a backup of the DB so that we can use it as fallback in
-					// case the actual DB becomes corrupt.
-					if (result.path !== SQLiteStorageDatabase.IN_MEMORY_PATH) {
+					// and the DB did not get corrupted during runtime, make a backup
+					// of the DB so that we can use it as fallback in case the actual
+					// DB becomes corrupt.
+					if (result.path !== SQLiteStorageDatabase.IN_MEMORY_PATH && !this.isCorrupt) {
 						return this.backup(result).then(resolve, error => {
 							this.logger.error(`[storage ${this.name}] backup(): ${error}`);
 
@@ -424,7 +443,7 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 
 		const backupPath = this.toBackupPath(db.path);
 
-		return unlinkIgnoreError(backupPath).then(() => copy(db.path, backupPath));
+		return copy(db.path, backupPath);
 	}
 
 	private toBackupPath(path: string): string {
@@ -446,8 +465,7 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 
 		return new Promise((resolve, reject) => {
 			const fallbackToInMemoryDatabase = (error: Error) => {
-				this.logger.error(`[storage ${this.name}] open(): Error (open DB): ${error}`);
-				this.logger.error(`[storage ${this.name}] open(): Falling back to in-memory DB`);
+				this.handleSQLiteError(error, `[storage ${this.name}] open(): Error (open DB): ${error}. Falling back to in-memory DB`);
 
 				// In case of any error to open the DB, use an in-memory
 				// DB so that we always have a valid DB to talk to.
@@ -456,13 +474,13 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 
 			this.doOpen(path).then(resolve, error => {
 
-				// TODO@Ben check if this is still happening. This error code should only arise if
-				// another process is locking the same DB we want to open at that time. This typically
-				// never happens because a DB connection is limited per window. However, in the event
-				// of a window reload, it may be possible that the previous connection was not properly
-				// closed while the new connection is already established.
+				// This error code should only arise if another process is locking the same DB we
+				// want to open at that time. This typically never happens because a DB connection
+				// is limited per window. However, in the event of a window reload, it may be possible
+				// that the previous connection was not properly closed while the new connection is
+				// already established.
 				if (error.code === 'SQLITE_BUSY') {
-					return this.handleSQLiteBusy(path).then(resolve, fallbackToInMemoryDatabase);
+					return this.handleSQLiteBusy(path, error).then(resolve, fallbackToInMemoryDatabase);
 				}
 
 				// This error code indicates that even though the DB file exists,
@@ -477,15 +495,15 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 		});
 	}
 
-	private handleSQLiteBusy(path: string): Promise<IOpenDatabaseResult> {
-		this.logger.error(`[storage ${this.name}] open(): Retrying after ${SQLiteStorageDatabase.BUSY_OPEN_TIMEOUT}ms due to SQLITE_BUSY`);
+	private handleSQLiteBusy(path: string, error: Error & { code?: string }): Promise<IOpenDatabaseResult> {
+		this.handleSQLiteError(error, `[storage ${this.name}] open(): Retrying after ${SQLiteStorageDatabase.BUSY_OPEN_TIMEOUT}ms due to SQLITE_BUSY`);
 
 		// Retry after some time if the DB is busy
 		return timeout(SQLiteStorageDatabase.BUSY_OPEN_TIMEOUT).then(() => this.doOpen(path));
 	}
 
-	private handleSQLiteCorrupt(path: string, error: any): Promise<IOpenDatabaseResult> {
-		this.logger.error(`[storage ${this.name}] open(): Unable to open DB due to ${error.code}`);
+	private handleSQLiteCorrupt(path: string, error: Error & { code?: string }): Promise<IOpenDatabaseResult> {
+		this.handleSQLiteError(error, `[storage ${this.name}] open(): Unable to open DB due to ${error.code}`);
 
 		// Move corrupt DB to a different filename and try to load from backup
 		// If that fails, a new empty DB is being created automatically
@@ -501,6 +519,10 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 	}
 
 	private doOpen(path: string): Promise<IOpenDatabaseResult> {
+
+		// Reset flags when we open a DB
+		this.isCorrupt = false;
+
 		// TODO@Ben clean up performance markers
 		return new Promise((resolve, reject) => {
 			let measureRequireDuration = false;
@@ -539,7 +561,7 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 				});
 
 				// Errors
-				db.on('error', error => this.logger.error(`[storage ${this.name}] Error (event): ${error}`));
+				db.on('error', error => this.handleSQLiteError(error, `[storage ${this.name}] Error (event): ${error}`));
 
 				// Tracing
 				if (this.logger.isTracing) {
@@ -553,7 +575,7 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 		return new Promise((resolve, reject) => {
 			db.exec(sql, error => {
 				if (error) {
-					this.logger.error(`[storage ${this.name}] exec(): ${error}`);
+					this.handleSQLiteError(error, `[storage ${this.name}] exec(): ${error}`);
 
 					return reject(error);
 				}
@@ -567,7 +589,7 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 		return new Promise((resolve, reject) => {
 			db.get(sql, (error, row) => {
 				if (error) {
-					this.logger.error(`[storage ${this.name}] get(): ${error}`);
+					this.handleSQLiteError(error, `[storage ${this.name}] get(): ${error}`);
 
 					return reject(error);
 				}
@@ -581,7 +603,7 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 		return new Promise((resolve, reject) => {
 			db.all(sql, (error, rows) => {
 				if (error) {
-					this.logger.error(`[storage ${this.name}] all(): ${error}`);
+					this.handleSQLiteError(error, `[storage ${this.name}] all(): ${error}`);
 
 					return reject(error);
 				}
@@ -600,7 +622,7 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 
 				db.run('END TRANSACTION', error => {
 					if (error) {
-						this.logger.error(`[storage ${this.name}] transaction(): ${error}`);
+						this.handleSQLiteError(error, `[storage ${this.name}] transaction(): ${error}`);
 
 						return reject(error);
 					}
@@ -611,11 +633,11 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 		});
 	}
 
-	private prepare(db: Database, sql: string, runCallback: (stmt: Statement) => void): void {
+	private prepare(db: Database, sql: string, runCallback: (stmt: Statement) => void, errorDetails: () => string): void {
 		const stmt = db.prepare(sql);
 
 		const statementErrorListener = error => {
-			this.logger.error(`[storage ${this.name}] prepare(): ${error} (${sql})`);
+			this.handleSQLiteError(error, `[storage ${this.name}] prepare(): ${error} (${sql}). Details: ${errorDetails()}`);
 		};
 
 		stmt.on('error', statementErrorListener);
@@ -629,6 +651,14 @@ export class SQLiteStorageDatabase implements IStorageDatabase {
 
 			stmt.removeListener('error', statementErrorListener);
 		});
+	}
+
+	private handleSQLiteError(error: Error & { code?: string }, msg: string): void {
+		if (error.code === 'SQLITE_CORRUPT' || error.code === 'SQLITE_NOTADB') {
+			this.isCorrupt = true;
+		}
+
+		this.logger.error(msg);
 	}
 }
 

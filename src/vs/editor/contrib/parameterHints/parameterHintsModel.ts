@@ -18,11 +18,12 @@ export interface TriggerContext {
 	readonly triggerCharacter?: string;
 }
 
-const DefaultState = new class { readonly state = 'default'; };
-const PendingState = new class { readonly state = 'pending'; };
+const DefaultState = new class { readonly type = 'default'; };
+const PendingState = new class { readonly type = 'pending'; };
 
 class ActiveState {
-	readonly state = 'active';
+	static readonly type = 'active';
+	readonly type = ActiveState.type;
 	constructor(
 		readonly hints: modes.SignatureHelp
 	) { }
@@ -96,12 +97,12 @@ export class ParameterHintsModel extends Disposable {
 			() => this.doTrigger({
 				triggerKind: context.triggerKind,
 				triggerCharacter: context.triggerCharacter,
-				isRetrigger: this.state.state === 'active' || this.state.state === 'pending',
+				isRetrigger: this.state.type === ActiveState.type || this.state.type === PendingState.type,
 			}, triggerId), delay).then(undefined, onUnexpectedError);
 	}
 
 	public next(): void {
-		if (this.state.state !== 'active') {
+		if (this.state.type !== ActiveState.type) {
 			return;
 		}
 
@@ -120,7 +121,7 @@ export class ParameterHintsModel extends Disposable {
 	}
 
 	public previous(): void {
-		if (this.state.state !== 'active') {
+		if (this.state.type !== ActiveState.type) {
 			return;
 		}
 
@@ -139,14 +140,11 @@ export class ParameterHintsModel extends Disposable {
 	}
 
 	private updateActiveSignature(activeSignature: number) {
-		if (this.state.state !== 'active') {
+		if (this.state.type !== ActiveState.type) {
 			return;
 		}
 
-		this.state = {
-			state: 'active',
-			hints: { ...this.state.hints, activeSignature }
-		};
+		this.state = new ActiveState({ ...this.state.hints, activeSignature });
 		this._onChangedHints.fire(this.state.hints);
 	}
 
@@ -187,7 +185,9 @@ export class ParameterHintsModel extends Disposable {
 	}
 
 	private get isTriggered(): boolean {
-		return this.state.state === 'active' || this.state.state === 'pending' || this.throttledDelayer.isTriggered();
+		return this.state.type === ActiveState.type
+			|| this.state.type === PendingState.type
+			|| this.throttledDelayer.isTriggered();
 	}
 
 	private onModelChanged(): void {

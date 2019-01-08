@@ -58,7 +58,7 @@ export class WelcomePageContribution implements IWorkbenchContribution {
 		@IFileService fileService: IFileService,
 		@IWorkspaceContextService contextService: IWorkspaceContextService,
 		@ILifecycleService lifecycleService: ILifecycleService,
-		@ICommandService private commandService: ICommandService,
+		@ICommandService private readonly commandService: ICommandService,
 	) {
 		const enabled = isWelcomePageEnabled(configurationService, contextService);
 		if (enabled && lifecycleService.startupKind !== StartupKind.ReloadedWindow) {
@@ -100,7 +100,7 @@ export class WelcomePageContribution implements IWorkbenchContribution {
 					}
 				}
 				return undefined;
-			}).then(void 0, onUnexpectedError);
+			}).then(undefined, onUnexpectedError);
 		}
 	}
 }
@@ -124,7 +124,7 @@ export class WelcomePageAction extends Action {
 	constructor(
 		id: string,
 		label: string,
-		@IInstantiationService private instantiationService: IInstantiationService
+		@IInstantiationService private readonly instantiationService: IInstantiationService
 	) {
 		super(id, label);
 	}
@@ -252,21 +252,21 @@ class WelcomePage {
 	readonly editorInput: WalkThroughInput;
 
 	constructor(
-		@IEditorService private editorService: IEditorService,
-		@IInstantiationService private instantiationService: IInstantiationService,
-		@IWindowService private windowService: IWindowService,
-		@IWorkspaceContextService private contextService: IWorkspaceContextService,
-		@IConfigurationService private configurationService: IConfigurationService,
-		@IEnvironmentService private environmentService: IEnvironmentService,
-		@ILabelService private labelService: ILabelService,
-		@INotificationService private notificationService: INotificationService,
-		@IExtensionEnablementService private extensionEnablementService: IExtensionEnablementService,
-		@IExtensionGalleryService private extensionGalleryService: IExtensionGalleryService,
-		@IExtensionManagementService private extensionManagementService: IExtensionManagementService,
-		@IExtensionTipsService private tipsService: IExtensionTipsService,
-		@IExtensionsWorkbenchService private extensionsWorkbenchService: IExtensionsWorkbenchService,
+		@IEditorService private readonly editorService: IEditorService,
+		@IInstantiationService private readonly instantiationService: IInstantiationService,
+		@IWindowService private readonly windowService: IWindowService,
+		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
+		@IConfigurationService private readonly configurationService: IConfigurationService,
+		@IEnvironmentService private readonly environmentService: IEnvironmentService,
+		@ILabelService private readonly labelService: ILabelService,
+		@INotificationService private readonly notificationService: INotificationService,
+		@IExtensionEnablementService private readonly extensionEnablementService: IExtensionEnablementService,
+		@IExtensionGalleryService private readonly extensionGalleryService: IExtensionGalleryService,
+		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
+		@IExtensionTipsService private readonly tipsService: IExtensionTipsService,
+		@IExtensionsWorkbenchService private readonly extensionsWorkbenchService: IExtensionsWorkbenchService,
 		@ILifecycleService lifecycleService: ILifecycleService,
-		@ITelemetryService private telemetryService: ITelemetryService
+		@ITelemetryService private readonly telemetryService: ITelemetryService
 	) {
 		this.disposables.push(lifecycleService.onShutdown(() => this.dispose()));
 
@@ -378,7 +378,7 @@ class WelcomePage {
 
 				ul.insertBefore(li, before);
 			});
-		}).then(void 0, onUnexpectedError);
+		}).then(undefined, onUnexpectedError);
 
 		this.addExtensionList(container, '.extensionPackList', extensionPacks, extensionPackStrings);
 		this.addExtensionList(container, '.keymapList', keymapExtensions, keymapStrings);
@@ -525,7 +525,7 @@ class WelcomePage {
 										return undefined;
 									}
 								});
-							}).then(void 0, err => {
+							}).then(undefined, err => {
 								/* __GDPR__FRAGMENT__
 									"WelcomePageInstalled-4" : {
 										"from" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
@@ -558,11 +558,11 @@ class WelcomePage {
 						});
 						this.extensionsWorkbenchService.queryGallery({ names: [extensionSuggestion.id] })
 							.then(result => this.extensionsWorkbenchService.open(result.firstPage[0]))
-							.then(void 0, onUnexpectedError);
+							.then(undefined, onUnexpectedError);
 					}
 				}]
 			);
-		}).then(void 0, err => {
+		}).then(undefined, err => {
 			/* __GDPR__FRAGMENT__
 				"WelcomePageInstalled-6" : {
 					"from" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
@@ -599,7 +599,7 @@ class WelcomePage {
 						enabled[i].classList.add('installed');
 					}
 				});
-		}).then(void 0, onUnexpectedError);
+		}).then(undefined, onUnexpectedError);
 	}
 
 	dispose(): void {

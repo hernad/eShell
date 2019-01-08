@@ -41,7 +41,7 @@ import { Extensions as ActionExtensions, IWorkbenchActionRegistry } from 'vs/wor
 import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
 import { ResourceContextKey } from 'vs/workbench/common/resources';
 import { getMultiSelectedResources } from 'vs/workbench/parts/files/browser/files';
-import { ExplorerFolderContext, ExplorerRootContext } from 'vs/workbench/parts/files/common/files';
+import { ExplorerFolderContext, ExplorerRootContext, FilesExplorerFocusCondition } from 'vs/workbench/parts/files/common/files';
 import { OpenAnythingHandler } from 'vs/workbench/parts/search/browser/openAnythingHandler';
 import { OpenSymbolHandler } from 'vs/workbench/parts/search/browser/openSymbolHandler';
 import { registerContributions as replaceContributions } from 'vs/workbench/parts/search/browser/replaceContributions';
@@ -362,7 +362,7 @@ const searchInFolderCommand: ICommandHandler = (accessor, resource?: URI) => {
 			});
 		}
 
-		return void 0;
+		return undefined;
 	});
 };
 
@@ -370,7 +370,7 @@ const FIND_IN_FOLDER_ID = 'filesExplorer.findInFolder';
 KeybindingsRegistry.registerCommandAndKeybindingRule({
 	id: FIND_IN_FOLDER_ID,
 	weight: KeybindingWeight.WorkbenchContrib,
-	when: ContextKeyExpr.and(ExplorerFolderContext, ResourceContextKey.Scheme.isEqualTo(Schemas.file)), // todo@remote
+	when: ContextKeyExpr.and(FilesExplorerFocusCondition, ExplorerFolderContext, ResourceContextKey.Scheme.isEqualTo(Schemas.file)), // todo@remote
 	primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
 	handler: searchInFolderCommand
 });
@@ -427,17 +427,17 @@ class ShowAllSymbolsAction extends Action {
 
 	constructor(
 		actionId: string, actionLabel: string,
-		@IQuickOpenService private quickOpenService: IQuickOpenService,
-		@ICodeEditorService private editorService: ICodeEditorService) {
+		@IQuickOpenService private readonly quickOpenService: IQuickOpenService,
+		@ICodeEditorService private readonly editorService: ICodeEditorService) {
 		super(actionId, actionLabel);
 		this.enabled = !!this.quickOpenService;
 	}
 
-	public run(context?: any): Promise<void> {
+	run(context?: any): Promise<void> {
 
 		let prefix = ShowAllSymbolsAction.ALL_SYMBOLS_PREFIX;
-		let inputSelection: { start: number; end: number; } = void 0;
-		let editor = this.editorService.getFocusedCodeEditor();
+		let inputSelection: { start: number; end: number; } = undefined;
+		const editor = this.editorService.getFocusedCodeEditor();
 		const word = editor && getSelectionSearchString(editor);
 		if (word) {
 			prefix = prefix + word;
@@ -446,7 +446,7 @@ class ShowAllSymbolsAction extends Action {
 
 		this.quickOpenService.show(prefix, { inputSelection });
 
-		return Promise.resolve(void 0);
+		return Promise.resolve(undefined);
 	}
 }
 
@@ -693,7 +693,7 @@ configurationRegistry.registerConfiguration({
 });
 
 registerLanguageCommand('_executeWorkspaceSymbolProvider', function (accessor, args: { query: string; }) {
-	let { query } = args;
+	const { query } = args;
 	if (typeof query !== 'string') {
 		throw illegalArgument();
 	}

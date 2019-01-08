@@ -70,7 +70,7 @@ export class PanelPart extends CompositePart<Panel> implements IPanelService {
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IThemeService themeService: IThemeService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@ILifecycleService private lifecycleService: ILifecycleService
+		@ILifecycleService private readonly lifecycleService: ILifecycleService
 	) {
 		super(
 			notificationService,
@@ -385,7 +385,7 @@ export class PanelPart extends CompositePart<Panel> implements IPanelService {
 		for (const compositeItem of compositeItems) {
 			const panel = allPanels.filter(({ id }) => id === compositeItem.id)[0];
 			if (panel) {
-				state.push({ id: panel.id, pinned: compositeItem && compositeItem.pinned, order: compositeItem ? compositeItem.order : void 0, visible: compositeItem && compositeItem.visible });
+				state.push({ id: panel.id, pinned: compositeItem && compositeItem.pinned, order: compositeItem ? compositeItem.order : undefined, visible: compositeItem && compositeItem.visible });
 			}
 		}
 		this.cachedPanelsValue = JSON.stringify(state);
@@ -394,7 +394,7 @@ export class PanelPart extends CompositePart<Panel> implements IPanelService {
 	private getCachedPanels(): ICachedPanel[] {
 		const storedStates = <Array<string | ICachedPanel>>JSON.parse(this.cachedPanelsValue);
 		const cachedPanels = <ICachedPanel[]>storedStates.map(c => {
-			const serialized: ICachedPanel = typeof c === 'string' /* migration from pinned states to composites states */ ? <ICachedPanel>{ id: c, pinned: true, order: void 0, visible: true } : c;
+			const serialized: ICachedPanel = typeof c === 'string' /* migration from pinned states to composites states */ ? <ICachedPanel>{ id: c, pinned: true, order: undefined, visible: true } : c;
 			serialized.visible = isUndefinedOrNull(serialized.visible) ? true : serialized.visible;
 			return serialized;
 		});

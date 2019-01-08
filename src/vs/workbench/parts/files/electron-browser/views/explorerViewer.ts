@@ -57,10 +57,10 @@ import { fillInContextMenuActions } from 'vs/platform/actions/browser/menuItemAc
 
 export class FileDataSource implements IDataSource {
 	constructor(
-		@IProgressService private progressService: IProgressService,
-		@INotificationService private notificationService: INotificationService,
-		@IFileService private fileService: IFileService,
-		@IPartService private partService: IPartService
+		@IProgressService private readonly progressService: IProgressService,
+		@INotificationService private readonly notificationService: INotificationService,
+		@IFileService private readonly fileService: IFileService,
+		@IPartService private readonly partService: IPartService
 	) { }
 
 	public getId(tree: ITree, stat: ExplorerItem | Model): string {
@@ -196,10 +196,10 @@ export class FileRenderer implements IRenderer {
 	constructor(
 		private state: FileViewletState,
 		private labels: ResourceLabels,
-		@IContextViewService private contextViewService: IContextViewService,
-		@IThemeService private themeService: IThemeService,
-		@IConfigurationService private configurationService: IConfigurationService,
-		@IWorkspaceContextService private contextService: IWorkspaceContextService
+		@IContextViewService private readonly contextViewService: IContextViewService,
+		@IThemeService private readonly themeService: IThemeService,
+		@IConfigurationService private readonly configurationService: IConfigurationService,
+		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService
 	) {
 		this.config = this.configurationService.getValue<IFilesConfiguration>();
 		this.configListener = this.configurationService.onDidChangeConfiguration(e => {
@@ -396,12 +396,12 @@ export class FileController extends WorkbenchTreeController implements IDisposab
 	private previousSelectionRangeStop: ExplorerItem;
 
 	constructor(
-		@IEditorService private editorService: IEditorService,
-		@IContextMenuService private contextMenuService: IContextMenuService,
-		@ITelemetryService private telemetryService: ITelemetryService,
-		@IMenuService private menuService: IMenuService,
+		@IEditorService private readonly editorService: IEditorService,
+		@IContextMenuService private readonly contextMenuService: IContextMenuService,
+		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		@IMenuService private readonly menuService: IMenuService,
 		@IContextKeyService contextKeyService: IContextKeyService,
-		@IClipboardService private clipboardService: IClipboardService,
+		@IClipboardService private readonly clipboardService: IClipboardService,
 		@IConfigurationService configurationService: IConfigurationService
 	) {
 		super({ clickBehavior: ClickBehavior.ON_MOUSE_UP /* do not change to not break DND */ }, configurationService);
@@ -579,8 +579,8 @@ export class FileSorter implements ISorter {
 	private sortOrder: SortOrder;
 
 	constructor(
-		@IConfigurationService private configurationService: IConfigurationService,
-		@IWorkspaceContextService private contextService: IWorkspaceContextService
+		@IConfigurationService private readonly configurationService: IConfigurationService,
+		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService
 	) {
 		this.toDispose = [];
 
@@ -698,8 +698,8 @@ export class FileFilter implements IFilter {
 	private workspaceFolderChangeListener: IDisposable;
 
 	constructor(
-		@IWorkspaceContextService private contextService: IWorkspaceContextService,
-		@IConfigurationService private configurationService: IConfigurationService
+		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
+		@IConfigurationService private readonly configurationService: IConfigurationService
 	) {
 		this.hiddenExpressionPerRoot = new Map<string, CachedParsedExpression>();
 
@@ -761,15 +761,15 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 	private dropEnabled: boolean;
 
 	constructor(
-		@INotificationService private notificationService: INotificationService,
-		@IDialogService private dialogService: IDialogService,
-		@IWorkspaceContextService private contextService: IWorkspaceContextService,
-		@IFileService private fileService: IFileService,
-		@IConfigurationService private configurationService: IConfigurationService,
+		@INotificationService private readonly notificationService: INotificationService,
+		@IDialogService private readonly dialogService: IDialogService,
+		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
+		@IFileService private readonly fileService: IFileService,
+		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IInstantiationService instantiationService: IInstantiationService,
-		@ITextFileService private textFileService: ITextFileService,
-		@IWindowService private windowService: IWindowService,
-		@IWorkspaceEditingService private workspaceEditingService: IWorkspaceEditingService
+		@ITextFileService private readonly textFileService: ITextFileService,
+		@IWindowService private readonly windowService: IWindowService,
+		@IWorkspaceEditingService private readonly workspaceEditingService: IWorkspaceEditingService
 	) {
 		super(stat => this.statToResource(stat), instantiationService);
 
@@ -831,8 +831,8 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 		if (fromDesktop) {
 			const types: string[] = originalEvent.dataTransfer.types;
 			const typesArray: string[] = [];
-			for (let i = 0; i < types.length; i++) {
-				typesArray.push(types[i].toLowerCase()); // somehow the types are lowercase
+			for (const t of types) {
+				typesArray.push(t.toLowerCase()); // somehow the types are lowercase
 			}
 
 			if (typesArray.indexOf(DataTransfers.FILES.toLowerCase()) === -1 && typesArray.indexOf(CodeDataTransfers.FILES.toLowerCase()) === -1) {
@@ -955,7 +955,7 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 						return this.workspaceEditingService.addFolders(folders);
 					}
 
-					return void 0;
+					return undefined;
 				});
 			}
 
@@ -966,7 +966,7 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 				return addFilesAction.run(droppedResources.map(res => res.resource));
 			}
 
-			return void 0;
+			return undefined;
 		});
 	}
 
@@ -997,7 +997,7 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 		return confirmPromise.then(res => {
 
 			// Check for confirmation checkbox
-			let updateConfirmSettingsPromise: Promise<void> = Promise.resolve(void 0);
+			let updateConfirmSettingsPromise: Promise<void> = Promise.resolve(undefined);
 			if (res.confirmed && res.checkboxChecked === true) {
 				updateConfirmSettingsPromise = this.configurationService.updateValue(FileDragAndDrop.CONFIRM_DND_SETTING_KEY, false, ConfigurationTarget.USER);
 			}
@@ -1005,10 +1005,10 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 			return updateConfirmSettingsPromise.then(() => {
 				if (res.confirmed) {
 					const rootDropPromise = this.doHandleRootDrop(sources.filter(s => s.isRoot), target);
-					return Promise.all(sources.filter(s => !s.isRoot).map(source => this.doHandleExplorerDrop(tree, source, target, isCopy)).concat(rootDropPromise)).then(() => void 0);
+					return Promise.all(sources.filter(s => !s.isRoot).map(source => this.doHandleExplorerDrop(tree, source, target, isCopy)).concat(rootDropPromise)).then(() => undefined);
 				}
 
-				return Promise.resolve(void 0);
+				return Promise.resolve(undefined);
 			});
 		});
 	}
@@ -1023,15 +1023,15 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 		const workspaceCreationData: IWorkspaceFolderCreationData[] = [];
 		const rootsToMove: IWorkspaceFolderCreationData[] = [];
 
-		for (let index = 0; index < folders.length; index++) {
+		for (const folder of folders) {
 			const data = {
-				uri: folders[index].uri
+				uri: folder.uri
 			};
-			if (target instanceof ExplorerItem && folders[index].uri.toString() === target.resource.toString()) {
+			if (target instanceof ExplorerItem && folder.uri.toString() === target.resource.toString()) {
 				targetIndex = workspaceCreationData.length;
 			}
 
-			if (roots.every(r => r.resource.toString() !== folders[index].uri.toString())) {
+			if (roots.every(r => r.resource.toString() !== folder.uri.toString())) {
 				workspaceCreationData.push(data);
 			} else {
 				rootsToMove.push(data);
@@ -1047,13 +1047,13 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 
 	private doHandleExplorerDrop(tree: ITree, source: ExplorerItem, target: ExplorerItem | Model, isCopy: boolean): Promise<void> {
 		if (!(target instanceof ExplorerItem)) {
-			return Promise.resolve(void 0);
+			return Promise.resolve(undefined);
 		}
 
 		return tree.expand(target).then(() => {
 
 			if (target.isReadonly) {
-				return void 0;
+				return undefined;
 			}
 
 			// Reuse duplicate action if user copies
@@ -1064,7 +1064,7 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 			// Otherwise move
 			const targetResource = resources.joinPath(target.resource, source.name);
 
-			return this.textFileService.move(source.resource, targetResource).then(void 0, error => {
+			return this.textFileService.move(source.resource, targetResource).then(undefined, error => {
 
 				// Conflict
 				if ((<FileOperationError>error).fileOperationResult === FileOperationResult.FILE_MOVE_CONFLICT) {
@@ -1078,10 +1078,10 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 					// Move with overwrite if the user confirms
 					return this.dialogService.confirm(confirm).then(res => {
 						if (res.confirmed) {
-							return this.textFileService.move(source.resource, targetResource, true /* overwrite */).then(void 0, error => this.notificationService.error(error));
+							return this.textFileService.move(source.resource, targetResource, true /* overwrite */).then(undefined, error => this.notificationService.error(error));
 						}
 
-						return void 0;
+						return undefined;
 					});
 				}
 
@@ -1090,7 +1090,7 @@ export class FileDragAndDrop extends SimpleFileResourceDragAndDrop {
 					this.notificationService.error(error);
 				}
 
-				return void 0;
+				return undefined;
 			});
 		}, errors.onUnexpectedError);
 	}

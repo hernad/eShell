@@ -25,7 +25,7 @@ import { connectProxyResolver } from 'vs/workbench/node/proxyResolver';
 import { CancellationTokenSource } from 'vs/base/common/cancellation';
 import * as errors from 'vs/base/common/errors';
 import { ResolvedAuthority } from 'vs/platform/remote/common/remoteAuthorityResolver';
-import { CanonicalExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
 class ExtensionMemento implements IExtensionMemento {
 
@@ -247,7 +247,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		await allPromises;
 	}
 
-	public isActivated(extensionId: CanonicalExtensionIdentifier): boolean {
+	public isActivated(extensionId: ExtensionIdentifier): boolean {
 		if (this._barrier.isOpen()) {
 			return this._activator.isActivated(extensionId);
 		}
@@ -259,18 +259,18 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		return this._activator.activateByEvent(activationEvent, reason);
 	}
 
-	private _activateById(extensionId: CanonicalExtensionIdentifier, reason: ExtensionActivationReason): Promise<void> {
+	private _activateById(extensionId: ExtensionIdentifier, reason: ExtensionActivationReason): Promise<void> {
 		return this._activator.activateById(extensionId, reason);
 	}
 
-	public activateByIdWithErrors(extensionId: CanonicalExtensionIdentifier, reason: ExtensionActivationReason): Promise<void> {
+	public activateByIdWithErrors(extensionId: ExtensionIdentifier, reason: ExtensionActivationReason): Promise<void> {
 		return this._activateById(extensionId, reason).then(() => {
 			const extension = this._activator.getActivatedExtension(extensionId);
 			if (extension.activationFailed) {
 				// activation failed => bubble up the error as the promise result
 				return Promise.reject(extension.activationFailedError);
 			}
-			return void 0;
+			return undefined;
 		});
 	}
 
@@ -278,7 +278,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		return this._barrier.wait().then(_ => this._registry);
 	}
 
-	public getExtensionExports(extensionId: CanonicalExtensionIdentifier): IExtensionAPI {
+	public getExtensionExports(extensionId: ExtensionIdentifier): IExtensionAPI {
 		if (this._barrier.isOpen()) {
 			return this._activator.getActivatedExtension(extensionId).exports;
 		} else {
@@ -301,8 +301,8 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		return this._extensionPathIndex;
 	}
 
-	private _deactivate(extensionId: CanonicalExtensionIdentifier): Promise<void> {
-		let result = Promise.resolve(void 0);
+	private _deactivate(extensionId: ExtensionIdentifier): Promise<void> {
+		let result = Promise.resolve(undefined);
 
 		if (!this._barrier.isOpen()) {
 			return result;
@@ -320,9 +320,9 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		// call deactivate if available
 		try {
 			if (typeof extension.module.deactivate === 'function') {
-				result = Promise.resolve(extension.module.deactivate()).then(void 0, (err) => {
+				result = Promise.resolve(extension.module.deactivate()).then(undefined, (err) => {
 					// TODO: Do something with err if this is not the shutdown case
-					return Promise.resolve(void 0);
+					return Promise.resolve(undefined);
 				});
 			}
 		} catch (err) {
@@ -339,7 +339,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		return result;
 	}
 
-	public addMessage(extensionId: CanonicalExtensionIdentifier, severity: Severity, message: string): void {
+	public addMessage(extensionId: ExtensionIdentifier, severity: Severity, message: string): void {
 		this._mainThreadExtensionsProxy.$addMessage(extensionId, severity, message);
 	}
 
@@ -429,7 +429,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		});
 	}
 
-	private static _callActivate(logService: ILogService, extensionId: CanonicalExtensionIdentifier, extensionModule: IExtensionModule, context: IExtensionContext, activationTimesBuilder: ExtensionActivationTimesBuilder): Promise<ActivatedExtension> {
+	private static _callActivate(logService: ILogService, extensionId: ExtensionIdentifier, extensionModule: IExtensionModule, context: IExtensionContext, activationTimesBuilder: ExtensionActivationTimesBuilder): Promise<ActivatedExtension> {
 		// Make sure the extension's surface is not undefined
 		extensionModule = extensionModule || {
 			activate: undefined,
@@ -441,7 +441,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		});
 	}
 
-	private static _callActivateOptional(logService: ILogService, extensionId: CanonicalExtensionIdentifier, extensionModule: IExtensionModule, context: IExtensionContext, activationTimesBuilder: ExtensionActivationTimesBuilder): Promise<IExtensionAPI> {
+	private static _callActivateOptional(logService: ILogService, extensionId: ExtensionIdentifier, extensionModule: IExtensionModule, context: IExtensionContext, activationTimesBuilder: ExtensionActivationTimesBuilder): Promise<IExtensionAPI> {
 		if (typeof extensionModule.activate === 'function') {
 			try {
 				activationTimesBuilder.activateCallStart();
@@ -467,7 +467,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 
 	// Handle "eager" activation extensions
 	private _handleEagerExtensions(): Promise<void> {
-		this._activateByEvent('*', true).then(void 0, (err) => {
+		this._activateByEvent('*', true).then(undefined, (err) => {
 			console.error(err);
 		});
 
@@ -476,7 +476,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 
 	private _handleWorkspaceContainsEagerExtensions(workspace: IWorkspaceData): Promise<void> {
 		if (!workspace || workspace.folders.length === 0) {
-			return Promise.resolve(void 0);
+			return Promise.resolve(undefined);
 		}
 
 		return Promise.all(
@@ -489,15 +489,15 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 	private _handleWorkspaceContainsEagerExtension(workspace: IWorkspaceData, desc: IExtensionDescription): Promise<void> {
 		const activationEvents = desc.activationEvents;
 		if (!activationEvents) {
-			return Promise.resolve(void 0);
+			return Promise.resolve(undefined);
 		}
 
 		const fileNames: string[] = [];
 		const globPatterns: string[] = [];
 
-		for (let i = 0; i < activationEvents.length; i++) {
-			if (/^workspaceContains:/.test(activationEvents[i])) {
-				const fileNameOrGlob = activationEvents[i].substr('workspaceContains:'.length);
+		for (const activationEvent of activationEvents) {
+			if (/^workspaceContains:/.test(activationEvent)) {
+				const fileNameOrGlob = activationEvent.substr('workspaceContains:'.length);
 				if (fileNameOrGlob.indexOf('*') >= 0 || fileNameOrGlob.indexOf('?') >= 0) {
 					globPatterns.push(fileNameOrGlob);
 				} else {
@@ -507,7 +507,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		}
 
 		if (fileNames.length === 0 && globPatterns.length === 0) {
-			return Promise.resolve(void 0);
+			return Promise.resolve(undefined);
 		}
 
 		const fileNamePromise = Promise.all(fileNames.map((fileName) => this._activateIfFileName(workspace, desc.identifier, fileName))).then(() => { });
@@ -516,7 +516,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		return Promise.all([fileNamePromise, globPatternPromise]).then(() => { });
 	}
 
-	private async _activateIfFileName(workspace: IWorkspaceData, extensionId: CanonicalExtensionIdentifier, fileName: string): Promise<void> {
+	private async _activateIfFileName(workspace: IWorkspaceData, extensionId: ExtensionIdentifier, fileName: string): Promise<void> {
 
 		// find exact path
 		for (const { uri } of workspace.folders) {
@@ -524,7 +524,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 				// the file was found
 				return (
 					this._activateById(extensionId, new ExtensionActivatedByEvent(true, `workspaceContains:${fileName}`))
-						.then(void 0, err => console.error(err))
+						.then(undefined, err => console.error(err))
 				);
 			}
 		}
@@ -532,11 +532,11 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		return undefined;
 	}
 
-	private async _activateIfGlobPatterns(extensionId: CanonicalExtensionIdentifier, globPatterns: string[]): Promise<void> {
+	private async _activateIfGlobPatterns(extensionId: ExtensionIdentifier, globPatterns: string[]): Promise<void> {
 		this._extHostLogService.trace(`extensionHostMain#activateIfGlobPatterns: fileSearch, extension: ${extensionId.value}, entryPoint: workspaceContains`);
 
 		if (globPatterns.length === 0) {
-			return Promise.resolve(void 0);
+			return Promise.resolve(undefined);
 		}
 
 		const tokenSource = new CancellationTokenSource();
@@ -545,7 +545,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		const timer = setTimeout(async () => {
 			tokenSource.cancel();
 			this._activateById(extensionId, new ExtensionActivatedByEvent(true, `workspaceContainsTimeout:${globPatterns.join(',')}`))
-				.then(void 0, err => console.error(err));
+				.then(undefined, err => console.error(err));
 		}, ExtHostExtensionService.WORKSPACE_CONTAINS_TIMEOUT);
 
 		let exists: boolean;
@@ -564,16 +564,16 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 			// a file was found matching one of the glob patterns
 			return (
 				this._activateById(extensionId, new ExtensionActivatedByEvent(true, `workspaceContains:${globPatterns.join(',')}`))
-					.then(void 0, err => console.error(err))
+					.then(undefined, err => console.error(err))
 			);
 		}
 
-		return Promise.resolve(void 0);
+		return Promise.resolve(undefined);
 	}
 
 	private _handleExtensionTests(): Promise<void> {
 		if (!this._initData.environment.extensionTestsPath || !this._initData.environment.extensionDevelopmentLocationURI) {
-			return Promise.resolve(void 0);
+			return Promise.resolve(undefined);
 		}
 
 		// Require the test runner via node require from the provided path
@@ -592,7 +592,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 					if (error) {
 						e(error.toString());
 					} else {
-						c(void 0);
+						c(undefined);
 					}
 
 					// after tests have run, we shutdown the host
@@ -635,7 +635,7 @@ export class ExtHostExtensionService implements ExtHostExtensionServiceShape {
 		throw new Error(`Not implemented`);
 	}
 
-	public $startExtensionHost(enabledExtensionIds: CanonicalExtensionIdentifier[]): Promise<void> {
+	public $startExtensionHost(enabledExtensionIds: ExtensionIdentifier[]): Promise<void> {
 		this._registry.keepOnly(enabledExtensionIds);
 		return this._startExtensionHost();
 	}

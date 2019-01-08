@@ -19,7 +19,7 @@ import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { generateUuid } from 'vs/base/common/uuid';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ICommentsConfiguration } from 'vs/workbench/parts/comments/electron-browser/comments.contribution';
-import { CanonicalExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
 export class MainThreadDocumentCommentProvider implements modes.DocumentCommentProvider {
 	private _proxy: ExtHostCommentsShape;
@@ -79,11 +79,11 @@ export class MainThreadComments extends Disposable implements MainThreadComments
 
 	constructor(
 		extHostContext: IExtHostContext,
-		@IEditorService private _editorService: IEditorService,
-		@ICommentService private _commentService: ICommentService,
-		@IPanelService private _panelService: IPanelService,
-		@ITelemetryService private _telemetryService: ITelemetryService,
-		@IConfigurationService private _configurationService: IConfigurationService
+		@IEditorService private readonly _editorService: IEditorService,
+		@ICommentService private readonly _commentService: ICommentService,
+		@IPanelService private readonly _panelService: IPanelService,
+		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+		@IConfigurationService private readonly _configurationService: IConfigurationService
 	) {
 		super();
 		this._disposables = [];
@@ -126,7 +126,7 @@ export class MainThreadComments extends Disposable implements MainThreadComments
 		}
 	}
 
-	$registerWorkspaceCommentProvider(handle: number, extensionId: CanonicalExtensionIdentifier): void {
+	$registerWorkspaceCommentProvider(handle: number, extensionId: ExtensionIdentifier): void {
 		this._workspaceProviders.set(handle, undefined);
 
 		const providerId = generateUuid();

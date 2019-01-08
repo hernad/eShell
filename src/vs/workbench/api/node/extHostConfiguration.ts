@@ -16,7 +16,7 @@ import { WorkspaceConfigurationChangeEvent } from 'vs/workbench/services/configu
 import { ResourceMap } from 'vs/base/common/map';
 import { ConfigurationScope, OVERRIDE_PROPERTY_PATTERN } from 'vs/platform/configuration/common/configurationRegistry';
 import { isObject } from 'vs/base/common/types';
-import { CanonicalExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
 function lookUp(tree: any, key: string) {
 	if (key) {
@@ -61,7 +61,7 @@ export class ExtHostConfiguration implements ExtHostConfigurationShape {
 		this._onDidChangeConfiguration.fire(this._toConfigurationChangeEvent(eventData));
 	}
 
-	getConfiguration(section?: string, resource?: URI, extensionId?: CanonicalExtensionIdentifier): vscode.WorkspaceConfiguration {
+	getConfiguration(section?: string, resource?: URI, extensionId?: ExtensionIdentifier): vscode.WorkspaceConfiguration {
 		const config = this._toReadonlyValue(section
 			? lookUp(this._configuration.getValue(null, { resource }, this._extHostWorkspace.workspace), section)
 			: this._configuration.getValue(null, { resource }, this._extHostWorkspace.workspace));
@@ -71,7 +71,7 @@ export class ExtHostConfiguration implements ExtHostConfigurationShape {
 		}
 
 		function parseConfigurationTarget(arg: boolean | ExtHostConfigurationTarget): ConfigurationTarget {
-			if (arg === void 0 || arg === null) {
+			if (arg === undefined || arg === null) {
 				return null;
 			}
 			if (typeof arg === 'boolean') {
@@ -95,9 +95,9 @@ export class ExtHostConfiguration implements ExtHostConfigurationShape {
 				if (typeof result === 'undefined') {
 					result = defaultValue;
 				} else {
-					let clonedConfig = void 0;
+					let clonedConfig = undefined;
 					const cloneOnWriteProxy = (target: any, accessor: string): any => {
-						let clonedTarget = void 0;
+						let clonedTarget = undefined;
 						const cloneTarget = () => {
 							clonedConfig = clonedConfig ? clonedConfig : deepClone(config);
 							clonedTarget = clonedTarget ? clonedTarget : lookUp(clonedConfig, accessor);
@@ -143,7 +143,7 @@ export class ExtHostConfiguration implements ExtHostConfigurationShape {
 			update: (key: string, value: any, arg: ExtHostConfigurationTarget | boolean) => {
 				key = section ? `${section}.${key}` : key;
 				const target = parseConfigurationTarget(arg);
-				if (value !== void 0) {
+				if (value !== undefined) {
 					return this._proxy.$updateConfigurationOption(target, key, value, resource);
 				} else {
 					return this._proxy.$removeConfigurationOption(target, key, resource);
@@ -188,11 +188,11 @@ export class ExtHostConfiguration implements ExtHostConfigurationShape {
 		return readonlyProxy(result);
 	}
 
-	private _validateConfigurationAccess(key: string, resource: URI, extensionId: CanonicalExtensionIdentifier): void {
+	private _validateConfigurationAccess(key: string, resource: URI, extensionId: ExtensionIdentifier): void {
 		const scope = OVERRIDE_PROPERTY_PATTERN.test(key) ? ConfigurationScope.RESOURCE : this._configurationScopes[key];
 		const extensionIdText = extensionId ? `[${extensionId.value}] ` : '';
 		if (ConfigurationScope.RESOURCE === scope) {
-			if (resource === void 0) {
+			if (resource === undefined) {
 				console.warn(`${extensionIdText}Accessing a resource scoped configuration without providing a resource is not expected. To get the effective value for '${key}', provide the URI of a resource or 'null' for any resource.`);
 			}
 			return;
