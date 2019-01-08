@@ -129,9 +129,9 @@ export class ExtHostTerminal extends BaseExtHostTerminal implements vscode.Termi
 		this._queueApiRequest(this._proxy.$sendText, [text, addNewLine]);
 	}
 
-	public resize(name: string, cols: number, rows: number): void {
+	public resize(cols: number, rows: number): void {
 		this._checkDisposed();
-		this._queueApiRequest(this._proxy.$resize, [name, cols, rows]);
+		this._queueApiRequest(this._proxy.$resize, [cols, rows]);
 	}
 
 	public show(preserveFocus: boolean): void {
