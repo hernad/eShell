@@ -44,9 +44,10 @@ import 'vs/workbench/parts/quickopen/browser/quickopen.contribution';
 import 'vs/workbench/browser/parts/editor/editorPicker';
 import 'vs/workbench/browser/parts/quickinput/quickInput.contribution';
 
-import 'vs/workbench/parts/files/electron-browser/explorerViewlet';
-import 'vs/workbench/parts/files/electron-browser/fileActions.contribution';
-import 'vs/workbench/parts/files/electron-browser/files.contribution';
+// import 'vs/workbench/parts/files/electron-browser/explorerViewlet';
+// import 'vs/workbench/parts/files/electron-browser/fileActions.contribution';
+// import 'vs/workbench/parts/files/electron-browser/files.contribution';
+
 
 import 'vs/workbench/parts/backup/common/backup.contribution';
 
@@ -54,12 +55,13 @@ import 'vs/workbench/parts/stats/node/stats.contribution';
 
 import 'vs/workbench/parts/splash/electron-browser/partsSplash.contribution';
 
-import 'vs/workbench/parts/search/electron-browser/search.contribution';
-import 'vs/workbench/parts/search/browser/searchView';
+// import 'vs/workbench/parts/search/electron-browser/search.contribution';
+// import 'vs/workbench/parts/search/browser/searchView';
+
 import 'vs/workbench/parts/search/browser/openAnythingHandler';
 
-import 'vs/workbench/parts/scm/electron-browser/scm.contribution';
-import 'vs/workbench/parts/scm/electron-browser/scmViewlet';
+// import 'vs/workbench/parts/scm/electron-browser/scm.contribution';
+// import 'vs/workbench/parts/scm/electron-browser/scmViewlet';
 
 // import 'vs/workbench/parts/debug/electron-browser/debug.contribution';
 // import 'vs/workbench/parts/debug/browser/debugQuickOpen';
