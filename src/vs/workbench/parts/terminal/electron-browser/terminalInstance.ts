@@ -1117,10 +1117,11 @@ export class TerminalInstance implements ITerminalInstance {
 	public forceResize( cols: number, rows: number): void {
 
 		if (this._xterm) {
-			const font = this._configHelper.getFont(this._xterm);
+			// const font = this._configHelper.getFont(this._xterm);
 
 			// Only apply these settings when the terminal is visible so that
 			// the characters are measured correctly.
+			/*
 			if (this._isVisible) {
 				const config = this._configHelper.config;
 				this._safeSetOption('letterSpacing', font.letterSpacing);
@@ -1131,12 +1132,14 @@ export class TerminalInstance implements ITerminalInstance {
 				this._safeSetOption('fontWeightBold', config.fontWeightBold);
 				this._safeSetOption('drawBoldTextInBrightColors', config.drawBoldTextInBrightColors);
 			}
+			*/
 
 			if (cols !== this._xterm.cols || rows !== this._xterm.rows) {
 				this._onDimensionsChanged.fire();
 			}
 
 			this._xterm.resize(cols, rows);
+			/*
 			if (this._isVisible) {
 				// HACK: Force the renderer to unpause by simulating an IntersectionObserver event.
 				// This is to fix an issue where dragging the window to the top of the screen to
@@ -1149,6 +1152,7 @@ export class TerminalInstance implements ITerminalInstance {
 					this._xterm.refresh(0, this._xterm.rows - 1);
 				}
 			}
+			*/
 		}
 
 		if (this._processManager) {
