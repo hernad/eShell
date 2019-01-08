@@ -1062,9 +1062,6 @@ export class TerminalInstance implements ITerminalInstance {
 			rows = Math.min(Math.max(this._dimensionsOverride.rows, 2), this._rows);
 		}
 
-		cols = 120;
-		rows = 40;
-
 		if (this._xterm) {
 			const font = this._configHelper.getFont(this._xterm);
 
