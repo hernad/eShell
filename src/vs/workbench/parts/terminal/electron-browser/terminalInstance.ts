@@ -1114,6 +1114,48 @@ export class TerminalInstance implements ITerminalInstance {
 		}
 	}
 
+	public forceResize( cols: number, rows: number): void {
+
+		if (this._xterm) {
+			const font = this._configHelper.getFont(this._xterm);
+
+			// Only apply these settings when the terminal is visible so that
+			// the characters are measured correctly.
+			if (this._isVisible) {
+				const config = this._configHelper.config;
+				this._safeSetOption('letterSpacing', font.letterSpacing);
+				this._safeSetOption('lineHeight', font.lineHeight);
+				this._safeSetOption('fontSize', font.fontSize);
+				this._safeSetOption('fontFamily', font.fontFamily);
+				this._safeSetOption('fontWeight', config.fontWeight);
+				this._safeSetOption('fontWeightBold', config.fontWeightBold);
+				this._safeSetOption('drawBoldTextInBrightColors', config.drawBoldTextInBrightColors);
+			}
+
+			if (cols !== this._xterm.cols || rows !== this._xterm.rows) {
+				this._onDimensionsChanged.fire();
+			}
+
+			this._xterm.resize(cols, rows);
+			if (this._isVisible) {
+				// HACK: Force the renderer to unpause by simulating an IntersectionObserver event.
+				// This is to fix an issue where dragging the window to the top of the screen to
+				// maximize on Windows/Linux would fire an event saying that the terminal was not
+				// visible.
+				if (this._xterm.getOption('rendererType') === 'canvas') {
+					this._xterm._core.renderer.onIntersectionChange({ intersectionRatio: 1 });
+					// HACK: Force a refresh of the screen to ensure links are refresh corrected.
+					// This can probably be removed when the above hack is fixed in Chromium.
+					this._xterm.refresh(0, this._xterm.rows - 1);
+				}
+			}
+		}
+
+		if (this._processManager) {
+			this._processManager.ptyProcessReady.then(() => this._processManager!.setDimensions(cols, rows));
+		}
+	}
+
 	public setTitle(title: string | undefined, eventFromProcess: boolean): void {
 		if (!title) {
 			return;

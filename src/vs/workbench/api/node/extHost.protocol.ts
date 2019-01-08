@@ -349,6 +349,7 @@ export interface MainThreadTerminalServiceShape extends IDisposable {
 	$dispose(terminalId: number): void;
 	$hide(terminalId: number): void;
 	$sendText(terminalId: number, text: string, addNewLine: boolean): void;
+	$resize(name: string, cols: number, rows: number): void;
 	$show(terminalId: number, preserveFocus: boolean): void;
 	$registerOnDataListener(terminalId: number): void;
 

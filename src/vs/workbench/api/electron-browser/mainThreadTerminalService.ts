@@ -142,6 +142,13 @@ export class MainThreadTerminalService implements MainThreadTerminalServiceShape
 		}
 	}
 
+	public $resize(terminalId: number, cols: number, rows: number): void {
+		const terminalInstance = this.terminalService.getInstanceFromId(terminalId);
+		if (terminalInstance) {
+			terminalInstance.forceResize(cols, rows);
+		}
+	}
+
 	public $registerOnDataListener(terminalId: number): void {
 		const terminalInstance = this.terminalService.getInstanceFromId(terminalId);
 		if (!terminalInstance) {

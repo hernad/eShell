@@ -606,6 +606,8 @@ export interface ITerminalInstance {
 	toggleEscapeSequenceLogging(): void;
 
 	getCwd(): Promise<string>;
+
+	forceResize(cols: number, rows: number): void;
 }
 
 export interface ITerminalCommandTracker {
