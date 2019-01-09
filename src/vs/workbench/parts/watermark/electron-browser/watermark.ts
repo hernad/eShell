@@ -5,7 +5,7 @@
 
 import 'vs/css!./watermark';
 import { IDisposable, dispose } from 'vs/base/common/lifecycle';
-import { assign } from 'vs/base/common/objects';
+// import { assign } from 'vs/base/common/objects';
 import { isMacintosh } from 'vs/base/common/platform';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import * as nls from 'vs/nls';
@@ -15,17 +15,18 @@ import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/
 import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
 import { ILifecycleService, LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { OpenRecentAction } from 'vs/workbench/electron-browser/actions';
-import { GlobalNewUntitledFileAction } from 'vs/workbench/parts/files/electron-browser/fileActions';
-import { OpenFolderAction, OpenFileFolderAction, OpenFileAction } from 'vs/workbench/browser/actions/workspaceActions';
+// import { OpenRecentAction } from 'vs/workbench/electron-browser/actions';
+// import { GlobalNewUntitledFileAction } from 'vs/workbench/parts/files/electron-browser/fileActions';
+// import { OpenFolderAction, OpenFileFolderAction, OpenFileAction } from 'vs/workbench/browser/actions/workspaceActions';
 import { ShowAllCommandsAction } from 'vs/workbench/parts/quickopen/browser/commandsHandler';
 import { Parts, IPartService, IDimension } from 'vs/workbench/services/part/common/partService';
 // import { StartAction } from 'vs/workbench/parts/debug/browser/debugActions';
-import { FindInFilesActionId } from 'vs/workbench/parts/search/common/constants';
+// import { FindInFilesActionId } from 'vs/workbench/parts/search/common/constants';
 import { escape } from 'vs/base/common/strings';
-import { QUICKOPEN_ACTION_ID } from 'vs/workbench/browser/parts/quickopen/quickopen';
-import { TERMINAL_COMMAND_ID } from 'vs/workbench/parts/terminal/common/terminalCommands';
+// import { QUICKOPEN_ACTION_ID } from 'vs/workbench/browser/parts/quickopen/quickopen';
+// import { TERMINAL_COMMAND_ID } from 'vs/workbench/parts/terminal/common/terminalCommands';
 import * as dom from 'vs/base/browser/dom';
+import { QUIT_ID } from 'vs/workbench/electron-browser/commands';
 
 const $ = dom.$;
 
@@ -39,6 +40,7 @@ const showCommands: WatermarkEntry = {
 	text: nls.localize('watermark.showCommands', "Show All Commands"),
 	ids: [ShowAllCommandsAction.ID]
 };
+/*
 const quickOpen: WatermarkEntry = {
 	text: nls.localize('watermark.quickOpen', "Go to File"),
 	ids: [QUICKOPEN_ACTION_ID]
@@ -77,29 +79,34 @@ const findInFiles: WatermarkEntry = {
 	ids: [FindInFilesActionId]
 };
 
-/*
 const startDebugging: WatermarkEntry = {
 	text: nls.localize('watermark.startDebugging', "Start Debugging"),
 	ids: [StartAction.ID]
 };
 */
+const quitCommand: WatermarkEntry = {
+	text: nls.localize('watermark.quitCommand', "Kraj"),
+	ids: [QUIT_ID]
+};
 
 const noFolderEntries = [
 	showCommands,
-	openFileNonMacOnly,
-	openFolderNonMacOnly,
-	openFileOrFolderMacOnly,
-	openRecent,
-	newUntitledFileMacOnly,
-	toggleTerminal
+	// openFileNonMacOnly,
+	// openFolderNonMacOnly,
+	// openFileOrFolderMacOnly,
+	// openRecent,
+	// newUntitledFileMacOnly,
+	// toggleTerminal
+	quitCommand
 ];
 
 const folderEntries = [
 	showCommands,
-	quickOpen,
-	findInFiles,
+	// quickOpen,
+	// findInFiles,
 	// startDebugging,
-	toggleTerminal
+	// toggleTerminal
+	quitCommand
 ];
 
 const UNBOUND = nls.localize('watermark.unboundCommand', "unbound");
