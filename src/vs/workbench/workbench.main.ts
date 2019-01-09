@@ -45,8 +45,8 @@ import 'vs/workbench/browser/parts/editor/editorPicker';
 import 'vs/workbench/browser/parts/quickinput/quickInput.contribution';
 
 // import 'vs/workbench/parts/files/electron-browser/explorerViewlet';
-// import 'vs/workbench/parts/files/electron-browser/fileActions.contribution';
-// import 'vs/workbench/parts/files/electron-browser/files.contribution';
+import 'vs/workbench/parts/files/electron-browser/fileActions.contribution';
+import 'vs/workbench/parts/files/electron-browser/files.contribution';
 
 
 import 'vs/workbench/parts/backup/common/backup.contribution';
