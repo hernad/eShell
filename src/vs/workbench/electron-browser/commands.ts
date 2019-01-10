@@ -699,8 +699,8 @@ export function registerCommands(): void {
 			windowsService.quit();
 		},
 		when: undefined,
-		primary: KeyMod.CtrlCmd | KeyCode.KEY_Q,
-		win: { primary: undefined }
+		// primary: KeyMod.CtrlCmd | KeyCode.KEY_Q,
+		primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_Q, KeyMod.CtrlCmd | KeyCode.KEY_Q)
 	});
 
 	CommandsRegistry.registerCommand('_workbench.removeFromRecentlyOpened', function (accessor: ServicesAccessor, path: IWorkspaceIdentifier | ISingleFolderWorkspaceIdentifier | URI | string) {
