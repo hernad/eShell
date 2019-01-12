@@ -1,3 +1,6 @@
+variables:
+- group: API_KEYS
+
 steps:
 - task: NodeTool@0
   inputs:
@@ -122,3 +125,4 @@ steps:
   env:
     CHERE_INVOKING: yes
     BINTRAY_ARCH: x64
+    BINTRAY_API_KEY: $(BINTRAY_API_KEY)
