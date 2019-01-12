@@ -21,10 +21,13 @@ echo uploading $FILE to bintray ...
 
 if [ "$BINTRAY_ARCH" == "x64" ] ; then
    MINGW_BASE='mingw64'
+   MINGW_ARCH='i686'
 else
    MINGW_BASE='mingw32'
+   MINGW_ARCH='x86_64'
 fi
 pacman --noconfirm -S --needed mingw-w64-$MINGW_ARCH-curl
+CURL=/$MINGW_BASE/bin/curl
 
 $CURL -s -T $FILE \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \

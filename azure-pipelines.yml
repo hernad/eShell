@@ -19,6 +19,7 @@ jobs:
     vmImage: VS2017-Win2016
   variables:
     VSCODE_ARCH: x64
+    BINTRAY_ARCH: x64
   steps:
   - template: build/azure-pipelines/win32/build-win32-x64.yml
 
@@ -27,6 +28,7 @@ jobs:
     vmImage: VS2017-Win2016
   variables:
     VSCODE_ARCH: ia32
+    BINTRAY_ARCH: x86
   steps:
   - template: build/azure-pipelines/win32/build-win32-ia32.yml
 
@@ -39,6 +41,7 @@ jobs:
   container: vscode-x64
   variables:
     VSCODE_ARCH: x64
+    BINTRAY_ARCH: x64
   steps:
   - template: build/azure-pipelines/linux/build-linux.yml
 
@@ -49,5 +52,6 @@ jobs:
   container: vscode-ia32
   variables:
     VSCODE_ARCH: ia32
+    BINTRAY_ARCH: x86
   steps:
   - template: build/azure-pipelines/linux/build-linux.yml
