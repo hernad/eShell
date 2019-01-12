@@ -68,3 +68,8 @@ steps:
 #  inputs:
 #    #pathtoPublish: '$(Build.ArtifactStagingDirectory)'
 #    artifactName: drop-linux-$(VSCODE_ARCH)
+
+- shell: |
+    ./upload_bintray_linux.sh
+  env:
+    BINTRAY_API_KEY: $(BINTRAY_API_KEY)
