@@ -21,7 +21,7 @@ steps:
     yarn
   displayName: Install Dependencies
 - script: |
-    yarn gulp electron-x64
+    yarn gulp electron-${VSCODE_ARCH}
   displayName: Download Electron
 # - script: |
 #    yarn gulp hygiene
@@ -49,9 +49,9 @@ steps:
 #  condition: succeededOrFailed()
 
 - script: |
-    yarn gulp vscode-linux-x64-min
-    yarn gulp vscode-linux-x64-build-rpm
-  displayName: "Linux build x64 rpm"
+    yarn gulp vscode-linux-${VSCODE_ARCH}-min
+    yarn gulp vscode-linux-${VSCODE_ARCH}-build-rpm
+  displayName: "Linux build $(VSCODE_ARCH) rpm"
 
 #- task: ArchiveFiles@2
 #  inputs:
@@ -59,12 +59,12 @@ steps:
 #   rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/linux/rpm/x86_64/rpmbuild/RPMS/x86_64/*.rpm'
 #    includeRootFolder: false
 
-- task: CopyFiles@2
-  inputs:
-    contents: .build/linux/rpm/x86_64/*.rpm
-    targetFolder: $(Build.ArtifactStagingDirectory)
+#- task: CopyFiles@2
+#  inputs:
+#    contents: .build/linux/rpm/${VSCODE_ARCH}/*.rpm
+#    targetFolder: $(Build.ArtifactStagingDirectory)
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    #pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: drop-linux-x64
+#- task: PublishBuildArtifacts@1
+#  inputs:
+#    #pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#    artifactName: drop-linux-$(VSCODE_ARCH)
