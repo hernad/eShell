@@ -27,36 +27,6 @@ steps:
     exec { node build/azure-pipelines/common/installDistro.js }
     exec { node build/lib/builtInExtensions.js }
   displayName: yarn prep
-#- powershell: |
-#    yarn gulp electron
-#  displayName: Download Electron
-# - powershell: |
-#    yarn gulp hygiene
-#  displayName: Run Hygiene Checks
-#- powershell: |
-#    yarn monaco-compile-check
-#  displayName: Run Monaco Editor Checks
-#- script: |
-#    yarn strict-null-check
-#  displayName: Run Strict Null Checks
-#- powershell: |
-#    yarn compile
-#  displayName: Compile Sources
-#- powershell: |
-#    yarn download-builtin-extensions
-#  displayName: Download Built-in Extensions
-#- powershell: |
-#    .\scripts\test.bat --tfs "Unit Tests"
-#  displayName: Run Unit Tests
-#- powershell: |
-#    .\scripts\test-integration.bat --tfs "Integration Tests"
-#  displayName: Run Integration Tests
-#- task: PublishTestResults@2
-#  displayName: Publish Tests Results
-#  inputs:
-#    testResultsFiles: '*-results.xml'
-#    searchFolder: '$(Build.ArtifactStagingDirectory)/test-results'
-#  condition: succeededOrFailed()
 
 - powershell: |
     # https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md
@@ -67,7 +37,6 @@ steps:
     npx gulp vscode-win32-$(VSCODE_ARCH)-inno-updater
     npx gulp vscode-win32-$(VSCODE_ARCH)-user-setup
     # npx gulp vscode-win32-ia32-archive
-
   displayName: "win32 build $(VSCODE_ARCH) zip"
 
 #- task: ArchiveFiles@2
@@ -76,17 +45,31 @@ steps:
     #rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-win32-ia32'
 #    includeRootFolder: false
 
-
 - task: CopyFiles@2
   inputs:
     contents: .build\win32-ia32\archive\*.zip
     targetFolder: $(Build.ArtifactStagingDirectory)
-- task: CopyFiles@2
-  inputs:
-    contents: .build\win32-ia32\**\*.exe
-    targetFolder: $(Build.ArtifactStagingDirectory)
+#- task: CopyFiles@2
+#  inputs:
+#    contents: .build\win32-ia32\**\*.exe
+#    targetFolder: $(Build.ArtifactStagingDirectory)
 
 
-- task: PublishBuildArtifacts@1
-  inputs:
-     artifactName: drop-win32-ia32
+#- task: PublishBuildArtifacts@1
+#  inputs:
+#     artifactName: drop-win32-ia32
+
+- script: |
+    git clone https://github.com/lazka/msys2-ci-base.git %CD:~0,2%\msys64
+    %CD:~0,2%\msys64\usr\bin\rm -rf %CD:~0,2%\msys64\.git
+
+    set PATH=%CD:~0,2%\msys64\usr\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem
+    %CD:~0,2%\msys64\usr\bin\pacman --noconfirm -Syyuu
+    #%CD:~0,2%\msys64\usr\bin\pacman --noconfirm --needed -S curl zip unzip
+
+    %CD:~0,2%\msys64\usr\bin\sed -i "s|#CacheDir.*|CacheDir=/c/Users/%USERNAME%/AppData/Local/Temp|g" /etc/pacman.conf
+    %CD:~0,2%\msys64\usr\bin\bash -lc "bash upload_bintray_win32.sh"
+  displayName: upload to bintray
+  env:
+    CHERE_INVOKING: yes
+    BINTRAY_ARCH: x86

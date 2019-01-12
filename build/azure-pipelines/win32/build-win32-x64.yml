@@ -75,15 +75,15 @@ steps:
   inputs:
     contents: .build\win32-x64\archive\*.zip
     targetFolder: $(Build.ArtifactStagingDirectory)
-- task: CopyFiles@2
-  inputs:
-    contents: .build\win32-x64\**\*.exe
-    targetFolder: $(Build.ArtifactStagingDirectory)
+#- task: CopyFiles@2
+#  inputs:
+#    contents: .build\win32-x64\**\*.exe
+#    targetFolder: $(Build.ArtifactStagingDirectory)
 
 
-- task: PublishBuildArtifacts@1
-  inputs:
-     artifactName: drop-win32-x64
+#- task: PublishBuildArtifacts@1
+#  inputs:
+#     artifactName: drop-win32-x64
 
 #    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
 #    artifactName: drop
@@ -107,3 +107,18 @@ steps:
     #isDraft: false # Optional
     #isPreRelease: false # Optional
     #addChangeLog: true # Optional
+
+- script: |
+    git clone https://github.com/lazka/msys2-ci-base.git %CD:~0,2%\msys64
+    %CD:~0,2%\msys64\usr\bin\rm -rf %CD:~0,2%\msys64\.git
+
+    set PATH=%CD:~0,2%\msys64\usr\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem
+    %CD:~0,2%\msys64\usr\bin\pacman --noconfirm -Syyuu
+    #%CD:~0,2%\msys64\usr\bin\pacman --noconfirm --needed -S curl zip unzip
+
+    %CD:~0,2%\msys64\usr\bin\sed -i "s|#CacheDir.*|CacheDir=/c/Users/%USERNAME%/AppData/Local/Temp|g" /etc/pacman.conf
+    %CD:~0,2%\msys64\usr\bin\bash -lc "bash upload_bintray_win32.sh"
+  displayName: upload to bintray
+  env:
+    CHERE_INVOKING: yes
+    BINTRAY_ARCH: x64
