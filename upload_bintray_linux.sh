@@ -22,7 +22,10 @@ fi
 
 FILE=`ls .build/linux/rpm/${VSCODE_ARCH}/*.rpm`
 
-ls -lh $FILE
+#ls -lh $FILE
+echo "================ .build ======== arch: ${VSCODE_ARCH} ===== rpm: ${BINTRAY_REPOS} ==========="
+find .build
+echo "================================================="
 
 set
 echo uploading $FILE to bintray ...
