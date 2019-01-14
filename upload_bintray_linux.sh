@@ -17,18 +17,20 @@ else
   RPM_LOC=i386
 fi
 
-#BINTRAY_PACKAGE=eShell-windows-$BINTRAY_ARCH
+BINTRAY_PACKAGE=eShell
 #BINTRAY_PACKAGE_VER=$BUILD_BUILDNUMBER
 #FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.zip
 #zip -r -v $FILE F18
 
 #.build/linux/rpm/x86_64/eShell-1.31.305-1547472541.el7.x86_64.rpm
 
+BINTRAY_PACKAGE_VER=`echo "const json=require('./package.json') ; console.log(json.version)" | node`
+
 mv .build/linux/rpm/${RPM_LOC}/*.rpm .
 FILE=`ls *.rpm`
 
 #ls -lh $FILE
-echo "================ arch: ${VSCODE_ARCH} ===== rpm: ${BINTRAY_REPOS} ==========="
+echo "================ arch: ${VSCODE_ARCH} ===== rpm: ${BINTRAY_REPOS} ===== package ver: ${BINTRAY_PACKAGE_VER} ======"
 #find .build
 
 #echo "================================================="
