@@ -2,7 +2,7 @@ steps:
 - script: |
     set -e
     sudo apt-get update
-    sudo apt-get install -y libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0
+    sudo apt-get install -y libx11-dev libxkbfile-dev pkg-config libsecret-1-dev libxss1 dbus xvfb libgtk-3-0
 #    sudo cp build/azure-pipelines/linux/xvfb.init /etc/init.d/xvfb
 #    sudo chmod +x /etc/init.d/xvfb
 #    sudo update-rc.d xvfb defaults
@@ -16,8 +16,9 @@ steps:
 - script: |
     npm install -g yarn
   displayName: Install yarn with npm
-
 - script: |
+    which node
+    node --version
     yarn
   displayName: Install Dependencies
 - script: |
@@ -26,18 +27,18 @@ steps:
 # - script: |
 #    yarn gulp hygiene
 #  displayName: Run Hygiene Checks
-- script: |
-    yarn monaco-compile-check
-  displayName: Run Monaco Editor Checks
-- script: |
-    yarn strict-null-check
-  displayName: Run Strict Null Checks
-- script: |
-    yarn compile
-  displayName: Compile Sources
-- script: |
-    yarn download-builtin-extensions
-  displayName: Download Built-in Extensions
+#- script: |
+#    yarn monaco-compile-check
+#  displayName: Run Monaco Editor Checks
+#- script: |
+#    yarn strict-null-check
+#  displayName: Run Strict Null Checks
+#- script: |
+#    yarn compile
+#  displayName: Compile Sources
+#- script: |
+#    yarn download-builtin-extensions
+#  displayName: Download Built-in Extensions
 #- script: |
 #    DISPLAY=:10 ./scripts/test.sh --tfs "Unit Tests"
 #  displayName: Run Unit Tests
