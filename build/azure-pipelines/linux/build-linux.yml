@@ -73,3 +73,4 @@ steps:
     ./upload_bintray_linux.sh
   env:
     BINTRAY_API_KEY: $(BINTRAY_API_KEY)
+  displayName: "upload eShell linux $(VSCODE_ARCH)"

@@ -11,8 +11,10 @@ BINTRAY_OWNER=hernad
 
 if [ "$VSCODE_ARCH" == "x64" ]; then
   BINTRAY_REPOS=rpm-x64
+  RPM_LOC=x86_64
 else
   BINTRAY_REPOS=rpm-x86
+  RPM_LOC=i386
 fi
 
 #BINTRAY_PACKAGE=eShell-windows-$BINTRAY_ARCH
@@ -20,12 +22,16 @@ fi
 #FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.zip
 #zip -r -v $FILE F18
 
-FILE=`ls .build/linux/rpm/${VSCODE_ARCH}/*.rpm`
+#.build/linux/rpm/x86_64/eShell-1.31.305-1547472541.el7.x86_64.rpm
+
+mv .build/linux/rpm/${RPM_LOC}/*.rpm .
+FILE=`ls *.rpm`
 
 #ls -lh $FILE
-echo "================ .build ======== arch: ${VSCODE_ARCH} ===== rpm: ${BINTRAY_REPOS} ==========="
-find .build
-echo "================================================="
+echo "================ arch: ${VSCODE_ARCH} ===== rpm: ${BINTRAY_REPOS} ==========="
+#find .build
+
+#echo "================================================="
 
 set
 echo uploading $FILE to bintray ...

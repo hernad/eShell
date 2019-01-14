@@ -5,16 +5,14 @@
 BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
 BINTRAY_OWNER=hernad
 BINTRAY_REPOS=eShell
-BINTRAY_PACKAGE=eShell-$BINTRAY_ARCH
+BINTRAY_PACKAGE=eShell-${BINTRAY_ARCH}
 BINTRAY_PACKAGE_VER=$BUILD_BUILDNUMBER
 
 FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.zip
+#ls -lh $FILE
 
-
-ls -lh $FILE
-
-set
-echo uploading $FILE to bintray ...
+#set
+pacman --noconfirm -S --needed zip
 
 if [ "$BINTRAY_ARCH" == "x64" ] ; then
    MINGW_BASE='mingw64'
@@ -23,9 +21,12 @@ if [ "$BINTRAY_ARCH" == "x64" ] ; then
 else
    MINGW_BASE='mingw32'
    MINGW_ARCH='i686'
-   mv .build/win32-ia32/**/eShell*.exe .
+   mv .build/win32-ia32/*/eShell*.exe .
 fi
-zip -r -v $FILE eShell*.exe
+EXE=`ls eShell*.exe`
+zip -r -v $FILE $EXE
+
+echo uploading $FILE to bintray ...
 
 pacman --noconfirm -S --needed mingw-w64-${MINGW_ARCH}-curl
 CURL=/$MINGW_BASE/bin/curl
