@@ -10,9 +10,6 @@ BINTRAY_PACKAGE_VER=$BUILD_BUILDNUMBER
 
 FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.zip
 
-mv .build/win32-ia32/**/eShell*.exe .
-
-zip -r -v $FILE eShell*.exe
 
 ls -lh $FILE
 
@@ -21,12 +18,16 @@ echo uploading $FILE to bintray ...
 
 if [ "$BINTRAY_ARCH" == "x64" ] ; then
    MINGW_BASE='mingw64'
-   MINGW_ARCH='i686'
+   MINGW_ARCH='x86_64'
+   mv .build/win32-x64/*/eShell*.exe .
 else
    MINGW_BASE='mingw32'
-   MINGW_ARCH='x86_64'
+   MINGW_ARCH='i686'
+   mv .build/win32-ia32/**/eShell*.exe .
 fi
-pacman --noconfirm -S --needed mingw-w64-$MINGW_ARCH-curl
+zip -r -v $FILE eShell*.exe
+
+pacman --noconfirm -S --needed mingw-w64-${MINGW_ARCH}-curl
 CURL=/$MINGW_BASE/bin/curl
 
 $CURL -s -T $FILE \

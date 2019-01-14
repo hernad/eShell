@@ -71,10 +71,10 @@ steps:
 #    includeRootFolder: false
 
 
-- task: CopyFiles@2
-  inputs:
-    contents: .build\win32-x64\archive\*.zip
-    targetFolder: $(Build.ArtifactStagingDirectory)
+#- task: CopyFiles@2
+#  inputs:
+#    contents: .build\win32-x64\archive\*.zip
+#    targetFolder: $(Build.ArtifactStagingDirectory)
 #- task: CopyFiles@2
 #  inputs:
 #    contents: .build\win32-x64\**\*.exe
@@ -118,8 +118,7 @@ steps:
 
     %CD:~0,2%\msys64\usr\bin\sed -i "s|#CacheDir.*|CacheDir=/c/Users/%USERNAME%/AppData/Local/Temp|g" /etc/pacman.conf
     %CD:~0,2%\msys64\usr\bin\bash -lc "bash upload_bintray_win32.sh"
-  displayName: upload to bintray
+  displayName: upload to bintray eShell windows 64-bit
   env:
     CHERE_INVOKING: yes
-    BINTRAY_ARCH: x64
     BINTRAY_API_KEY: $(BINTRAY_API_KEY)
