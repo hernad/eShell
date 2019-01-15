@@ -7,9 +7,6 @@ BINTRAY_OWNER=hernad
 BINTRAY_REPOS=eShell
 BINTRAY_PACKAGE=eShell-windows-${BINTRAY_ARCH}
 #BINTRAY_PACKAGE_VER=$BUILD_BUILDNUMBER
-
-#ls -lh $FILE
-
 pacman --noconfirm -S --needed zip
 
 #echo ================= .build ==============================
@@ -20,12 +17,11 @@ pacman --noconfirm -S --needed zip
 if [ "$BINTRAY_ARCH" == "x64" ] ; then
    MINGW_BASE='mingw64'
    MINGW_ARCH='x86_64'
-
    mv .build/win32-x64/user-setup/eShellSetup.exe .
 else
    MINGW_BASE='mingw32'
    MINGW_ARCH='i686'
-   mv .build/win32-ia32/userSetup/eShellSetup.exe .
+   mv .build/win32-ia32/user-setup/eShellSetup.exe .
 fi
 pacman --noconfirm -S --needed mingw-w64-${MINGW_ARCH}-curl mingw-w64-${MINGW_ARCH}-nodejs
 CURL=/$MINGW_BASE/bin/curl
