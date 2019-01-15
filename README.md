@@ -5,7 +5,7 @@
 
 ### Windows
 
-Potrebna verzija OS-a: Windows 7, Windows 10
+Potrebno: Windows 7, Windows 10
 
 #### 64-bit
 
@@ -16,8 +16,9 @@ Potrebna verzija OS-a: Windows 7, Windows 10
 [ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x86/images/download.svg?version=1.31.307) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x86_1.31.307.zip)
 
 
-
 ### Linux rpm x64 bazirane distribucije (RHEL, Centos, Fedora)
+
+Testirano na Centos7 x64, Fedora28 x64
 
 <pre>
 REPO=bintray-hernad-rpm-x64.repo
