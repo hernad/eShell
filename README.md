@@ -25,7 +25,7 @@ echo 'gpgcheck=0' >> /tmp/$REPO
 echo 'repo_gpgcheck=0' >> /tmp/$REPO
 echo 'enabled=1' >> /tmp/$REPO
 sudo mv /tmp/$REPO /etc/yum.repos.d/
-sudo dnf -y update --repo bintraybintray-hernad-rpm-x64 || sudo yum -y update --repo bintraybintray-hernad-rpm-x64x
+sudo dnf -y update --repo bintraybintray-hernad-rpm-x64 --refresh || sudo yum -y update --repo bintraybintray-hernad-rpm-x64x --refresh
 echo "'bintraybintray-hernad-rpm-x64' repo setup finished :)"
 
 </pre>
