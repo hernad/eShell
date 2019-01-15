@@ -7,6 +7,7 @@ steps:
 #    sudo chmod +x /etc/init.d/xvfb
 #    sudo update-rc.d xvfb defaults
 #    sudo service xvfb start
+  displayName: apt-get install dependencies
 
 # https://nodejs.org/dist/index.json
 # https://github.com/Microsoft/azure-pipelines-tasks/blob/master/Tasks/NodeToolV0/nodetool.ts
@@ -16,15 +17,14 @@ steps:
 - script: |
     npm install -g yarn
   displayName: Install yarn with npm
-#- script: |
-#    which node
-#    node --version
-#    #npm install -g node-gyp
-#    echo ===================== debug node build native errors common.gypi electron 3.0.13 ===================================
-#    yarn add native-watchdog@1.0.0
-#    cat ~/.node-gyp/iojs-3.0.13/common.gypi
-#    yarn
-#  displayName: Install Dependencies
+- script: |
+    #which node
+    #node --version
+    echo ===================== debug node build native errors common.gypi electron 3.0.13 ===================================
+    yarn add native-watchdog@1.0.0
+    cat ~/.node-gyp/iojs-3.0.13/common.gypi
+    yarn
+  displayName: Install Dependencies
 #- script: |
 #    yarn gulp electron-${VSCODE_ARCH}
 #  displayName: Download Electron
