@@ -7,18 +7,19 @@ steps:
 #    sudo chmod +x /etc/init.d/xvfb
 #    sudo update-rc.d xvfb defaults
 #    sudo service xvfb start
+
+# https://nodejs.org/dist/index.json
+# https://github.com/Microsoft/azure-pipelines-tasks/blob/master/Tasks/NodeToolV0/nodetool.ts
 - task: NodeTool@0
   inputs:
-    versionSpec: "8.12.0"
-# - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
-#  inputs:
-#    versionSpec: "1.10.1"
+    versionSpec: "8.15.0"
 - script: |
     npm install -g yarn
   displayName: Install yarn with npm
 - script: |
     which node
     node --version
+    #npm install -g node-gyp
     yarn
   displayName: Install Dependencies
 - script: |
