@@ -31,11 +31,9 @@ FILE=`ls *.rpm`
 
 #ls -lh $FILE
 echo "================ arch: ${VSCODE_ARCH} ===== rpm: ${BINTRAY_REPOS} ===== package ver: ${BINTRAY_PACKAGE_VER} ======"
-#find .build
 
-#echo "================================================="
+ls -lh $FILE
 
-set
 echo uploading $FILE to bintray ...
 
 curl -s -T $FILE \

@@ -12,19 +12,20 @@ BINTRAY_PACKAGE=eShell-windows-${BINTRAY_ARCH}
 
 pacman --noconfirm -S --needed zip
 
-echo ================= .build ==============================
-find .build
-echo =======================================================
+#echo ================= .build ==============================
+#find .build
+#echo =======================================================
+#.build/win32-ia32/user-setup/eShellSetup.exe
 
 if [ "$BINTRAY_ARCH" == "x64" ] ; then
    MINGW_BASE='mingw64'
    MINGW_ARCH='x86_64'
 
-   mv .build/win32-x64/*/eShell*.exe .
+   mv .build/win32-x64/user-setup/eShellSetup.exe .
 else
    MINGW_BASE='mingw32'
    MINGW_ARCH='i686'
-   mv .build/win32-ia32/*/eShell*.exe .
+   mv .build/win32-ia32/userSetup/eShellSetup.exe .
 fi
 pacman --noconfirm -S --needed mingw-w64-${MINGW_ARCH}-curl mingw-w64-${MINGW_ARCH}-nodejs
 CURL=/$MINGW_BASE/bin/curl
@@ -36,8 +37,9 @@ FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.zip
 
 echo "======================== package: $BINTRAY_PACKAGE ========== package_ver: $BINTRAY_PACKAGE_VER =================="
 
-EXE=`ls eShell*.exe`
+EXE=`ls eShellSetup.exe`
 zip -r -v $FILE $EXE
+ls -lh $FILE
 echo uploading $FILE to bintray ...
 
 $CURL -s -T $FILE \
