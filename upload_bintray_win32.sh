@@ -12,9 +12,14 @@ BINTRAY_PACKAGE=eShell-windows-${BINTRAY_ARCH}
 
 pacman --noconfirm -S --needed zip
 
+echo ================= .build ==============================
+find .build
+echo =======================================================
+
 if [ "$BINTRAY_ARCH" == "x64" ] ; then
    MINGW_BASE='mingw64'
    MINGW_ARCH='x86_64'
+
    mv .build/win32-x64/*/eShell*.exe .
 else
    MINGW_BASE='mingw32'
