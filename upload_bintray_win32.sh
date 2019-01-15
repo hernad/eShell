@@ -6,7 +6,8 @@ BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
 BINTRAY_OWNER=hernad
 BINTRAY_REPOS=eShell
 BINTRAY_PACKAGE=eShell-windows-${BINTRAY_ARCH}
-BINTRAY_PACKAGE_VER=$BUILD_BUILDNUMBER
+#BINTRAY_PACKAGE_VER=$BUILD_BUILDNUMBER
+BINTRAY_PACKAGE_VER=`echo "const json=require('./package.json') ; console.log(json.version)" | node`
 
 FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.zip
 #ls -lh $FILE
