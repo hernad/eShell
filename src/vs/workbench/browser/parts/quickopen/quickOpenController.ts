@@ -351,6 +351,9 @@ export class QuickOpenController extends Component implements IQuickOpenService 
 		const handlerDescriptor = registry.getQuickOpenHandler(value);
 		const defaultHandlerDescriptor = registry.getDefaultQuickOpenHandler();
 		const instantProgress = handlerDescriptor && handlerDescriptor.instantProgress;
+		if (!handlerDescriptor) {
+			return;
+		}
 		const contextKey = handlerDescriptor ? handlerDescriptor.contextKey : defaultHandlerDescriptor.contextKey;
 
 		// Reset Progress
