@@ -1,5 +1,11 @@
 trigger:
-- shell
+  branches:
+    include:
+    - shell
+    - releases/*
+  paths:
+    exclude:
+    - README.md
 
 variables:
 - group: API_KEYS
