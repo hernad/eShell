@@ -10,8 +10,6 @@ BINTRAY_PACKAGE=eShell-windows-${BINTRAY_ARCH}
 
 #ls -lh $FILE
 
-echo "======================== PATH: ========== package: $BINTRAY_PACKAGE ========== package_ver: $BINTRAY_PACKAGE_VER =================="
-#echo $PATH
 pacman --noconfirm -S --needed zip
 
 if [ "$BINTRAY_ARCH" == "x64" ] ; then
@@ -23,7 +21,6 @@ else
    MINGW_ARCH='i686'
    mv .build/win32-ia32/*/eShell*.exe .
 fi
-
 pacman --noconfirm -S --needed mingw-w64-${MINGW_ARCH}-curl mingw-w64-${MINGW_ARCH}-nodejs
 CURL=/$MINGW_BASE/bin/curl
 NODE=/$MINGW_BASE/bin/node
@@ -31,6 +28,8 @@ NODE=/$MINGW_BASE/bin/node
 $NODE --version
 BINTRAY_PACKAGE_VER=`echo "const json=require('./package.json') ; console.log(json.version)" | $NODE`
 FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.zip
+
+echo "======================== package: $BINTRAY_PACKAGE ========== package_ver: $BINTRAY_PACKAGE_VER =================="
 
 EXE=`ls eShell*.exe`
 zip -r -v $FILE $EXE
@@ -43,4 +42,3 @@ $CURL -s -T $FILE \
 
 $CURL -s -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
    -X POST https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/publish
-
