@@ -7,12 +7,11 @@ BINTRAY_OWNER=hernad
 BINTRAY_REPOS=eShell
 BINTRAY_PACKAGE=eShell-windows-${BINTRAY_ARCH}
 #BINTRAY_PACKAGE_VER=$BUILD_BUILDNUMBER
-BINTRAY_PACKAGE_VER=`echo "const json=require('./package.json') ; console.log(json.version)" | node`
-FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.zip
+
 #ls -lh $FILE
 
 echo "======================== PATH: ========== package: $BINTRAY_PACKAGE ========== package_ver: $BINTRAY_PACKAGE_VER =================="
-echo $PATH
+#echo $PATH
 pacman --noconfirm -S --needed zip
 
 if [ "$BINTRAY_ARCH" == "x64" ] ; then
@@ -24,13 +23,18 @@ else
    MINGW_ARCH='i686'
    mv .build/win32-ia32/*/eShell*.exe .
 fi
+
+pacman --noconfirm -S --needed mingw-w64-${MINGW_ARCH}-curl mingw-w64-${MINGW_ARCH}-nodejs
+CURL=/$MINGW_BASE/bin/curl
+NODE=/$MINGW_BASE/bin/node
+
+$NODE --version
+BINTRAY_PACKAGE_VER=`echo "const json=require('./package.json') ; console.log(json.version)" | $NODE`
+FILE=${BINTRAY_PACKAGE}_${BINTRAY_PACKAGE_VER}.zip
+
 EXE=`ls eShell*.exe`
 zip -r -v $FILE $EXE
-
 echo uploading $FILE to bintray ...
-
-pacman --noconfirm -S --needed mingw-w64-${MINGW_ARCH}-curl
-CURL=/$MINGW_BASE/bin/curl
 
 $CURL -s -T $FILE \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \

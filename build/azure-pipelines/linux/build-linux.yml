@@ -20,6 +20,8 @@ steps:
     which node
     node --version
     #npm install -g node-gyp
+    echo ===================== debug node build native errors common.gypi electron 3.0.13 ===================================
+    cat ~/.node-gyp/iojs-3.0.13/common.gypi
     yarn
   displayName: Install Dependencies
 - script: |
