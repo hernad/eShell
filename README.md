@@ -4,12 +4,12 @@
 
 ### Windows 64-bit
 
-[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x64/images/download.svg?version=1.31.306) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x64_1.31.306.zip)
+[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x64/images/download.svg?version=1.31.307) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x64_1.31.307.zip)
 
 
 ### Windows 32-bit
 
-[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x86/images/download.svg?version=1.31.306) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x86_1.31.306.zip)
+[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x86/images/download.svg?version=1.31.307) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x86_1.31.307.zip)
 
 
 
