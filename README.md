@@ -32,5 +32,6 @@ echo 'enabled=1' >> /tmp/$REPO
 sudo mv /tmp/$REPO /etc/yum.repos.d/
 sudo dnf -y update --repo bintraybintray-hernad-rpm-x64 --refresh || sudo yum -y update --repo bintraybintray-hernad-rpm-x64x --refresh
 echo "'bintraybintray-hernad-rpm-x64' repo setup finished :)"
+sudo dnf -y install eShell || sudo yum -y install eShell
 
 </pre>
