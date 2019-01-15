@@ -16,63 +16,23 @@ steps:
 - script: |
     npm install -g yarn
   displayName: Install yarn with npm
-- script: |
-    which node
-    node --version
-    #npm install -g node-gyp
-    echo ===================== debug node build native errors common.gypi electron 3.0.13 ===================================
-    yarn add native-watchdog@1.0.0
-    cat ~/.node-gyp/iojs-3.0.13/common.gypi
-    yarn
-  displayName: Install Dependencies
-- script: |
-    yarn gulp electron-${VSCODE_ARCH}
-  displayName: Download Electron
-# - script: |
-#    yarn gulp hygiene
-#  displayName: Run Hygiene Checks
 #- script: |
-#    yarn monaco-compile-check
-#  displayName: Run Monaco Editor Checks
+#    which node
+#    node --version
+#    #npm install -g node-gyp
+#    echo ===================== debug node build native errors common.gypi electron 3.0.13 ===================================
+#    yarn add native-watchdog@1.0.0
+#    cat ~/.node-gyp/iojs-3.0.13/common.gypi
+#    yarn
+#  displayName: Install Dependencies
 #- script: |
-#    yarn strict-null-check
-#  displayName: Run Strict Null Checks
-#- script: |
-#    yarn compile
-#  displayName: Compile Sources
-#- script: |
-#    yarn download-builtin-extensions
-#  displayName: Download Built-in Extensions
-#- script: |
-#    DISPLAY=:10 ./scripts/test.sh --tfs "Unit Tests"
-#  displayName: Run Unit Tests
-#- task: PublishTestResults@2
-#  displayName: Publish Tests Results
-#  inputs:
-#    testResultsFiles: '*-results.xml'
-#    searchFolder: '$(Build.ArtifactStagingDirectory)/test-results'
-#  condition: succeededOrFailed()
+#    yarn gulp electron-${VSCODE_ARCH}
+#  displayName: Download Electron
 
 - script: |
     yarn gulp vscode-linux-${VSCODE_ARCH}-min
     yarn gulp vscode-linux-${VSCODE_ARCH}-build-rpm
   displayName: "Linux build $(VSCODE_ARCH) rpm"
-
-#- task: ArchiveFiles@2
-#  inputs:
-    # rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-linux-x64'
-#   rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/linux/rpm/x86_64/rpmbuild/RPMS/x86_64/*.rpm'
-#    includeRootFolder: false
-
-#- task: CopyFiles@2
-#  inputs:
-#    contents: .build/linux/rpm/${VSCODE_ARCH}/*.rpm
-#    targetFolder: $(Build.ArtifactStagingDirectory)
-
-#- task: PublishBuildArtifacts@1
-#  inputs:
-#    #pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-#    artifactName: drop-linux-$(VSCODE_ARCH)
 
 - script: |
     ./upload_bintray_linux.sh
