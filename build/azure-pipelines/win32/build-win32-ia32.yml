@@ -1,7 +1,7 @@
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: "8.12.0"
+    versionSpec: "8.15.0"
 #- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
 #  inputs:
 #    versionSpec: "1.10.1"
@@ -39,34 +39,12 @@ steps:
     # npx gulp vscode-win32-ia32-archive
   displayName: "win32 build $(VSCODE_ARCH) zip"
 
-#- task: ArchiveFiles@2
-#  inputs:
-#    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/.build/win32-ia32/archive/VSCode-win32-ia32.zip'
-    #rootFolderOrFile: '$(System.DefaultWorkingDirectory)/../VSCode-win32-ia32'
-#    includeRootFolder: false
-
-- task: CopyFiles@2
-  inputs:
-    contents: .build\win32-ia32\archive\*.zip
-    targetFolder: $(Build.ArtifactStagingDirectory)
-#- task: CopyFiles@2
-#  inputs:
-#    contents: .build\win32-ia32\**\*.exe
-#    targetFolder: $(Build.ArtifactStagingDirectory)
-
-
-#- task: PublishBuildArtifacts@1
-#  inputs:
-#     artifactName: drop-win32-ia32
-
 - script: |
     git clone https://github.com/lazka/msys2-ci-base.git %CD:~0,2%\msys64
     %CD:~0,2%\msys64\usr\bin\rm -rf %CD:~0,2%\msys64\.git
-
-    set PATH=%CD:~0,2%\msys64\usr\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem
+    #set PATH=%CD:~0,2%\msys64\usr\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem
+    set PATH=%CD:~0,2%\msys64\usr\bin;%PATH%
     %CD:~0,2%\msys64\usr\bin\pacman --noconfirm -Syyuu
-    #%CD:~0,2%\msys64\usr\bin\pacman --noconfirm --needed -S curl zip unzip
-
     %CD:~0,2%\msys64\usr\bin\sed -i "s|#CacheDir.*|CacheDir=/c/Users/%USERNAME%/AppData/Local/Temp|g" /etc/pacman.conf
     %CD:~0,2%\msys64\usr\bin\bash -lc "bash upload_bintray_win32.sh"
   displayName: upload to bintray eShell windows 32-bit
