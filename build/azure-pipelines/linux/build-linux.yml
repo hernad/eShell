@@ -43,7 +43,7 @@ steps:
     fi
 
     yarn
-  displayName: Install Dependencies, build native node_modules for $(VSCODE_ARCH)"
+  displayName: yarn install dependencies, build native node_modules for $(VSCODE_ARCH)
 
 - script: |
     npx gulp vscode-linux-${VSCODE_ARCH}-min

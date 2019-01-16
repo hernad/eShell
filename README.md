@@ -40,6 +40,8 @@ sudo dnf -y install eShell || sudo yum -y install eShell
 
 ### deb x86
 
+Testirano na Ubuntu trusty 14.04, Ubuntu xenial 16.04
+
 <pre>
 echo "deb https://dl.bintray.com/hernad/deb-x86 bout main" | sudo tee -a /etc/apt/sources.list
 sudo apt-get -y update
