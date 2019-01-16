@@ -50,15 +50,18 @@ curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
 
 if [ "$VSCODE_ARCH" == "x64" ]; then
   BINTRAY_REPOS=deb-x64
+  BINTRAY_PACKAGE=eShell
   DEB_LOC=amd64
 else
   BINTRAY_REPOS=deb-x86
+  BINTRAY_PACKAGE=eshell
   DEB_LOC=i386
 fi
 
 mv .build/linux/deb/${DEB_LOC}/deb/*.deb .
 FILE=`ls *.deb`
 
+echo ' '
 echo uploading DEB $FILE to bintray ...
 curl -s -T $FILE \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
