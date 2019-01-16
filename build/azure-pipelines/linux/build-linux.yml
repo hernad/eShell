@@ -30,6 +30,11 @@ steps:
 #  displayName: Download Electron
 
 - script: |
+    export npm_config_arch="$(VSCODE_ARCH)"
+    if [[ "$(VSCODE_ARCH)" == "ia32" ]]; then
+      export PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
+    fi
+    ARCH="$(VSCODE_ARCH)"
     yarn gulp vscode-linux-${VSCODE_ARCH}-min
     yarn gulp vscode-linux-${VSCODE_ARCH}-build-rpm
     yarn gulp vscode-linux-${VSCODE_ARCH}-build-deb

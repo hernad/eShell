@@ -42,4 +42,6 @@ sudo dnf -y install eShell || sudo yum -y install eShell
 
 <pre>
 echo "deb https://dl.bintray.com/hernad/deb-x86 bout main" | sudo tee -a /etc/apt/sources.list
+sudo apt-get -y update
+sudo apt-get install -y --allow-unauthenticated eshell
 </pre>
