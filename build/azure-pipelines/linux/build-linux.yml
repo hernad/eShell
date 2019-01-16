@@ -25,6 +25,7 @@ steps:
 - script: |
     #which node
     #node --version
+    # npm_config_arch=(x64|ia32) => 32/64 bit node_modules build
     export npm_config_arch="${VSCODE_ARCH}"
     ELECTRON_VERSION=`cat .yarnrc | grep target | sed -e "s/target //" | sed -e 's/"//g'`
     echo "electron version = ${ELECTRON_VERSION}"
