@@ -8,11 +8,11 @@ Potrebno: Windows 7, Windows 10
 
 #### 64-bit
 
-[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x64/images/download.svg?version=1.31.322) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x64_1.31.322.zip)
+[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x64/images/download.svg?version=1.31.323) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x64_1.31.323.zip)
 
 #### 32-bit
 
-[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x86/images/download.svg?version=1.31.322) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x86_1.31.322.zip)
+[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x86/images/download.svg?version=1.31.323) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x86_1.31.323.zip)
 
 
 ### Linux
