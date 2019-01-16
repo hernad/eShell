@@ -32,8 +32,7 @@ steps:
 - script: |
     yarn gulp vscode-linux-${VSCODE_ARCH}-min
     yarn gulp vscode-linux-${VSCODE_ARCH}-build-rpm
-    [[ "$VSCODE_ARCH" == "ia32" ]] && DEB_ARCH="i386" || DEB_ARCH="amd64"
-    yarn gulp vscode-linux-${DEB_ARCH}-build-deb
+    yarn gulp vscode-linux-${VSCODE_ARCH}-build-deb
   displayName: "Linux build $(VSCODE_ARCH) rpm and deb"
 
 - script: |
