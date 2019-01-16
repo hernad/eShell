@@ -36,9 +36,9 @@ steps:
     fi
     ARCH="${VSCODE_ARCH}"
     set
-    yarn gulp vscode-linux-${VSCODE_ARCH}-min
-    yarn gulp vscode-linux-${VSCODE_ARCH}-build-rpm
-    yarn gulp vscode-linux-${VSCODE_ARCH}-build-deb
+    npx gulp vscode-linux-${VSCODE_ARCH}-min
+    npx gulp vscode-linux-${VSCODE_ARCH}-build-rpm
+    npx gulp vscode-linux-${VSCODE_ARCH}-build-deb
   displayName: "Linux build $(VSCODE_ARCH) rpm and deb"
 
 - script: |

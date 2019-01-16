@@ -2,9 +2,6 @@ steps:
 - task: NodeTool@0
   inputs:
     versionSpec: "8.15.0"
-#- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
-#  inputs:
-#    versionSpec: "1.10.1"
 - powershell: |
     npm install -g yarn
   displayName: hernad - Install yarn with npm
@@ -15,10 +12,9 @@ steps:
 - powershell: |
     . build/azure-pipelines/win32/exec.ps1
     $ErrorActionPreference = "Stop"
-    # "machine monacotools.visualstudio.com password $(VSO_PAT)" | Out-File "$env:USERPROFILE\_netrc" -Encoding ASCII
+    # 32-bit build
     $env:npm_config_arch="$(VSCODE_ARCH)"
     $env:CHILD_CONCURRENCY="1"
-    # $env:VSCODE_MIXIN_PASSWORD="$(VSCODE_MIXIN_PASSWORD)"
     exec { yarn }
     # exec { npm run gulp -- hygiene }
     # exec { npm run monaco-compile-check }

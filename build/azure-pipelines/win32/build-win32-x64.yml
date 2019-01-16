@@ -12,7 +12,7 @@ steps:
 - powershell: |
     . build/azure-pipelines/win32/exec.ps1
     $ErrorActionPreference = "Stop"
-    # "machine monacotools.visualstudio.com password $(VSO_PAT)" | Out-File "$env:USERPROFILE\_netrc" -Encoding ASCII
+    # 64-bit build
     $env:npm_config_arch="$(VSCODE_ARCH)"
     $env:CHILD_CONCURRENCY="1"
     # $env:VSCODE_MIXIN_PASSWORD="$(VSCODE_MIXIN_PASSWORD)"
