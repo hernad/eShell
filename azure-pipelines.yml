@@ -6,6 +6,8 @@ trigger:
   paths:
     exclude:
     - README.md
+    include:
+    - package.json
 
 variables:
 - group: API_KEYS
