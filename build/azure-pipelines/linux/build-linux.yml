@@ -31,11 +31,16 @@ steps:
 
 - script: |
     export npm_config_arch="${VSCODE_ARCH}"
-    if [[ "$(VSCODE_ARCH)" == "ia32" ]]; then
+    if [[ "${VSCODE_ARCH}" == "ia32" ]]; then
       export PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
+      yarn add --dev electron-rebuild
+      ELECTRON_VERSION=`cat .yarnrc | grep target | sed -e "s/target //" | sed -e 's/"//g'`
+      echo "electron version ${ELECTRON_VERSION}"
+      # https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md
+      node_modules/.bin/electron-rebuild --version ${ELECTRON_VERSION} --arch ia32
     fi
     ARCH="${VSCODE_ARCH}"
-    set
+
     npx gulp vscode-linux-${VSCODE_ARCH}-min
     npx gulp vscode-linux-${VSCODE_ARCH}-build-rpm
     npx gulp vscode-linux-${VSCODE_ARCH}-build-deb

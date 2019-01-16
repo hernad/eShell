@@ -25,9 +25,6 @@ steps:
   displayName: yarn prep
 
 - powershell: |
-    # https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md
-    # yarn add --dev electron-rebuild
-    # node_modules\.bin\electron-rebuild --version $(ELECTRON_VERSION) --arch ia32
     npx gulp vscode-win32-$(VSCODE_ARCH)-min
     npx gulp vscode-win32-$(VSCODE_ARCH)-copy-inno-updater
     npx gulp vscode-win32-$(VSCODE_ARCH)-inno-updater
