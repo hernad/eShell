@@ -25,9 +25,18 @@ steps:
 - script: |
     #which node
     #node --version
-    echo ===================== debug node build native errors common.gypi electron 3.0.13 ===================================
-    yarn add native-watchdog@1.0.0
-    cat ~/.node-gyp/iojs-3.0.13/common.gypi
+    export npm_config_arch="${VSCODE_ARCH}"
+    ELECTRON_VERSION=`cat .yarnrc | grep target | sed -e "s/target //" | sed -e 's/"//g'`
+    echo "electron version = ${ELECTRON_VERSION}"
+    ARCH="${VSCODE_ARCH}"
+    # https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md
+    # node_modules/.bin/electron-rebuild --version ${ELECTRON_VERSION} --arch ia32
+
+    #echo ===================== debug node build native errors common.gypi electron 3.0.13 ===================================
+    #yarn add native-watchdog@1.0.0
+    #cat ~/.node-gyp/iojs-3.0.13/common.gypi
+    export PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
+
     yarn
   displayName: Install Dependencies
 #- script: |
@@ -35,16 +44,11 @@ steps:
 #  displayName: Download Electron
 
 - script: |
-    export npm_config_arch="${VSCODE_ARCH}"
-    if [[ "${VSCODE_ARCH}" == "ia32" ]]; then
-      export PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
-      yarn add --dev electron-rebuild
-      ELECTRON_VERSION=`cat .yarnrc | grep target | sed -e "s/target //" | sed -e 's/"//g'`
-      echo "electron version ${ELECTRON_VERSION}"
-      # https://github.com/electron/electron/blob/master/docs/tutorial/using-native-node-modules.md
-      node_modules/.bin/electron-rebuild --version ${ELECTRON_VERSION} --arch ia32
-    fi
-    ARCH="${VSCODE_ARCH}"
+
+    #if [[ "${VSCODE_ARCH}" == "ia32" ]]; then
+    #  export PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
+    #  yarn add --dev electron-rebuild
+    #fi
     npx gulp vscode-linux-${VSCODE_ARCH}-min
     npx gulp vscode-linux-${VSCODE_ARCH}-build-rpm
     npx gulp vscode-linux-${VSCODE_ARCH}-build-deb
