@@ -57,7 +57,7 @@ else
   BINTRAY_PACKAGE=eshell
   DEB_ARCH=i386
 fi
-DEB_POOL=pool/main/e
+DEB_POOL=pool/main/e/eshell
 #DEB_INFO=deb_distribution=mydist;deb_component=main;deb_architecture=i386,amd64
 DEB_INFO="deb_distribution=bout;deb_component=main;deb_architecture=$DEB_ARCH"
 
@@ -70,7 +70,7 @@ FILE=`ls *.deb`
 echo -e
 echo -e
 
-echo " DEB_PATH: $BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$DEB_POOL/$FILE;$DEB_INFO"
+echo "DEB_PATH: $BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$DEB_POOL/$FILE;$DEB_INFO"
 echo "uploading DEB $FILE to bintray ..."
 curl -s -T $FILE \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
