@@ -34,8 +34,7 @@ echo "================ arch: ${VSCODE_ARCH} ===== rpm: ${BINTRAY_REPOS} ===== pa
 
 ls -lh $FILE
 
-echo uploading $FILE to bintray ...
-
+echo uploading RPM $FILE to bintray ...
 curl -s -T $FILE \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
       --header "X-Bintray-Override: 1" \
@@ -45,5 +44,30 @@ curl -s -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
    -X POST https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/publish
 
 # recalc rpm metadata
+curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
+   https://api.bintray.com/calc_metadata/$BINTRAY_OWNER/$BINTRAY_REPOS
+
+
+if [ "$VSCODE_ARCH" == "x64" ]; then
+  BINTRAY_REPOS=deb-x64
+  DEB_LOC=amd64
+else
+  BINTRAY_REPOS=deb-x86
+  DEB_LOC=i386
+fi
+
+mv .build/linux/deb/${DEB_LOC}/deb/*.deb .
+FILE=`ls *.deb`
+
+echo uploading DEB $FILE to bintray ...
+curl -s -T $FILE \
+      -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
+      --header "X-Bintray-Override: 1" \
+     https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$FILE
+
+curl -s -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
+   -X POST https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/publish
+
+# recalc deb metadata
 curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
    https://api.bintray.com/calc_metadata/$BINTRAY_OWNER/$BINTRAY_REPOS
