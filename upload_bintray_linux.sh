@@ -69,7 +69,6 @@ FILE=`ls *.deb`
 
 echo -e
 echo -e
-
 echo "DEB_PATH: $BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$DEB_POOL/$FILE;$DEB_INFO"
 echo "uploading DEB $FILE to bintray ..."
 curl -s -T $FILE \
