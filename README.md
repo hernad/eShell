@@ -2,18 +2,17 @@
 
 ## Downloads
 
-
 ### Windows
 
 Potrebno: Windows 7, Windows 10
 
 #### 64-bit
 
-[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x64/images/download.svg?version=1.31.312) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x64_1.31.312.zip)
+[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x64/images/download.svg?version=1.31.313) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x64_1.31.313.zip)
 
 #### 32-bit
 
-[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x86/images/download.svg?version=1.31.312) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x86_1.31.312.zip)
+[ ![Download](https://api.bintray.com/packages/hernad/eShell/eShell-windows-x86/images/download.svg?version=1.31.313) ](https://dl.bintray.com/hernad/eShell/eShell-windows-x86_1.31.313.zip)
 
 
 ### Linux
@@ -36,4 +35,11 @@ sudo dnf -y update --repo bintraybintray-hernad-rpm-x64 --refresh || sudo yum -y
 echo "'bintraybintray-hernad-rpm-x64' repo setup finished :)"
 sudo dnf -y install eShell || sudo yum -y install eShell
 
+</pre>
+
+
+### deb x86
+
+<pre>
+echo "deb https://dl.bintray.com/hernad/deb-x86 bout main" | sudo tee -a /etc/apt/sources.list
 </pre>

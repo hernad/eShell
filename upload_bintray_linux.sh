@@ -50,7 +50,7 @@ curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
 
 if [ "$VSCODE_ARCH" == "x64" ]; then
   BINTRAY_REPOS=deb-x64
-  BINTRAY_PACKAGE=eShell
+  BINTRAY_PACKAGE=eshell
   DEB_ARCH=amd64
 else
   BINTRAY_REPOS=deb-x86
