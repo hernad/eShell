@@ -7,7 +7,11 @@ steps:
        sudo apt-get install -y libx11-dev:i386 libxkbfile-dev:i386 libsecret-1-dev:i386 libxss1:i386 libgtk-3-0:i386
     else
        sudo apt-get install -y libx11-dev libxkbfile-dev libsecret-1-dev libxss1 libgtk-3-0
-    endif
+    fi
+
+    #pkg-config --cflags gio-2.0 gobject-2.0 glib-2.0 libsecret-1
+    #output: -pthread -I/usr/include/libsecret-1 -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include
+
   displayName: apt-get install dependencies
 
 # https://nodejs.org/dist/index.json
@@ -41,7 +45,6 @@ steps:
       node_modules/.bin/electron-rebuild --version ${ELECTRON_VERSION} --arch ia32
     fi
     ARCH="${VSCODE_ARCH}"
-
     npx gulp vscode-linux-${VSCODE_ARCH}-min
     npx gulp vscode-linux-${VSCODE_ARCH}-build-rpm
     npx gulp vscode-linux-${VSCODE_ARCH}-build-deb
