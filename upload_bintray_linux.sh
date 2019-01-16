@@ -51,26 +51,35 @@ curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
 if [ "$VSCODE_ARCH" == "x64" ]; then
   BINTRAY_REPOS=deb-x64
   BINTRAY_PACKAGE=eShell
-  DEB_LOC=amd64
+  DEB_ARCH=amd64
 else
   BINTRAY_REPOS=deb-x86
   BINTRAY_PACKAGE=eshell
-  DEB_LOC=i386
+  DEB_ARCH=i386
 fi
+DEB_POOL=pool/main/e
+#DEB_INFO=deb_distribution=mydist;deb_component=main;deb_architecture=i386,amd64
+DEB_INFO="deb_distribution=bout;deb_component=main;deb_architecture=$DEB_ARCH"
 
-mv .build/linux/deb/${DEB_LOC}/deb/*.deb .
+# https://blog.bintray.com/2014/12/16/hosting-debian-packages-on-bintray-rocks/
+# https://api.bintray.com/content/myorg/myrepo/mypack/0.0.1/pool/main/m/mypack/libmypack_0.0.1_i386.deb;deb_distribution=mydist;deb_component=main;deb_architecture=i386,amd64
+
+mv .build/linux/deb/${DEB_ARCH}/deb/*.deb .
 FILE=`ls *.deb`
 
-echo ' '
-echo uploading DEB $FILE to bintray ...
+echo -e
+echo -e
+
+echo " DEB_PATH: $BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$DEB_POOL/$FILE;$DEB_INFO"
+echo "uploading DEB $FILE to bintray ..."
 curl -s -T $FILE \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
       --header "X-Bintray-Override: 1" \
-     https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$FILE
+     https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$DEB_POOL/$FILE;$DEB_INFO
 
 curl -s -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
    -X POST https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/publish
 
 # recalc deb metadata
-curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
-   https://api.bintray.com/calc_metadata/$BINTRAY_OWNER/$BINTRAY_REPOS
+#curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
+#   https://api.bintray.com/calc_metadata/$BINTRAY_OWNER/$BINTRAY_REPOS
