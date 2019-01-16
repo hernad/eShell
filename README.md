@@ -39,9 +39,9 @@ echo "ok"
 </pre>
 
 
-### deb x86
+#### deb x86
 
-Testirano na Ubuntu trusty 14.04, Ubuntu xenial 16.04
+Testirano na Ubuntu trusty 14.04 i386, Ubuntu xenial 16.04 i386
 
 <pre>
 echo "deb https://dl.bintray.com/hernad/deb-x86 bout main" | sudo tee -a /etc/apt/sources.list
