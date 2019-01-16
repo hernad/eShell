@@ -34,6 +34,7 @@ sudo mv /tmp/$REPO /etc/yum.repos.d/
 sudo dnf -y update --repo bintraybintray-hernad-rpm-x64 --refresh || sudo yum -y update --repo bintraybintray-hernad-rpm-x64x --refresh
 echo "'bintraybintray-hernad-rpm-x64' repo setup finished :)"
 sudo dnf -y install eShell || sudo yum -y install eShell
+echo "ok"
 
 </pre>
 
@@ -46,4 +47,6 @@ Testirano na Ubuntu trusty 14.04, Ubuntu xenial 16.04
 echo "deb https://dl.bintray.com/hernad/deb-x86 bout main" | sudo tee -a /etc/apt/sources.list
 sudo apt-get -y update
 sudo apt-get install -y --allow-unauthenticated eshell
+echo "ok"
+
 </pre>
