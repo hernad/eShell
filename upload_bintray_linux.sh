@@ -75,11 +75,11 @@ echo "uploading DEB $FILE to bintray ..."
 curl -s -T $FILE \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
       --header "X-Bintray-Override: 1" \
-     https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$DEB_POOL/$FILE;$DEB_INFO
+     "https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$DEB_POOL/$FILE;$DEB_INFO"
 
 curl -s -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
    -X POST https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/publish
 
 # recalc deb metadata
-#curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
-#   https://api.bintray.com/calc_metadata/$BINTRAY_OWNER/$BINTRAY_REPOS
+curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
+   https://api.bintray.com/calc_metadata/$BINTRAY_OWNER/$BINTRAY_REPOS
