@@ -33,8 +33,8 @@ bootstrapWindow.load(
 		canModifyDOM: function(windowConfig) {
 			showPartsSplash(windowConfig);
 		},
-		beforeLoaderConfig: function(windowConfig, loaderConfig) {
-			loaderConfig.recordStats = !!windowConfig.performance;
+		beforeLoaderConfig: function (windowConfig, loaderConfig) {
+			loaderConfig.recordStats = !!windowConfig['prof-modules'];
 			if (loaderConfig.nodeCachedData) {
 				const onNodeCachedData = (window['MonacoEnvironment'].onNodeCachedData = []);
 				loaderConfig.nodeCachedData.onData = function() {

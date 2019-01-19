@@ -1,6 +1,6 @@
 {
   "name": "eshell",
-  "version": "1.31.323",
+  "version": "1.31.330",
   "distro": "33f87cff9a75fbdfbcf28777085f45e615905c78",
   "author": {
     "name": "bring.out"
@@ -27,7 +27,7 @@
     "strict-null-check-watch": "tsc -p src/tsconfig.strictNullChecks.json --watch"
   },
   "dependencies": {
-    "applicationinsights": "1.0.7",
+    "applicationinsights": "1.0.8",
     "fast-plist": "0.1.2",
     "gc-signals": "^0.0.1",
     "getmac": "1.4.1",

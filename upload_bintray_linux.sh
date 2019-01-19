@@ -7,7 +7,7 @@ if [[ ! `which curl` ]] ; then
 fi
 
 BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
-BINTRAY_OWNER=hernad
+BINTRAY_OWNER=bringout
 
 if [ "$VSCODE_ARCH" == "x64" ]; then
   BINTRAY_REPOS=rpm-x64

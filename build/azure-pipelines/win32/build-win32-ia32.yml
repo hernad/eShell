@@ -42,4 +42,4 @@ steps:
   displayName: upload to bintray eShell windows 32-bit
   env:
     CHERE_INVOKING: yes
-    BINTRAY_API_KEY: $(BINTRAY_API_KEY)
+    BINTRAY_API_KEY: $(BINTRAY_BRINGOUT_API_KEY)

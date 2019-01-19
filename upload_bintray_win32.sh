@@ -3,7 +3,7 @@
 # https://github.com/$BINTRAY_OWNER/greenbox/blob/apps_modular/upload_app.sh
 
 BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
-BINTRAY_OWNER=hernad
+BINTRAY_OWNER=bringout
 BINTRAY_REPOS=eShell
 BINTRAY_PACKAGE=eShell-windows-${BINTRAY_ARCH}
 #BINTRAY_PACKAGE_VER=$BUILD_BUILDNUMBER

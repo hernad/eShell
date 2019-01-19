@@ -801,8 +801,8 @@ export class TerminalInstance implements ITerminalInstance {
 				pathBasename === 'powershell' ||
 				this.title === 'powershell';
 
-			if (hasSpace && isPowerShell) {
-				c(`& '${originalPath.replace('\'', '\'\'')}'`);
+			if (isPowerShell && (hasSpace || originalPath.indexOf('\'') !== -1)) {
+				c(`& '${originalPath.replace(/'/g, '\'\'')}'`);
 				return;
 			}
 

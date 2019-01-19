@@ -16,6 +16,17 @@
 
 declare module 'vscode' {
 
+	//#region Joh - vscode.open
+
+	export namespace window {
+		/**
+		 *
+		 */
+		export function open(uri: Uri): void;
+	}
+
+	//#endregion
+
 	//#region Joh - selection range provider
 
 	export class SelectionRangeKind {
@@ -1074,21 +1085,6 @@ declare module 'vscode' {
 	}
 	//#endregion
 
-	//#region Extension Context
-	export interface ExtensionContext {
-
-		/**
-		 * An absolute file path in which the extension can store gloabal state.
-		 * The directory might not exist on disk and creation is
-		 * up to the extension. However, the parent directory is guaranteed to be existent.
-		 *
-		 * Use [`globalState`](#ExtensionContext.globalState) to store key value data.
-		 */
-		globalStoragePath: string;
-
-	}
-	//#endregion
-
 	//#region SignatureHelpContext active paramters - mjbvz
 	export interface SignatureHelpContext {
 		/**
@@ -1099,4 +1095,17 @@ declare module 'vscode' {
 		readonly activeSignatureHelp?: SignatureHelp;
 	}
 	//#endregion
+
+	//#region CodeAction.canAutoApply - mjbvz
+	export interface CodeAction {
+		/**
+		 * If the action can be safely automatically applied without the user selecting it from a list.
+		 *
+		 * Set this on quick fixes to indicate that the fix properly addresses the underlying error.
+		 */
+		canAutoApply?: boolean;
+	}
+	//#endregion
+
+
 }

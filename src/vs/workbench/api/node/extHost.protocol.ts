@@ -21,7 +21,7 @@ import { ICommandHandlerDescription } from 'vs/platform/commands/common/commands
 import { ConfigurationTarget, IConfigurationData, IConfigurationModel } from 'vs/platform/configuration/common/configuration';
 import { ConfigurationScope } from 'vs/platform/configuration/common/configurationRegistry';
 import { FileChangeType, FileDeleteOptions, FileOverwriteOptions, FileSystemProviderCapabilities, FileType, FileWriteOptions, IStat, IWatchOptions } from 'vs/platform/files/common/files';
-import { LabelRules } from 'vs/platform/label/common/label';
+import { ResourceLabelFormatter } from 'vs/platform/label/common/label';
 import { LogLevel } from 'vs/platform/log/common/log';
 import { IMarkerData } from 'vs/platform/markers/common/markers';
 import { IPickOptions, IQuickInputButton, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
@@ -67,7 +67,6 @@ export interface IInitData {
 	environment: IEnvironment;
 	workspace: IWorkspaceData;
 	extensions: IExtensionDescription[];
-	configuration: IConfigurationInitData;
 	telemetryInfo: ITelemetryInfo;
 	logLevel: LogLevel;
 	logsLocation: URI;
@@ -344,7 +343,7 @@ export interface MainThreadProgressShape extends IDisposable {
 }
 
 export interface MainThreadTerminalServiceShape extends IDisposable {
-	$createTerminal(name?: string, shellPath?: string, shellArgs?: string[], cwd?: string | URI, env?: { [key: string]: string }, waitOnExit?: boolean): Promise<{ id: number, name: string }>;
+	$createTerminal(name?: string, shellPath?: string, shellArgs?: string[], cwd?: string | URI, env?: { [key: string]: string }, waitOnExit?: boolean, strictEnv?: boolean): Promise<{ id: number, name: string }>;
 	$createTerminalRenderer(name: string): Promise<number>;
 	$dispose(terminalId: number): void;
 	$hide(terminalId: number): void;
@@ -514,7 +513,7 @@ export interface IFileChangeDto {
 export interface MainThreadFileSystemShape extends IDisposable {
 	$registerFileSystemProvider(handle: number, scheme: string, capabilities: FileSystemProviderCapabilities): void;
 	$unregisterProvider(handle: number): void;
-	$setUriFormatter(scheme: string, formatter: LabelRules): void;
+	$setUriFormatter(formatter: ResourceLabelFormatter): void;
 	$onFileSystemChange(handle: number, resource: IFileChangeDto[]): void;
 }
 
@@ -623,6 +622,7 @@ export interface MainThreadDebugServiceShape extends IDisposable {
 
 export interface MainThreadWindowShape extends IDisposable {
 	$getWindowVisibility(): Promise<boolean>;
+	$openUri(uri: UriComponents): Promise<any>;
 }
 
 // -- extension host
@@ -633,7 +633,8 @@ export interface ExtHostCommandsShape {
 }
 
 export interface ExtHostConfigurationShape {
-	$acceptConfigurationChanged(data: IConfigurationData, eventData: IWorkspaceConfigurationChangeEventData): void;
+	$initializeConfiguration(data: IConfigurationInitData): void;
+	$acceptConfigurationChanged(data: IConfigurationInitData, eventData: IWorkspaceConfigurationChangeEventData): void;
 }
 
 export interface ExtHostDiagnosticsShape {
@@ -726,8 +727,8 @@ export interface ExtHostFileSystemShape {
 	$unwatch(handle: number, session: number): void;
 	$open(handle: number, resource: UriComponents): Promise<number>;
 	$close(handle: number, fd: number): Promise<void>;
-	$read(handle: number, fd: number, pos: number, data: Buffer, offset: number, length: number): Promise<number>;
-	$write(handle: number, fd: number, pos: number, data: Buffer, offset: number, length: number): Promise<number>;
+	$read(handle: number, fd: number, pos: number, length: number): Promise<Buffer>;
+	$write(handle: number, fd: number, pos: number, data: Buffer): Promise<number>;
 }
 
 export interface ExtHostSearchShape {
@@ -740,6 +741,13 @@ export interface ExtHostExtensionServiceShape {
 	$resolveAuthority(remoteAuthority: string): Promise<ResolvedAuthority>;
 	$startExtensionHost(enabledExtensionIds: ExtensionIdentifier[]): Promise<void>;
 	$activateByEvent(activationEvent: string): Promise<void>;
+	$activate(extensionId: ExtensionIdentifier, activationEvent: string): Promise<void>;
+
+	$deltaExtensions(toAdd: IExtensionDescription[], toRemove: ExtensionIdentifier[]): Promise<void>;
+
+	$test_latency(n: number): Promise<number>;
+	$test_up(b: Buffer): Promise<number>;
+	$test_down(size: number): Promise<Buffer>;
 }
 
 export interface FileSystemEvents {
@@ -801,10 +809,10 @@ export interface LocationDto {
 }
 
 export interface DefinitionLinkDto {
-	origin?: IRange;
+	originSelectionRange?: IRange;
 	uri: UriComponents;
 	range: IRange;
-	selectionRange?: IRange;
+	targetSelectionRange?: IRange;
 }
 
 export interface WorkspaceSymbolDto extends IdObject {
@@ -857,6 +865,7 @@ export interface CodeActionDto {
 	diagnostics?: IMarkerData[];
 	command?: modes.Command;
 	kind?: string;
+	canAutoApply?: boolean;
 }
 
 export interface ExtHostLanguageFeaturesShape {

@@ -480,7 +480,7 @@ export class ExtHostTask implements ExtHostTaskShape {
 
 		/*
 		let workspaceFolder = this._workspaceService.resolveWorkspaceFolder(uri);
-		let resolver = new ExtHostVariableResolverService(this._workspaceService, this._editorService, this._configurationService);
+		let resolver = new ExtHostVariableResolverService(this._workspaceService, this._editorService, configProvider);
 		let ws: IWorkspaceFolder = {
 			uri: workspaceFolder.uri,
 			name: workspaceFolder.name,

@@ -70,7 +70,7 @@ import { IDecorationRenderOptions } from 'vs/editor/common/editorCommon';
 import { EditorGroup } from 'vs/workbench/common/editor/editorGroup';
 import { Dimension } from 'vs/base/browser/dom';
 import { ILogService, LogLevel } from 'vs/platform/log/common/log';
-import { ILabelService, LabelService } from 'vs/platform/label/common/label';
+import { ILabelService } from 'vs/platform/label/common/label';
 import { timeout } from 'vs/base/common/async';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 import { ViewletDescriptor } from 'vs/workbench/browser/viewlet';
@@ -79,6 +79,7 @@ import { IProgressService } from 'vs/platform/progress/common/progress';
 import { IStorageService, InMemoryStorageService } from 'vs/platform/storage/common/storage';
 import { isLinux, isMacintosh } from 'vs/base/common/platform';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
+import { LabelService } from 'vs/workbench/services/label/common/labelService';
 
 export function createFileInput(instantiationService: IInstantiationService, resource: URI): FileEditorInput {
 	return instantiationService.createInstance(FileEditorInput, resource, undefined);
@@ -309,6 +310,7 @@ export class TestExtensionService implements IExtensionService {
 	_serviceBrand: any;
 	onDidRegisterExtensions: Event<void> = Event.None;
 	onDidChangeExtensionsStatus: Event<ExtensionIdentifier[]> = Event.None;
+	onDidChangeExtensions: Event<void> = Event.None;
 	onWillActivateByEvent: Event<IWillActivateEvent> = Event.None;
 	onDidChangeResponsiveChange: Event<IResponsiveStateChangeEvent> = Event.None;
 	activateByEvent(_activationEvent: string): Promise<void> { return Promise.resolve(undefined); }
@@ -1450,9 +1452,9 @@ export class TestViewletService implements IViewletService {
 	_serviceBrand: ServiceIdentifier<any>;
 
 	readonly onDidViewletRegister: Event<ViewletDescriptor> = new Emitter<ViewletDescriptor>().event;
+	readonly onDidViewletDeregister: Event<ViewletDescriptor> = new Emitter<ViewletDescriptor>().event;
 	onDidViewletOpen: Event<IViewlet> = new Emitter<IViewlet>().event;
 	onDidViewletClose: Event<IViewlet> = new Emitter<IViewlet>().event;
-	onDidViewletEnablementChange: Event<{ id: string, enabled: boolean }> = new Emitter<{ id: string, enabled: boolean }>().event;
 
 	openViewlet(_id: string, _focus?: boolean): Promise<IViewlet> { return null; }
 
@@ -1465,8 +1467,6 @@ export class TestViewletService implements IViewletService {
 	getAllViewlets(): ViewletDescriptor[] { return null; }
 
 	getViewlets(): ViewletDescriptor[] { return null; }
-
-	setViewletEnablement(_id: string, _enabled: boolean): void { }
 
 	getProgressIndicator(_id: string): IProgressService { return null; }
 
