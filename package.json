@@ -1,6 +1,6 @@
 {
   "name": "eshell",
-  "version": "1.31.332",
+  "version": "1.31.333",
   "distro": "412ebc6f9900c1cd44d62e4d1b872221f67fc6d9",
   "author": {
     "name": "bring.out"
@@ -41,7 +41,7 @@
     "native-is-elevated": "^0.2.1",
     "native-keymap": "1.2.5",
     "native-watchdog": "1.0.0",
-    "node-pty": "0.8.0",
+    "node-pty": "0.8.1",
     "semver": "^5.5.0",
     "spdlog": "0.7.2",
     "sudo-prompt": "8.2.0",
@@ -112,7 +112,7 @@
     "mime": "^1.4.1",
     "minimatch": "^3.0.4",
     "mkdirp": "^0.5.0",
-    "mocha": "^2.2.5",
+    "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.17.0",
     "optimist": "0.3.5",
     "p-all": "^1.0.0",
