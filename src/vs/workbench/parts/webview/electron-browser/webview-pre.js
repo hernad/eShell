@@ -218,6 +218,9 @@
 				const defaultScript = newDocument.createElement('script');
 				defaultScript.textContent = `
 					const acquireVsCodeApi = (function() {
+						if (!window.parent)
+						   console.logg('webView debug - window.parent null?!');
+
 						const originalPostMessage = window.parent.postMessage.bind(window.parent);
 						let acquired = false;
 
@@ -379,7 +382,10 @@
 			if (!pending) {
 				const target = getActiveFrame();
 				if (target) {
-					target.contentWindow.postMessage(data, '*');
+					if (target.contentWindow)
+					  target.contentWindow.postMessage(data, '*');
+					else
+					  console.log('target.contentWindow null/2 ?!');
 					return;
 				}
 			}
