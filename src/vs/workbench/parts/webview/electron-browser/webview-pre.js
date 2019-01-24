@@ -333,9 +333,9 @@
 					newFrame.setAttribute('id', 'active-frame');
 					newFrame.style.visibility = 'visible';
 					if (newFrame.contentWindow)
-					   newFrame.contentWindow.focus();
+                        newFrame.contentWindow.focus();
 					else
-					   console.log('newFrame.contentWindows nul?!');
+                        console.log('newFrame.contentWindows nul?!');
 
 					contentWindow.addEventListener('scroll', handleInnerScroll);
 
