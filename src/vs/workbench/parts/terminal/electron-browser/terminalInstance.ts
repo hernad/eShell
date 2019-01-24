@@ -591,7 +591,8 @@ export class TerminalInstance implements ITerminalInstance {
 				this._attachPressAnyKeyToCloseListener();
 			}
 
-			const neverMeasureRenderTime = this._storageService.getBoolean(NEVER_MEASURE_RENDER_TIME_STORAGE_KEY, StorageScope.GLOBAL, false);
+			// hernad: neverMeasureRenderTime = false -> true
+			const neverMeasureRenderTime = this._storageService.getBoolean(NEVER_MEASURE_RENDER_TIME_STORAGE_KEY, StorageScope.GLOBAL, true);
 			if (!neverMeasureRenderTime && this._configHelper.config.rendererType === 'auto') {
 				this._measureRenderTime();
 			}

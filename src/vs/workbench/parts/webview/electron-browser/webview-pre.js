@@ -180,7 +180,11 @@
 		ipcRenderer.on('focus', () => {
 			const target = getActiveFrame();
 			if (target) {
-				target.contentWindow.focus();
+				if (target.contentWindow) {
+                   target.contentWindow.focus();
+				} else {
+					console.log('target.contentWindow nul?!');
+				}
 			}
 		});
 
@@ -226,6 +230,7 @@
 							acquired = true;
 							return Object.freeze({
 								postMessage: function(msg) {
+									// hernad: console.log('debug webView postMessage');
 									return originalPostMessage({ command: 'onmessage', data: msg }, '*');
 								},
 								setState: function(newState) {
@@ -309,6 +314,7 @@
 			};
 
 			let onLoad = (contentDocument, contentWindow) => {
+				console.log('====================debug webView onLoad=============');
 				if (contentDocument.body) {
 					// Workaround for https://github.com/Microsoft/vscode/issues/12865
 					// check new scrollY and reset if neccessary
@@ -323,12 +329,17 @@
 					}
 					newFrame.setAttribute('id', 'active-frame');
 					newFrame.style.visibility = 'visible';
-					newFrame.contentWindow.focus();
+					if (newFrame.contentWindow)
+					   newFrame.contentWindow.focus();
+					else
+					   console.log('newFrame.contentWindows nul?!');
 
 					contentWindow.addEventListener('scroll', handleInnerScroll);
 
 					pendingMessages.forEach((data) => {
-						contentWindow.postMessage(data, '*');
+						if (contentWindow) {
+                           contentWindow.postMessage(data, '*');
+						} else console.log('contentWindows nul?!');
 					});
 					pendingMessages = [];
 				}

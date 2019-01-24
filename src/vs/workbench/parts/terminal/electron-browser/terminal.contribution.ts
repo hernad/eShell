@@ -205,8 +205,8 @@ configurationRegistry.registerConfiguration({
 				nls.localize('terminal.integrated.rendererType.canvas', "Use the standard GPU/canvas-based renderer"),
 				nls.localize('terminal.integrated.rendererType.dom', "Use the fallback DOM-based renderer.")
 			],
-			default: 'auto',
-			description: nls.localize('terminal.integrated.rendererType', "Controls how the terminal is rendered.")
+			default: 'dom', // hernad: eShell default terminal renderer: auto -> dom
+ 			description: nls.localize('terminal.integrated.rendererType', "Controls how the terminal is rendered.")
 		},
 		'terminal.integrated.rightClickBehavior': {
 			type: 'string',
