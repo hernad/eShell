@@ -26,7 +26,6 @@ import { Parts, IPartService, IDimension } from 'vs/workbench/services/part/comm
 // import { QUICKOPEN_ACTION_ID } from 'vs/workbench/browser/parts/quickopen/quickopen';
 // import { TERMINAL_COMMAND_ID } from 'vs/workbench/parts/terminal/common/terminalCommands';
 import * as dom from 'vs/base/browser/dom';
-import { QUIT_ID } from 'vs/workbench/electron-browser/commands';
 // import { StartAction } from 'vs/workbench/parts/debug/browser/debugActions';
 // import { FindInFilesActionId } from 'vs/workbench/parts/search/common/constants';
 // import { QUICKOPEN_ACTION_ID } from 'vs/workbench/browser/parts/quickopen/quickopen';
@@ -91,7 +90,7 @@ const startDebugging: WatermarkEntry = {
 */
 const quitCommand: WatermarkEntry = {
 	text: nls.localize('watermark.quitCommand', "Kraj"),
-	id: QUIT_ID
+	id: 'workbench.action.quit'
 };
 
 const noFolderEntries = [

@@ -62,51 +62,10 @@ import { IEditorGroupsService } from 'vs/workbench/services/group/common/editorG
 import { IPartService } from 'vs/workbench/services/part/common/partService';
 import { IPreferencesService, ISettingsEditorOptions } from 'vs/workbench/services/preferences/common/preferences';
 import { IUntitledEditorService } from 'vs/workbench/services/untitled/common/untitledEditorService';
+import { createFileIconThemableTreeContainerScope } from 'vs/workbench/browser/parts/views/views';
+import { IWorkbenchThemeService } from 'vs/workbench/services/themes/common/workbenchThemeService';
 
 const $ = dom.$;
-
-function createResultIterator(searchResult: SearchResult, collapseResults: ISearchConfigurationProperties['collapseResults']): Iterator<ITreeElement<RenderableMatch>> {
-	const folderMatches = searchResult.folderMatches()
-		.filter(fm => !fm.isEmpty())
-		.sort(searchMatchComparer);
-
-	if (folderMatches.length === 1) {
-		return createFolderIterator(folderMatches[0], collapseResults);
-	}
-
-	const foldersIt = Iterator.fromArray(folderMatches);
-	return Iterator.map(foldersIt, folderMatch => {
-		const children = createFolderIterator(folderMatch, collapseResults);
-		return <ITreeElement<RenderableMatch>>{ element: folderMatch, children };
-	});
-}
-
-function createFolderIterator(folderMatch: FolderMatch, collapseResults: ISearchConfigurationProperties['collapseResults']): Iterator<ITreeElement<RenderableMatch>> {
-	const filesIt = Iterator.fromArray(
-		folderMatch.matches()
-			.sort(searchMatchComparer));
-
-	return Iterator.map(filesIt, fileMatch => {
-		const children = createFileIterator(fileMatch);
-
-		const collapsed = collapseResults === 'alwaysCollapse' || (fileMatch.matches().length > 10 && collapseResults !== 'alwaysExpand');
-
-		return <ITreeElement<RenderableMatch>>{ element: fileMatch, children, collapsed };
-	});
-}
-
-function createFileIterator(fileMatch: FileMatch): Iterator<ITreeElement<RenderableMatch>> {
-	const matchesIt = Iterator.from(
-		fileMatch.matches()
-			.sort(searchMatchComparer));
-	return Iterator.map(matchesIt, r => (<ITreeElement<RenderableMatch>>{ element: r }));
-}
-
-export function createIterator(match: FolderMatch | FileMatch | SearchResult, collapseResults: ISearchConfigurationProperties['collapseResults']): Iterator<ITreeElement<RenderableMatch>> {
-	return match instanceof SearchResult ? createResultIterator(match, collapseResults) :
-		match instanceof FolderMatch ? createFolderIterator(match, collapseResults) :
-			createFileIterator(match);
-}
 
 export class SearchView extends Viewlet implements IViewlet, IPanel {
 
@@ -186,10 +145,11 @@ export class SearchView extends Viewlet implements IViewlet, IPanel {
 		@IUntitledEditorService private readonly untitledEditorService: IUntitledEditorService,
 		@IPreferencesService private readonly preferencesService: IPreferencesService,
 		@IThemeService protected themeService: IThemeService,
+		@IWorkbenchThemeService protected workbenchThemeService: IWorkbenchThemeService,
 		@ISearchHistoryService private readonly searchHistoryService: ISearchHistoryService,
 		@IEditorGroupsService private readonly editorGroupsService: IEditorGroupsService,
 		@IContextMenuService private readonly contextMenuService: IContextMenuService,
-		@IMenuService private readonly menuService: IMenuService
+		@IMenuService private readonly menuService: IMenuService,
 	) {
 		super(VIEW_ID, configurationService, partService, telemetryService, themeService, storageService);
 
@@ -483,19 +443,66 @@ export class SearchView extends Viewlet implements IViewlet, IPanel {
 	refreshTree(event?: IChangeEvent): void {
 		const collapseResults = this.configurationService.getValue<ISearchConfigurationProperties>('search').collapseResults;
 		if (!event || event.added || event.removed) {
-			this.tree.setChildren(null, createResultIterator(this.viewModel.searchResult, collapseResults));
+			this.tree.setChildren(null, this.createResultIterator(collapseResults));
 		} else {
 			event.elements.forEach(element => {
 				if (element instanceof FolderMatch) {
 					// The folder may or may not be in the tree. Refresh the whole thing.
-					this.tree.setChildren(null, createResultIterator(this.viewModel.searchResult, collapseResults));
+					this.tree.setChildren(null, this.createResultIterator(collapseResults));
 					return;
 				}
 
 				const root = element instanceof SearchResult ? null : element;
-				this.tree.setChildren(root, createIterator(element, collapseResults));
+				this.tree.setChildren(root, this.createIterator(element, collapseResults));
 			});
 		}
+	}
+
+	private createResultIterator(collapseResults: ISearchConfigurationProperties['collapseResults']): Iterator<ITreeElement<RenderableMatch>> {
+		const folderMatches = this.searchResult.folderMatches()
+			.filter(fm => !fm.isEmpty())
+			.sort(searchMatchComparer);
+
+		if (folderMatches.length === 1) {
+			return this.createFolderIterator(folderMatches[0], collapseResults);
+		}
+
+		const foldersIt = Iterator.fromArray(folderMatches);
+		return Iterator.map(foldersIt, folderMatch => {
+			const children = this.createFolderIterator(folderMatch, collapseResults);
+			return <ITreeElement<RenderableMatch>>{ element: folderMatch, children };
+		});
+	}
+
+	private createFolderIterator(folderMatch: FolderMatch, collapseResults: ISearchConfigurationProperties['collapseResults']): Iterator<ITreeElement<RenderableMatch>> {
+		const filesIt = Iterator.fromArray(
+			folderMatch.matches()
+				.sort(searchMatchComparer));
+
+		return Iterator.map(filesIt, fileMatch => {
+			const children = this.createFileIterator(fileMatch);
+
+			let nodeExists = true;
+			try { this.tree.getNode(fileMatch); } catch (e) { nodeExists = false; }
+
+			const collapsed = nodeExists ? undefined :
+				(collapseResults === 'alwaysCollapse' || (fileMatch.matches().length > 10 && collapseResults !== 'alwaysExpand'));
+
+			return <ITreeElement<RenderableMatch>>{ element: fileMatch, children, collapsed };
+		});
+	}
+
+	private createFileIterator(fileMatch: FileMatch): Iterator<ITreeElement<RenderableMatch>> {
+		const matchesIt = Iterator.from(
+			fileMatch.matches()
+				.sort(searchMatchComparer));
+		return Iterator.map(matchesIt, r => (<ITreeElement<RenderableMatch>>{ element: r }));
+	}
+
+	private createIterator(match: FolderMatch | FileMatch | SearchResult, collapseResults: ISearchConfigurationProperties['collapseResults']): Iterator<ITreeElement<RenderableMatch>> {
+		return match instanceof SearchResult ? this.createResultIterator(collapseResults) :
+			match instanceof FolderMatch ? this.createFolderIterator(match, collapseResults) :
+				this.createFileIterator(match);
 	}
 
 	private replaceAll(): void {
@@ -611,6 +618,7 @@ export class SearchView extends Viewlet implements IViewlet, IPanel {
 	private createSearchResultsView(container: HTMLElement): void {
 		this.resultsElement = dom.append(container, $('.results.show-file-icons'));
 		const delegate = this.instantiationService.createInstance(SearchDelegate);
+		this._register(createFileIconThemableTreeContainerScope(this.resultsElement, this.workbenchThemeService));
 
 		const identityProvider: IIdentityProvider<RenderableMatch> = {
 			getId(element: RenderableMatch) {
@@ -628,6 +636,15 @@ export class SearchView extends Viewlet implements IViewlet, IPanel {
 				this._register(this.instantiationService.createInstance(MatchRenderer, this.viewModel, this)),
 			],
 			{
+				keyboardNavigationLabelProvider: {
+					getKeyboardNavigationLabel: (element: RenderableMatch) => {
+						if (element instanceof FolderMatch || element instanceof FileMatch) {
+							return element.name();
+						}
+
+						return '';
+					}
+				},
 				identityProvider,
 				accessibilityProvider: this.instantiationService.createInstance(SearchAccessibilityProvider, this.viewModel)
 			}));
@@ -900,7 +917,7 @@ export class SearchView extends Viewlet implements IViewlet, IPanel {
 
 		this.resultsElement.style.height = searchResultContainerSize + 'px';
 
-		this.tree.layout(searchResultContainerSize);
+		this.tree.layout(searchResultContainerSize, this.size.width);
 	}
 
 	layout(dimension: dom.Dimension): void {

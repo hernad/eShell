@@ -1,6 +1,6 @@
 {
   "name": "eshell",
-  "version": "1.31.402",
+  "version": "1.31.403",
   "distro": "bb50c615d94484092b67540af9984a5ac402c132",
   "author": {
     "name": "bring.out"
@@ -49,11 +49,11 @@
     "vscode-chokidar": "1.6.5",
     "vscode-debugprotocol": "1.33.0",
     "vscode-nsfw": "1.1.2",
-    "vscode-proxy-agent": "0.2.0",
+    "vscode-proxy-agent": "0.3.0",
     "vscode-ripgrep": "^1.2.5",
     "vscode-sqlite3": "4.0.7",
     "vscode-textmate": "^4.0.1",
-    "vscode-xterm": "3.10.0-beta11-reflow",
+    "vscode-xterm": "3.11.0-beta1",
     "winreg": "^1.2.4",
     "yauzl": "^2.9.1",
     "yazl": "^2.4.3"
