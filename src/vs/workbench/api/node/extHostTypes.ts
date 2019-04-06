@@ -2074,6 +2074,7 @@ export class RelativePattern implements IRelativePattern {
 	}
 }
 
+/*
 @es5ClassCompat
 export class Breakpoint {
 
@@ -2131,7 +2132,6 @@ export class FunctionBreakpoint extends Breakpoint {
 	}
 }
 
-/*
 @es5ClassCompat
 export class DebugAdapterExecutable implements vscode.DebugAdapterExecutable {
 	readonly command: string;

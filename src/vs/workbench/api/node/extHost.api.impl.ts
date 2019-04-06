@@ -706,7 +706,7 @@ export function createApiFactory(
 			window,
 			workspace,
 			// types
-			Breakpoint: extHostTypes.Breakpoint,
+			// Breakpoint: extHostTypes.Breakpoint,
 			CancellationTokenSource: CancellationTokenSource,
 			CodeAction: extHostTypes.CodeAction,
 			CodeActionKind: extHostTypes.CodeActionKind,
@@ -762,7 +762,7 @@ export function createApiFactory(
 			SignatureHelp: extHostTypes.SignatureHelp,
 			SignatureInformation: extHostTypes.SignatureInformation,
 			SnippetString: extHostTypes.SnippetString,
-			SourceBreakpoint: extHostTypes.SourceBreakpoint,
+			// SourceBreakpoint: extHostTypes.SourceBreakpoint,
 			SourceControlInputBoxValidationType: extHostTypes.SourceControlInputBoxValidationType,
 			StatusBarAlignment: extHostTypes.StatusBarAlignment,
 			SymbolInformation: extHostTypes.SymbolInformation,

@@ -229,6 +229,7 @@ export const schema = {
 						description: nls.localize('vscode.extension.activationEvents.onCommand', 'An activation event emitted whenever the specified command gets invoked.'),
 						body: 'onCommand:${2:commandId}'
 					},
+					/*
 					{
 						label: 'onDebug',
 						description: nls.localize('vscode.extension.activationEvents.onDebug', 'An activation event emitted whenever a user is about to start debugging or about to setup debug configurations.'),
@@ -249,6 +250,7 @@ export const schema = {
 						description: nls.localize('vscode.extension.activationEvents.onDebugAdapterProtocolTracker', 'An activation event emitted whenever a debug session with the specific type is about to be launched and a debug protocol tracker might be needed.'),
 						body: 'onDebugAdapterProtocolTracker:${6:type}'
 					},
+					*/
 					{
 						label: 'workspaceContains',
 						description: nls.localize('vscode.extension.activationEvents.workspaceContains', 'An activation event emitted whenever a folder is opened that contains at least a file matching the specified glob pattern.'),

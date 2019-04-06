@@ -18,7 +18,7 @@ process['lazyEnv'] = getLazyEnv();
 // Load workbench main
 bootstrapWindow.load(
 	[ 'vs/workbench/workbench.main', 'vs/nls!vs/workbench/workbench.main', 'vs/css!vs/workbench/workbench.main' ],
-	function(workbench, configuration) {
+	function(workbench: any, configuration: any) {
 		perf.mark('didLoadWorkbenchMain');
 
 		return process['lazyEnv'].then(function() {
@@ -30,10 +30,10 @@ bootstrapWindow.load(
 	},
 	{
 		removeDeveloperKeybindingsAfterLoad: true,
-		canModifyDOM: function(windowConfig) {
+		canModifyDOM: function(windowConfig: any) {
 			showPartsSplash(windowConfig);
 		},
-		beforeLoaderConfig: function (windowConfig, loaderConfig) {
+		beforeLoaderConfig: function (windowConfig: { [x: string]: any; }, loaderConfig: { recordStats: boolean; nodeCachedData: { onData: () => void; }; }) {
 			loaderConfig.recordStats = !!windowConfig['prof-modules'];
 			if (loaderConfig.nodeCachedData) {
 				const onNodeCachedData = (window['MonacoEnvironment'].onNodeCachedData = []);
@@ -51,7 +51,7 @@ bootstrapWindow.load(
 /**
  * @param {object} configuration
  */
-function showPartsSplash(configuration) {
+function showPartsSplash(configuration: { partsSplashPath: any; highContrast: any; extensionDevelopmentPath: any; folderUri: any; workspace: any; }) {
 	perf.mark('willShowPartsSplash');
 
 	let data;
@@ -130,7 +130,7 @@ function getLazyEnv() {
 			console.warn('renderer did not receive lazyEnv in time');
 		}, 10000);
 
-		ipc.once('vscode:acceptShellEnv', function(event, shellEnv) {
+		ipc.once('vscode:acceptShellEnv', function(event: any, shellEnv: any) {
 			clearTimeout(handle);
 			bootstrapWindow.assign(process.env, shellEnv);
 			// @ts-ignore

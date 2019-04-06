@@ -661,6 +661,7 @@ export interface IDebugConfiguration {
 	[key: string]: any;
 }
 
+/*
 export interface MainThreadDebugServiceShape extends IDisposable {
 	$registerDebugTypes(debugTypes: string[]): void;
 	$sessionCached(sessionID: string): void;
@@ -680,6 +681,7 @@ export interface MainThreadDebugServiceShape extends IDisposable {
 	$registerBreakpoints(breakpoints: Array<ISourceMultiBreakpointDto | IFunctionBreakpointDto>): Promise<void>;
 	$unregisterBreakpoints(breakpointIds: string[], functionBreakpointIds: string[]): Promise<void>;
 }
+*/
 
 export interface MainThreadWindowShape extends IDisposable {
 	$getWindowVisibility(): Promise<boolean>;
@@ -1050,6 +1052,8 @@ export interface ExtHostTaskShape {
 	$resolveVariables(workspaceFolder: UriComponents, toResolve: { process?: { name: string; cwd?: string }, variables: string[] }): Promise<{ process?: string; variables: { [key: string]: string } }>;
 }
 
+
+/*
 export interface IBreakpointDto {
 	type: string;
 	id?: string;
@@ -1091,7 +1095,6 @@ export interface ISourceMultiBreakpointDto {
 	}[];
 }
 
-/*
 export interface IDebugSessionFullDto {
 	id: DebugSessionUUID;
 	type: string;
