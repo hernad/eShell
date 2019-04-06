@@ -45,7 +45,7 @@ import { ExtHostMessageService } from 'vs/workbench/api/node/extHostMessageServi
 import { ExtHostOutputService } from 'vs/workbench/api/node/extHostOutputService';
 import { ExtHostProgress } from 'vs/workbench/api/node/extHostProgress';
 import { ExtHostQuickOpen } from 'vs/workbench/api/node/extHostQuickOpen';
-import { ExtHostSCM } from 'vs/workbench/api/node/extHostSCM';
+// import { ExtHostSCM } from 'vs/workbench/api/node/extHostSCM';
 import { ExtHostSearch } from 'vs/workbench/api/node/extHostSearch';
 import { ExtHostStatusBar } from 'vs/workbench/api/node/extHostStatusBar';
 import { ExtHostStorage } from 'vs/workbench/api/node/extHostStorage';
@@ -117,7 +117,7 @@ export function createApiFactory(
 	const extHostQuickOpen = rpcProtocol.set(ExtHostContext.ExtHostQuickOpen, new ExtHostQuickOpen(rpcProtocol, extHostWorkspace, extHostCommands));
 	const extHostTerminalService = rpcProtocol.set(ExtHostContext.ExtHostTerminalService, new ExtHostTerminalService(rpcProtocol, extHostConfiguration, extHostLogService));
 	// const extHostDebugService = rpcProtocol.set(ExtHostContext.ExtHostDebugService, new ExtHostDebugService(rpcProtocol, extHostWorkspace, extensionService, extHostDocumentsAndEditors, extHostConfiguration, extHostTerminalService, extHostCommands));
-	const extHostSCM = rpcProtocol.set(ExtHostContext.ExtHostSCM, new ExtHostSCM(rpcProtocol, extHostCommands, extHostLogService));
+	// const extHostSCM = rpcProtocol.set(ExtHostContext.ExtHostSCM, new ExtHostSCM(rpcProtocol, extHostCommands, extHostLogService));
 	const extHostComment = rpcProtocol.set(ExtHostContext.ExtHostComments, new ExtHostComments(rpcProtocol, extHostCommands, extHostDocuments));
 	const extHostSearch = rpcProtocol.set(ExtHostContext.ExtHostSearch, new ExtHostSearch(rpcProtocol, schemeTransformer, extHostLogService));
 	const extHostTask = rpcProtocol.set(ExtHostContext.ExtHostTask, new ExtHostTask(rpcProtocol, extHostWorkspace, extHostDocumentsAndEditors, extHostConfiguration, extHostTerminalService));
@@ -649,6 +649,7 @@ export function createApiFactory(
 			})
 		};
 
+		/*
 		// namespace: scm
 		const scm: typeof vscode.scm = {
 			get inputBox() {
@@ -658,6 +659,7 @@ export function createApiFactory(
 				return extHostSCM.createSourceControl(extension, id, label, rootUri);
 			}
 		};
+		*/
 
 		const comment: typeof vscode.comment = {
 			createCommentController(id: string, label: string) {
@@ -700,7 +702,7 @@ export function createApiFactory(
 			env,
 			extensions,
 			languages,
-			scm,
+			// scm,
 			comment,
 			tasks,
 			window,

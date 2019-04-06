@@ -354,6 +354,7 @@ class TimerService implements ITimerService {
 			arch = os.arch();
 			loadavg = os.loadavg();
 
+			// @ts-ignore
 			const processMemoryInfo = await process.getProcessMemoryInfo();
 			meminfo = {
 				workingSetSize: processMemoryInfo.residentSet,

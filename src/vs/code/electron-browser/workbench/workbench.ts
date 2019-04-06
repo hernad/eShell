@@ -12,41 +12,43 @@ perf.mark('renderer/started');
 const bootstrapWindow = require('../../../../bootstrap-window');
 
 // Setup shell environment
-// @ts-ignore
 process['lazyEnv'] = getLazyEnv();
 
 // Load workbench main
-bootstrapWindow.load(
-	[ 'vs/workbench/workbench.main', 'vs/nls!vs/workbench/workbench.main', 'vs/css!vs/workbench/workbench.main' ],
-	function(workbench: any, configuration: any) {
+bootstrapWindow.load([
+	'vs/workbench/workbench.main',
+	'vs/nls!vs/workbench/workbench.main',
+	'vs/css!vs/workbench/workbench.main'
+],
+	function (workbench: any, configuration: any) {
 		perf.mark('didLoadWorkbenchMain');
 
-		return process['lazyEnv'].then(function() {
+		// @ts-ignore
+		return process['lazyEnv'].then(function () {
 			perf.mark('main/startup');
 
 			// @ts-ignore
 			return require('vs/workbench/electron-browser/main').main(configuration);
 		});
-	},
-	{
+	}, {
 		removeDeveloperKeybindingsAfterLoad: true,
-		canModifyDOM: function(windowConfig: any) {
+		canModifyDOM: function (windowConfig: any) {
 			showPartsSplash(windowConfig);
 		},
 		beforeLoaderConfig: function (windowConfig: { [x: string]: any; }, loaderConfig: { recordStats: boolean; nodeCachedData: { onData: () => void; }; }) {
 			loaderConfig.recordStats = !!windowConfig['prof-modules'];
 			if (loaderConfig.nodeCachedData) {
-				const onNodeCachedData = (window['MonacoEnvironment'].onNodeCachedData = []);
-				loaderConfig.nodeCachedData.onData = function() {
+				const onNodeCachedData = window['MonacoEnvironment'].onNodeCachedData = [];
+				loaderConfig.nodeCachedData.onData = function () {
+					// @ts-ignore
 					onNodeCachedData.push(arguments);
 				};
 			}
 		},
-		beforeRequire: function() {
+		beforeRequire: function () {
 			perf.mark('willLoadWorkbenchMain');
 		}
-	}
-);
+	});
 
 /**
  * @param {object} configuration
@@ -90,26 +92,23 @@ function showPartsSplash(configuration: { partsSplashPath: any; highContrast: an
 		splash.id = id;
 
 		// ensure there is enough space
-		layoutInfo.sideBarWidth = Math.min(
-			layoutInfo.sideBarWidth,
-			window.innerWidth - (layoutInfo.activityBarWidth + layoutInfo.editorPartMinWidth)
-		);
+		layoutInfo.sideBarWidth = Math.min(layoutInfo.sideBarWidth, window.innerWidth - (layoutInfo.activityBarWidth + layoutInfo.editorPartMinWidth));
 
 		if (configuration.folderUri || configuration.workspace) {
 			// folder or workspace -> status bar color, sidebar
 			splash.innerHTML = `
- 			<div style="position: absolute; width: 100%; left: 0; top: 0; height: ${layoutInfo.titleBarHeight}px; background-color: ${colorInfo.titleBarBackground}; -webkit-app-region: drag;"></div>
- 			<div style="position: absolute; height: calc(100% - ${layoutInfo.titleBarHeight}px); top: ${layoutInfo.titleBarHeight}px; ${layoutInfo.sideBarSide}: 0; width: ${layoutInfo.activityBarWidth}px; background-color: ${colorInfo.activityBarBackground};"></div>
- 			<div style="position: absolute; height: calc(100% - ${layoutInfo.titleBarHeight}px); top: ${layoutInfo.titleBarHeight}px; ${layoutInfo.sideBarSide}: ${layoutInfo.activityBarWidth}px; width: ${layoutInfo.sideBarWidth}px; background-color: ${colorInfo.sideBarBackground};"></div>
- 			<div style="position: absolute; width: 100%; bottom: 0; left: 0; height: ${layoutInfo.statusBarHeight}px; background-color: ${colorInfo.statusBarBackground};"></div>
- 			`;
+			<div style="position: absolute; width: 100%; left: 0; top: 0; height: ${layoutInfo.titleBarHeight}px; background-color: ${colorInfo.titleBarBackground}; -webkit-app-region: drag;"></div>
+			<div style="position: absolute; height: calc(100% - ${layoutInfo.titleBarHeight}px); top: ${layoutInfo.titleBarHeight}px; ${layoutInfo.sideBarSide}: 0; width: ${layoutInfo.activityBarWidth}px; background-color: ${colorInfo.activityBarBackground};"></div>
+			<div style="position: absolute; height: calc(100% - ${layoutInfo.titleBarHeight}px); top: ${layoutInfo.titleBarHeight}px; ${layoutInfo.sideBarSide}: ${layoutInfo.activityBarWidth}px; width: ${layoutInfo.sideBarWidth}px; background-color: ${colorInfo.sideBarBackground};"></div>
+			<div style="position: absolute; width: 100%; bottom: 0; left: 0; height: ${layoutInfo.statusBarHeight}px; background-color: ${colorInfo.statusBarBackground};"></div>
+			`;
 		} else {
 			// empty -> speical status bar color, no sidebar
 			splash.innerHTML = `
- 			<div style="position: absolute; width: 100%; left: 0; top: 0; height: ${layoutInfo.titleBarHeight}px; background-color: ${colorInfo.titleBarBackground}; -webkit-app-region: drag;"></div>
- 			<div style="position: absolute; height: calc(100% - ${layoutInfo.titleBarHeight}px); top: ${layoutInfo.titleBarHeight}px; ${layoutInfo.sideBarSide}: 0; width: ${layoutInfo.activityBarWidth}px; background-color: ${colorInfo.activityBarBackground};"></div>
- 			<div style="position: absolute; width: 100%; bottom: 0; left: 0; height: ${layoutInfo.statusBarHeight}px; background-color: ${colorInfo.statusBarNoFolderBackground};"></div>
- 			`;
+			<div style="position: absolute; width: 100%; left: 0; top: 0; height: ${layoutInfo.titleBarHeight}px; background-color: ${colorInfo.titleBarBackground}; -webkit-app-region: drag;"></div>
+			<div style="position: absolute; height: calc(100% - ${layoutInfo.titleBarHeight}px); top: ${layoutInfo.titleBarHeight}px; ${layoutInfo.sideBarSide}: 0; width: ${layoutInfo.activityBarWidth}px; background-color: ${colorInfo.activityBarBackground};"></div>
+			<div style="position: absolute; width: 100%; bottom: 0; left: 0; height: ${layoutInfo.statusBarHeight}px; background-color: ${colorInfo.statusBarNoFolderBackground};"></div>
+			`;
 		}
 		document.body.appendChild(splash);
 	}
@@ -118,19 +117,19 @@ function showPartsSplash(configuration: { partsSplashPath: any; highContrast: an
 }
 
 /**
-  * @returns {Promise<void>}
-  */
+ * @returns {Promise<void>}
+ */
 function getLazyEnv() {
 	// @ts-ignore
 	const ipc = require('electron').ipcRenderer;
 
-	return new Promise(function(resolve) {
-		const handle = setTimeout(function() {
+	return new Promise(function (resolve) {
+		const handle = setTimeout(function () {
 			resolve();
 			console.warn('renderer did not receive lazyEnv in time');
 		}, 10000);
 
-		ipc.once('vscode:acceptShellEnv', function(event: any, shellEnv: any) {
+		ipc.once('vscode:acceptShellEnv', function (event: any, shellEnv: any) {
 			clearTimeout(handle);
 			bootstrapWindow.assign(process.env, shellEnv);
 			// @ts-ignore

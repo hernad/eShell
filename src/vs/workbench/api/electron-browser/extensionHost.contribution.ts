@@ -40,7 +40,7 @@ import '../browser/mainThreadOutputService';
 import '../browser/mainThreadProgress';
 import '../browser/mainThreadQuickOpen';
 import '../browser/mainThreadSaveParticipant';
-import '../browser/mainThreadSCM';
+// import '../browser/mainThreadSCM';
 import '../browser/mainThreadSearch';
 import '../browser/mainThreadStatusBar';
 import '../browser/mainThreadStorage';
