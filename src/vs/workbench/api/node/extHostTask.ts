@@ -3,11 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-<<<<<<< HEAD
-// import * as path from 'path';
-=======
-import * as path from 'vs/base/common/path';
->>>>>>> electron-4.0.x
+// import * as path from 'vs/base/common/path';
 
 import { URI, UriComponents } from 'vs/base/common/uri';
 import * as Objects from 'vs/base/common/objects';
@@ -22,31 +18,20 @@ import * as types from 'vs/workbench/api/node/extHostTypes';
 import { ExtHostWorkspace, IExtHostWorkspaceProvider } from 'vs/workbench/api/node/extHostWorkspace';
 import * as vscode from 'vscode';
 import {
-<<<<<<< HEAD
-	TaskDefinitionDTO, TaskExecutionDTO, TaskPresentationOptionsDTO, ProcessExecutionOptionsDTO, ProcessExecutionDTO,
-	ShellExecutionOptionsDTO, ShellExecutionDTO, TaskDTO, TaskHandleDTO, TaskFilterDTO, TaskProcessStartedDTO, TaskProcessEndedDTO, TaskSystemInfoDTO, TaskSetDTO
-} from '../shared/tasks';
-// import { ExtHostVariableResolverService } from 'vs/workbench/api/node/extHostDebugService';
-import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/node/extHostDocumentsAndEditors';
-import { ExtHostConfiguration } from 'vs/workbench/api/node/extHostConfiguration';
-// import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
-import { CancellationToken } from 'vs/base/common/cancellation';
-=======
 	TaskDefinitionDTO, TaskExecutionDTO, TaskPresentationOptionsDTO,
 	ProcessExecutionOptionsDTO, ProcessExecutionDTO,
 	ShellExecutionOptionsDTO, ShellExecutionDTO,
 	CustomExecutionDTO,
 	TaskDTO, TaskHandleDTO, TaskFilterDTO, TaskProcessStartedDTO, TaskProcessEndedDTO, TaskSystemInfoDTO, TaskSetDTO
 } from '../common/shared/tasks';
-import { ExtHostVariableResolverService } from 'vs/workbench/api/node/extHostDebugService';
+// import { ExtHostVariableResolverService } from 'vs/workbench/api/node/extHostDebugService';
 import { ExtHostDocumentsAndEditors } from 'vs/workbench/api/node/extHostDocumentsAndEditors';
 import { ExtHostConfiguration } from 'vs/workbench/api/node/extHostConfiguration';
 import { ExtHostTerminalService, ExtHostTerminal } from 'vs/workbench/api/node/extHostTerminalService';
-import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
+// import { IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
 import { IDisposable, dispose } from 'vs/base/common/lifecycle';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
->>>>>>> electron-4.0.x
 
 namespace TaskDefinitionDTO {
 	export function from(value: vscode.TaskDefinition): TaskDefinitionDTO | undefined {
@@ -473,16 +458,10 @@ class CustomExecutionData implements IDisposable {
 export class ExtHostTask implements ExtHostTaskShape {
 
 	private _proxy: MainThreadTaskShape;
-<<<<<<< HEAD
-	private _workspaceService: ExtHostWorkspace;
+	private _workspaceProvider: IExtHostWorkspaceProvider;
 	// private _editorService: ExtHostDocumentsAndEditors;
 	// private _configurationService: ExtHostConfiguration;
-=======
-	private _workspaceProvider: IExtHostWorkspaceProvider;
-	private _editorService: ExtHostDocumentsAndEditors;
-	private _configurationService: ExtHostConfiguration;
 	private _terminalService: ExtHostTerminalService;
->>>>>>> electron-4.0.x
 	private _handleCounter: number;
 	private _handlers: Map<number, HandlerData>;
 	private _taskExecutions: Map<string, TaskExecutionImpl>;
@@ -502,16 +481,10 @@ export class ExtHostTask implements ExtHostTaskShape {
 		configurationService: ExtHostConfiguration,
 		extHostTerminalService: ExtHostTerminalService) {
 		this._proxy = mainContext.getProxy(MainContext.MainThreadTask);
-<<<<<<< HEAD
-		this._workspaceService = workspaceService;
+		this._workspaceProvider = workspaceService;
 		// this._editorService = editorService;
 		// this._configurationService = configurationService;
-=======
-		this._workspaceProvider = workspaceService;
-		this._editorService = editorService;
-		this._configurationService = configurationService;
 		this._terminalService = extHostTerminalService;
->>>>>>> electron-4.0.x
 		this._handleCounter = 0;
 		this._handlers = new Map<number, HandlerData>();
 		this._taskExecutions = new Map<string, TaskExecutionImpl>();
@@ -707,26 +680,15 @@ export class ExtHostTask implements ExtHostTaskShape {
 		});
 	}
 
-<<<<<<< HEAD
-	public $resolveVariables(uriComponents: UriComponents, toResolve: { process?: { name: string; cwd?: string; path?: string }, variables: string[] }): Promise<{ process?: string, variables: { [key: string]: string; } }> {
-		// let uri: URI = URI.revive(uriComponents);
-		let result = {
-			process: undefined as string,
-			variables: Object.create(null)
-		};
-
-		/*
-		let workspaceFolder = this._workspaceService.resolveWorkspaceFolder(uri);
-		let resolver = new ExtHostVariableResolverService(this._workspaceService, this._editorService, configProvider);
-		let ws: IWorkspaceFolder = {
-=======
 	public async $resolveVariables(uriComponents: UriComponents, toResolve: { process?: { name: string; cwd?: string; path?: string }, variables: string[] }): Promise<{ process?: string, variables: { [key: string]: string; } }> {
-		const configProvider = await this._configurationService.getConfigProvider();
-		const uri: URI = URI.revive(uriComponents);
+	    // const configProvider = await this._configurationService.getConfigProvider();
+		// const uri: URI = URI.revive(uriComponents);
 		const result = {
 			process: <unknown>undefined as string,
 			variables: Object.create(null)
 		};
+
+		/*
 		const workspaceFolder = await this._workspaceProvider.resolveWorkspaceFolder(uri);
 		const workspaceFolders = await this._workspaceProvider.getWorkspaceFolders2();
 		if (!workspaceFolders || !workspaceFolder) {
@@ -734,7 +696,6 @@ export class ExtHostTask implements ExtHostTaskShape {
 		}
 		const resolver = new ExtHostVariableResolverService(workspaceFolders, this._editorService, configProvider);
 		const ws: IWorkspaceFolder = {
->>>>>>> electron-4.0.x
 			uri: workspaceFolder.uri,
 			name: workspaceFolder.name,
 			index: workspaceFolder.index,

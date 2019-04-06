@@ -15,16 +15,7 @@ import { IInstantiationService, createDecorator } from 'vs/platform/instantiatio
 import { IExtensionsWorkbenchService, IExtension } from 'vs/workbench/contrib/extensions/common/extensions';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-<<<<<<< HEAD:src/vs/workbench/parts/extensions/electron-browser/runtimeExtensionsEditor.ts
-import {
-	IExtensionService,
-	IExtensionDescription,
-	IExtensionsStatus,
-	IExtensionHostProfile
-} from 'vs/workbench/services/extensions/common/extensions';
-=======
 import { IExtensionService, IExtensionsStatus, IExtensionHostProfile } from 'vs/workbench/services/extensions/common/extensions';
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor.ts
 import { IListVirtualDelegate, IListRenderer } from 'vs/base/browser/ui/list/list';
 import { WorkbenchList } from 'vs/platform/list/browser/listService';
 import { append, $, addClass, toggleClass, Dimension, clearNode } from 'vs/base/browser/dom';
@@ -41,12 +32,8 @@ import { memoize } from 'vs/base/common/decorators';
 import { isNonEmptyArray } from 'vs/base/common/arrays';
 import { Event } from 'vs/base/common/event';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-<<<<<<< HEAD:src/vs/workbench/parts/extensions/electron-browser/runtimeExtensionsEditor.ts
-import { RuntimeExtensionsInput } from 'vs/workbench/services/extensions/electron-browser/runtimeExtensionsInput';
-=======
 import { RuntimeExtensionsInput } from 'vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsInput';
-import { IDebugService } from 'vs/workbench/contrib/debug/common/debug';
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor.ts
+//import { IDebugService } from 'vs/workbench/contrib/debug/common/debug';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { randomPort } from 'vs/base/node/ports';
 import { IContextKeyService, RawContextKey, IContextKey } from 'vs/platform/contextkey/common/contextkey';
@@ -320,13 +307,7 @@ export class RuntimeExtensionsEditor extends BaseEditor {
 
 				toggleClass(data.root, 'odd', index % 2 === 1);
 
-<<<<<<< HEAD:src/vs/workbench/parts/extensions/electron-browser/runtimeExtensionsEditor.ts
-				data.name.textContent = element.marketplaceInfo
-					? element.marketplaceInfo.displayName
-					: element.description.displayName;
-=======
 				data.name.textContent = element.marketplaceInfo ? element.marketplaceInfo.displayName : element.description.displayName || '';
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor.ts
 
 				const activationTimes = element.status.activationTimes!;
 				let syncTime = activationTimes.codeLoadingTime + activationTimes.activateCallTime;
@@ -455,37 +436,8 @@ export class RuntimeExtensionsEditor extends BaseEditor {
 			actions.push(new Separator());
 
 			if (e.element.marketplaceInfo) {
-<<<<<<< HEAD:src/vs/workbench/parts/extensions/electron-browser/runtimeExtensionsEditor.ts
-				actions.push(
-					new Action(
-						'runtimeExtensionsEditor.action.disableWorkspace',
-						nls.localize('disable workspace', 'Disable (Workspace)'),
-						null,
-						true,
-						() =>
-							this._extensionsWorkbenchService.setEnablement(
-								e.element.marketplaceInfo,
-								EnablementState.WorkspaceDisabled
-							)
-					)
-				);
-				actions.push(
-					new Action(
-						'runtimeExtensionsEditor.action.disable',
-						nls.localize('disable', 'Disable'),
-						null,
-						true,
-						() =>
-							this._extensionsWorkbenchService.setEnablement(
-								e.element.marketplaceInfo,
-								EnablementState.Disabled
-							)
-					)
-				);
-=======
 				actions.push(new Action('runtimeExtensionsEditor.action.disableWorkspace', nls.localize('disable workspace', "Disable (Workspace)"), undefined, true, () => this._extensionsWorkbenchService.setEnablement(e.element!.marketplaceInfo, EnablementState.WorkspaceDisabled)));
 				actions.push(new Action('runtimeExtensionsEditor.action.disable', nls.localize('disable', "Disable"), undefined, true, () => this._extensionsWorkbenchService.setEnablement(e.element!.marketplaceInfo, EnablementState.Disabled)));
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor.ts
 				actions.push(new Separator());
 			}
 			const state = this._extensionHostProfileService.state;
@@ -561,13 +513,8 @@ export class ReportExtensionIssueAction extends Action {
 	constructor(extension: {
 		description: IExtensionDescription;
 		marketplaceInfo: IExtension;
-<<<<<<< HEAD:src/vs/workbench/parts/extensions/electron-browser/runtimeExtensionsEditor.ts
-		status: IExtensionsStatus;
-		unresponsiveProfile?: IExtensionHostProfile;
-=======
 		status?: IExtensionsStatus;
 		unresponsiveProfile?: IExtensionHostProfile
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor.ts
 	}) {
 		super(ReportExtensionIssueAction._id, ReportExtensionIssueAction._label, 'extension-action report-issue');
 		this.enabled = extension.marketplaceInfo
@@ -589,18 +536,11 @@ export class ReportExtensionIssueAction extends Action {
 	private static _generateNewIssueUrl(extension: {
 		description: IExtensionDescription;
 		marketplaceInfo: IExtension;
-<<<<<<< HEAD:src/vs/workbench/parts/extensions/electron-browser/runtimeExtensionsEditor.ts
-		status: IExtensionsStatus;
-		unresponsiveProfile?: IExtensionHostProfile;
-	}): { url: string; task?: () => Promise<any> } {
-		let task: () => Promise<any>;
-=======
 		status?: IExtensionsStatus;
 		unresponsiveProfile?: IExtensionHostProfile
 	}): { url: string, task?: () => Promise<any> } {
 
 		let task: (() => Promise<any>) | undefined;
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor.ts
 		let baseUrl = extension.marketplaceInfo && extension.marketplaceInfo.type === ExtensionType.User && extension.description.repository ? extension.description.repository.url : undefined;
 		if (!!baseUrl) {
 			baseUrl = `${baseUrl.indexOf('.git') !== -1 ? baseUrl.substr(0, baseUrl.length - 4) : baseUrl}/issues/new/`;
@@ -681,16 +621,7 @@ export class DebugExtensionHostAction extends Action {
 			}
 		}
 
-<<<<<<< HEAD:src/vs/workbench/parts/extensions/electron-browser/runtimeExtensionsEditor.ts
 		return () => {};
-=======
-		return this._debugService.startDebugging(undefined, {
-			type: 'node',
-			name: nls.localize('debugExtensionHost.launch.name', "Attach Extension Host"),
-			request: 'attach',
-			port: inspectPort
-		});
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/extensions/electron-browser/runtimeExtensionsEditor.ts
 	}
 }
 

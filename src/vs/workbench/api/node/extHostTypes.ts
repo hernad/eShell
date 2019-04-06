@@ -2118,8 +2118,6 @@ export class SourceBreakpoint extends Breakpoint {
 	}
 }
 
-<<<<<<< HEAD
-=======
 @es5ClassCompat
 export class FunctionBreakpoint extends Breakpoint {
 	readonly functionName: string;
@@ -2133,6 +2131,7 @@ export class FunctionBreakpoint extends Breakpoint {
 	}
 }
 
+/*
 @es5ClassCompat
 export class DebugAdapterExecutable implements vscode.DebugAdapterExecutable {
 	readonly command: string;
@@ -2156,18 +2155,7 @@ export class DebugAdapterServer implements vscode.DebugAdapterServer {
 		this.host = host;
 	}
 }
-
-/*
-@es5ClassCompat
-export class DebugAdapterImplementation implements vscode.DebugAdapterImplementation {
-	readonly implementation: any;
-
-	constructor(transport: any) {
-		this.implementation = transport;
-	}
-}
 */
->>>>>>> electron-4.0.x
 
 export enum LogLevel {
 	Trace = 1,

@@ -14,48 +14,11 @@ import { ColorExtensionPoint } from 'vs/workbench/services/themes/common/colorEx
 import { LanguageConfigurationFileHandler } from 'vs/workbench/contrib/codeEditor/browser/languageConfigurationExtensionPoint';
 
 // --- mainThread participants
-<<<<<<< HEAD
-import 'vs/workbench/api/node/apiCommands';
-import './mainThreadClipboard';
-import './mainThreadCommands';
-import './mainThreadConfiguration';
-// import './mainThreadDebugService';
-import './mainThreadConsole';
-import './mainThreadDecorations';
-import './mainThreadDiagnostics';
-import './mainThreadDialogs';
-import './mainThreadDocumentContentProviders';
-import './mainThreadDocuments';
-import './mainThreadDocumentsAndEditors';
-import './mainThreadEditor';
-import './mainThreadEditors';
-import './mainThreadErrors';
-import './mainThreadExtensionService';
-import './mainThreadFileSystem';
-import './mainThreadFileSystemEventService';
-import './mainThreadHeapService';
-import './mainThreadLanguageFeatures';
-import './mainThreadLanguages';
-import './mainThreadMessageService';
-import './mainThreadOutputService';
-import './mainThreadProgress';
-import './mainThreadQuickOpen';
-import './mainThreadSCM';
-import './mainThreadSearch';
-import './mainThreadSaveParticipant';
-import './mainThreadStatusBar';
-import './mainThreadStorage';
-import './mainThreadTask';
-import './mainThreadTelemetry';
-import './mainThreadTerminalService';
-import './mainThreadTreeViews';
-import './mainThreadLogService';
-=======
 import '../browser/mainThreadClipboard';
 import '../browser/mainThreadCommands';
 import '../browser/mainThreadConfiguration';
 import '../browser/mainThreadConsole';
-import '../browser/mainThreadDebugService';
+// import '../browser/mainThreadDebugService';
 import '../browser/mainThreadDecorations';
 import '../browser/mainThreadDiagnostics';
 import '../browser/mainThreadDialogs';
@@ -89,7 +52,6 @@ import '../browser/mainThreadWindow';
 import '../browser/mainThreadWorkspace';
 import '../browser/mainThreadComments';
 import '../browser/mainThreadTask';
->>>>>>> electron-4.0.x
 import './mainThreadWebview';
 import 'vs/workbench/api/node/apiCommands';
 

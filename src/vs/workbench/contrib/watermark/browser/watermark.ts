@@ -15,27 +15,16 @@ import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/
 import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
 import { ILifecycleService, LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-<<<<<<< HEAD:src/vs/workbench/parts/watermark/electron-browser/watermark.ts
 // import { OpenRecentAction } from 'vs/workbench/electron-browser/actions';
 // import { GlobalNewUntitledFileAction } from 'vs/workbench/parts/files/electron-browser/fileActions';
 // import { OpenFolderAction, OpenFileFolderAction, OpenFileAction } from 'vs/workbench/browser/actions/workspaceActions';
-import { ShowAllCommandsAction } from 'vs/workbench/parts/quickopen/browser/commandsHandler';
-import { Parts, IPartService, IDimension } from 'vs/workbench/services/part/common/partService';
+import { ShowAllCommandsAction } from 'vs/workbench/contrib/quickopen/browser/commandsHandler';
+import { Parts, IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
 // import { StartAction } from 'vs/workbench/parts/debug/browser/debugActions';
 // import { FindInFilesActionId } from 'vs/workbench/parts/search/common/constants';
 // import { escape } from 'vs/base/common/strings';
 // import { QUICKOPEN_ACTION_ID } from 'vs/workbench/browser/parts/quickopen/quickopen';
 // import { TERMINAL_COMMAND_ID } from 'vs/workbench/parts/terminal/common/terminalCommands';
-=======
-import { GlobalNewUntitledFileAction } from 'vs/workbench/contrib/files/browser/fileActions';
-import { OpenFolderAction, OpenFileFolderAction, OpenFileAction } from 'vs/workbench/browser/actions/workspaceActions';
-import { ShowAllCommandsAction } from 'vs/workbench/contrib/quickopen/browser/commandsHandler';
-import { Parts, IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { StartAction } from 'vs/workbench/contrib/debug/browser/debugActions';
-import { FindInFilesActionId } from 'vs/workbench/contrib/search/common/constants';
-import { QUICKOPEN_ACTION_ID } from 'vs/workbench/browser/parts/quickopen/quickopen';
-import { TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminal/common/terminalCommands';
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/watermark/browser/watermark.ts
 import * as dom from 'vs/base/browser/dom';
 // import { StartAction } from 'vs/workbench/parts/debug/browser/debugActions';
 // import { FindInFilesActionId } from 'vs/workbench/parts/search/common/constants';

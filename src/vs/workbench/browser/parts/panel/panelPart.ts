@@ -207,14 +207,7 @@ export class PanelPart extends CompositePart<Panel> implements IPanelService {
 		}
 	}
 
-<<<<<<< HEAD
-
-
-	openPanel(id: string, focus?: boolean): Panel {
-
-=======
 	openPanel(id: string, focus?: boolean): Panel | null {
->>>>>>> electron-4.0.x
 		if (this.blockOpeningPanel) {
 			return null; // Workaround against a potential race condition
 		}

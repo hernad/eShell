@@ -194,15 +194,9 @@ import 'vs/workbench/contrib/logs/common/logs.contribution';
 import 'vs/workbench/contrib/quickopen/browser/quickopen.contribution';
 
 // Explorer
-<<<<<<< HEAD
-// import 'vs/workbench/parts/files/electron-browser/explorerViewlet';
-import 'vs/workbench/parts/files/electron-browser/fileActions.contribution';
-import 'vs/workbench/parts/files/electron-browser/files.contribution';
-=======
-import 'vs/workbench/contrib/files/browser/explorerViewlet';
+// import 'vs/workbench/contrib/files/browser/explorerViewlet';
 import 'vs/workbench/contrib/files/browser/fileActions.contribution';
 import 'vs/workbench/contrib/files/browser/files.contribution';
->>>>>>> electron-4.0.x
 
 
 // Backup
@@ -214,38 +208,20 @@ import 'vs/workbench/contrib/stats/node/stats.contribution';
 // Rapid Render Splash
 import 'vs/workbench/contrib/splash/electron-browser/partsSplash.contribution';
 
-// Search
-<<<<<<< HEAD
-// import 'vs/workbench/parts/search/electron-browser/search.contribution';
-// import 'vs/workbench/parts/search/browser/searchView';
-
-import 'vs/workbench/parts/search/browser/openAnythingHandler';
-
-// SCM
-// import 'vs/workbench/parts/scm/electron-browser/scm.contribution';
-// import 'vs/workbench/parts/scm/electron-browser/scmViewlet';
-
-// Debug
-// import 'vs/workbench/parts/debug/electron-browser/debug.contribution';
-// import 'vs/workbench/parts/debug/browser/debugQuickOpen';
-// import 'vs/workbench/parts/debug/electron-browser/repl';
-// import 'vs/workbench/parts/debug/browser/debugViewlet';
-=======
-import 'vs/workbench/contrib/search/browser/search.contribution';
-import 'vs/workbench/contrib/search/browser/searchView';
+// import 'vs/workbench/contrib/search/browser/search.contribution';
+// import 'vs/workbench/contrib/search/browser/searchView';
 import 'vs/workbench/contrib/search/browser/openAnythingHandler';
 
 // SCM
-import 'vs/workbench/contrib/scm/browser/scm.contribution';
-import 'vs/workbench/contrib/scm/browser/scmViewlet';
+// import 'vs/workbench/contrib/scm/browser/scm.contribution';
+// import 'vs/workbench/contrib/scm/browser/scmViewlet';
 
 // Debug
-import 'vs/workbench/contrib/debug/electron-browser/debug.contribution';
-import 'vs/workbench/contrib/debug/browser/debugQuickOpen';
-import 'vs/workbench/contrib/debug/browser/debugEditorContribution';
-import 'vs/workbench/contrib/debug/browser/repl';
-import 'vs/workbench/contrib/debug/browser/debugViewlet';
->>>>>>> electron-4.0.x
+// import 'vs/workbench/contrib/debug/electron-browser/debug.contribution';
+// import 'vs/workbench/contrib/debug/browser/debugQuickOpen';
+// import 'vs/workbench/contrib/debug/browser/debugEditorContribution';
+// import 'vs/workbench/contrib/debug/browser/repl';
+// import 'vs/workbench/contrib/debug/browser/debugViewlet';
 
 // Markers
 import 'vs/workbench/contrib/markers/browser/markers.contribution';
@@ -324,20 +300,13 @@ import 'vs/workbench/contrib/themes/test/electron-browser/themes.test.contributi
 import 'vs/workbench/contrib/watermark/browser/watermark';
 
 // Welcome
-<<<<<<< HEAD
-import 'vs/workbench/parts/welcome/walkThrough/electron-browser/walkThrough.contribution';
-import 'vs/workbench/parts/welcome/gettingStarted/electron-browser/gettingStarted.contribution';
-import 'vs/workbench/parts/welcome/overlay/browser/welcomeOverlay';
-// import 'vs/workbench/parts/welcome/page/electron-browser/welcomePage.contribution';
-=======
 import 'vs/workbench/contrib/welcome/walkThrough/browser/walkThrough.contribution';
 import 'vs/workbench/contrib/welcome/gettingStarted/electron-browser/gettingStarted.contribution';
 import 'vs/workbench/contrib/welcome/overlay/browser/welcomeOverlay';
-import 'vs/workbench/contrib/welcome/page/browser/welcomePage.contribution';
+// import 'vs/workbench/contrib/welcome/page/browser/welcomePage.contribution';
 
 // Call Hierarchy
 import 'vs/workbench/contrib/callHierarchy/browser/callHierarchy.contribution';
->>>>>>> electron-4.0.x
 
 // Outline
 import 'vs/workbench/contrib/outline/browser/outline.contribution';

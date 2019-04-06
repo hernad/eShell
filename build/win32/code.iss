@@ -1,14 +1,7 @@
-<<<<<<< HEAD
 ;#define LocalizedLanguageFile(Language = "") \
 ;    DirExists(RepoDir + "\licenses") && Language != "" \
-;      ? ('; LicenseFile: "' + RepoDir + '\licenses\LICENSE-' + Language + '.txt"') \
-;      : '; LicenseFile: "' + RepoDir + '\LICENSE.txt"'
-=======
-#define LocalizedLanguageFile(Language = "") \
-    DirExists(RepoDir + "\licenses") && Language != "" \
-      ? ('; LicenseFile: "' + RepoDir + '\licenses\LICENSE-' + Language + '.rtf"') \
-      : '; LicenseFile: "' + RepoDir + '\LICENSE.rtf"'
->>>>>>> electron-4.0.x
+;      ? ('; LicenseFile: "' + RepoDir + '\licenses\LICENSE-' + Language + '.rtf"') \
+;      : '; LicenseFile: "' + RepoDir + '\LICENSE.rtf"'
 
 [Setup]
 AppId={#AppId}

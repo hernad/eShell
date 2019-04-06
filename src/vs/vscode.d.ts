@@ -8474,8 +8474,6 @@ declare module 'vscode' {
 		body?: any;
 	}
 
-<<<<<<< HEAD
-=======
 	/**
 	 * A debug configuration provider allows to add the initial debug configurations to a newly created launch.json
 	 * and to resolve a launch configuration before it is used to start a new debug session.
@@ -8848,7 +8846,6 @@ declare module 'vscode' {
 		 */
 		export function removeBreakpoints(breakpoints: Breakpoint[]): void;
 	}
->>>>>>> electron-4.0.x
 
 	/**
 	 * Namespace for dealing with installed extensions. Extensions are represented

@@ -1332,9 +1332,6 @@ export class TerminalTaskSystem implements ITaskSystem {
 		}
 		return 'other';
 	}
-<<<<<<< HEAD:src/vs/workbench/parts/tasks/electron-browser/terminalTaskSystem.ts
-}
-=======
 
 	private appendOutput(output: string): void {
 		const outputChannel = this.outputService.getChannel(this.outputChannelId);
@@ -1343,4 +1340,3 @@ export class TerminalTaskSystem implements ITaskSystem {
 		}
 	}
 }
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/tasks/electron-browser/terminalTaskSystem.ts

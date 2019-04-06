@@ -8,3 +8,6 @@ rm  src/vs/workbench/parts/debug/electron-browser/debugHover.ts
 rm  src/vs/workbench/parts/debug/electron-browser/repl.ts
 rm  src/vs/workbench/parts/debug/electron-browser/variablesView.ts
 rm  src/vs/workbench/parts/debug/electron-browser/watchExpressionsView.ts
+
+rm  -rf src/vs/workbench/contrib/debug/browser/
+
