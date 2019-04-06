@@ -412,6 +412,7 @@ export class Workbench extends Layout {
 				}, 2500);
 
 				// Telemetry: startup metrics
+				console.log('didStartWorkbench');
 				mark('didStartWorkbench');
 			});
 	}

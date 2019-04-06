@@ -1234,27 +1234,35 @@ export class TerminalInstance implements ITerminalInstance {
 		}
 	}
 
-	public forceResize( cols: number, rows: number): void {
+	public forceResize(cols: number, rows: number): void {
 
-		if (cols < 0) {
-			// exit from manual resize mode!
-			this.disableLayout = false;
-		}
+		this._xtermReadyPromise.then(() => {
 
-		if (this._xterm) {
-			if (cols !== this._xterm.cols || rows !== this._xterm.rows) {
-				this._onDimensionsChanged.fire();
+			console.log('forceResize', cols, rows);
+			if (cols < 0) {
+				// exit from manual resize mode!
+				this.disableLayout = false;
 			}
 
-			this._xterm.resize(cols, rows);
-		}
+			this.setVisible(true);
+			if (this._xterm) {
+				if (cols !== this._xterm.cols || rows !== this._xterm.rows) {
+					this._onDimensionsChanged.fire();
+				}
+				console.log('forceResize-2');
+				this._xterm.resize(cols, rows);
+			}
 
-		if (this._processManager) {
-			this._processManager.ptyProcessReady.then(() => this._processManager!.setDimensions(cols, rows));
-		}
+			if (this._processManager) {
+				this._processManager.ptyProcessReady.then(() => {
+					console.log('forceResize-3');
+					this._processManager!.setDimensions(cols, rows);
+				});
+			}
 
-		// after forceResize don't resize terminal
-		this.disableLayout = true;
+			// after forceResize don't resize terminal
+			this.disableLayout = true;
+		});
 	}
 
 	public setTitle(title: string | undefined, eventFromProcess: boolean): void {

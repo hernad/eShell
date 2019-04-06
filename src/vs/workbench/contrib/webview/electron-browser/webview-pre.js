@@ -234,7 +234,6 @@
 							acquired = true;
 							return Object.freeze({
 								postMessage: function(msg) {
-									// hernad: console.log('debug webView postMessage');
 									return originalPostMessage({ command: 'onmessage', data: msg }, '*');
 								},
 								setState: function(newState) {
@@ -318,7 +317,6 @@
 			};
 
 			let onLoad = (contentDocument, contentWindow) => {
-				console.log('====================debug webView onLoad=============');
 				if (contentDocument.body) {
 					// Workaround for https://github.com/Microsoft/vscode/issues/12865
 					// check new scrollY and reset if neccessary
