@@ -3,14 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { join } from 'vs/base/common/paths';
-import { LogLevel } from 'vs/workbench/api/node/extHostTypes';
-import { ILogService, DelegatedLogService } from 'vs/platform/log/common/log';
+import { join } from 'vs/base/common/path';
+import { ILogService, DelegatedLogService, LogLevel } from 'vs/platform/log/common/log';
 import { createSpdLogService } from 'vs/platform/log/node/spdlogService';
-import { ExtHostLogServiceShape } from 'vs/workbench/api/node/extHost.protocol';
+import { ExtHostLogServiceShape } from 'vs/workbench/api/common/extHost.protocol';
 import { ExtensionHostLogFileName } from 'vs/workbench/services/extensions/common/extensions';
 import { URI } from 'vs/base/common/uri';
-
+import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
 export class ExtHostLogService extends DelegatedLogService implements ILogService, ExtHostLogServiceShape {
 
@@ -30,7 +29,7 @@ export class ExtHostLogService extends DelegatedLogService implements ILogServic
 		this.setLevel(level);
 	}
 
-	getLogDirectory(extensionID: string): string {
-		return join(this._logsPath, extensionID);
+	getLogDirectory(extensionID: ExtensionIdentifier): string {
+		return join(this._logsPath, extensionID.value);
 	}
 }

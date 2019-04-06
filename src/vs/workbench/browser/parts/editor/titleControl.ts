@@ -32,12 +32,14 @@ import { DraggedEditorGroupIdentifier, DraggedEditorIdentifier, fillResourceData
 import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
 import { BreadcrumbsConfig } from 'vs/workbench/browser/parts/editor/breadcrumbs';
 import { BreadcrumbsControl, IBreadcrumbsControlOptions } from 'vs/workbench/browser/parts/editor/breadcrumbsControl';
-import { EDITOR_TITLE_HEIGHT, IEditorGroupsAccessor, IEditorGroupView, IEditorPartOptions } from 'vs/workbench/browser/parts/editor/editor';
-import { EditorCommandsContextActionRunner, IEditorCommandsContext, IEditorInput, toResource } from 'vs/workbench/common/editor';
+import { EDITOR_TITLE_HEIGHT, IEditorGroupsAccessor, IEditorGroupView } from 'vs/workbench/browser/parts/editor/editor';
+import { EditorCommandsContextActionRunner, IEditorCommandsContext, IEditorInput, toResource, IEditorPartOptions } from 'vs/workbench/common/editor';
 import { ResourceContextKey } from 'vs/workbench/common/resources';
 import { Themable } from 'vs/workbench/common/theme';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { AnchorAlignment } from 'vs/base/browser/ui/contextview/contextview';
+import { IFileService } from 'vs/platform/files/common/files';
+import { withNullAsUndefined } from 'vs/base/common/types';
 
 export interface IToolbarActions {
 	primary: IAction[];
@@ -49,7 +51,7 @@ export abstract class TitleControl extends Themable {
 	protected readonly groupTransfer = LocalSelectionTransfer.getInstance<DraggedEditorGroupIdentifier>();
 	protected readonly editorTransfer = LocalSelectionTransfer.getInstance<DraggedEditorIdentifier>();
 
-	protected breadcrumbsControl: BreadcrumbsControl;
+	protected breadcrumbsControl?: BreadcrumbsControl;
 
 	private currentPrimaryEditorActionIds: string[] = [];
 	private currentSecondaryEditorActionIds: string[] = [];
@@ -64,21 +66,22 @@ export abstract class TitleControl extends Themable {
 		parent: HTMLElement,
 		protected accessor: IEditorGroupsAccessor,
 		protected group: IEditorGroupView,
-		@IContextMenuService private contextMenuService: IContextMenuService,
+		@IContextMenuService private readonly contextMenuService: IContextMenuService,
 		@IInstantiationService protected instantiationService: IInstantiationService,
-		@IContextKeyService private contextKeyService: IContextKeyService,
-		@IKeybindingService private keybindingService: IKeybindingService,
-		@ITelemetryService private telemetryService: ITelemetryService,
-		@INotificationService private notificationService: INotificationService,
-		@IMenuService private menuService: IMenuService,
+		@IContextKeyService private readonly contextKeyService: IContextKeyService,
+		@IKeybindingService private readonly keybindingService: IKeybindingService,
+		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		@INotificationService private readonly notificationService: INotificationService,
+		@IMenuService private readonly menuService: IMenuService,
 		@IQuickOpenService protected quickOpenService: IQuickOpenService,
 		@IThemeService themeService: IThemeService,
-		@IExtensionService private extensionService: IExtensionService,
-		@IConfigurationService protected configurationService: IConfigurationService
+		@IExtensionService private readonly extensionService: IExtensionService,
+		@IConfigurationService protected configurationService: IConfigurationService,
+		@IFileService private readonly fileService: IFileService,
 	) {
 		super(themeService);
 
-		this.resourceContext = instantiationService.createInstance(ResourceContextKey);
+		this.resourceContext = this._register(instantiationService.createInstance(ResourceContextKey));
 		this.contextMenu = this._register(this.menuService.createMenu(MenuId.EditorTitleContext, this.contextKeyService));
 
 		this.create(parent);
@@ -108,6 +111,12 @@ export abstract class TitleControl extends Themable {
 		if (config.getValue()) {
 			this.breadcrumbsControl = this.instantiationService.createInstance(BreadcrumbsControl, container, options, this.group);
 		}
+
+		this._register(this.fileService.onDidChangeFileSystemProviderRegistrations(() => {
+			if (this.breadcrumbsControl && this.breadcrumbsControl.update()) {
+				this.handleBreadcrumbsEnablementChange();
+			}
+		}));
 	}
 
 	protected abstract handleBreadcrumbsEnablementChange(): void;
@@ -146,11 +155,11 @@ export abstract class TitleControl extends Themable {
 		}));
 	}
 
-	private actionItemProvider(action: Action): IActionItem {
+	private actionItemProvider(action: Action): IActionItem | undefined {
 		const activeControl = this.group.activeControl;
 
 		// Check Active Editor
-		let actionItem: IActionItem;
+		let actionItem: IActionItem | undefined = undefined;
 		if (activeControl instanceof BaseEditor) {
 			actionItem = activeControl.getActionItem(action);
 		}
@@ -209,7 +218,7 @@ export abstract class TitleControl extends Themable {
 		this.editorToolBarMenuDisposables = dispose(this.editorToolBarMenuDisposables);
 
 		// Update the resource context
-		this.resourceContext.set(toResource(this.group.activeEditor, { supportSideBySide: true }));
+		this.resourceContext.set(this.group.activeEditor ? toResource(this.group.activeEditor, { supportSideBySide: true }) : null);
 
 		// Editor actions require the editor control to be there, so we retrieve it via service
 		const activeControl = this.group.activeControl;
@@ -245,23 +254,25 @@ export abstract class TitleControl extends Themable {
 
 			// Set editor group as transfer
 			this.groupTransfer.setData([new DraggedEditorGroupIdentifier(this.group.id)], DraggedEditorGroupIdentifier.prototype);
-			e.dataTransfer.effectAllowed = 'copyMove';
+			e.dataTransfer!.effectAllowed = 'copyMove';
 
 			// If tabs are disabled, treat dragging as if an editor tab was dragged
 			if (!this.accessor.partOptions.showTabs) {
-				const resource = toResource(this.group.activeEditor, { supportSideBySide: true });
+				const resource = this.group.activeEditor ? toResource(this.group.activeEditor, { supportSideBySide: true }) : null;
 				if (resource) {
 					this.instantiationService.invokeFunction(fillResourceDataTransfers, [resource], e);
 				}
 			}
 
 			// Drag Image
-			let label = this.group.activeEditor.getName();
-			if (this.accessor.partOptions.showTabs && this.group.count > 1) {
-				label = localize('draggedEditorGroup', "{0} (+{1})", label, this.group.count - 1);
-			}
+			if (this.group.activeEditor) {
+				let label = this.group.activeEditor.getName();
+				if (this.accessor.partOptions.showTabs && this.group.count > 1) {
+					label = localize('draggedEditorGroup', "{0} (+{1})", label, this.group.count - 1);
+				}
 
-			applyDragImage(e, label, 'monaco-editor-group-drag-image');
+				applyDragImage(e, label, 'monaco-editor-group-drag-image');
+			}
 		}));
 
 		// Drag end
@@ -296,7 +307,7 @@ export abstract class TitleControl extends Themable {
 			onHide: () => {
 
 				// restore previous context
-				this.resourceContext.set(currentContext);
+				this.resourceContext.set(currentContext || null);
 
 				// restore focus to active group
 				this.accessor.activeGroup.focus();
@@ -304,17 +315,15 @@ export abstract class TitleControl extends Themable {
 		});
 	}
 
-	private getKeybinding(action: IAction): ResolvedKeybinding {
+	private getKeybinding(action: IAction): ResolvedKeybinding | undefined {
 		return this.keybindingService.lookupKeybinding(action.id);
 	}
 
-	protected getKeybindingLabel(action: IAction): string {
+	protected getKeybindingLabel(action: IAction): string | undefined {
 		const keybinding = this.getKeybinding(action);
 
-		return keybinding ? keybinding.getLabel() : void 0;
+		return keybinding ? withNullAsUndefined(keybinding.getLabel()) : undefined;
 	}
-
-	//#region ITitleAreaControl
 
 	abstract openEditor(editor: IEditorInput): void;
 
@@ -339,8 +348,6 @@ export abstract class TitleControl extends Themable {
 	abstract updateStyles(): void;
 
 	layout(dimension: Dimension): void {
-		// Optionally implemented in subclasses
-
 		if (this.breadcrumbsControl) {
 			this.breadcrumbsControl.layout(undefined);
 		}
@@ -351,13 +358,12 @@ export abstract class TitleControl extends Themable {
 	}
 
 	dispose(): void {
-		this.breadcrumbsControl = dispose(this.breadcrumbsControl);
+		dispose(this.breadcrumbsControl);
+		this.breadcrumbsControl = undefined;
 		this.editorToolBarMenuDisposables = dispose(this.editorToolBarMenuDisposables);
 
 		super.dispose();
 	}
-
-	//#endregion
 }
 
 registerThemingParticipant((theme: ITheme, collector: ICssStyleCollector) => {

@@ -6,7 +6,7 @@
 				"git": {
 					"name": "chromium",
 					"repositoryUrl": "https://chromium.googlesource.com/chromium/src",
-					"commitHash": "e7075c132b1d96ecbf1ca5c89cbeaae46b430fa2"
+					"commitHash": "c6a08e5368de4352903e702cde750b33239a50ab"
 				}
 			},
 			"licenseDetail": [
@@ -40,7 +40,7 @@
 				"SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 			],
 			"isOnlyProductionDependency": true,
-			"version": "69.0.3497.106"
+			"version": "69.0.3497.128"
 		},
 		{
 			"component": {
@@ -60,12 +60,12 @@
 				"git": {
 					"name": "electron",
 					"repositoryUrl": "https://github.com/electron/electron",
-					"commitHash": "3846a1b663466bca73e47903af39987f8fc548c2"
+					"commitHash": "28a9963ca742855433f83c3bbb68929cbe2f3e9a"
 				}
 			},
 			"isOnlyProductionDependency": true,
 			"license": "MIT",
-			"version": "4.0.0-beta.7"
+			"version": "4.1.2"
 		},
 		{
 			"component": {
@@ -91,6 +91,30 @@
 			"isOnlyProductionDependency": true,
 			"license": "MIT",
 			"version": "0.14.0"
+		},
+		{
+			"component": {
+				"type": "git",
+				"git": {
+					"name": "vscode-octicons-font",
+					"repositoryUrl": "https://github.com/Microsoft/vscode-octicons-font",
+					"commitHash": "5095860bb929919670646e2dfa0ee47d9b93bcb9"
+				}
+			},
+			"license": "MIT",
+			"version": "1.0.0"
+		},
+		{
+			"component": {
+				"type": "git",
+				"git": {
+					"name": "octicons",
+					"repositoryUrl": "https://github.com/primer/octicons",
+					"commitHash": "d120bf97bc9a12fb415f69fedaf31fe58427ca56"
+				}
+			},
+			"license": "MIT",
+			"version": "8.3.0"
 		},
 		{
 			"component": {
@@ -480,6 +504,19 @@
 				"  defined by the Mozilla Public License, v. 2.0."
 			],
 			"license": "MPL"
+		},
+		{
+			"component": {
+				"type": "git",
+				"git": {
+					"name": "ripgrep",
+					"repositoryUrl": "https://github.com/BurntSushi/ripgrep",
+					"commitHash": "8a7db1a918e969b85cd933d8ed9fa5285b281ba4"
+				}
+			},
+			"isOnlyProductionDependency": true,
+			"license": "MIT",
+			"version": "0.10.0"
 		}
 	],
 	"version": 1

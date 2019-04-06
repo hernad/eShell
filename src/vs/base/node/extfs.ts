@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as fs from 'fs';
-import * as paths from 'path';
+import * as paths from 'vs/base/common/path';
 import { nfcall } from 'vs/base/common/async';
 import { normalizeNFC } from 'vs/base/common/normalization';
 import * as platform from 'vs/base/common/platform';
@@ -14,7 +14,6 @@ import { encode, encodeStream } from 'vs/base/node/encoding';
 import * as flow from 'vs/base/node/flow';
 import { CancellationToken } from 'vs/base/common/cancellation';
 import { IDisposable, toDisposable, Disposable } from 'vs/base/common/lifecycle';
-import { TPromise } from 'vs/base/common/winjs.base';
 
 const loop = flow.loop;
 
@@ -127,40 +126,40 @@ function doCopyFile(source: string, target: string, mode: number, callback: (err
 	reader.pipe(writer);
 }
 
-export function mkdirp(path: string, mode?: number, token?: CancellationToken): TPromise<boolean> {
+export function mkdirp(path: string, mode?: number, token?: CancellationToken): Promise<boolean> {
 	const mkdir = (): Promise<null> => {
-		return nfcall(fs.mkdir, path, mode).then(null, (mkdirErr: NodeJS.ErrnoException) => {
+		return nfcall(fs.mkdir, path, mode).then(undefined, (mkdirErr: NodeJS.ErrnoException) => {
 
 			// ENOENT: a parent folder does not exist yet
 			if (mkdirErr.code === 'ENOENT') {
-				return TPromise.wrapError(mkdirErr);
+				return Promise.reject(mkdirErr);
 			}
 
 			// Any other error: check if folder exists and
 			// return normally in that case if its a folder
 			return nfcall(fs.stat, path).then((stat: fs.Stats) => {
 				if (!stat.isDirectory()) {
-					return TPromise.wrapError(new Error(`'${path}' exists and is not a directory.`));
+					return Promise.reject(new Error(`'${path}' exists and is not a directory.`));
 				}
 
 				return null;
 			}, statErr => {
-				return TPromise.wrapError(mkdirErr); // bubble up original mkdir error
+				return Promise.reject(mkdirErr); // bubble up original mkdir error
 			});
 		});
 	};
 
 	// stop at root
 	if (path === paths.dirname(path)) {
-		return TPromise.as(true);
+		return Promise.resolve(true);
 	}
 
 	// recursively mkdir
-	return mkdir().then(null, (err: NodeJS.ErrnoException) => {
+	return mkdir().then(undefined, (err: NodeJS.ErrnoException) => {
 
 		// Respect cancellation
 		if (token && token.isCancellationRequested) {
-			return TPromise.as(false);
+			return Promise.resolve(false);
 		}
 
 		// ENOENT: a parent folder does not exist yet, continue
@@ -170,7 +169,7 @@ export function mkdirp(path: string, mode?: number, token?: CancellationToken): 
 		}
 
 		// Any other error
-		return TPromise.wrapError(err);
+		return Promise.reject(err);
 	});
 }
 
@@ -206,10 +205,6 @@ export function del(path: string, tmpFolder: string, callback: (error: Error | n
 
 				// do the heavy deletion outside the callers callback
 				rmRecursive(pathInTemp, error => {
-					if (error) {
-						console.error(error);
-					}
-
 					if (done) {
 						done(error);
 					}
@@ -220,7 +215,7 @@ export function del(path: string, tmpFolder: string, callback: (error: Error | n
 }
 
 function rmRecursive(path: string, callback: (error: Error | null) => void): void {
-	if (path === '\\' || path === '/') {
+	if (path === paths.win32.sep || path === paths.posix.sep) {
 		return callback(new Error('Will not delete root!'));
 	}
 
@@ -278,6 +273,10 @@ function rmRecursive(path: string, callback: (error: Error | null) => void): voi
 }
 
 export function delSync(path: string): void {
+	if (path === paths.win32.sep || path === paths.posix.sep) {
+		throw new Error('Will not delete root!');
+	}
+
 	try {
 		const stat = fs.lstatSync(path);
 		if (stat.isDirectory() && !stat.isSymbolicLink()) {
@@ -305,12 +304,12 @@ export function mv(source: string, target: string, callback: (error: Error | nul
 			return callback(err);
 		}
 
-		fs.stat(target, (error, stat) => {
+		fs.lstat(target, (error, stat) => {
 			if (error) {
 				return callback(error);
 			}
 
-			if (stat.isDirectory()) {
+			if (stat.isDirectory() || stat.isSymbolicLink()) {
 				return callback(null);
 			}
 
@@ -367,18 +366,23 @@ export interface IWriteFileOptions {
 	};
 }
 
-let canFlush = true;
-export function writeFileAndFlush(path: string, data: string | Buffer | NodeJS.ReadableStream, options: IWriteFileOptions, callback: (error?: Error) => void): void {
-	options = ensureOptions(options);
+interface IEnsuredWriteFileOptions extends IWriteFileOptions {
+	mode: number;
+	flag: string;
+}
 
-	if (typeof data === 'string' || Buffer.isBuffer(data)) {
-		doWriteFileAndFlush(path, data, options, callback);
+let canFlush = true;
+export function writeFileAndFlush(path: string, data: string | Buffer | NodeJS.ReadableStream | Uint8Array, options: IWriteFileOptions, callback: (error?: Error) => void): void {
+	const ensuredOptions = ensureWriteOptions(options);
+
+	if (typeof data === 'string' || Buffer.isBuffer(data) || data instanceof Uint8Array) {
+		doWriteFileAndFlush(path, data, ensuredOptions, callback);
 	} else {
-		doWriteFileStreamAndFlush(path, data, options, callback);
+		doWriteFileStreamAndFlush(path, data, ensuredOptions, callback);
 	}
 }
 
-function doWriteFileStreamAndFlush(path: string, reader: NodeJS.ReadableStream, options: IWriteFileOptions, callback: (error?: Error) => void): void {
+function doWriteFileStreamAndFlush(path: string, reader: NodeJS.ReadableStream, options: IEnsuredWriteFileOptions, callback: (error?: Error) => void): void {
 
 	// finish only once
 	let finished = false;
@@ -469,9 +473,9 @@ function doWriteFileStreamAndFlush(path: string, reader: NodeJS.ReadableStream, 
 // not in some cache.
 //
 // See https://github.com/nodejs/node/blob/v5.10.0/lib/fs.js#L1194
-function doWriteFileAndFlush(path: string, data: string | Buffer, options: IWriteFileOptions, callback: (error?: Error) => void): void {
+function doWriteFileAndFlush(path: string, data: string | Buffer | Uint8Array, options: IEnsuredWriteFileOptions, callback: (error?: Error) => void): void {
 	if (options.encoding) {
-		data = encode(data, options.encoding.charset, { addBOM: options.encoding.addBOM });
+		data = encode(data instanceof Uint8Array ? Buffer.from(data) : data, options.encoding.charset, { addBOM: options.encoding.addBOM });
 	}
 
 	if (!canFlush) {
@@ -479,7 +483,7 @@ function doWriteFileAndFlush(path: string, data: string | Buffer, options: IWrit
 	}
 
 	// Open the file with same flags and mode as fs.writeFile()
-	fs.open(path, typeof options.flag === 'string' ? options.flag : 'r', options.mode, (openError, fd) => {
+	fs.open(path, options.flag, options.mode, (openError, fd) => {
 		if (openError) {
 			return callback(openError);
 		}
@@ -507,18 +511,18 @@ function doWriteFileAndFlush(path: string, data: string | Buffer, options: IWrit
 }
 
 export function writeFileAndFlushSync(path: string, data: string | Buffer, options?: IWriteFileOptions): void {
-	options = ensureOptions(options);
+	const ensuredOptions = ensureWriteOptions(options);
 
-	if (options.encoding) {
-		data = encode(data, options.encoding.charset, { addBOM: options.encoding.addBOM });
+	if (ensuredOptions.encoding) {
+		data = encode(data, ensuredOptions.encoding.charset, { addBOM: ensuredOptions.encoding.addBOM });
 	}
 
 	if (!canFlush) {
-		return fs.writeFileSync(path, data, { mode: options.mode, flag: options.flag });
+		return fs.writeFileSync(path, data, { mode: ensuredOptions.mode, flag: ensuredOptions.flag });
 	}
 
 	// Open the file with same flags and mode as fs.writeFile()
-	const fd = fs.openSync(path, typeof options.flag === 'string' ? options.flag : 'r', options.mode);
+	const fd = fs.openSync(path, ensuredOptions.flag, ensuredOptions.mode);
 
 	try {
 
@@ -537,22 +541,16 @@ export function writeFileAndFlushSync(path: string, data: string | Buffer, optio
 	}
 }
 
-function ensureOptions(options?: IWriteFileOptions): IWriteFileOptions {
+function ensureWriteOptions(options?: IWriteFileOptions): IEnsuredWriteFileOptions {
 	if (!options) {
 		return { mode: 0o666, flag: 'w' };
 	}
 
-	const ensuredOptions: IWriteFileOptions = { mode: options.mode, flag: options.flag, encoding: options.encoding };
-
-	if (typeof ensuredOptions.mode !== 'number') {
-		ensuredOptions.mode = 0o666;
-	}
-
-	if (typeof ensuredOptions.flag !== 'string') {
-		ensuredOptions.flag = 'w';
-	}
-
-	return ensuredOptions;
+	return {
+		mode: typeof options.mode === 'number' ? options.mode : 0o666,
+		flag: typeof options.flag === 'string' ? options.flag : 'w',
+		encoding: options.encoding
+	};
 }
 
 /**

@@ -1,4 +1,4 @@
-// Type definitions for Electron 4.0.0-beta.7
+// Type definitions for Electron 4.1.2
 // Project: http://electronjs.org/
 // Definitions by: The Electron Team <https://github.com/electron/electron>
 // Definitions: https://github.com/electron/electron-typescript-definitions
@@ -473,6 +473,49 @@ declare namespace Electron {
 		addListener(event: 'ready', listener: (launchInfo: any) => void): this;
 		removeListener(event: 'ready', listener: (launchInfo: any) => void): this;
 		/**
+		 * Emitted when remote.getBuiltin() is called in the renderer process of
+		 * webContents. Calling event.preventDefault() will prevent the module from being
+		 * returned. Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-builtin', listener: (event: Event,
+			webContents: WebContents,
+			moduleName: string) => void): this;
+		once(event: 'remote-get-builtin', listener: (event: Event,
+			webContents: WebContents,
+			moduleName: string) => void): this;
+		addListener(event: 'remote-get-builtin', listener: (event: Event,
+			webContents: WebContents,
+			moduleName: string) => void): this;
+		removeListener(event: 'remote-get-builtin', listener: (event: Event,
+			webContents: WebContents,
+			moduleName: string) => void): this;
+		/**
+		 * Emitted when remote.getCurrentWebContents() is called in the renderer process of
+		 * webContents. Calling event.preventDefault() will prevent the object from being
+		 * returned. Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-current-web-contents', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		once(event: 'remote-get-current-web-contents', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		addListener(event: 'remote-get-current-web-contents', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		removeListener(event: 'remote-get-current-web-contents', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		/**
+		 * Emitted when remote.getCurrentWindow() is called in the renderer process of
+		 * webContents. Calling event.preventDefault() will prevent the object from being
+		 * returned. Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-current-window', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		once(event: 'remote-get-current-window', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		addListener(event: 'remote-get-current-window', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		removeListener(event: 'remote-get-current-window', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		/**
 		 * Emitted when remote.getGlobal() is called in the renderer process of
 		 * webContents. Calling event.preventDefault() will prevent the global from being
 		 * returned. Custom value can be returned by setting event.returnValue.
@@ -489,6 +532,23 @@ declare namespace Electron {
 		removeListener(event: 'remote-get-global', listener: (event: Event,
 			webContents: WebContents,
 			globalName: string) => void): this;
+		/**
+		 * Emitted when <webview>.getWebContents() is called in the renderer process of
+		 * webContents. Calling event.preventDefault() will prevent the object from being
+		 * returned. Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			webContents: WebContents,
+			guestWebContents: WebContents) => void): this;
+		once(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			webContents: WebContents,
+			guestWebContents: WebContents) => void): this;
+		addListener(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			webContents: WebContents,
+			guestWebContents: WebContents) => void): this;
+		removeListener(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			webContents: WebContents,
+			guestWebContents: WebContents) => void): this;
 		/**
 		 * Emitted when remote.require() is called in the renderer process of webContents.
 		 * Calling event.preventDefault() will prevent the module from being returned.
@@ -891,9 +951,9 @@ declare namespace Electron {
 		setAboutPanelOptions(options: AboutPanelOptionsOptions): void;
 		/**
 		 * Manually enables Chrome's accessibility support, allowing to expose
-		 * accessibility switch to users in application settings.
-		 * https://www.chromium.org/developers/design-documents/accessibility for more
-		 * details. Disabled by default. Note: Rendering accessibility tree can
+		 * accessibility switch to users in application settings. See Chromium's
+		 * accessibility docs for more details. Disabled by default. This API must be
+		 * called after the ready event is emitted. Note: Rendering accessibility tree can
 		 * significantly affect the performance of your app. It should not be enabled by
 		 * default.
 		 */
@@ -976,6 +1036,11 @@ declare namespace Electron {
 		 * them.
 		 */
 		show(): void;
+		/**
+		 * Show the about panel with the values defined in the app's .plist file or with
+		 * the options set via app.setAboutPanelOptions(options).
+		 */
+		showAboutPanel(): void;
 		/**
 		 * Start accessing a security scoped resource. With this method Electron
 		 * applications that are packaged for the Mac App Store may reach outside their
@@ -1704,7 +1769,8 @@ declare namespace Electron {
 		 */
 		setBackgroundColor(backgroundColor: string): void;
 		/**
-		 * Resizes and moves the window to the supplied bounds
+		 * Resizes and moves the window to the supplied bounds. Any properties that are not
+		 * supplied will default to their current values.
 		 */
 		setBounds(bounds: Rectangle, animate?: boolean): void;
 		setBrowserView(browserView: BrowserView): void;
@@ -2310,20 +2376,9 @@ declare namespace Electron {
 		 * Start recording on all processes. Recording begins immediately locally and
 		 * asynchronously on child processes as soon as they receive the EnableRecording
 		 * request. The callback will be called once all child processes have acknowledged
-		 * the startRecording request. categoryFilter is a filter to control what category
-		 * groups should be traced. A filter can have an optional - prefix to exclude
-		 * category groups that contain a matching category. Having both included and
-		 * excluded category patterns in the same list is not supported. Examples:
-		 * traceOptions controls what kind of tracing is enabled, it is a comma-delimited
-		 * list. Possible options are: The first 3 options are trace recording modes and
-		 * hence mutually exclusive. If more than one trace recording modes appear in the
-		 * traceOptions string, the last one takes precedence. If none of the trace
-		 * recording modes are specified, recording mode is record-until-full. The trace
-		 * option will first be reset to the default option (record_mode set to
-		 * record-until-full, enable_sampling and enable_systrace set to false) before
-		 * options parsed from traceOptions are applied on it.
+		 * the startRecording request.
 		 */
-		startRecording(options: StartRecordingOptions, callback: Function): void;
+		startRecording(options: (TraceCategoriesAndOptions) | (TraceConfig), callback: Function): void;
 		/**
 		 * Stop monitoring on all processes. Once all child processes have acknowledged the
 		 * stopMonitoring request the callback is called.
@@ -2504,8 +2559,10 @@ declare namespace Electron {
 		 */
 		addExtraParameter(key: string, value: string): void;
 		/**
-		 * Returns the date and ID of the last crash report. If no crash reports have been
-		 * sent or the crash reporter has not been started, null is returned.
+		 * Returns the date and ID of the last crash report. Only crash reports that have
+		 * been uploaded will be returned; even if a crash report is present on disk it
+		 * will not be returned until it is uploaded. In the case that there are no
+		 * uploaded reports, null is returned.
 		 */
 		getLastCrashReport(): CrashReport;
 		/**
@@ -2752,7 +2809,7 @@ declare namespace Electron {
 		 * file selector and a directory selector, so if you set properties to ['openFile',
 		 * 'openDirectory'] on these platforms, a directory selector will be shown.
 		 */
-		showOpenDialog(browserWindow: BrowserWindow, options: OpenDialogOptions, callback?: (filePaths: string[], bookmarks: string[]) => void): string[];
+		showOpenDialog(browserWindow: BrowserWindow, options: OpenDialogOptions, callback?: (filePaths: string[], bookmarks: string[]) => void): (string[]) | (undefined);
 		/**
 		 * The browserWindow argument allows the dialog to attach itself to a parent
 		 * window, making it modal. The filters specifies an array of file types that can
@@ -2765,7 +2822,7 @@ declare namespace Electron {
 		 * file selector and a directory selector, so if you set properties to ['openFile',
 		 * 'openDirectory'] on these platforms, a directory selector will be shown.
 		 */
-		showOpenDialog(options: OpenDialogOptions, callback?: (filePaths: string[], bookmarks: string[]) => void): string[];
+		showOpenDialog(options: OpenDialogOptions, callback?: (filePaths: string[], bookmarks: string[]) => void): (string[]) | (undefined);
 		/**
 		 * The browserWindow argument allows the dialog to attach itself to a parent
 		 * window, making it modal. The filters specifies an array of file types that can
@@ -2773,7 +2830,7 @@ declare namespace Electron {
 		 * the API call will be asynchronous and the result will be passed via
 		 * callback(filename).
 		 */
-		showSaveDialog(browserWindow: BrowserWindow, options: SaveDialogOptions, callback?: (filename: string, bookmark: string) => void): string;
+		showSaveDialog(browserWindow: BrowserWindow, options: SaveDialogOptions, callback?: (filename: string, bookmark: string) => void): (string) | (undefined);
 		/**
 		 * The browserWindow argument allows the dialog to attach itself to a parent
 		 * window, making it modal. The filters specifies an array of file types that can
@@ -2781,7 +2838,7 @@ declare namespace Electron {
 		 * the API call will be asynchronous and the result will be passed via
 		 * callback(filename).
 		 */
-		showSaveDialog(options: SaveDialogOptions, callback?: (filename: string, bookmark: string) => void): string;
+		showSaveDialog(options: SaveDialogOptions, callback?: (filename: string, bookmark: string) => void): (string) | (undefined);
 	}
 
 	interface Display {
@@ -2936,7 +2993,9 @@ declare namespace Electron {
 		 * registered shortcut is pressed by the user. When the accelerator is already
 		 * taken by other applications, this call will silently fail. This behavior is
 		 * intended by operating systems, since they don't want applications to fight for
-		 * global shortcuts.
+		 * global shortcuts. The following accelerators will not be registered successfully
+		 * on macOS 10.14 Mojave unless the app has been authorized as a trusted
+		 * accessibility client:
 		 */
 		register(accelerator: Accelerator, callback: Function): void;
 		/**
@@ -4418,6 +4477,17 @@ declare namespace Electron {
 			 * used, `false` otherwise.
 			 */
 			invertedColorScheme: boolean) => void): this;
+		/**
+		 * Important: In order to properly leverage this API, you must set the
+		 * NSMicrophoneUsageDescription and NSCameraUsageDescription strings in your app's
+		 * Info.plist file. The values for these keys will be used to populate the
+		 * permission dialogs so that the user will be properly informed as to the purpose
+		 * of the permission request. See Electron Application Distribution for more
+		 * information about how to set these in the context of Electron. This user consent
+		 * was not required until macOS 10.14 Mojave, so this method will always return
+		 * true if your system is running 10.13 High Sierra or lower.
+		 */
+		askForMediaAccess(mediaType: 'microphone' | 'camera'): Promise<Boolean>;
 		getAccentColor(): string;
 		/**
 		 * Gets the macOS appearance setting that you have declared you want for your
@@ -4438,6 +4508,11 @@ declare namespace Electron {
 		 */
 		getEffectiveAppearance(): ('dark' | 'light' | 'unknown');
 		/**
+		 * This user consent was not required until macOS 10.14 Mojave, so this method will
+		 * always return granted if your system is running 10.13 High Sierra or lower.
+		 */
+		getMediaAccessStatus(mediaType: string): ('not-determined' | 'granted' | 'denied' | 'restricted' | 'unknown');
+		/**
 		 * Some popular key and types are:
 		 */
 		getUserDefault(key: string, type: 'string' | 'boolean' | 'integer' | 'float' | 'double' | 'url' | 'array' | 'dictionary'): any;
@@ -4449,6 +4524,7 @@ declare namespace Electron {
 		isDarkMode(): boolean;
 		isInvertedColorScheme(): boolean;
 		isSwipeTrackingFromScrollEventsEnabled(): boolean;
+		isTrustedAccessibilityClient(prompt: boolean): boolean;
 		/**
 		 * Posts event as native notifications of macOS. The userInfo is an Object that
 		 * contains the user information dictionary sent along with the notification.
@@ -4674,6 +4750,42 @@ declare namespace Electron {
 		static TouchBarSegmentedControl: typeof TouchBarSegmentedControl;
 		static TouchBarSlider: typeof TouchBarSlider;
 		static TouchBarSpacer: typeof TouchBarSpacer;
+	}
+
+	interface TraceCategoriesAndOptions {
+
+		// Docs: http://electronjs.org/docs/api/structures/trace-categories-and-options
+
+		/**
+		 * – is a filter to control what category groups should be traced. A filter can
+		 * have an optional prefix to exclude category groups that contain a matching
+		 * category. Having both included and excluded category patterns in the same list
+		 * is not supported. Examples: test_MyTest*, test_MyTest*,test_OtherStuff,
+		 * -excluded_category1,-excluded_category2.
+		 */
+		categoryFilter: string;
+		/**
+		 * Controls what kind of tracing is enabled, it is a comma-delimited sequence of
+		 * the following strings: record-until-full, record-continuously, trace-to-console,
+		 * enable-sampling, enable-systrace, e.g. 'record-until-full,enable-sampling'. The
+		 * first 3 options are trace recording modes and hence mutually exclusive. If more
+		 * than one trace recording modes appear in the traceOptions string, the last one
+		 * takes precedence. If none of the trace recording modes are specified, recording
+		 * mode is record-until-full. The trace option will first be reset to the default
+		 * option (record_mode set to record-until-full, enable_sampling and
+		 * enable_systrace set to false) before options parsed from traceOptions are
+		 * applied on it.
+		 */
+		traceOptions: string;
+	}
+
+	interface TraceConfig {
+
+		// Docs: http://electronjs.org/docs/api/structures/trace-config
+
+		excluded_categories?: string[];
+		included_categories?: string[];
+		memory_dump_config?: MemoryDumpConfig;
 	}
 
 	interface Transaction {
@@ -5834,6 +5946,37 @@ declare namespace Electron {
 			name: string,
 			version: string) => void): this;
 		/**
+		 * Emitted when remote.getBuiltin() is called in the renderer process. Calling
+		 * event.preventDefault() will prevent the module from being returned. Custom value
+		 * can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-builtin', listener: (event: Event,
+			moduleName: string) => void): this;
+		once(event: 'remote-get-builtin', listener: (event: Event,
+			moduleName: string) => void): this;
+		addListener(event: 'remote-get-builtin', listener: (event: Event,
+			moduleName: string) => void): this;
+		removeListener(event: 'remote-get-builtin', listener: (event: Event,
+			moduleName: string) => void): this;
+		/**
+		 * Emitted when remote.getCurrentWebContents() is called in the renderer process.
+		 * Calling event.preventDefault() will prevent the object from being returned.
+		 * Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-current-web-contents', listener: (event: Event) => void): this;
+		once(event: 'remote-get-current-web-contents', listener: (event: Event) => void): this;
+		addListener(event: 'remote-get-current-web-contents', listener: (event: Event) => void): this;
+		removeListener(event: 'remote-get-current-web-contents', listener: (event: Event) => void): this;
+		/**
+		 * Emitted when remote.getCurrentWindow() is called in the renderer process.
+		 * Calling event.preventDefault() will prevent the object from being returned.
+		 * Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-current-window', listener: (event: Event) => void): this;
+		once(event: 'remote-get-current-window', listener: (event: Event) => void): this;
+		addListener(event: 'remote-get-current-window', listener: (event: Event) => void): this;
+		removeListener(event: 'remote-get-current-window', listener: (event: Event) => void): this;
+		/**
 		 * Emitted when remote.getGlobal() is called in the renderer process. Calling
 		 * event.preventDefault() will prevent the global from being returned. Custom value
 		 * can be returned by setting event.returnValue.
@@ -5846,6 +5989,19 @@ declare namespace Electron {
 			globalName: string) => void): this;
 		removeListener(event: 'remote-get-global', listener: (event: Event,
 			globalName: string) => void): this;
+		/**
+		 * Emitted when <webview>.getWebContents() is called in the renderer process.
+		 * Calling event.preventDefault() will prevent the object from being returned.
+		 * Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			guestWebContents: WebContents) => void): this;
+		once(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			guestWebContents: WebContents) => void): this;
+		addListener(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			guestWebContents: WebContents) => void): this;
+		removeListener(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			guestWebContents: WebContents) => void): this;
 		/**
 		 * Emitted when remote.require() is called in the renderer process. Calling
 		 * event.preventDefault() will prevent the module from being returned. Custom value
@@ -6058,13 +6214,13 @@ declare namespace Electron {
 		 * called with callback(image). The image is an instance of NativeImage that stores
 		 * data of the snapshot. Omitting rect will capture the whole visible page.
 		 */
-		capturePage(callback: (image: NativeImage) => void): void;
+		capturePage(rect: Rectangle, callback: (image: NativeImage) => void): void;
 		/**
 		 * Captures a snapshot of the page within rect. Upon completion callback will be
 		 * called with callback(image). The image is an instance of NativeImage that stores
 		 * data of the snapshot. Omitting rect will capture the whole visible page.
 		 */
-		capturePage(rect: Rectangle, callback: (image: NativeImage) => void): void;
+		capturePage(callback: (image: NativeImage) => void): void;
 		/**
 		 * Clears the navigation history.
 		 */
@@ -6132,6 +6288,7 @@ declare namespace Electron {
 		getPrinters(): PrinterInfo[];
 		getProcessId(): number;
 		getTitle(): string;
+		getType(): ('backgroundPage' | 'window' | 'browserView' | 'remote' | 'webview' | 'offscreen');
 		getURL(): string;
 		getUserAgent(): string;
 		getWebRTCIPHandlingPolicy(): string;
@@ -6292,6 +6449,11 @@ declare namespace Electron {
 		 * Mute the audio on the current web page.
 		 */
 		setAudioMuted(muted: boolean): void;
+		/**
+		 * Controls whether or not this WebContents will throttle animations and timers
+		 * when the page becomes backgrounded. This also affects the Page Visibility API.
+		 */
+		setBackgroundThrottling(allowed: boolean): void;
 		/**
 		 * Uses the devToolsWebContents as the target WebContents to show devtools. The
 		 * devToolsWebContents must not have done any navigation, and it should not be used
@@ -6551,14 +6713,14 @@ declare namespace Electron {
 		 * connection is made to the server, but before any http data is sent. The callback
 		 * has to be called with an response object.
 		 */
-		onBeforeSendHeaders(filter: OnBeforeSendHeadersFilter, listener: Function): void;
+		onBeforeSendHeaders(filter: OnBeforeSendHeadersFilter, listener: (details: OnBeforeSendHeadersDetails, callback: (response: OnBeforeSendHeadersResponse) => void) => void): void;
 		/**
 		 * The listener will be called with listener(details, callback) before sending an
 		 * HTTP request, once the request headers are available. This may occur after a TCP
 		 * connection is made to the server, but before any http data is sent. The callback
 		 * has to be called with an response object.
 		 */
-		onBeforeSendHeaders(listener: Function): void;
+		onBeforeSendHeaders(listener: (details: OnBeforeSendHeadersDetails, callback: (response: OnBeforeSendHeadersResponse) => void) => void): void;
 		/**
 		 * The listener will be called with listener(details) when a request is completed.
 		 */
@@ -6580,13 +6742,13 @@ declare namespace Electron {
 		 * headers of a request have been received. The callback has to be called with an
 		 * response object.
 		 */
-		onHeadersReceived(filter: OnHeadersReceivedFilter, listener: Function): void;
+		onHeadersReceived(filter: OnHeadersReceivedFilter, listener: (details: OnHeadersReceivedDetails, callback: (response: OnHeadersReceivedResponse) => void) => void): void;
 		/**
 		 * The listener will be called with listener(details, callback) when HTTP response
 		 * headers of a request have been received. The callback has to be called with an
 		 * response object.
 		 */
-		onHeadersReceived(listener: Function): void;
+		onHeadersReceived(listener: (details: OnHeadersReceivedDetails, callback: (response: OnHeadersReceivedResponse) => void) => void): void;
 		/**
 		 * The listener will be called with listener(details) when first byte of the
 		 * response body is received. For HTTP requests, this means that the status line
@@ -8126,6 +8288,9 @@ declare namespace Electron {
 		args?: string[];
 	}
 
+	interface MemoryDumpConfig {
+	}
+
 	interface MenuItemConstructorOptions {
 		/**
 		 * Will be called with click(menuItem, browserWindow, event) when the menu item is
@@ -8157,6 +8322,11 @@ declare namespace Electron {
 		 * Should only be specified for checkbox or radio type menu items.
 		 */
 		checked?: boolean;
+		/**
+		 * If false, the accelerator won't be registered with the system, but it will still
+		 * be displayed. Defaults to true.
+		 */
+		registerAccelerator?: boolean;
 		/**
 		 * Should be specified for submenu type menu items. If submenu is specified, the
 		 * type: 'submenu' can be omitted. If the value is not a then it will be
@@ -8363,6 +8533,16 @@ declare namespace Electron {
 		urls: string[];
 	}
 
+	interface OnBeforeSendHeadersDetails {
+		id: number;
+		url: string;
+		method: string;
+		webContentsId?: number;
+		resourceType: string;
+		timestamp: number;
+		requestHeaders: RequestHeaders;
+	}
+
 	interface OnBeforeSendHeadersFilter {
 		/**
 		 * Array of URL patterns that will be used to filter out the requests that do not
@@ -8371,12 +8551,21 @@ declare namespace Electron {
 		urls: string[];
 	}
 
+	interface OnBeforeSendHeadersResponse {
+		cancel?: boolean;
+		/**
+		 * When provided, request will be made with these headers.
+		 */
+		requestHeaders?: RequestHeaders;
+	}
+
 	interface OnCompletedDetails {
 		id: number;
 		url: string;
 		method: string;
 		webContentsId?: number;
 		resourceType: string;
+		referrer: string;
 		timestamp: number;
 		responseHeaders: ResponseHeaders;
 		fromCache: boolean;
@@ -8414,12 +8603,37 @@ declare namespace Electron {
 		urls: string[];
 	}
 
+	interface OnHeadersReceivedDetails {
+		id: number;
+		url: string;
+		method: string;
+		webContentsId?: number;
+		resourceType: string;
+		timestamp: number;
+		statusLine: string;
+		statusCode: number;
+		responseHeaders: ResponseHeaders;
+	}
+
 	interface OnHeadersReceivedFilter {
 		/**
 		 * Array of URL patterns that will be used to filter out the requests that do not
 		 * match the URL patterns.
 		 */
 		urls: string[];
+	}
+
+	interface OnHeadersReceivedResponse {
+		cancel?: boolean;
+		/**
+		 * When provided, the server is assumed to have responded with these headers.
+		 */
+		responseHeaders?: ResponseHeaders;
+		/**
+		 * Should be provided when overriding responseHeaders to change header status
+		 * otherwise original response header's status will be used.
+		 */
+		statusLine?: string;
 	}
 
 	interface OnResponseStartedDetails {
@@ -8652,6 +8866,23 @@ declare namespace Electron {
 		landscape?: boolean;
 	}
 
+	interface ProcessMemoryInfo {
+		/**
+		 * and The amount of memory currently pinned to actual physical RAM in Kilobytes.
+		 */
+		residentSet: number;
+		/**
+		 * The amount of memory not shared by other processes, such as JS heap or HTML
+		 * content in Kilobytes.
+		 */
+		private: number;
+		/**
+		 * The amount of memory shared between processes, typically memory consumed by the
+		 * Electron code itself in Kilobytes.
+		 */
+		shared: number;
+	}
+
 	interface ProgressBarOptions {
 		/**
 		 * Mode for the progress bar. Can be none, normal, indeterminate, error or paused.
@@ -8879,11 +9110,6 @@ declare namespace Electron {
 	}
 
 	interface StartMonitoringOptions {
-		categoryFilter: string;
-		traceOptions: string;
-	}
-
-	interface StartRecordingOptions {
 		categoryFilter: string;
 		traceOptions: string;
 	}
@@ -9404,12 +9630,13 @@ declare namespace Electron {
 		 * content to ensure the loaded content cannot tamper with the preload script and
 		 * any Electron APIs being used. This option uses the same technique used by . You
 		 * can access this context in the dev tools by selecting the 'Electron Isolated
-		 * Context' entry in the combo box at the top of the Console tab. This option is
-		 * currently experimental and may change or be removed in future Electron releases.
+		 * Context' entry in the combo box at the top of the Console tab.
 		 */
 		contextIsolation?: boolean;
 		/**
-		 * Whether to use native window.open(). Defaults to false. This option is currently
+		 * Whether to use native window.open(). If set to true, the webPreferences of child
+		 * window will always be the same with parent window, regardless of the parameters
+		 * passed to window.open(). Defaults to false. This option is currently
 		 * experimental.
 		 */
 		nativeWindowOpen?: boolean;
@@ -9525,6 +9752,22 @@ declare namespace NodeJS {
 		 * Indicates the creation time of the application. The time is represented as
 		 * number of milliseconds since epoch. It returns null if it is unable to get the
 		 * process creation time.
+		 */
+		getCreationTime(): (number) | (null);
+		/**
+		 * Returns an object with V8 heap statistics. Note that all statistics are reported
+		 * in Kilobytes.
+		 */
+		getHeapStatistics(): Electron.HeapStatistics;
+		getIOCounters(): Electron.IOCounters;
+		/**
+		 * Returns an object giving memory usage statistics about the current process. Note
+		 * that all statistics are reported in Kilobytes. This api should be called after
+		 * app ready. Chromium does not provide residentSet value for macOS. This is
+		 * because macOS performs in-memory compression of pages that haven't been recently
+		 * used. As a result the resident set size value is not what one would expect.
+		 * private memory is more representative of the actual pre-compression memory usage
+		 * of the process on macOS.
 		 */
 		getCreationTime(): (number) | (null);
 		/**
