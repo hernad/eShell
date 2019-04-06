@@ -1,4 +1,4 @@
-// Type definitions for Electron 4.0.2
+// Type definitions for Electron 4.1.2
 // Project: http://electronjs.org/
 // Definitions by: The Electron Team <https://github.com/electron/electron>
 // Definitions: https://github.com/electron/electron-typescript-definitions
@@ -473,6 +473,49 @@ declare namespace Electron {
 		addListener(event: 'ready', listener: (launchInfo: any) => void): this;
 		removeListener(event: 'ready', listener: (launchInfo: any) => void): this;
 		/**
+		 * Emitted when remote.getBuiltin() is called in the renderer process of
+		 * webContents. Calling event.preventDefault() will prevent the module from being
+		 * returned. Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-builtin', listener: (event: Event,
+			webContents: WebContents,
+			moduleName: string) => void): this;
+		once(event: 'remote-get-builtin', listener: (event: Event,
+			webContents: WebContents,
+			moduleName: string) => void): this;
+		addListener(event: 'remote-get-builtin', listener: (event: Event,
+			webContents: WebContents,
+			moduleName: string) => void): this;
+		removeListener(event: 'remote-get-builtin', listener: (event: Event,
+			webContents: WebContents,
+			moduleName: string) => void): this;
+		/**
+		 * Emitted when remote.getCurrentWebContents() is called in the renderer process of
+		 * webContents. Calling event.preventDefault() will prevent the object from being
+		 * returned. Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-current-web-contents', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		once(event: 'remote-get-current-web-contents', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		addListener(event: 'remote-get-current-web-contents', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		removeListener(event: 'remote-get-current-web-contents', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		/**
+		 * Emitted when remote.getCurrentWindow() is called in the renderer process of
+		 * webContents. Calling event.preventDefault() will prevent the object from being
+		 * returned. Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-current-window', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		once(event: 'remote-get-current-window', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		addListener(event: 'remote-get-current-window', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		removeListener(event: 'remote-get-current-window', listener: (event: Event,
+			webContents: WebContents) => void): this;
+		/**
 		 * Emitted when remote.getGlobal() is called in the renderer process of
 		 * webContents. Calling event.preventDefault() will prevent the global from being
 		 * returned. Custom value can be returned by setting event.returnValue.
@@ -489,6 +532,23 @@ declare namespace Electron {
 		removeListener(event: 'remote-get-global', listener: (event: Event,
 			webContents: WebContents,
 			globalName: string) => void): this;
+		/**
+		 * Emitted when <webview>.getWebContents() is called in the renderer process of
+		 * webContents. Calling event.preventDefault() will prevent the object from being
+		 * returned. Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			webContents: WebContents,
+			guestWebContents: WebContents) => void): this;
+		once(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			webContents: WebContents,
+			guestWebContents: WebContents) => void): this;
+		addListener(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			webContents: WebContents,
+			guestWebContents: WebContents) => void): this;
+		removeListener(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			webContents: WebContents,
+			guestWebContents: WebContents) => void): this;
 		/**
 		 * Emitted when remote.require() is called in the renderer process of webContents.
 		 * Calling event.preventDefault() will prevent the module from being returned.
@@ -2499,8 +2559,10 @@ declare namespace Electron {
 		 */
 		addExtraParameter(key: string, value: string): void;
 		/**
-		 * Returns the date and ID of the last crash report. If no crash reports have been
-		 * sent or the crash reporter has not been started, null is returned.
+		 * Returns the date and ID of the last crash report. Only crash reports that have
+		 * been uploaded will be returned; even if a crash report is present on disk it
+		 * will not be returned until it is uploaded. In the case that there are no
+		 * uploaded reports, null is returned.
 		 */
 		getLastCrashReport(): CrashReport;
 		/**
@@ -2747,7 +2809,7 @@ declare namespace Electron {
 		 * file selector and a directory selector, so if you set properties to ['openFile',
 		 * 'openDirectory'] on these platforms, a directory selector will be shown.
 		 */
-		showOpenDialog(browserWindow: BrowserWindow, options: OpenDialogOptions, callback?: (filePaths: string[], bookmarks: string[]) => void): string[];
+		showOpenDialog(browserWindow: BrowserWindow, options: OpenDialogOptions, callback?: (filePaths: string[], bookmarks: string[]) => void): (string[]) | (undefined);
 		/**
 		 * The browserWindow argument allows the dialog to attach itself to a parent
 		 * window, making it modal. The filters specifies an array of file types that can
@@ -2760,7 +2822,7 @@ declare namespace Electron {
 		 * file selector and a directory selector, so if you set properties to ['openFile',
 		 * 'openDirectory'] on these platforms, a directory selector will be shown.
 		 */
-		showOpenDialog(options: OpenDialogOptions, callback?: (filePaths: string[], bookmarks: string[]) => void): string[];
+		showOpenDialog(options: OpenDialogOptions, callback?: (filePaths: string[], bookmarks: string[]) => void): (string[]) | (undefined);
 		/**
 		 * The browserWindow argument allows the dialog to attach itself to a parent
 		 * window, making it modal. The filters specifies an array of file types that can
@@ -2768,7 +2830,7 @@ declare namespace Electron {
 		 * the API call will be asynchronous and the result will be passed via
 		 * callback(filename).
 		 */
-		showSaveDialog(browserWindow: BrowserWindow, options: SaveDialogOptions, callback?: (filename: string, bookmark: string) => void): string;
+		showSaveDialog(browserWindow: BrowserWindow, options: SaveDialogOptions, callback?: (filename: string, bookmark: string) => void): (string) | (undefined);
 		/**
 		 * The browserWindow argument allows the dialog to attach itself to a parent
 		 * window, making it modal. The filters specifies an array of file types that can
@@ -2776,7 +2838,7 @@ declare namespace Electron {
 		 * the API call will be asynchronous and the result will be passed via
 		 * callback(filename).
 		 */
-		showSaveDialog(options: SaveDialogOptions, callback?: (filename: string, bookmark: string) => void): string;
+		showSaveDialog(options: SaveDialogOptions, callback?: (filename: string, bookmark: string) => void): (string) | (undefined);
 	}
 
 	interface Display {
@@ -5884,6 +5946,37 @@ declare namespace Electron {
 			name: string,
 			version: string) => void): this;
 		/**
+		 * Emitted when remote.getBuiltin() is called in the renderer process. Calling
+		 * event.preventDefault() will prevent the module from being returned. Custom value
+		 * can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-builtin', listener: (event: Event,
+			moduleName: string) => void): this;
+		once(event: 'remote-get-builtin', listener: (event: Event,
+			moduleName: string) => void): this;
+		addListener(event: 'remote-get-builtin', listener: (event: Event,
+			moduleName: string) => void): this;
+		removeListener(event: 'remote-get-builtin', listener: (event: Event,
+			moduleName: string) => void): this;
+		/**
+		 * Emitted when remote.getCurrentWebContents() is called in the renderer process.
+		 * Calling event.preventDefault() will prevent the object from being returned.
+		 * Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-current-web-contents', listener: (event: Event) => void): this;
+		once(event: 'remote-get-current-web-contents', listener: (event: Event) => void): this;
+		addListener(event: 'remote-get-current-web-contents', listener: (event: Event) => void): this;
+		removeListener(event: 'remote-get-current-web-contents', listener: (event: Event) => void): this;
+		/**
+		 * Emitted when remote.getCurrentWindow() is called in the renderer process.
+		 * Calling event.preventDefault() will prevent the object from being returned.
+		 * Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-current-window', listener: (event: Event) => void): this;
+		once(event: 'remote-get-current-window', listener: (event: Event) => void): this;
+		addListener(event: 'remote-get-current-window', listener: (event: Event) => void): this;
+		removeListener(event: 'remote-get-current-window', listener: (event: Event) => void): this;
+		/**
 		 * Emitted when remote.getGlobal() is called in the renderer process. Calling
 		 * event.preventDefault() will prevent the global from being returned. Custom value
 		 * can be returned by setting event.returnValue.
@@ -5896,6 +5989,19 @@ declare namespace Electron {
 			globalName: string) => void): this;
 		removeListener(event: 'remote-get-global', listener: (event: Event,
 			globalName: string) => void): this;
+		/**
+		 * Emitted when <webview>.getWebContents() is called in the renderer process.
+		 * Calling event.preventDefault() will prevent the object from being returned.
+		 * Custom value can be returned by setting event.returnValue.
+		 */
+		on(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			guestWebContents: WebContents) => void): this;
+		once(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			guestWebContents: WebContents) => void): this;
+		addListener(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			guestWebContents: WebContents) => void): this;
+		removeListener(event: 'remote-get-guest-web-contents', listener: (event: Event,
+			guestWebContents: WebContents) => void): this;
 		/**
 		 * Emitted when remote.require() is called in the renderer process. Calling
 		 * event.preventDefault() will prevent the module from being returned. Custom value
@@ -6182,6 +6288,7 @@ declare namespace Electron {
 		getPrinters(): PrinterInfo[];
 		getProcessId(): number;
 		getTitle(): string;
+		getType(): ('backgroundPage' | 'window' | 'browserView' | 'remote' | 'webview' | 'offscreen');
 		getURL(): string;
 		getUserAgent(): string;
 		getWebRTCIPHandlingPolicy(): string;
@@ -8458,6 +8565,7 @@ declare namespace Electron {
 		method: string;
 		webContentsId?: number;
 		resourceType: string;
+		referrer: string;
 		timestamp: number;
 		responseHeaders: ResponseHeaders;
 		fromCache: boolean;
@@ -8516,7 +8624,7 @@ declare namespace Electron {
 	}
 
 	interface OnHeadersReceivedResponse {
-		cancel: boolean;
+		cancel?: boolean;
 		/**
 		 * When provided, the server is assumed to have responded with these headers.
 		 */
@@ -8756,6 +8864,23 @@ declare namespace Electron {
 		 * true for landscape, false for portrait.
 		 */
 		landscape?: boolean;
+	}
+
+	interface ProcessMemoryInfo {
+		/**
+		 * and The amount of memory currently pinned to actual physical RAM in Kilobytes.
+		 */
+		residentSet: number;
+		/**
+		 * The amount of memory not shared by other processes, such as JS heap or HTML
+		 * content in Kilobytes.
+		 */
+		private: number;
+		/**
+		 * The amount of memory shared between processes, typically memory consumed by the
+		 * Electron code itself in Kilobytes.
+		 */
+		shared: number;
 	}
 
 	interface ProgressBarOptions {
@@ -9627,6 +9752,22 @@ declare namespace NodeJS {
 		 * Indicates the creation time of the application. The time is represented as
 		 * number of milliseconds since epoch. It returns null if it is unable to get the
 		 * process creation time.
+		 */
+		getCreationTime(): (number) | (null);
+		/**
+		 * Returns an object with V8 heap statistics. Note that all statistics are reported
+		 * in Kilobytes.
+		 */
+		getHeapStatistics(): Electron.HeapStatistics;
+		getIOCounters(): Electron.IOCounters;
+		/**
+		 * Returns an object giving memory usage statistics about the current process. Note
+		 * that all statistics are reported in Kilobytes. This api should be called after
+		 * app ready. Chromium does not provide residentSet value for macOS. This is
+		 * because macOS performs in-memory compression of pages that haven't been recently
+		 * used. As a result the resident set size value is not what one would expect.
+		 * private memory is more representative of the actual pre-compression memory usage
+		 * of the process on macOS.
 		 */
 		getCreationTime(): (number) | (null);
 		/**

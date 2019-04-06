@@ -11,7 +11,7 @@ import { OpenContext, IRunActionInWindowRequest, getTitleBarStyle, IRunKeybindin
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IUpdateService, StateType } from 'vs/platform/update/common/update';
-import product from 'vs/platform/node/product';
+import product from 'vs/platform/product/node/product';
 import { RunOnceScheduler } from 'vs/base/common/async';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { mnemonicMenuLabel as baseMnemonicLabel } from 'vs/base/common/labels';
@@ -352,7 +352,7 @@ export class Menubar {
 				if (
 					this.windowsMainService.getWindowCount() === 0 || 			// allow to quit when no more windows are open
 					!!this.windowsMainService.getFocusedWindow() ||				// allow to quit when window has focus (fix for https://github.com/Microsoft/vscode/issues/39191)
-					this.windowsMainService.getLastActiveWindow().isMinimized()	// allow to quit when window has no focus but is minimized (https://github.com/Microsoft/vscode/issues/63000)
+					this.windowsMainService.getLastActiveWindow()!.isMinimized()	// allow to quit when window has no focus but is minimized (https://github.com/Microsoft/vscode/issues/63000)
 				) {
 					this.windowsMainService.quit();
 				}
@@ -417,7 +417,7 @@ export class Menubar {
 				this.setMenu(submenu, item.submenu.items);
 				menu.append(submenuItem);
 			} else if (isMenubarMenuItemUriAction(item)) {
-				menu.append(this.createOpenRecentMenuItem(item.uri, item.label, item.id, item.id === 'openRecentFile'));
+				menu.append(this.createOpenRecentMenuItem(item.uri, item.label, item.id));
 			} else if (isMenubarMenuItemAction(item)) {
 				if (item.id === 'workbench.action.showAboutDialog') {
 					this.insertCheckForUpdatesItems(menu);
@@ -455,8 +455,9 @@ export class Menubar {
 		}
 	}
 
-	private createOpenRecentMenuItem(uri: URI, label: string, commandId: string, isFile: boolean): Electron.MenuItem {
+	private createOpenRecentMenuItem(uri: URI, label: string, commandId: string): Electron.MenuItem {
 		const revivedUri = URI.revive(uri);
+		const typeHint = commandId === 'openRecentFile' || commandId === 'openRecentWorkspace' ? 'file' : 'folder';
 
 		return new MenuItem(this.likeAction(commandId, {
 			label,
@@ -465,9 +466,9 @@ export class Menubar {
 				const success = this.windowsMainService.open({
 					context: OpenContext.MENU,
 					cli: this.environmentService.args,
-					urisToOpen: [revivedUri],
+					urisToOpen: [{ uri: revivedUri, typeHint }],
 					forceNewWindow: openInNewWindow,
-					forceOpenWorkspaceAsFile: isFile
+					forceOpenWorkspaceAsFile: commandId === 'openRecentFile'
 				}).length > 0;
 
 				if (!success) {
@@ -563,7 +564,7 @@ export class Menubar {
 
 			case StateType.Ready:
 				return [new MenuItem({
-					label: this.mnemonicLabel(nls.localize('miRestartToUpdate', "Restart to &&Update...")), click: () => {
+					label: this.mnemonicLabel(nls.localize('miRestartToUpdate', "Restart to &&Update")), click: () => {
 						this.reportMenuActionTelemetry('RestartToUpdate');
 						this.updateService.quitAndInstall();
 					}
@@ -695,22 +696,24 @@ export class Menubar {
 		let activeWindow = this.windowsMainService.getFocusedWindow();
 		if (!activeWindow) {
 			const lastActiveWindow = this.windowsMainService.getLastActiveWindow();
-			if (lastActiveWindow.isMinimized()) {
+			if (lastActiveWindow && lastActiveWindow.isMinimized()) {
 				activeWindow = lastActiveWindow;
 			}
 		}
 
 		if (activeWindow) {
-			if (invocation.type === 'commandId') {
-				this.windowsMainService.sendToFocused('vscode:runAction', { id: invocation.commandId, from: 'menu' } as IRunActionInWindowRequest);
-			} else {
-				if (isMacintosh && invocation.userSettingsLabel === 'alt+cmd+i' && !this.environmentService.isBuilt && !activeWindow.isReady) {
+			if (isMacintosh && !this.environmentService.isBuilt && !activeWindow.isReady) {
+				if ((invocation.type === 'commandId' && invocation.commandId === 'workbench.action.toggleDevTools') || (invocation.type !== 'commandId' && invocation.userSettingsLabel === 'alt+cmd+i')) {
 					// prevent this action from running twice on macOS (https://github.com/Microsoft/vscode/issues/62719)
 					// we already register a keybinding in bootstrap-window.js for opening developer tools in case something
 					// goes wrong and that keybinding is only removed when the application has loaded (= window ready).
 					return;
 				}
+			}
 
+			if (invocation.type === 'commandId') {
+				this.windowsMainService.sendToFocused('vscode:runAction', { id: invocation.commandId, from: 'menu' } as IRunActionInWindowRequest);
+			} else {
 				this.windowsMainService.sendToFocused('vscode:runKeybinding', { userSettingsLabel: invocation.userSettingsLabel } as IRunKeybindingInWindowRequest);
 			}
 		}

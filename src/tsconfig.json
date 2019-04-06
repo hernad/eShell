@@ -3,9 +3,20 @@
 	"compilerOptions": {
 		"removeComments": false,
 		"preserveConstEnums": true,
+<<<<<<< HEAD
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"outDir": "../out"
+=======
+		"sourceMap": false,
+		"outDir": "../out",
+		"target": "es6",
+		"lib": [
+			"dom",
+			"es5",
+			"es2015.iterable"
+		]
+>>>>>>> electron-4.0.x
 	},
 	"include": [
 		"./typings",

@@ -47,6 +47,7 @@ jobs:
 #  steps:
 #  - template: linux/snap-build-linux.yml
 
+<<<<<<< HEAD
 - job: Linux32
   condition: eq(variables['VSCODE_BUILD_LINUX_32BIT'], 'true')
   pool:
@@ -63,3 +64,11 @@ jobs:
 #    vmImage: macOS 10.13
 #  steps:
 #  - template: darwin/product-build-darwin.yml
+=======
+- job: macOS
+  condition: eq(variables['VSCODE_BUILD_MACOS'], 'true')
+  pool:
+    vmImage: macOS 10.13
+  steps:
+  - template: darwin/product-build-darwin.yml
+>>>>>>> electron-4.0.x
