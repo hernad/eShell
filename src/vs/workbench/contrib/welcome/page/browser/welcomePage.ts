@@ -275,12 +275,8 @@ class WelcomePage {
 		const resource = URI.parse(require.toUrl('./dva'))
 			.with({
 				scheme: Schemas.walkThrough,
-<<<<<<< HEAD:src/vs/workbench/parts/welcome/page/electron-browser/welcomePage.ts
 				// query: JSON.stringify({ moduleId: 'vs/workbench/parts/welcome/page/electron-browser/vs_code_welcome_page' })
 				query: JSON.stringify({ moduleId: 'vs/workbench/parts/welcome/page/electron-browser/dva' })
-=======
-				query: JSON.stringify({ moduleId: 'vs/workbench/contrib/welcome/page/browser/vs_code_welcome_page' })
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/welcome/page/browser/welcomePage.ts
 			});
 		this.editorInput = this.instantiationService.createInstance(WalkThroughInput, {
 			typeId: welcomeInputTypeId,

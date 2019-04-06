@@ -19,12 +19,6 @@ import { DARK, ITheme, IThemeService, LIGHT } from 'vs/platform/theme/common/the
 import { registerFileProtocol, WebviewProtocol } from 'vs/workbench/contrib/webview/electron-browser/webviewProtocols';
 import { areWebviewInputOptionsEqual } from './webviewEditorService';
 import { WebviewFindWidget } from './webviewFindWidget';
-<<<<<<< HEAD:src/vs/workbench/parts/webview/electron-browser/webviewElement.ts
-import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
-import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
-import { endsWith } from 'vs/base/common/strings';
-import { isMacintosh } from 'vs/base/common/platform';
-=======
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
@@ -37,7 +31,6 @@ export interface WebviewPortMapping {
 	readonly port: number;
 	readonly resolvedPort: number;
 }
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/webview/electron-browser/webviewElement.ts
 
 export interface WebviewOptions {
 	readonly allowSvgs?: boolean;
@@ -341,17 +334,10 @@ export class WebviewElement extends Disposable {
 		private readonly _options: WebviewOptions,
 		private _contentOptions: WebviewContentOptions,
 		@IInstantiationService instantiationService: IInstantiationService,
-<<<<<<< HEAD:src/vs/workbench/parts/webview/electron-browser/webviewElement.ts
-		@IThemeService private readonly _themeService: IThemeService,
-		@IEnvironmentService environmentService: IEnvironmentService,
-		@IFileService fileService: IFileService,
-		@IKeybindingService private readonly _keybindingService: IKeybindingService
-=======
 		@IThemeService themeService: IThemeService,
 		@IEnvironmentService environmentService: IEnvironmentService,
 		@IFileService fileService: IFileService,
 		@ITelemetryService telemetryService: ITelemetryService,
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/webview/electron-browser/webviewElement.ts
 	) {
 		super();
 		this._webview = document.createElement('webview');
@@ -379,20 +365,6 @@ export class WebviewElement extends Disposable {
 			}));
 		});
 
-<<<<<<< HEAD:src/vs/workbench/parts/webview/electron-browser/webviewElement.ts
-		this._register(
-			new WebviewProtocolProvider(
-				this._webview,
-				this._options.extensionLocation,
-				() => (this._options.localResourceRoots || []),
-				environmentService,
-				fileService));
-
-		const svgBlocker = this._register(new SvgBlocker(this._webview, this._options));
-		svgBlocker.onDidBlockSvg(() => this.onDidBlockSvg());
-
-		this._register(new WebviewKeyboardHandler(this._webview, this._keybindingService));
-=======
 		const session = this._register(new WebviewSession(this._webview));
 
 		this._register(new WebviewProtocolProvider(
@@ -415,7 +387,6 @@ export class WebviewElement extends Disposable {
 		}
 
 		this._register(new WebviewKeyboardHandler(this._webview));
->>>>>>> electron-4.0.x:src/vs/workbench/contrib/webview/electron-browser/webviewElement.ts
 
 		this._register(addDisposableListener(this._webview, 'console-message', function (e: { level: number; message: string; line: number; sourceId: string; }) {
 			console.log(`[Embedded Page] ${e.message}`);
