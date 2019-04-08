@@ -14,11 +14,11 @@ Potrebno: Windows 7, Windows 10
 
 #### 64-bit
 
-[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x64/images/download.svg?version=1.31.403) ](https://dl.bintray.com/bringout/eShell/eShell-windows-x64_1.31.403.zip)
+[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x64/images/download.svg?version=1.33.103) ](https://dl.bintray.com/bringout/eShell/eShell-windows-x64_1.33.103.zip)
 
 #### 32-bit
 
-[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x86/images/download.svg?version=1.31.403) ](https://dl.bintray.com/bringout/eShell/eShell-windows-x86_1.31.403.zip)
+[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x86/images/download.svg?version=1.33.103) ](https://dl.bintray.com/bringout/eShell/eShell-windows-x86_1.33.103.zip)
 
 
 ### Linux
