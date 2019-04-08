@@ -10,7 +10,7 @@ BINTRAY_PACKAGE=eShell-windows-${BINTRAY_ARCH}
 pacman --noconfirm -S --needed zip
 
 #echo ================= .build ==============================
-#find .build
+find .build
 #echo =======================================================
 #.build/win32-ia32/user-setup/eShellSetup.exe
 
