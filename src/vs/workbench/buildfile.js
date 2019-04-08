@@ -21,7 +21,7 @@ exports.collectModules = function () {
 	return [
 		createModuleDescription('vs/workbench/contrib/output/common/outputLinkComputer', ['vs/base/common/worker/simpleWorker', 'vs/editor/common/services/editorSimpleWorker']),
 
-		createModuleDescription('vs/workbench/contrib/debug/node/telemetryApp', []),
+		/* createModuleDescription('vs/workbench/contrib/debug/node/telemetryApp', []), */
 
 		createModuleDescription('vs/workbench/services/search/node/searchApp', []),
 
