@@ -1238,24 +1238,30 @@ export class TerminalInstance implements ITerminalInstance {
 
 		this._xtermReadyPromise.then(() => {
 
-			console.log('forceResize', cols, rows);
+
 			if (cols < 0) {
 				// exit from manual resize mode!
 				this.disableLayout = false;
+			} else {
+				if (this.disableLayout) {
+					// console.log('hernad-debug forceResize ignore disable.layout=true');
+					return;
+				}
 			}
+			// console.log('hernad-debug forceResize', cols, rows);
 
-			this.setVisible(true);
+			//this.setVisible(true);
 			if (this._xterm) {
 				if (cols !== this._xterm.cols || rows !== this._xterm.rows) {
 					this._onDimensionsChanged.fire();
 				}
-				console.log('forceResize-2');
+				// console.log('hernad-debug forceResize-2');
 				this._xterm.resize(cols, rows);
 			}
 
 			if (this._processManager) {
 				this._processManager.ptyProcessReady.then(() => {
-					console.log('forceResize-3');
+					//console.log('hernad-debug forceResize-3');
 					this._processManager!.setDimensions(cols, rows);
 				});
 			}
