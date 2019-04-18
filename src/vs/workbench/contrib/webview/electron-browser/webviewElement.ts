@@ -271,6 +271,7 @@ class WebviewKeyboardHandler extends Disposable {
 					return;
 
 				case 'did-focus':
+				    //console.log(`did-focus 1 ${this._webview.getTitle()}`);
 					this.setIgnoreMenuShortcuts(this._ignoreMenuShortcut);
 					break;
 
@@ -358,7 +359,6 @@ export class WebviewElement extends Disposable {
 				if (event.channel === 'webview-ready') {
 					// console.info('[PID Webview] ' event.args[0]);
 					addClass(this._webview, 'ready'); // can be found by debug command
-
 					subscription.dispose();
 					resolve();
 				}
@@ -407,8 +407,15 @@ export class WebviewElement extends Disposable {
 			switch (event.channel) {
 				case 'onmessage':
 					if (event.args && event.args.length) {
+						if ('command' in event.args[0]  &&  event.args[0].command === 'cli-focus')
+						{
+							//this._webview.shadowRoot!.querySelector('active-iframe')!.focus();
+							//this._webview.blur();
+							//this._webview.focus();
+						}
 						this._onMessage.fire(event.args[0]);
 					}
+
 					return;
 
 				case 'did-click-link':

@@ -180,12 +180,15 @@
 			applyStyles(target.contentDocument, target.contentDocument.body);
 		});
 
+
+
 		// propagate focus
 		ipcRenderer.on('focus', () => {
 			const target = getActiveFrame();
+			//console.log(`webview-pre.js on.focus ${target}`);
 			if (target) {
 				if (target.contentWindow) {
-                   target.contentWindow.focus();
+				   target.contentWindow.focus();
 				} else {
 					console.log('target.contentWindow nul?!');
 				}
@@ -268,6 +271,7 @@
 			// keep current scrollY around and use later
 			let setInitialScrollPosition;
 			if (firstLoad) {
+				console.log('webview first-load');
 				firstLoad = false;
 				setInitialScrollPosition = (body, window) => {
 					if (!isNaN(initData.initialScrollProgress)) {
@@ -277,6 +281,7 @@
 					}
 				};
 			} else {
+				console.log('webview NOT first load');
 				const scrollY = frame && frame.contentDocument && frame.contentDocument.body ? frame.contentWindow.scrollY : 0;
 				setInitialScrollPosition = (body, window) => {
 					if (window.scrollY === 0) {
@@ -365,6 +370,26 @@
 				}
 			});
 
+			/*
+			hernad
+			newFrame.contentWindow.addEventListener("visibilitychange", function () {
+
+				console.log("visibilitychange");
+				if (newFrame.contentDocument["hidden"]) {
+					console.log('sakrivam');
+			    } else {
+				   console.log('otkrivam');
+				   const scrollY = newFrame && newFrame.contentDocument && newFrame.contentDocument.body ? newFrame.contentWindow.scrollY : 0;
+				   console.log(`webview NOT first load ${scrollY}`);
+				   setInitialScrollPosition = (body, window) => {
+					  if (window.scrollY === 0) {
+						window.scroll(0, scrollY);
+					  }
+				   };
+				}
+			});
+			*/
+
 			// Bubble out link clicks
 			newFrame.contentWindow.addEventListener('click', handleInnerClick);
 
@@ -402,7 +427,10 @@
 		});
 
 		trackFocus({
-			onFocus: () => { ipcRenderer.sendToHost('did-focus'); },
+			onFocus: () => {
+				console.log('webview-pre.js fokusiran sam!');
+				ipcRenderer.sendToHost('did-focus');
+			},
 			onBlur: () => { ipcRenderer.sendToHost('did-blur'); }
 		});
 

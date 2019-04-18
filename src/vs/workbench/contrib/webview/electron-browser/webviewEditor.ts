@@ -151,7 +151,9 @@ export class WebviewEditor extends BaseEditor {
 				}
 			});
 		}
-		this.withWebviewElement(webview => webview.focus());
+		this.withWebviewElement(webview => {
+			webview.focus();
+		});
 	}
 
 	public selectAll(): void {
