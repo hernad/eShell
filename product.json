@@ -11,9 +11,9 @@
 	"win32UserAppId": "{{F6065F05-9603-4FC4-8101-B9781A25D803}",
 	"win32x64UserAppId": "{{F6065F05-9603-4FC4-8101-B9781A25D804}",
 	"darwinBundleIdentifier": "ba.out.bring.eshell",
-	"linuxIconName": "com.visualstudio.code.oss",
+	"linuxIconName": "ba.out.bring.eshell",
 	"licenseFileName": "LICENSE.txt",
-	"reportIssueUrl": "https://github.com/Microsoft/vscode/issues/new",
+	"reportIssueUrl": "https://github.com/hernad/eShell/issues/new",
 	"keyboardShortcutsUrlLinux" : "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf",
 	"extensionAllowedProposedApi": [
 		"ms-vscode.references-view"
