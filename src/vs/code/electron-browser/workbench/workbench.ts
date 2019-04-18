@@ -51,7 +51,14 @@ bootstrapWindow.load([
 	});
 
 /**
- * @param {object} configuration
+ * // configuration: IWindowConfiguration
+ * @param {{
+ *	partsSplashPath?: string,
+ *	highContrast?: boolean,
+ *	extensionDevelopmentPath?: string | string[],
+ *	folderUri?: object,
+ *	workspace?: object
+ * }} configuration
  */
 function showPartsSplash(configuration: { partsSplashPath: any; highContrast: any; extensionDevelopmentPath: any; folderUri: any; workspace: any; }) {
 	perf.mark('willShowPartsSplash');

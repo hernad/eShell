@@ -72,17 +72,26 @@ declare module 'vscode' {
 
 	//#region Alex - resolvers
 
+	export interface RemoteAuthorityResolverContext {
+		resolveAttempt: number;
+	}
+
 	export class ResolvedAuthority {
 		readonly host: string;
 		readonly port: number;
-		debugListenPort?: number;
-		debugConnectPort?: number;
 
 		constructor(host: string, port: number);
 	}
 
+	export class RemoteAuthorityResolverError extends Error {
+		static NotAvailable(message?: string, handled?: boolean): RemoteAuthorityResolverError;
+		static TemporarilyNotAvailable(message?: string): RemoteAuthorityResolverError;
+
+		constructor(message?: string);
+	}
+
 	export interface RemoteAuthorityResolver {
-		resolve(authority: string): ResolvedAuthority | Thenable<ResolvedAuthority>;
+		resolve(authority: string, context: RemoteAuthorityResolverContext): ResolvedAuthority | Thenable<ResolvedAuthority>;
 	}
 
 	export interface ResourceLabelFormatter {
@@ -222,7 +231,6 @@ declare module 'vscode' {
 		 * See the vscode setting `"search.useGlobalIgnoreFiles"`.
 		 */
 		useGlobalIgnoreFiles: boolean;
-
 	}
 
 	/**
@@ -391,7 +399,6 @@ declare module 'vscode' {
 		 * Provide the set of files that match a certain file path pattern.
 		 * @param query The parameters for this query.
 		 * @param options A set of options to consider while searching files.
-		 * @param progress A progress callback that must be invoked for all results.
 		 * @param token A cancellation token.
 		 */
 		provideFileSearchResults(query: FileSearchQuery, options: FileSearchOptions, token: CancellationToken): ProviderResult<Uri[]>;
@@ -475,11 +482,6 @@ declare module 'vscode' {
 	}
 
 	export namespace workspace {
-		/**
-		 * DEPRECATED
-		 */
-		export function registerSearchProvider(): Disposable;
-
 		/**
 		 * Register a search provider.
 		 *
@@ -802,28 +804,28 @@ declare module 'vscode' {
 		/**
 		 * The id of the comment
 		 */
-		commentId: string;
+		readonly commentId: string;
 
 		/**
 		 * The text of the comment
 		 */
-		body: MarkdownString;
+		readonly body: MarkdownString;
 
 		/**
 		 * Optional label describing the [Comment](#Comment)
 		 * Label will be rendered next to userName if exists.
 		 */
-		label?: string;
+		readonly label?: string;
 
 		/**
 		 * The display name of the user who created the comment
 		 */
-		userName: string;
+		readonly userName: string;
 
 		/**
 		 * The icon path for the user who created the comment
 		 */
-		userIconPath?: Uri;
+		readonly userIconPath?: Uri;
 
 		/**
 		 * @deprecated Use userIconPath instead. The avatar src of the user who created the comment
@@ -859,17 +861,17 @@ declare module 'vscode' {
 		/**
 		 * The command to be executed if the comment is selected in the Comments Panel
 		 */
-		selectCommand?: Command;
+		readonly selectCommand?: Command;
 
 		/**
 		 * The command to be executed when users try to save the edits to the comment
 		 */
-		editCommand?: Command;
+		readonly editCommand?: Command;
 
 		/**
 		 * The command to be executed when users try to delete the comment
 		 */
-		deleteCommand?: Command;
+		readonly deleteCommand?: Command;
 
 		/**
 		 * Deprecated
@@ -1000,9 +1002,7 @@ declare module 'vscode' {
 		 * Provide a list of ranges which allow new comment threads creation or null for a given document
 		 */
 		provideCommentingRanges(document: TextDocument, token: CancellationToken): ProviderResult<Range[]>;
-	}
 
-	export interface EmptyCommentThreadFactory {
 		/**
 		 * The method `createEmptyCommentThread` is called when users attempt to create new comment thread from the gutter or command palette.
 		 * Extensions still need to call `createCommentThread` inside this call when appropriate.
@@ -1036,11 +1036,6 @@ declare module 'vscode' {
 		 * Provide a list [ranges](#Range) which support commenting to any given resource uri.
 		 */
 		commentingRangeProvider?: CommentingRangeProvider;
-
-		/**
-		 * Optional new comment thread factory.
-		 */
-		emptyCommentThreadFactory?: EmptyCommentThreadFactory;
 
 		/**
 		 * Optional reaction provider
@@ -1363,34 +1358,42 @@ declare module 'vscode' {
 	}
 	//#endregion
 
-	//#region Webview Port mapping— mjbvz
-	/**
-	 * Defines a port mapping used for localhost inside the webview.
-	 */
-	export interface WebviewPortMapping {
-		/**
-		 * Localhost port to remap inside the webview.
-		 */
-		readonly port: number;
+	//#region Workspace URI Ben
+
+	export namespace workspace {
 
 		/**
-		 * Destination port. The `port` is resolved to this port.
+		 * The location of the workspace file, for example:
+		 *
+		 * `file:///Users/name/Development/myProject.code-workspace`
+		 *
+		 * or
+		 *
+		 * `untitled:1555503116870`
+		 *
+		 * for a workspace that is untitled and not yet saved.
+		 *
+		 * Depending on the workspace that is opened, the value will be:
+		 *  * `undefined` when no workspace or  a single folder is opened
+		 *  * the path of the workspace file as `Uri` otherwise. if the workspace
+		 * is untitled, the returned URI will use the `untitled:` scheme
+		 *
+		 * The location can e.g. be used with the `vscode.openFolder` command to
+		 * open the workspace again after it has been closed.
+		 *
+		 * **Example:**
+		 * ```typescript
+		 * vscode.commands.executeCommand('vscode.openFolder', uriOfWorkspace);
+		 * ```
+		 *
+		 * **Note:** it is not advised to use `workspace.workspaceFile` to write
+		 * configuration data into the file. You can use `workspace.getConfiguration().update()`
+		 * for that purpose which will work both when a single folder is opened as
+		 * well as an untitled or saved workspace.
 		 */
-		readonly resolvedPort: number;
+		export const workspaceFile: Uri | undefined;
 	}
 
-	export interface WebviewOptions {
-		/**
-		 * Mappings of localhost ports used inside the webview.
-		 *
-		 * Port mapping allow webviews to transparently define how localhost ports are resolved. This can be used
-		 * to allow using a static localhost port inside the webview that is resolved to random port that a service is
-		 * running on.
-		 *
-		 * If a webview accesses localhost content, we recomend that you specify port mappings even if
-		 * the `from` and `to` ports are the same.
-		 */
-		readonly portMapping?: ReadonlyArray<WebviewPortMapping>;
-	}
 	//#endregion
+
 }

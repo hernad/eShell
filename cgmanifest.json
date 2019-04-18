@@ -60,12 +60,12 @@
 				"git": {
 					"name": "electron",
 					"repositoryUrl": "https://github.com/electron/electron",
-					"commitHash": "28a9963ca742855433f83c3bbb68929cbe2f3e9a"
+					"commitHash": "042f24c5b619f209c040ef34c2b5ca1366c41fdd"
 				}
 			},
 			"isOnlyProductionDependency": true,
 			"license": "MIT",
-			"version": "4.1.2"
+			"version": "4.1.4"
 		},
 		{
 			"component": {
@@ -98,11 +98,11 @@
 				"git": {
 					"name": "vscode-octicons-font",
 					"repositoryUrl": "https://github.com/Microsoft/vscode-octicons-font",
-					"commitHash": "5095860bb929919670646e2dfa0ee47d9b93bcb9"
+					"commitHash": "4f69de3a233ed501c2098e33047e116ac2fbbf42"
 				}
 			},
 			"license": "MIT",
-			"version": "1.0.0"
+			"version": "1.1.0"
 		},
 		{
 			"component": {
