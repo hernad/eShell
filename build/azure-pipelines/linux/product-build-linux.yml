@@ -10,19 +10,22 @@ steps:
     npm install -g yarn
   displayName: hernad - Install yarn with npm
 
+- task: AzureKeyVault@1
+  displayName: 'Azure Key Vault: Get Secrets'
+  inputs:
+    azureSubscription: 'vscode-builds-subscription'
+    KeyVaultName: vscode
+
 - script: |
     set -e
     export npm_config_arch="$(VSCODE_ARCH)"
-    if [[ "$(VSCODE_ARCH)" == "ia32" ]]; then
-      export PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
-    fi
 
     cat << EOF > ~/.netrc
     machine monacotools.visualstudio.com
-    password $(VSO_PAT)
+    password $(devops-pat)
     machine github.com
     login vscode
-    password $(VSCODE_MIXIN_PASSWORD)
+    password $(github-distro-mixin-password)
     EOF
 
     git config user.email "vscode@microsoft.com"
@@ -41,7 +44,7 @@ steps:
 
 - script: |
     set -e
-    VSCODE_MIXIN_PASSWORD="$(VSCODE_MIXIN_PASSWORD)" \
+    VSCODE_MIXIN_PASSWORD="$(github-distro-mixin-password)" \
     ./build/azure-pipelines/linux/build.sh
   displayName: Build
 

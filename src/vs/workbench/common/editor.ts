@@ -144,7 +144,7 @@ export interface IEditorControl extends ICompositeControl { }
 
 export interface IFileInputFactory {
 
-	createFileInput(resource: URI, encoding: string | undefined, instantiationService: IInstantiationService): IFileEditorInput;
+	createFileInput(resource: URI, encoding: string | undefined, mode: string | undefined, instantiationService: IInstantiationService): IFileEditorInput;
 
 	isFileInput(obj: any): obj is IFileEditorInput;
 }
@@ -209,7 +209,7 @@ export interface IUntitledResourceInput extends IBaseResourceInput {
 	/**
 	 * Optional language of the untitled resource.
 	 */
-	language?: string;
+	mode?: string;
 
 	/**
 	 * Optional contents of the untitled resource.
@@ -505,18 +505,34 @@ export interface IEncodingSupport {
 	setEncoding(encoding: string, mode: EncodingMode): void;
 }
 
+export interface IModeSupport {
+
+	/**
+	 * Sets the language mode of the input.
+	 */
+	setMode(mode: string): void;
+}
+
 /**
  * This is a tagging interface to declare an editor input being capable of dealing with files. It is only used in the editor registry
  * to register this kind of input to the platform.
  */
-export interface IFileEditorInput extends IEditorInput, IEncodingSupport {
+export interface IFileEditorInput extends IEditorInput, IEncodingSupport, IModeSupport {
 
+	/**
+	 * Gets the resource this editor is about.
+	 */
 	getResource(): URI;
 
 	/**
-	 * Sets the preferred encodingt to use for this input.
+	 * Sets the preferred encoding to use for this input.
 	 */
 	setPreferredEncoding(encoding: string): void;
+
+	/**
+	 * Sets the preferred language mode to use for this input.
+	 */
+	setPreferredMode(mode: string): void;
 
 	/**
 	 * Forces this file input to open as binary instead of text.
@@ -566,7 +582,7 @@ export class SideBySideEditorInput extends EditorInput {
 		return this.master.revert();
 	}
 
-	getTelemetryDescriptor(): object {
+	getTelemetryDescriptor(): { [key: string]: unknown } {
 		const descriptor = this.master.getTelemetryDescriptor();
 
 		return assign(descriptor, super.getTelemetryDescriptor());
@@ -620,8 +636,7 @@ export class SideBySideEditorInput extends EditorInput {
 				return false;
 			}
 
-			const otherDiffInput = <SideBySideEditorInput>otherInput;
-			return this.details.matches(otherDiffInput.details) && this.master.matches(otherDiffInput.master);
+			return this.details.matches(otherInput.details) && this.master.matches(otherInput.master);
 		}
 
 		return false;
