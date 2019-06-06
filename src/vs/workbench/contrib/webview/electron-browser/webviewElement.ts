@@ -27,6 +27,8 @@ import { Webview, WebviewContentOptions, WebviewOptions } from 'vs/workbench/con
 import { registerFileProtocol, WebviewProtocol } from 'vs/workbench/contrib/webview/electron-browser/webviewProtocols';
 import { areWebviewInputOptionsEqual } from '../browser/webviewEditorService';
 import { WebviewFindWidget } from '../browser/webviewFindWidget';
+import { KeyCode } from 'vs/editor/editor.api';
+import { IframeUtils } from 'vs/base/browser/iframe';
 
 export interface WebviewPortMapping {
 	readonly port: number;
@@ -310,7 +312,8 @@ class WebviewKeyboardHandler extends Disposable {
 					return;
 
 				case 'did-focus':
-				    //console.log(`did-focus 1 ${this._webview.getTitle()}`);
+					//console.log(`did-focus 1 ${this._webview.getTitle()}`);
+					//this.handleKeydown({ keyCode: 50, key: '2', shiftKey: false, altKey: false, code: 'Digit2', repeat: false, ctrlKey: false, metaKey: false });
 					this.setIgnoreMenuShortcuts(this._ignoreMenuShortcut);
 					break;
 
@@ -346,10 +349,59 @@ class WebviewKeyboardHandler extends Disposable {
 	private handleKeydown(event: IKeydownEvent): void {
 		// Create a fake KeyboardEvent from the data provided
 		const emulatedKeyboardEvent = new KeyboardEvent('keydown', event);
+		//console.log(`keyboard event: ${JSON.stringify(event)}`);
 		// Force override the target
 		Object.defineProperty(emulatedKeyboardEvent, 'target', {
 			get: () => this._webview
 		});
+
+		/*
+		if (emulatedKeyboardEvent.shiftKey && emulatedKeyboardEvent.ctrlKey && emulatedKeyboardEvent.code === 'KeyP' ) { // && emulatedKeyboardEvent.keyCode === KeyCode.KEY_P) {
+			console.log(`uhvatio ctrl+shift ${emulatedKeyboardEvent.code} ${document.activeElement === this._webview}`);
+			window.dispatchEvent(emulatedKeyboardEvent);
+		} else if  (emulatedKeyboardEvent.shiftKey || emulatedKeyboardEvent.ctrlKey) {
+
+		} else {
+			console.log(`uhvatio ${emulatedKeyboardEvent.code} ${JSON.stringify(event)} ${document.activeElement === this._webview}`);
+
+		}
+
+		if (emulatedKeyboardEvent.code === 'KeyP' ) { // && emulatedKeyboardEvent.keyCode === KeyCode.KEY_P) {
+			// console.log(`uhvatio ${emulatedKeyboardEvent.code} ${JSON.stringify(event)}`);
+			const event2: IKeydownEvent = { altKey: false, code: 'KeyP', ctrlKey:true,
+				 key:'P', keyCode:80, metaKey: false, repeat: false, shiftKey: true };
+
+			const emulatedKeyboardEvent2 = new KeyboardEvent('keydown', event2);
+			Object.defineProperty(emulatedKeyboardEvent2, 'target', {
+				get: () => this._webview.firstChild
+			});
+			window.dispatchEvent(emulatedKeyboardEvent2);
+
+		}
+
+		if (emulatedKeyboardEvent.code === 'Digit1' ) { // && emulatedKeyboardEvent.keyCode === KeyCode.KEY_P) {
+			console.log(`kucam 1`);
+			const event2: IKeydownEvent = { altKey: false, code: 'Tab', ctrlKey:false,
+				 key:'Tab', keyCode:9, metaKey: false, repeat: false, shiftKey: false };
+
+			const emulatedKeyboardEvent2 = new KeyboardEvent('keydown', event2);
+			Object.defineProperty(emulatedKeyboardEvent2, 'target', {
+				get: () => this._webview.firstChild
+			});
+			window.dispatchEvent(emulatedKeyboardEvent2);
+
+
+			const event3: IKeydownEvent = { altKey: false, code: 'Tab', ctrlKey:false,
+				 key:'Tab', keyCode:9, metaKey: false, repeat: false, shiftKey: false };
+
+			const emulatedKeyboardEvent3 = new KeyboardEvent('keydown', event3);
+			Object.defineProperty(emulatedKeyboardEvent3, 'target', {
+				get: () => this._webview
+			});
+			window.dispatchEvent(emulatedKeyboardEvent3);
+		}
+		*/
+
 		// And re-dispatch
 		window.dispatchEvent(emulatedKeyboardEvent);
 	}
@@ -438,24 +490,53 @@ export class WebviewElement extends Disposable implements Webview {
 
 			// Workaround for https://github.com/electron/electron/issues/14474
 			if (this._focused || document.activeElement === this._webview) {
+				console.log('webview blur-focus');
 				this._webview.blur();
 				this._webview.focus();
 			}
 		}));
+
+
 		this._register(addDisposableListener(this._webview, 'crashed', () => {
 			console.error('embedded page crashed');
 		}));
 		this._register(addDisposableListener(this._webview, 'ipc-message', (event) => {
+
+
+
 			switch (event.channel) {
 				case 'onmessage':
 					if (event.args && event.args.length) {
+						this._onMessage.fire(event.args[0]);
 						if ('command' in event.args[0]  &&  event.args[0].command === 'cli-focus')
 						{
-							//this._webview.shadowRoot!.querySelector('active-iframe')!.focus();
-							//this._webview.blur();
-							//this._webview.focus();
+							//console.log('webview cli-focus');
+							//this.layout();
+			                // Workaround for https://github.com/electron/electron/issues/14474
+			                //if (this._focused || document.activeElement === this._webview) {
+							//   this._webview.blur();
+				            //   this._webview.focus();
+							//}
+							//console.log('webviewEditor focussssss');
+							/*
+							for( let i = 0; i<9; i++) {
+								//const event: IKeydownEvent = {
+								//  keyCode: 9, key: 'Tab', shiftKey: false, altKey: false, code: 'Tab', repeat: false, ctrlKey: false, metaKey: false
+								//};
+
+								const event: IKeydownEvent = {
+								  keyCode: 50, key: '2', shiftKey: false, altKey: false, code: 'Digit2', repeat: false, ctrlKey: false, metaKey: false
+								};
+
+								const emulatedKeyboardEvent = new KeyboardEvent('keydown', event);
+								  Object.defineProperty(emulatedKeyboardEvent, 'target', {
+								  get: () => this._webview
+								});
+								window.dispatchEvent(emulatedKeyboardEvent);
+							}
+							*/
+
 						}
-						this._onMessage.fire(event.args[0]);
 					}
 
 					return;

@@ -135,13 +135,17 @@ export class WebviewEditor extends BaseEditor {
 	}
 
 	public focus(): void {
+
+		
 		super.focus();
+		//console.log('webviewEditor super focus');
 		if (!this._onFocusWindowHandler) {
 
 			// Make sure we restore focus when switching back to a VS Code window
 			this._onFocusWindowHandler = this._windowService.onDidChangeFocus(focused => {
 				if (focused && this._editorService.activeControl === this) {
 					this.focus();
+					//console.log('webviewEditor this focus');
 				}
 			});
 		}
