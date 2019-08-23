@@ -1,4 +1,4 @@
-// Type definitions for Electron 4.2.2
+// Type definitions for Electron 4.2.7
 // Project: http://electronjs.org/
 // Definitions by: The Electron Team <https://github.com/electron/electron>
 // Definitions: https://github.com/electron/electron-typescript-definitions
@@ -1338,16 +1338,21 @@ declare namespace Electron {
 		removeListener(event: 'new-window-for-tab', listener: Function): this;
 		/**
 		 * Emitted when the document changed its title, calling event.preventDefault() will
-		 * prevent the native window's title from changing.
+		 * prevent the native window's title from changing. explicitSet is false when title
+		 * is synthesized from file url.
 		 */
 		on(event: 'page-title-updated', listener: (event: Event,
-			title: string) => void): this;
+			title: string,
+			explicitSet: boolean) => void): this;
 		once(event: 'page-title-updated', listener: (event: Event,
-			title: string) => void): this;
+			title: string,
+			explicitSet: boolean) => void): this;
 		addListener(event: 'page-title-updated', listener: (event: Event,
-			title: string) => void): this;
+			title: string,
+			explicitSet: boolean) => void): this;
 		removeListener(event: 'page-title-updated', listener: (event: Event,
-			title: string) => void): this;
+			title: string,
+			explicitSet: boolean) => void): this;
 		/**
 		 * Emitted when the web page has been rendered (while not being shown) and window
 		 * can be displayed without a visual flash.
@@ -3355,35 +3360,6 @@ declare namespace Electron {
 		type?: ('task' | 'separator' | 'file');
 	}
 
-	interface MemoryInfo {
-
-		// Docs: http://electronjs.org/docs/api/structures/memory-info
-
-		/**
-		 * The maximum amount of memory that has ever been pinned to actual physical RAM.
-		 * On macOS its value will always be 0.
-		 */
-		peakWorkingSetSize: number;
-		/**
-		 * Process id of the process.
-		 */
-		pid: number;
-		/**
-		 * The amount of memory not shared by other processes, such as JS heap or HTML
-		 * content.
-		 */
-		privateBytes: number;
-		/**
-		 * The amount of memory shared between processes, typically memory consumed by the
-		 * Electron code itself
-		 */
-		sharedBytes: number;
-		/**
-		 * The amount of memory currently pinned to actual physical RAM.
-		 */
-		workingSetSize: number;
-	}
-
 	interface MemoryUsageDetails {
 
 		// Docs: http://electronjs.org/docs/api/structures/memory-usage-details
@@ -3503,14 +3479,14 @@ declare namespace Electron {
 		 * Creates a new NativeImage instance from the NSImage that maps to the given image
 		 * name. See NSImageName for a list of possible values. The hslShift is applied to
 		 * the image with the following rules This means that [-1, 0, 1] will make the
-     * image completely white and [-1, 1, 0] will make the image completely black. In
-     * some cases, the NSImageName doesn't match its string representation; one example
-     * of this is NSFolderImageName, whose string representation would actually be
-     * NSFolder. Therefore, you'll need to determine the correct string representation
-     * for your image before passing it in. This can be done with the following: echo
-     * -e '#import <Cocoa/Cocoa.h>\nint main() { NSLog(@"%@", SYSTEM_IMAGE_NAME); }' |
-     * clang -otest -x objective-c -framework Cocoa - && ./test where SYSTEM_IMAGE_NAME
-     * should be replaced with any value from this list.
+		 * image completely white and [-1, 1, 0] will make the image completely black. In
+		 * some cases, the NSImageName doesn't match its string representation; one example
+		 * of this is NSFolderImageName, whose string representation would actually be
+		 * NSFolder. Therefore, you'll need to determine the correct string representation
+		 * for your image before passing it in. This can be done with the following: echo
+		 * -e '#import <Cocoa/Cocoa.h>\nint main() { NSLog(@"%@", SYSTEM_IMAGE_NAME); }' |
+		 * clang -otest -x objective-c -framework Cocoa - && ./test where SYSTEM_IMAGE_NAME
+		 * should be replaced with any value from this list.
 		 */
 		static createFromNamedImage(imageName: string, hslShift: number[]): NativeImage;
 		/**
@@ -3761,6 +3737,17 @@ declare namespace Electron {
 		once(event: 'unlock-screen', listener: Function): this;
 		addListener(event: 'unlock-screen', listener: Function): this;
 		removeListener(event: 'unlock-screen', listener: Function): this;
+		/**
+		 * Calculate the system idle state. idleThreshold is the amount of time (in
+		 * seconds) before considered idle. callback will be called synchronously on some
+		 * systems and with an idleState argument that describes the system's state. locked
+		 * is available on supported systems only.
+		 */
+		querySystemIdleState(idleThreshold: number, callback: (idleState: 'active' | 'idle' | 'locked' | 'unknown') => void): void;
+		/**
+		 * Calculate system idle time in seconds.
+		 */
+		querySystemIdleTime(callback: (idleTime: number) => void): void;
 	}
 
 	interface PowerSaveBlocker extends EventEmitter {
@@ -5919,6 +5906,22 @@ declare namespace Electron {
 			 * Array of URLs.
 			 */
 			favicons: string[]) => void): this;
+		/**
+		 * Fired when page title is set during navigation. explicitSet is false when title
+		 * is synthesized from file url.
+		 */
+		on(event: 'page-title-updated', listener: (event: Event,
+			title: string,
+			explicitSet: boolean) => void): this;
+		once(event: 'page-title-updated', listener: (event: Event,
+			title: string,
+			explicitSet: boolean) => void): this;
+		addListener(event: 'page-title-updated', listener: (event: Event,
+			title: string,
+			explicitSet: boolean) => void): this;
+		removeListener(event: 'page-title-updated', listener: (event: Event,
+			title: string,
+			explicitSet: boolean) => void): this;
 		/**
 		 * Emitted when a new frame is generated. Only the dirty area is passed in the
 		 * buffer.
@@ -8797,17 +8800,33 @@ declare namespace Electron {
 		 * The type of media access being requested, can be video, audio or unknown
 		 */
 		mediaType: ('video' | 'audio' | 'unknown');
+		/**
+		 * The last URL the requesting frame loaded
+		 */
+		requestingUrl: string;
+		/**
+		 * Whether the frame making the request is the main frame
+		 */
+		isMainFrame: boolean;
 	}
 
 	interface PermissionRequestHandlerDetails {
 		/**
 		 * The url of the openExternal request.
 		 */
-		externalURL: string;
+		externalURL?: string;
 		/**
 		 * The types of media access being requested, elements can be video or audio
 		 */
-		mediaTypes: Array<'video' | 'audio'>;
+		mediaTypes?: Array<'video' | 'audio'>;
+		/**
+		 * The last URL the requesting frame loaded
+		 */
+		requestingUrl: string;
+		/**
+		 * Whether the frame making the request is the main frame
+		 */
+		isMainFrame: boolean;
 	}
 
 	interface PluginCrashedEvent extends Event {

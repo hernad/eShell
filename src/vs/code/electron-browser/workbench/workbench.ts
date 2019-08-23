@@ -35,15 +35,8 @@ bootstrapWindow.load([
 		canModifyDOM: function (windowConfig: any) {
 			showPartsSplash(windowConfig);
 		},
-		beforeLoaderConfig: function (windowConfig: { [x: string]: any; }, loaderConfig: { recordStats: boolean; nodeCachedData: { onData: () => void; }; }) {
-			loaderConfig.recordStats = !!windowConfig['prof-modules'];
-			if (loaderConfig.nodeCachedData) {
-				const onNodeCachedData = window['MonacoEnvironment'].onNodeCachedData = [];
-				loaderConfig.nodeCachedData.onData = function () {
-					// @ts-ignore
-					onNodeCachedData.push(arguments);
-				};
-			}
+		beforeLoaderConfig: function (windowConfig: any, loaderConfig: any) {
+			loaderConfig.recordStats = true;
 		},
 		beforeRequire: function () {
 			perf.mark('willLoadWorkbenchMain');
@@ -51,7 +44,6 @@ bootstrapWindow.load([
 	});
 
 /**
- * // configuration: IWindowConfiguration
  * @param {{
  *	partsSplashPath?: string,
  *	highContrast?: boolean,
@@ -72,7 +64,7 @@ function showPartsSplash(configuration: { partsSplashPath: any; highContrast: an
 		}
 	}
 
-	// high contrast mode has been turned on from the outside, e.g OS -> ignore stored colors and layouts
+	// high contrast mode has been turned on from the outside, e.g. OS -> ignore stored colors and layouts
 	if (data && configuration.highContrast && data.baseTheme !== 'hc-black') {
 		data = undefined;
 	}
