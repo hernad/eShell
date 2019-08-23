@@ -281,8 +281,8 @@ import { ITaskService } from 'vs/workbench/contrib/tasks/common/taskService';
 registerSingleton(ITaskService, TaskService, true);
 
 // Remote
-import 'vs/workbench/contrib/remote/common/remote.contribution';
-import 'vs/workbench/contrib/remote/electron-browser/remote.contribution';
+// import 'vs/workbench/contrib/remote/common/remote.contribution';
+// import 'vs/workbench/contrib/remote/electron-browser/remote.contribution';
 
 // Emmet
 import 'vs/workbench/contrib/emmet/browser/emmet.contribution';
