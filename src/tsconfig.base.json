@@ -16,16 +16,7 @@
 		"paths": {
 			"vs/*": [
 				"./vs/*"
-			],
-			"*": ["../node_modules/*"]
-		},
-		"types": [
-			"keytar",
-			"minimist",
-			"mocha",
-			"semver",
-			"sinon",
-			"winreg"
-		]
+			]
+		}
 	}
 }
