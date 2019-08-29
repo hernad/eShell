@@ -14,16 +14,18 @@ const bootstrapWindow = require('../../../../bootstrap-window');
 // Setup shell environment
 process['lazyEnv'] = getLazyEnv();
 
-// Load workbench main
+// Load workbench main JS, CSS and NLS all in parallel. This is an
+// optimization to prevent a waterfall of loading to happen, because
+// we know for a fact that workbench.desktop.main will depend on
+// the related CSS and NLS counterparts.
 bootstrapWindow.load([
 	'vs/workbench/workbench.desktop.main',
 	'vs/nls!vs/workbench/workbench.desktop.main',
 	'vs/css!vs/workbench/workbench.desktop.main'
 ],
-	function (workbench: any, configuration: any) {
+	function (workbench, configuration) {
 		perf.mark('didLoadWorkbenchMain');
 
-		// @ts-ignore
 		return process['lazyEnv'].then(function () {
 			perf.mark('main/startup');
 
@@ -32,10 +34,10 @@ bootstrapWindow.load([
 		});
 	}, {
 		removeDeveloperKeybindingsAfterLoad: true,
-		canModifyDOM: function (windowConfig: any) {
+		canModifyDOM: function (windowConfig) {
 			showPartsSplash(windowConfig);
 		},
-		beforeLoaderConfig: function (windowConfig: any, loaderConfig: any) {
+		beforeLoaderConfig: function (windowConfig, loaderConfig) {
 			loaderConfig.recordStats = true;
 		},
 		beforeRequire: function () {
@@ -52,7 +54,7 @@ bootstrapWindow.load([
  *	workspace?: object
  * }} configuration
  */
-function showPartsSplash(configuration: { partsSplashPath: any; highContrast: any; extensionDevelopmentPath: any; folderUri: any; workspace: any; }) {
+function showPartsSplash(configuration) {
 	perf.mark('willShowPartsSplash');
 
 	let data;
@@ -128,7 +130,7 @@ function getLazyEnv() {
 			console.warn('renderer did not receive lazyEnv in time');
 		}, 10000);
 
-		ipc.once('vscode:acceptShellEnv', function (event: any, shellEnv: any) {
+		ipc.once('vscode:acceptShellEnv', function (event, shellEnv) {
 			clearTimeout(handle);
 			bootstrapWindow.assign(process.env, shellEnv);
 			// @ts-ignore
