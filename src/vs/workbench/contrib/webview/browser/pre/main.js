@@ -189,11 +189,6 @@
 				return;
 			}
 
-			// Prevent middle clicks opening a broken link in the browser
-			if (event.button == 1) {
-				event.preventDefault();
-			}
-
 			let baseElement = event.view.document.getElementsByTagName('base')[0];
 			/** @type {any} */
 			let node = event.target;
@@ -213,6 +208,27 @@
 					break;
 				}
 				node = node.parentNode;
+			}
+		};
+
+		/**
+		 * @param {MouseEvent} event
+		 */
+		const handleAuxClick = (event) => {
+			// Prevent middle clicks opening a broken link in the browser
+			if (!event.view || !event.view.document) {
+				return;
+			}
+
+			if (event.button === 1) {
+				let node = /** @type {any} */ (event.target);
+				while (node) {
+					if (node.tagName && node.tagName.toLowerCase() === 'a' && node.href) {
+						event.preventDefault();
+						break;
+					}
+					node = node.parentNode;
+				}
 			}
 		};
 
@@ -460,7 +476,8 @@
 					});
 
 					// Bubble out link clicks
-					newFrame.contentWindow.addEventListener('mousedown', handleInnerClick);
+					newFrame.contentWindow.addEventListener('click', handleInnerClick);
+					newFrame.contentWindow.addEventListener('auxclick', handleAuxClick);
 
 					if (host.onIframeLoaded) {
 						host.onIframeLoaded(newFrame);

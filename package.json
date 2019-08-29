@@ -1,7 +1,6 @@
 {
   "name": "eshell",
-  "version": "1.37.100",
-  "distro": "7565d95cd71597eda6885d2c4e8f5a6dd72bf62b",
+  "version": "1.38.100",
   "author": {
     "name": "bring.out"
   },
@@ -104,7 +103,6 @@
     "gulp-uglify": "^3.0.0",
     "gulp-untar": "^0.0.7",
     "gulp-vinyl-zip": "^2.1.2",
-    "http-server": "^0.11.1",
     "husky": "^0.13.1",
     "innosetup": "5.6.1",
     "is": "^3.1.0",
@@ -140,7 +138,7 @@
     "vinyl": "^2.0.0",
     "vinyl-fs": "^3.0.0",
     "vsce": "1.48.0",
-    "vscode-debugprotocol": "1.36.0-pre.0",
+    "vscode-debugprotocol": "1.36.0",
     "vscode-nls-dev": "^3.3.1",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",

@@ -5927,7 +5927,7 @@ declare module 'vscode' {
 		/**
 		 * Convert a uri for the local file system to one that can be used inside webviews.
 		 *
-		 * Webviews cannot directly load resoruces from the workspace or local file system using `file:` uris. The
+		 * Webviews cannot directly load resources from the workspace or local file system using `file:` uris. The
 		 * `asWebviewUri` function takes a local `file:` uri and converts it into a uri that can be used inside of
 		 * a webview to load the same resource:
 		 *
@@ -6886,7 +6886,7 @@ declare module 'vscode' {
 		/**
 		 * Whether the tree supports multi-select. When the tree supports multi-select and a command is executed from the tree,
 		 * the first argument to the command is the tree item that the command was executed on and the second argument is an
-		 * array containing the other selected tree items.
+		 * array containing all selected tree items.
 		 */
 		canSelectMany?: boolean;
 	}
