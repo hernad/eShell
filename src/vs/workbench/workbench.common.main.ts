@@ -123,7 +123,7 @@ registerSingleton(IOpenerService, OpenerService, true);
 import 'vs/workbench/services/files/common/workspaceWatcher';
 
 // Telemetry
-import 'vs/workbench/contrib/telemetry/browser/telemetry.contribution';
+// import 'vs/workbench/contrib/telemetry/browser/telemetry.contribution';
 
 // Preferences
 import 'vs/workbench/contrib/preferences/browser/preferences.contribution';
@@ -236,6 +236,6 @@ import 'vs/workbench/contrib/outline/browser/outline.contribution';
 import 'vs/workbench/contrib/experiments/browser/experiments.contribution';
 
 // Send a Smile
-import 'vs/workbench/contrib/feedback/browser/feedback.contribution';
+// import 'vs/workbench/contrib/feedback/browser/feedback.contribution';
 
 //#endregion

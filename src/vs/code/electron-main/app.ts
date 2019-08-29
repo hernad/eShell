@@ -78,7 +78,7 @@ import { IDiagnosticsService } from 'vs/platform/diagnostics/node/diagnosticsSer
 import { FileService } from 'vs/platform/files/common/fileService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
-import { ExtensionHostDebugBroadcastChannel } from 'vs/platform/debug/common/extensionHostDebugIpc';
+// import { ExtensionHostDebugBroadcastChannel } from 'vs/platform/debug/common/extensionHostDebugIpc';
 
 export class CodeApplication extends Disposable {
 
@@ -569,7 +569,7 @@ export class CodeApplication extends Disposable {
 		sharedProcessClient.then(client => client.registerChannel('loglevel', logLevelChannel));
 
 		// ExtensionHost Debug broadcast service
-		electronIpcServer.registerChannel(ExtensionHostDebugBroadcastChannel.ChannelName, new ExtensionHostDebugBroadcastChannel());
+		// electronIpcServer.registerChannel(ExtensionHostDebugBroadcastChannel.ChannelName, new ExtensionHostDebugBroadcastChannel());
 
 		// Signal phase: ready (services set)
 		this.lifecycleService.phase = LifecycleMainPhase.Ready;

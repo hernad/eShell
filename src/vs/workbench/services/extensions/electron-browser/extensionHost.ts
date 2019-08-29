@@ -35,7 +35,7 @@ import { withNullAsUndefined } from 'vs/base/common/types';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { parseExtensionDevOptions } from '../common/extensionDevOptions';
 import { VSBuffer } from 'vs/base/common/buffer';
-import { IExtensionHostDebugService } from 'vs/platform/debug/common/extensionHostDebug';
+// import { IExtensionHostDebugService } from 'vs/platform/debug/common/extensionHostDebug';
 import { IExtensionHostStarter } from 'vs/workbench/services/extensions/common/extensions';
 import { isEqualOrParent } from 'vs/base/common/resources';
 
@@ -75,7 +75,7 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 		@ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@ILogService private readonly _logService: ILogService,
 		@ILabelService private readonly _labelService: ILabelService,
-		@IExtensionHostDebugService private readonly _extensionHostDebugService: IExtensionHostDebugService
+		// @IExtensionHostDebugService private readonly _extensionHostDebugService: IExtensionHostDebugService
 	) {
 		const devOpts = parseExtensionDevOptions(this._environmentService);
 		this._isExtensionDevHost = devOpts.isExtensionDevHost;
@@ -95,6 +95,7 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 		this._toDispose.add(this._onExit);
 		this._toDispose.add(this._lifecycleService.onWillShutdown(e => this._onWillShutdown(e)));
 		this._toDispose.add(this._lifecycleService.onShutdown(reason => this.terminate()));
+		/*
 		this._toDispose.add(this._extensionHostDebugService.onClose(event => {
 			if (this._isExtensionDevHost && this._environmentService.debugExtensionHost.debugId === event.sessionId) {
 				this._windowService.closeWindow();
@@ -105,6 +106,7 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 				this._windowService.reloadWindow();
 			}
 		}));
+		*/
 
 		const globalExitListener = () => this.terminate();
 		process.once('exit', globalExitListener);
@@ -216,6 +218,7 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 				this._extensionHostProcess.on('error', (err) => this._onExtHostProcessError(err));
 				this._extensionHostProcess.on('exit', (code: number, signal: string) => this._onExtHostProcessExit(code, signal));
 
+				/*
 				// Notify debugger that we are ready to attach to the process if we run a development extension
 				if (portData) {
 					if (this._isExtensionDevHost && portData.actual && this._isExtensionDevDebug && this._environmentService.debugExtensionHost.debugId) {
@@ -223,6 +226,7 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 					}
 					this._inspectPort = portData.actual;
 				}
+				*/
 
 				// Help in case we fail to start it
 				let startupTimeoutHandle: any;
@@ -438,10 +442,12 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 			this._windowsService.log(entry.severity, parse(entry).args);
 		}
 
+		/*
 		// Broadcast to other windows if we are in development mode
 		else if (this._environmentService.debugExtensionHost.debugId && (!this._environmentService.isBuilt || this._isExtensionDevHost)) {
 			this._extensionHostDebugService.logToSession(this._environmentService.debugExtensionHost.debugId, entry);
 		}
+		*/
 	}
 
 	private _onExtHostProcessError(err: any): void {
@@ -521,7 +527,7 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 		// If the extension development host was started without debugger attached we need
 		// to communicate this back to the main side to terminate the debug session
 		if (this._isExtensionDevHost && !this._isExtensionDevTestFromCli && !this._isExtensionDevDebug && this._environmentService.debugExtensionHost.debugId) {
-			this._extensionHostDebugService.terminateSession(this._environmentService.debugExtensionHost.debugId);
+			// this._extensionHostDebugService.terminateSession(this._environmentService.debugExtensionHost.debugId);
 			event.join(timeout(100 /* wait a bit for IPC to get delivered */));
 		}
 	}

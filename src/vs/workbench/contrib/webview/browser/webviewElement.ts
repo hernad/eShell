@@ -65,7 +65,7 @@ export class IFrameWebview extends Disposable implements Webview {
 		};
 
 		this.element = document.createElement('iframe');
-		this.element.sandbox.add('allow-scripts', 'allow-same-origin');
+		this.element.sandbox.add('allow-scripts', 'allow-modals', 'allow-same-origin');
 		this.element.setAttribute('src', `${this.endpoint}/index.html?id=${this.id}`);
 		this.element.style.border = 'none';
 		this.element.style.width = '100%';

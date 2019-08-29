@@ -24,7 +24,7 @@ import { ILifecycleService } from 'vs/platform/lifecycle/common/lifecycle';
 import { PersistentProtocol } from 'vs/base/parts/ipc/common/ipc.net';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { VSBuffer } from 'vs/base/common/buffer';
-import { IExtensionHostDebugService } from 'vs/platform/debug/common/extensionHostDebug';
+// import { IExtensionHostDebugService } from 'vs/platform/debug/common/extensionHostDebug';
 import { IProductService } from 'vs/platform/product/common/product';
 import { ISignService } from 'vs/platform/sign/common/sign';
 
@@ -55,7 +55,7 @@ export class RemoteExtensionHostClient extends Disposable implements IExtensionH
 		@ILogService private readonly _logService: ILogService,
 		@ILabelService private readonly _labelService: ILabelService,
 		@IRemoteAuthorityResolverService private readonly remoteAuthorityResolverService: IRemoteAuthorityResolverService,
-		@IExtensionHostDebugService private readonly _extensionHostDebugService: IExtensionHostDebugService,
+		// @IExtensionHostDebugService private readonly _extensionHostDebugService: IExtensionHostDebugService,
 		@IProductService private readonly _productService: IProductService,
 		@ISignService private readonly _signService: ISignService
 	) {
@@ -109,9 +109,11 @@ export class RemoteExtensionHostClient extends Disposable implements IExtensionH
 			return connectRemoteAgentExtensionHost(options, startParams).then(result => {
 				let { protocol, debugPort } = result;
 				const isExtensionDevelopmentDebug = typeof debugPort === 'number';
+				/*
 				if (debugOk && this._environmentService.isExtensionDevelopment && this._environmentService.debugExtensionHost.debugId && debugPort) {
 					this._extensionHostDebugService.attachSession(this._environmentService.debugExtensionHost.debugId, debugPort, this._initDataProvider.remoteAuthority);
 				}
+				*/
 
 				protocol.onClose(() => {
 					this._onExtHostConnectionLost();
@@ -164,7 +166,7 @@ export class RemoteExtensionHostClient extends Disposable implements IExtensionH
 	private _onExtHostConnectionLost(): void {
 
 		if (this._isExtensionDevHost && this._environmentService.debugExtensionHost.debugId) {
-			this._extensionHostDebugService.close(this._environmentService.debugExtensionHost.debugId);
+			// this._extensionHostDebugService.close(this._environmentService.debugExtensionHost.debugId);
 		}
 
 		if (this._terminating) {

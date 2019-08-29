@@ -98,8 +98,8 @@ import 'vs/workbench/contrib/stats/electron-browser/stats.contribution';
 import 'vs/workbench/contrib/splash/electron-browser/partsSplash.contribution';
 
 // Debug
-import 'vs/workbench/contrib/debug/node/debugHelperService';
-import 'vs/workbench/contrib/debug/electron-browser/extensionHostDebugService';
+// import 'vs/workbench/contrib/debug/node/debugHelperService';
+// import 'vs/workbench/contrib/debug/electron-browser/extensionHostDebugService';
 
 // Webview
 import 'vs/workbench/contrib/webview/electron-browser/webview.contribution';
@@ -111,7 +111,7 @@ import 'vs/workbench/contrib/extensions/electron-browser/extensions.contribution
 import 'vs/workbench/contrib/terminal/electron-browser/terminal.contribution';
 
 // Remote
-import 'vs/workbench/contrib/remote/electron-browser/remote.contribution';
+// import 'vs/workbench/contrib/remote/electron-browser/remote.contribution';
 
 // CodeEditor Contributions
 import 'vs/workbench/contrib/codeEditor/electron-browser/codeEditor.contribution';
@@ -120,11 +120,11 @@ import 'vs/workbench/contrib/codeEditor/electron-browser/codeEditor.contribution
 import 'vs/workbench/contrib/externalTerminal/node/externalTerminalService';
 
 // Update
-import 'vs/workbench/contrib/update/electron-browser/update.contribution';
+// import 'vs/workbench/contrib/update/electron-browser/update.contribution';
 
 // Surveys
-import 'vs/workbench/contrib/surveys/electron-browser/nps.contribution';
-import 'vs/workbench/contrib/surveys/electron-browser/languageSurveys.contribution';
+// import 'vs/workbench/contrib/surveys/electron-browser/nps.contribution';
+// import 'vs/workbench/contrib/surveys/electron-browser/languageSurveys.contribution';
 
 // Performance
 import 'vs/workbench/contrib/performance/electron-browser/performance.contribution';
@@ -136,8 +136,8 @@ import 'vs/workbench/contrib/cli/node/cli.contribution';
 import 'vs/workbench/contrib/themes/test/electron-browser/themes.test.contribution';
 
 // Welcome
-import 'vs/workbench/contrib/welcome/gettingStarted/electron-browser/gettingStarted.contribution';
-import 'vs/workbench/contrib/welcome/page/browser/welcomePage.contribution';
+// import 'vs/workbench/contrib/welcome/gettingStarted/electron-browser/gettingStarted.contribution';
+// import 'vs/workbench/contrib/welcome/page/browser/welcomePage.contribution';
 
 // Issues
 import 'vs/workbench/contrib/issue/electron-browser/issue.contribution';
