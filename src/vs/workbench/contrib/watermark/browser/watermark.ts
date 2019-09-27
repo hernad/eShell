@@ -20,11 +20,9 @@ import { IConfigurationService } from 'vs/platform/configuration/common/configur
 // import { OpenFolderAction, OpenFileFolderAction, OpenFileAction } from 'vs/workbench/browser/actions/workspaceActions';
 import { ShowAllCommandsAction } from 'vs/workbench/contrib/quickopen/browser/commandsHandler';
 import { Parts, IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-// import { StartAction } from 'vs/workbench/parts/debug/browser/debugActions';
-// import { FindInFilesActionId } from 'vs/workbench/parts/search/common/constants';
-// import { escape } from 'vs/base/common/strings';
+// import { StartAction } from 'vs/workbench/contrib/debug/browser/debugActions';
+// import { FindInFilesActionId } from 'vs/workbench/contrib/search/common/constants';
 // import { QUICKOPEN_ACTION_ID } from 'vs/workbench/browser/parts/quickopen/quickopen';
-// import { TERMINAL_COMMAND_ID } from 'vs/workbench/parts/terminal/common/terminalCommands';
 import * as dom from 'vs/base/browser/dom';
 // import { StartAction } from 'vs/workbench/parts/debug/browser/debugActions';
 // import { FindInFilesActionId } from 'vs/workbench/parts/search/common/constants';
@@ -34,6 +32,7 @@ import { KeybindingLabel } from 'vs/base/browser/ui/keybindingLabel/keybindingLa
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { IDimension } from 'vs/platform/layout/browser/layoutService';
+// import { TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminal/common/terminal';
 
 const $ = dom.$;
 
@@ -68,7 +67,7 @@ const folderEntries = [
 const WORKBENCH_TIPS_ENABLED_KEY = 'workbench.tips.enabled';
 
 export class WatermarkContribution extends Disposable implements IWorkbenchContribution {
-	private watermark: HTMLElement;
+	private watermark: HTMLElement | undefined;
 	private watermarkDisposable = this._register(new DisposableStore());
 	private enabled: boolean;
 	private workbenchState: WorkbenchState;

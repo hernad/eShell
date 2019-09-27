@@ -6,12 +6,11 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"outDir": "../out",
-		"target": "es6",
+		"target": "es2017",
 		"lib": [
 			"dom",
 			"es5",
-			"es2015.iterable",
-			"webworker"
+			"es2015.iterable"
 		],
 		"types": [
 			"keytar",
@@ -26,8 +25,9 @@
 		"./vs"
 	],
 	"exclude": [
-		"./vs/**/employee.js",
-		"node_modules",
-		"./typings/require-monaco.d.ts"
+		"./typings/require-monaco.d.ts",
+		"./typings/xterm.d.ts",
+		"./typings/xterm-addon-search.d.ts",
+		"./typings/xterm-addon-web-links.d.ts"
 	]
 }
