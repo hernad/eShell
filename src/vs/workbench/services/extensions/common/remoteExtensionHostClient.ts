@@ -227,6 +227,10 @@ export class RemoteExtensionHostClient extends Disposable implements IExtensionH
 		return undefined;
 	}
 
+	enableInspectPort(): Promise<boolean> {
+		return Promise.resolve(false);
+	}
+
 	dispose(): void {
 		super.dispose();
 

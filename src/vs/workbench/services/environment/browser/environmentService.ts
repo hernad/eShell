@@ -85,9 +85,10 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 		this.userRoamingDataHome = URI.file('/User').with({ scheme: Schemas.userData });
 		this.settingsResource = joinPath(this.userRoamingDataHome, 'settings.json');
 		this.settingsSyncPreviewResource = joinPath(this.userRoamingDataHome, '.settings.json');
+		this.userDataSyncLogResource = joinPath(options.logsPath, 'userDataSync.log');
 		this.keybindingsResource = joinPath(this.userRoamingDataHome, 'keybindings.json');
 		this.keyboardLayoutResource = joinPath(this.userRoamingDataHome, 'keyboardLayout.json');
-		this.localeResource = joinPath(this.userRoamingDataHome, 'locale.json');
+		this.argvResource = joinPath(this.userRoamingDataHome, 'argv.json');
 		this.backupHome = joinPath(this.userRoamingDataHome, BACKUPS);
 		this.configuration.backupWorkspaceResource = joinPath(this.backupHome, options.workspaceId);
 		this.configuration.connectionToken = options.connectionToken || getCookieValue('vscode-tkn');
@@ -142,10 +143,11 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 	appSettingsHome: URI;
 	userRoamingDataHome: URI;
 	settingsResource: URI;
-	settingsSyncPreviewResource: URI;
 	keybindingsResource: URI;
 	keyboardLayoutResource: URI;
-	localeResource: URI;
+	argvResource: URI;
+	settingsSyncPreviewResource: URI;
+	userDataSyncLogResource: URI;
 	machineSettingsHome: URI;
 	machineSettingsResource: URI;
 	globalStorageHome: string;
@@ -168,7 +170,6 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 	log?: string;
 	logsPath: string;
 	verbose: boolean;
-	skipGettingStarted: boolean;
 	skipReleaseNotes: boolean;
 	mainIPCHandle: string;
 	sharedIPCHandle: string;
@@ -188,7 +189,7 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 	}
 
 	get webviewResourceRoot(): string {
-		return `${this.webviewExternalEndpoint}/vscode-resource{{resource}}`;
+		return `${this.webviewExternalEndpoint}/vscode-resource/{{resource}}`;
 	}
 
 	get webviewCspSource(): string {

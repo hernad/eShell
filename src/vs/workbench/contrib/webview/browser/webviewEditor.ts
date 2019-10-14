@@ -11,7 +11,7 @@ import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/c
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { IWindowService } from 'vs/platform/windows/common/windows';
+import { IHostService } from 'vs/workbench/services/host/browser/host';
 import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
 import { EditorOptions, EditorInput } from 'vs/workbench/common/editor';
 import { WebviewInput } from 'vs/workbench/contrib/webview/browser/webviewEditorInput';
@@ -21,7 +21,7 @@ import { IEditorService } from 'vs/workbench/services/editor/common/editorServic
 
 export class WebviewEditor extends BaseEditor {
 
-	public static ID = 'WebviewEditor';
+	public static readonly ID = 'WebviewEditor';
 
 	private readonly _scopedContextKeyService = this._register(new MutableDisposable<IContextKeyService>());
 	private _findWidgetVisible: IContextKey<boolean>;
@@ -40,7 +40,7 @@ export class WebviewEditor extends BaseEditor {
 		@IThemeService themeService: IThemeService,
 		@IContextKeyService private readonly _contextKeyService: IContextKeyService,
 		@IEditorService private readonly _editorService: IEditorService,
-		@IWindowService private readonly _windowService: IWindowService,
+		@IHostService private readonly _hostService: IHostService,
 		@IStorageService storageService: IStorageService
 	) {
 		super(WebviewEditor.ID, telemetryService, themeService, storageService);
@@ -103,7 +103,7 @@ export class WebviewEditor extends BaseEditor {
 		super.focus();
 		if (!this._onFocusWindowHandler.value) {
 			// Make sure we restore focus when switching back to a VS Code window
-			this._onFocusWindowHandler.value = this._windowService.onDidChangeFocus(focused => {
+			this._onFocusWindowHandler.value = this._hostService.onDidChangeFocus(focused => {
 				if (focused && this._editorService.activeControl === this) {
 					this.focus();
 					//console.log('webviewEditor this focus');

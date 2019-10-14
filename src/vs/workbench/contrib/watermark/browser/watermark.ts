@@ -33,6 +33,7 @@ import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editor
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { IDimension } from 'vs/platform/layout/browser/layoutService';
 // import { TERMINAL_COMMAND_ID } from 'vs/workbench/contrib/terminal/common/terminal';
+import { assertIsDefined } from 'vs/base/common/types';
 
 const $ = dom.$;
 
@@ -120,7 +121,7 @@ export class WatermarkContribution extends Disposable implements IWorkbenchContr
 	}
 
 	private create(): void {
-		const container = this.layoutService.getContainer(Parts.EDITOR_PART);
+		const container = assertIsDefined(this.layoutService.getContainer(Parts.EDITOR_PART));
 		container.classList.add('has-watermark');
 
 		this.watermark = $('.watermark');
@@ -166,7 +167,9 @@ export class WatermarkContribution extends Disposable implements IWorkbenchContr
 			this.watermark.remove();
 
 			const container = this.layoutService.getContainer(Parts.EDITOR_PART);
-			container.classList.remove('has-watermark');
+			if (container) {
+				container.classList.remove('has-watermark');
+			}
 
 			this.watermarkDisposable.clear();
 		}
