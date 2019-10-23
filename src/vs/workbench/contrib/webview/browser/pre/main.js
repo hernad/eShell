@@ -410,8 +410,6 @@
 					newFrame.contentDocument.open();
 				}
 
-				newFrame.contentWindow.addEventListener('keydown', handleInnerKeydown);
-
 				newFrame.contentWindow.addEventListener('DOMContentLoaded', e => {
 					// Workaround for https://bugs.chromium.org/p/chromium/issues/detail?id=978325
 					setTimeout(() => {
@@ -478,9 +476,11 @@
 						}
 					});
 
-					// Bubble out link clicks
+					// Bubble out various events
 					newFrame.contentWindow.addEventListener('click', handleInnerClick);
 					newFrame.contentWindow.addEventListener('auxclick', handleAuxClick);
+					newFrame.contentWindow.addEventListener('keydown', handleInnerKeydown);
+					newFrame.contentWindow.addEventListener('contextmenu', e => e.preventDefault());
 
 					if (host.onIframeLoaded) {
 						host.onIframeLoaded(newFrame);

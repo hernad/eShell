@@ -310,6 +310,11 @@ export interface ConfigurationProperties {
 	group?: string | GroupKind;
 
 	/**
+	 * A description of the task.
+	 */
+	detail?: string;
+
+	/**
 	 * The other tasks the task depend on
 	 */
 	dependsOn?: string | TaskIdentifier | Array<string | TaskIdentifier>;
@@ -1226,9 +1231,12 @@ namespace GroupKind {
 namespace TaskDependency {
 	export function from(this: void, external: string | TaskIdentifier, context: ParseContext): Tasks.TaskDependency | undefined {
 		if (Types.isString(external)) {
-			return { workspaceFolder: context.workspaceFolder, task: external };
+			return { uri: context.workspace && context.workspace.configuration ? context.workspace.configuration : context.workspaceFolder.uri, task: external };
 		} else if (TaskIdentifier.is(external)) {
-			return { workspaceFolder: context.workspaceFolder, task: Tasks.TaskDefinition.createTaskIdentifier(external as Tasks.TaskIdentifier, context.problemReporter) };
+			return {
+				uri: context.workspace && context.workspace.configuration ? context.workspace.configuration : context.workspaceFolder.uri,
+				task: Tasks.TaskDefinition.createTaskIdentifier(external as Tasks.TaskIdentifier, context.problemReporter)
+			};
 		} else {
 			return undefined;
 		}
@@ -1322,6 +1330,9 @@ namespace ConfigurationProperties {
 		const configProblemMatcher = ProblemMatcherConverter.fromWithOsConfig(external, context);
 		if (configProblemMatcher !== undefined) {
 			result.problemMatchers = configProblemMatcher;
+		}
+		if (external.detail) {
+			result.detail = external.detail;
 		}
 		return isEmpty(result) ? undefined : result;
 	}
@@ -1584,6 +1595,7 @@ namespace CustomTask {
 		assignProperty(resultConfigProps, configuredProps.configurationProperties, 'dependsOn');
 		assignProperty(resultConfigProps, configuredProps.configurationProperties, 'problemMatchers');
 		assignProperty(resultConfigProps, configuredProps.configurationProperties, 'promptOnClose');
+		assignProperty(resultConfigProps, configuredProps.configurationProperties, 'detail');
 		result.command.presentation = CommandConfiguration.PresentationOptions.assignProperties(
 			result.command.presentation!, configuredProps.configurationProperties.presentation)!;
 		result.command.options = CommandOptions.assignProperties(result.command.options, configuredProps.configurationProperties.options);
@@ -1595,6 +1607,7 @@ namespace CustomTask {
 		fillProperty(resultConfigProps, contributedConfigProps, 'dependsOn');
 		fillProperty(resultConfigProps, contributedConfigProps, 'problemMatchers');
 		fillProperty(resultConfigProps, contributedConfigProps, 'promptOnClose');
+		fillProperty(resultConfigProps, contributedConfigProps, 'detail');
 		result.command.presentation = CommandConfiguration.PresentationOptions.fillProperties(
 			result.command.presentation!, contributedConfigProps.presentation)!;
 		result.command.options = CommandOptions.fillProperties(result.command.options, contributedConfigProps.options);
