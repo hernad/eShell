@@ -1385,11 +1385,12 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 
 		if (this._xterm) {
 			if (cols !== this._xterm.cols || rows !== this._xterm.rows) {
-				this._onDimensionsChanged.fire();
+				console.log(`fire resize cols: ${this._xterm.cols} rows: ${this._xterm.rows} -> ${cols} ${rows}`);
+				//this._onDimensionsChanged.fire();
+				this._xterm.resize(cols, rows);
 			}
 
-			this._xterm.resize(cols, rows);
-			if (this._isVisible) {
+			//if (this._isVisible) {
 				/* hernad off
 				// HACK: Force the renderer to unpause by simulating an IntersectionObserver event.
 				// This is to fix an issue where dragging the window to the top of the screen to
@@ -1402,7 +1403,7 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 					this._xterm.refresh(0, this._xterm.rows - 1);
 				}
 				*/
-			}
+			//}
 		}
 
 		if (this._processManager) {
