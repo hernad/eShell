@@ -22,4 +22,3 @@ jobs:
     BINTRAY_ARCH: x64
   steps:
   - template: build/azure-pipelines/win32/build-win32-x64-local.yml
-
