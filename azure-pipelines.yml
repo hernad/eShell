@@ -16,9 +16,8 @@ variables:
 
 
 jobs:
-- job: Windows_x64
-  pool:
-    vmImage: VS2017-Win2016
+- job: Windows_x64 local
+  pool: local-dell-xps15
   variables:
     VSCODE_ARCH: x64
     BINTRAY_ARCH: x64
