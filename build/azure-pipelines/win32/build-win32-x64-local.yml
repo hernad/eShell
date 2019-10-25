@@ -7,7 +7,7 @@ steps:
   displayName: hernad - Install yarn with npm
 - task: UsePythonVersion@0
   inputs:
-    versionSpec: '2.x'
+    versionSpec: '2.7.17'
     addToPath: true
 - powershell: |
     . build/azure-pipelines/win32/exec.ps1
