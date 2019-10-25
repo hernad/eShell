@@ -1,6 +1,7 @@
 trigger:
   branches:
     include:
+    - electron-6
     - shell
     - shell-4
     - releases/*
