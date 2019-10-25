@@ -16,7 +16,7 @@ variables:
 
 
 jobs:
-- job: Windows_x64 local
+- job: Windows_x64_local
   pool: local-dell-xps15
   variables:
     VSCODE_ARCH: x64
