@@ -14,7 +14,6 @@ trigger:
 variables:
 - group: API_KEYS
 
-
 jobs:
 - job: Windows_x64_local
   pool: local-dell-xps15
