@@ -289,6 +289,8 @@ export class ElectronWebviewBasedWebview extends BaseWebview<WebviewTag> impleme
 			this._register(addDisposableListener(this.element!, 'found-in-page', e => {
 				this._hasFindResult.fire(e.result.matches > 0);
 			}));
+
+			this.styledFindWidget();
 		}
 	}
 
@@ -296,7 +298,7 @@ export class ElectronWebviewBasedWebview extends BaseWebview<WebviewTag> impleme
 		const element = document.createElement('webview');
 		element.setAttribute('partition', `webview${Date.now()}`);
 		element.setAttribute('webpreferences', 'contextIsolation=yes');
-		element.className = `webview ${options.customClasses}`;
+		element.className = `webview ${options.customClasses || ''}`;
 
 		element.style.flex = '0 1';
 		element.style.width = '0';
@@ -343,10 +345,11 @@ export class ElectronWebviewBasedWebview extends BaseWebview<WebviewTag> impleme
 
 	protected style(): void {
 		super.style();
+		this.styledFindWidget();
+	}
 
-		if (this._webviewFindWidget) {
-			this._webviewFindWidget.updateTheme(this._webviewThemeDataProvider.getTheme());
-		}
+	private styledFindWidget() {
+		this._webviewFindWidget?.updateTheme(this._webviewThemeDataProvider.getTheme());
 	}
 
 	private readonly _hasFindResult = this._register(new Emitter<boolean>());

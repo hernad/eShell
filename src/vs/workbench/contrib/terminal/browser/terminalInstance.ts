@@ -54,11 +54,11 @@ export const DEFAULT_COMMANDS_TO_SKIP_SHELL: string[] = [
 	TERMINAL_COMMAND_ID.DELETE_WORD_RIGHT,
 	TERMINAL_COMMAND_ID.FIND_WIDGET_FOCUS,
 	TERMINAL_COMMAND_ID.FIND_WIDGET_HIDE,
-	TERMINAL_COMMAND_ID.FIND_NEXT_TERMINAL_FOCUS,
-	TERMINAL_COMMAND_ID.FIND_PREVIOUS_TERMINAL_FOCUS,
-	TERMINAL_COMMAND_ID.TOGGLE_FIND_REGEX_TERMINAL_FOCUS,
-	TERMINAL_COMMAND_ID.TOGGLE_FIND_WHOLE_WORD_TERMINAL_FOCUS,
-	TERMINAL_COMMAND_ID.TOGGLE_FIND_CASE_SENSITIVE_TERMINAL_FOCUS,
+	TERMINAL_COMMAND_ID.FIND_NEXT,
+	TERMINAL_COMMAND_ID.FIND_PREVIOUS,
+	TERMINAL_COMMAND_ID.TOGGLE_FIND_REGEX,
+	TERMINAL_COMMAND_ID.TOGGLE_FIND_WHOLE_WORD,
+	TERMINAL_COMMAND_ID.TOGGLE_FIND_CASE_SENSITIVE,
 	TERMINAL_COMMAND_ID.FOCUS_NEXT_PANE,
 	TERMINAL_COMMAND_ID.FOCUS_NEXT,
 	TERMINAL_COMMAND_ID.FOCUS_PREVIOUS_PANE,
@@ -239,6 +239,8 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 	public get onDisposed(): Event<ITerminalInstance> { return this._onDisposed.event; }
 	private readonly _onFocused = new Emitter<ITerminalInstance>();
 	public get onFocused(): Event<ITerminalInstance> { return this._onFocused.event; }
+	private readonly _onProcessCreated = new Emitter<void>();
+	public get onProcessCreated(): Event<void> { return this._onProcessCreated.event; }
 	private readonly _onProcessIdReady = new Emitter<ITerminalInstance>();
 	public get onProcessIdReady(): Event<ITerminalInstance> { return this._onProcessIdReady.event; }
 	private readonly _onTitleChanged = new Emitter<ITerminalInstance>();
@@ -305,7 +307,7 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		});
 
 		this.addDisposable(this._configurationService.onDidChangeConfiguration(e => {
-			if (e.affectsConfiguration('terminal.integrated')) {
+			if (e.affectsConfiguration('terminal.integrated') || e.affectsConfiguration('editor.fastScrollSensitivity') || e.affectsConfiguration('editor.mouseWheelScrollSensitivity')) {
 				this.updateConfig();
 				// HACK: Trigger another async layout to ensure xterm's CharMeasure is ready to use,
 				// this hack can be removed when https://github.com/xtermjs/xterm.js/issues/702 is
@@ -421,7 +423,7 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		const bottom = parseInt(wrapperElementStyle.bottom!.split('px')[0], 10);
 
 		const innerWidth = width - marginLeft - marginRight;
-		const innerHeight = height - bottom;
+		const innerHeight = height - bottom - 1;
 
 		TerminalInstance._lastKnownCanvasDimensions = new dom.Dimension(innerWidth, innerHeight);
 		return TerminalInstance._lastKnownCanvasDimensions;
@@ -448,7 +450,8 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		const Terminal = await this._getXtermConstructor();
 		const font = this._configHelper.getFont(undefined, true);
 		const config = this._configHelper.config;
-		const fastScrollSensitivity = this._configurationService.getValue<IEditorOptions>('editor.fastScrollSensitivity').fastScrollSensitivity;
+		const editorOptions = this._configurationService.getValue<IEditorOptions>('editor');
+
 		const xterm = new Terminal({
 			scrollback: config.scrollback,
 			theme: this._getXtermTheme(),
@@ -464,8 +467,8 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 			macOptionClickForcesSelection: config.macOptionClickForcesSelection,
 			rightClickSelectsWord: config.rightClickBehavior === 'selectWord',
 			fastScrollModifier: 'alt',
-			fastScrollSensitivity,
-			// TODO: Guess whether to use canvas or dom better
+			fastScrollSensitivity: editorOptions.fastScrollSensitivity,
+			scrollSensitivity: editorOptions.mouseWheelScrollSensitivity,
 			rendererType: config.rendererType === 'auto' ? 'canvas' : config.rendererType
 		});
 		this._xterm = xterm;
@@ -484,7 +487,6 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 
 		this._processManager.onProcessData(data => this._onProcessData(data));
 		this._xterm.onData(data => this._processManager.write(data));
-		// TODO: How does the cwd work on detached processes?
 		this.processReady.then(async () => {
 			if (this._linkHandler) {
 				this._linkHandler.processCwd = await this._processManager.getInitialCwd();
@@ -524,9 +526,7 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 			throw new Error('The terminal instance has not been attached to a container yet');
 		}
 
-		if (this._wrapperElement.parentNode) {
-			this._wrapperElement.parentNode.removeChild(this._wrapperElement);
-		}
+		this._wrapperElement.parentNode?.removeChild(this._wrapperElement);
 		this._container = container;
 		this._container.appendChild(this._wrapperElement);
 	}
@@ -544,9 +544,7 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		}
 
 		// The container changed, reattach
-		if (this._container) {
-			this._container.removeChild(this._wrapperElement);
-		}
+		this._container?.removeChild(this._wrapperElement);
 		this._container = container;
 		this._container.appendChild(this._wrapperElement);
 	}
@@ -652,11 +650,7 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 
 			const widgetManager = new TerminalWidgetManager(this._wrapperElement);
 			this._widgetManager = widgetManager;
-			this._processManager.onProcessReady(() => {
-				if (this._linkHandler) {
-					this._linkHandler.setWidgetManager(widgetManager);
-				}
-			});
+			this._processManager.onProcessReady(() => this._linkHandler?.setWidgetManager(widgetManager));
 
 			const computedStyle = window.getComputedStyle(this._container);
 			const width = parseInt(computedStyle.getPropertyValue('width').replace('px', ''), 10);
@@ -752,19 +746,13 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 	}
 
 	public clearSelection(): void {
-		if (!this._xterm) {
-			return;
-		}
-		this._xterm.clearSelection();
+		this._xterm?.clearSelection();
 	}
 
 	public selectAll(): void {
-		if (!this._xterm) {
-			return;
-		}
 		// Focus here to ensure the terminal context key is set
-		this._xterm.focus();
-		this._xterm.selectAll();
+		this._xterm?.focus();
+		this._xterm?.selectAll();
 	}
 
 	public findNext(term: string, searchOptions: ISearchOptions): boolean {
@@ -925,45 +913,31 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 	}
 
 	public scrollDownLine(): void {
-		if (this._xterm) {
-			this._xterm.scrollLines(1);
-		}
+		this._xterm?.scrollLines(1);
 	}
 
 	public scrollDownPage(): void {
-		if (this._xterm) {
-			this._xterm.scrollPages(1);
-		}
+		this._xterm?.scrollPages(1);
 	}
 
 	public scrollToBottom(): void {
-		if (this._xterm) {
-			this._xterm.scrollToBottom();
-		}
+		this._xterm?.scrollToBottom();
 	}
 
 	public scrollUpLine(): void {
-		if (this._xterm) {
-			this._xterm.scrollLines(-1);
-		}
+		this._xterm?.scrollLines(-1);
 	}
 
 	public scrollUpPage(): void {
-		if (this._xterm) {
-			this._xterm.scrollPages(-1);
-		}
+		this._xterm?.scrollPages(-1);
 	}
 
 	public scrollToTop(): void {
-		if (this._xterm) {
-			this._xterm.scrollToTop();
-		}
+		this._xterm?.scrollToTop();
 	}
 
 	public clear(): void {
-		if (this._xterm) {
-			this._xterm.clear();
-		}
+		this._xterm?.clear();
 	}
 
 	private _refreshSelectionContextKey() {
@@ -974,6 +948,12 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 
 	protected _createProcess(): void {
 		this._processManager = this._instantiationService.createInstance(TerminalProcessManager, this._id, this._configHelper);
+		const processCreatedListener = this._processManager.onProcessStateChange(state => {
+			if (state === ProcessState.LAUNCHING) {
+				this._onProcessCreated.fire();
+				processCreatedListener.dispose();
+			}
+		});
 		this._processManager.onProcessReady(() => this._onProcessIdReady.fire(this));
 		this._processManager.onProcessExit(exitCode => this._onProcessExit(exitCode));
 		this._processManager.onProcessData(data => this._onData.fire(data));
@@ -1012,20 +992,17 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 			});
 		}
 
-		// Create the process asynchronously to allow the terminal's container
-		// to be created so dimensions are accurate
+		// Create the process asynchronously to allow the terminal's container to be created so
+		// dimensions are accurate. This also ensures that process manager listeners are ready for
+		// `onProcessStateChange` events.
 		setTimeout(() => {
 			this._processManager.createProcess(this._shellLaunchConfig, this._cols, this._rows, this._isScreenReaderOptimized());
 		}, 0);
 	}
 
 	private _onProcessData(data: string): void {
-		if (this._widgetManager) {
-			this._widgetManager.closeMessage();
-		}
-		if (this._xterm) {
-			this._xterm.write(data);
-		}
+		this._widgetManager?.closeMessage();
+		this._xterm?.write(data);
 	}
 
 	/**
@@ -1131,10 +1108,8 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 
 	public reuseTerminal(shell: IShellLaunchConfig): void {
 		// Unsubscribe any key listener we may have.
-		if (this._pressAnyKeyToCloseListener) {
-			this._pressAnyKeyToCloseListener.dispose();
-			this._pressAnyKeyToCloseListener = undefined;
-		}
+		this._pressAnyKeyToCloseListener?.dispose();
+		this._pressAnyKeyToCloseListener = undefined;
 
 		// Kill and clear up the process, making the process manager ready for a new process
 		this._processManager.dispose();
@@ -1248,7 +1223,10 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		this._safeSetOption('macOptionClickForcesSelection', config.macOptionClickForcesSelection);
 		this._safeSetOption('rightClickSelectsWord', config.rightClickBehavior === 'selectWord');
 		this._safeSetOption('rendererType', config.rendererType === 'auto' ? 'canvas' : config.rendererType);
-		this._safeSetOption('fastScrollSensitivity', this._configurationService.getValue<IEditorOptions>('editor.fastScrollSensitivity').fastScrollSensitivity);
+
+		const editorOptions = this._configurationService.getValue<IEditorOptions>('editor');
+		this._safeSetOption('fastScrollSensitivity', editorOptions.fastScrollSensitivity);
+		this._safeSetOption('scrollSensitivity', editorOptions.mouseWheelScrollSensitivity);
 	}
 
 	public updateAccessibilitySupport(): void {
@@ -1257,10 +1235,8 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 			this._navigationModeAddon = new NavigationModeAddon(this._terminalA11yTreeFocusContextKey);
 			this._xterm!.loadAddon(this._navigationModeAddon);
 		} else {
-			if (this._navigationModeAddon) {
-				this._navigationModeAddon.dispose();
-				this._navigationModeAddon = undefined;
-			}
+			this._navigationModeAddon?.dispose();
+			this._navigationModeAddon = undefined;
 		}
 		this._xterm!.setOption('screenReaderMode', isEnabled);
 	}

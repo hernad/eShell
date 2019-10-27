@@ -83,6 +83,7 @@ import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cance
 const QUICKOPEN_HISTORY_LIMIT_CONFIG = 'task.quickOpen.history';
 const QUICKOPEN_DETAIL_CONFIG = 'task.quickOpen.detail';
 const PROBLEM_MATCHER_NEVER_CONFIG = 'task.problemMatchers.neverPrompt';
+const QUICKOPEN_SKIP_CONFIG = 'task.quickOpen.skip';
 
 export namespace ConfigureTaskAction {
 	export const ID = 'workbench.action.tasks.configureTaskRunner';
@@ -732,11 +733,32 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 		return settingValue === true;
 	}
 
-	private shouldAttachProblemMatcher(task: Task): boolean {
+	private isProblemMatcherPromptEnabled(type?: string): boolean {
 		const settingValue = this.configurationService.getValue(PROBLEM_MATCHER_NEVER_CONFIG);
-		if (settingValue === true) {
-			return false;
-		} else if (task.type && Types.isStringArray(settingValue) && (settingValue.indexOf(task.type) >= 0)) {
+		if (Types.isBoolean(settingValue)) {
+			return !settingValue;
+		}
+		if (type === undefined) {
+			return true;
+		}
+		const settingValueMap: IStringDictionary<boolean> = <any>settingValue;
+		return !settingValueMap[type];
+	}
+
+	private getTypeForTask(task: Task): string {
+		let type: string;
+		if (CustomTask.is(task)) {
+			let configProperties: TaskConfig.ConfigurationProperties = task._source.config.element;
+			type = (<any>configProperties).type;
+		} else {
+			type = task.getDefinition()!.type;
+		}
+		return type;
+	}
+
+	private shouldAttachProblemMatcher(task: Task): boolean {
+		const enabled = this.isProblemMatcherPromptEnabled(this.getTypeForTask(task));
+		if (enabled === false) {
 			return false;
 		}
 		if (!this.canCustomize(task)) {
@@ -753,8 +775,7 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 		}
 		if (CustomTask.is(task)) {
 			let configProperties: TaskConfig.ConfigurationProperties = task._source.config.element;
-			const type: string = (<any>configProperties).type;
-			return configProperties.problemMatcher === undefined && !task.hasDefinedMatchers && (!Types.isStringArray(settingValue) || (settingValue.indexOf(type) < 0));
+			return configProperties.problemMatcher === undefined && !task.hasDefinedMatchers;
 		}
 		return false;
 	}
@@ -765,12 +786,14 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 		if (current === true) {
 			return;
 		}
-		let newValue: string[] = [];
-		if (Types.isStringArray(current)) {
-			newValue = current;
+		let newValue: IStringDictionary<boolean>;
+		if (current !== false) {
+			newValue = <any>current;
+		} else {
+			newValue = Object.create(null);
 		}
-		newValue.push(type);
-		return this.configurationService.updateValue(PROBLEM_MATCHER_NEVER_CONFIG, newValue);
+		newValue[type] = true;
+		return this.configurationService.updateValue(PROBLEM_MATCHER_NEVER_CONFIG, newValue, ConfigurationTarget.USER);
 	}
 
 	private attachProblemMatcher(task: ContributedTask | CustomTask): Promise<Task | undefined> {
@@ -1333,7 +1356,7 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 						this.notificationService.prompt(Severity.Warning, nls.localize('TaskSystem.slowProvider', "The {0} task provider is slow. The extension that provides {0} tasks may provide a setting to disable it, or you can disable all tasks providers", type),
 							[settings, disableAll, dontShow]);
 					}
-				}, 2000);
+				}, 4000);
 			}
 		});
 	}
@@ -1975,7 +1998,7 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 				for (let task of tasks) {
 					let key = task.getRecentlyUsedKey();
 					if (!key || !recentlyUsedTasks.has(key)) {
-						if (task._source.kind === TaskSourceKind.Workspace) {
+						if ((task._source.kind === TaskSourceKind.Workspace) || (task._source.kind === TaskSourceKind.User)) {
 							configured.push(task);
 						} else {
 							detected.push(task);
@@ -2000,6 +2023,8 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 	}
 
 	private showQuickPick(tasks: Promise<Task[]> | Task[], placeHolder: string, defaultEntry?: TaskQuickPickEntry, group: boolean = false, sort: boolean = false, selectedEntry?: TaskQuickPickEntry, additionalEntries?: TaskQuickPickEntry[]): Promise<TaskQuickPickEntry | undefined | null> {
+		const tokenSource = new CancellationTokenSource();
+		const cancellationToken: CancellationToken = tokenSource.token;
 		let _createEntries = (): Promise<QuickPickInput<TaskQuickPickEntry>[]> => {
 			if (Array.isArray(tasks)) {
 				return Promise.resolve(this.createTaskQuickPickEntries(tasks, group, sort, selectedEntry));
@@ -2007,15 +2032,18 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 				return tasks.then((tasks) => this.createTaskQuickPickEntries(tasks, group, sort, selectedEntry));
 			}
 		};
-		return this.quickInputService.pick(_createEntries().then((entries) => {
-			if ((entries.length === 0) && defaultEntry) {
+		const pickEntries = _createEntries().then((entries) => {
+			if ((entries.length === 1) && this.configurationService.getValue<boolean>(QUICKOPEN_SKIP_CONFIG)) {
+				tokenSource.cancel();
+			} else if ((entries.length === 0) && defaultEntry) {
 				entries.push(defaultEntry);
 			} else if (entries.length > 1 && additionalEntries && additionalEntries.length > 0) {
 				entries.push({ type: 'separator', label: '' });
 				entries.push(additionalEntries[0]);
 			}
 			return entries;
-		}), {
+		});
+		return this.quickInputService.pick(pickEntries, {
 			placeHolder,
 			matchOnDescription: true,
 			onDidTriggerItemButton: context => {
@@ -2027,6 +2055,18 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 					this.openConfig(task);
 				}
 			}
+		}, cancellationToken).then(async (selection) => {
+			if (cancellationToken.isCancellationRequested) {
+				// canceled when there's only one task
+				const task = (await pickEntries)[0];
+				if ((<any>task).task) {
+					selection = <TaskQuickPickEntry>task;
+				}
+			}
+			if (!selection) {
+				return;
+			}
+			return selection;
 		});
 	}
 

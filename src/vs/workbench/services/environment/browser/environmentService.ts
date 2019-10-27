@@ -9,7 +9,7 @@ import { IProcessEnvironment } from 'vs/base/common/platform';
 import { joinPath } from 'vs/base/common/resources';
 import { URI } from 'vs/base/common/uri';
 import { generateUuid } from 'vs/base/common/uuid';
-import { BACKUPS, IDebugParams, IExtensionHostDebugParams } from 'vs/platform/environment/common/environment';
+import { BACKUPS, IExtensionHostDebugParams } from 'vs/platform/environment/common/environment';
 import { LogLevel } from 'vs/platform/log/common/log';
 import { IPath, IPathsToWaitFor, IWindowConfiguration } from 'vs/platform/windows/common/windows';
 import { ISingleFolderWorkspaceIdentifier, IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
@@ -21,9 +21,9 @@ import { memoize } from 'vs/base/common/decorators';
 
 export class BrowserWindowConfiguration implements IWindowConfiguration {
 
-	constructor(private readonly options: IBrowserWorkbenchEnvironemntConstructionOptions, private readonly environment: IWorkbenchEnvironmentService) { }
+	constructor(private readonly options: IBrowserWorkbenchEnvironmentConstructionOptions, private readonly environment: IWorkbenchEnvironmentService) { }
 
-	//#region PROPERLY CONFIGURED
+	//#region PROPERLY CONFIGURED IN DESKTOP + WEB
 
 	@memoize
 	get sessionId(): string { return generateUuid(); }
@@ -37,27 +37,32 @@ export class BrowserWindowConfiguration implements IWindowConfiguration {
 	@memoize
 	get backupWorkspaceResource(): URI { return joinPath(this.environment.backupHome, this.options.workspaceId); }
 
+	// TODO@rachel TODO@sbatten fix me, should be stable between sessions
+	@memoize
+	get machineId(): string { return generateUuid(); }
+
+	// Currently unsupported in web
+	get filesToOpenOrCreate(): IPath[] | undefined { return undefined; }
+	get filesToDiff(): IPath[] | undefined { return undefined; }
+
 	//#endregion
 
 
-	//#region TODO@ben TO BE DONE
+	//#region TODO MOVE TO NODE LAYER
 
 	_!: any[];
 
-	readonly machineId = generateUuid();
 	windowId!: number;
-	logLevel!: LogLevel;
-
 	mainPid!: number;
+
+	logLevel!: LogLevel;
 
 	appRoot!: string;
 	execPath!: string;
-	isInitialStartup?: boolean;
-
-	userEnv!: IProcessEnvironment;
+	backupPath?: string;
 	nodeCachedDataDir?: string;
 
-	backupPath?: string;
+	userEnv!: IProcessEnvironment;
 
 	workspace?: IWorkspaceIdentifier;
 	folderUri?: ISingleFolderWorkspaceIdentifier;
@@ -66,19 +71,13 @@ export class BrowserWindowConfiguration implements IWindowConfiguration {
 	fullscreen?: boolean;
 	maximized?: boolean;
 	highContrast?: boolean;
-	frameless?: boolean;
 	accessibilitySupport?: boolean;
 	partsSplashPath?: string;
 
-	perfStartTime?: number;
-	perfAppReady?: number;
-	perfWindowLoadTime?: number;
+	isInitialStartup?: boolean;
 	perfEntries!: ExportData;
 
-	filesToOpenOrCreate?: IPath[];
-	filesToDiff?: IPath[];
 	filesToWait?: IPathsToWaitFor;
-	termProgram?: string;
 
 	//#endregion
 
@@ -89,7 +88,7 @@ export class BrowserWindowConfiguration implements IWindowConfiguration {
 	}
 }
 
-interface IBrowserWorkbenchEnvironemntConstructionOptions extends IWorkbenchConstructionOptions {
+interface IBrowserWorkbenchEnvironmentConstructionOptions extends IWorkbenchConstructionOptions {
 	workspaceId: string;
 	logsPath: URI;
 }
@@ -98,13 +97,17 @@ interface IExtensionHostDebugEnvironment {
 	params: IExtensionHostDebugParams;
 	isExtensionDevelopment: boolean;
 	extensionDevelopmentLocationURI: URI[];
+	extensionTestsLocationURI?: URI;
 }
 
 export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironmentService {
 
 	_serviceBrand: undefined;
 
-	//#region PROPERLY CONFIGURED
+	//#region PROPERLY CONFIGURED IN DESKTOP + WEB
+
+	@memoize
+	get isBuilt(): boolean { return !!product.commit; }
 
 	@memoize
 	get logsPath(): string { return this.options.logsPath.path; }
@@ -161,10 +164,18 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 		return this._extensionHostDebugEnvironment.extensionDevelopmentLocationURI;
 	}
 
+	get extensionTestsLocationURI(): URI | undefined {
+		if (!this._extensionHostDebugEnvironment) {
+			this._extensionHostDebugEnvironment = this.resolveExtensionHostDebugEnvironment();
+		}
+
+		return this._extensionHostDebugEnvironment.extensionTestsLocationURI;
+	}
+
 	@memoize
 	get webviewExternalEndpoint(): string {
 		// TODO: get fallback from product.json
-		return (this.options.webviewEndpoint || 'https://{{uuid}}.vscode-webview-test.com/{{commit}}').replace('{{commit}}', product.commit || 'c58aaab8a1cc22a7139b761166a0d4f37d41e998');
+		return (this.options.webviewEndpoint || 'https://{{uuid}}.vscode-webview-test.com/{{commit}}').replace('{{commit}}', product.commit || 'b53811e67e65c6a564a80e1c412ca2b13de02907');
 	}
 
 	@memoize
@@ -177,10 +188,17 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 		return this.webviewExternalEndpoint.replace('{{uuid}}', '*');
 	}
 
+	// Currently not configurable in web
+	get disableExtensions() { return false; }
+	get extensionsPath(): string | undefined { return undefined; }
+	get verbose(): boolean { return false; }
+	get disableUpdates(): boolean { return false; }
+	get logExtensionHostCommunication(): boolean { return false; }
+
 	//#endregion
 
 
-	//#region TODO@ben TO BE DONE
+	//#region TODO MOVE TO NODE LAYER
 
 	private _configuration: IWindowConfiguration | undefined = undefined;
 	get configuration(): IWindowConfiguration {
@@ -191,52 +209,53 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 		return this._configuration;
 	}
 
-	readonly args = { _: [] };
-	readonly appRoot = '/web/';
+	args = { _: [] };
 
-	argvResource!: URI;
-
-	//#endregion
-
-	extensionTestsLocationURI?: URI;
-
-	execPath!: string;
-	cliPath!: string;
-	userHome!: string;
-	userDataPath!: string;
-	appSettingsHome!: URI;
-
-	machineSettingsHome!: URI;
-	machineSettingsResource!: URI;
-	globalStorageHome!: string;
-	workspaceStorageHome!: string;
-	backupWorkspacesPath!: string;
-	workspacesHome!: string;
-
-	disableExtensions!: boolean | string[];
-	builtinExtensionsPath!: string;
-	extensionsPath?: string;
-	extensionTestsPath?: string;
-	debugSearch!: IDebugParams;
-	logExtensionHostCommunication!: boolean;
-	isBuilt!: boolean;
 	wait!: boolean;
 	status!: boolean;
 	log?: string;
 
-	verbose!: boolean;
-	skipReleaseNotes!: boolean;
 	mainIPCHandle!: string;
 	sharedIPCHandle!: string;
+
 	nodeCachedDataDir?: string;
-	installSourcePath!: string;
-	disableUpdates!: boolean;
+
+	argvResource!: URI;
+
 	disableCrashReporter!: boolean;
+
 	driverHandle?: string;
 	driverVerbose!: boolean;
+
+	installSourcePath!: string;
+
+	builtinExtensionsPath!: string;
+
+	globalStorageHome!: string;
+	workspaceStorageHome!: string;
+
+	backupWorkspacesPath!: string;
+
+	machineSettingsHome!: URI;
+	machineSettingsResource!: URI;
+
+	userHome!: string;
+	userDataPath!: string;
+	appRoot!: string;
+	appSettingsHome!: URI;
+	execPath!: string;
+	cliPath!: string;
+
+	//#endregion
+
+
+	//#region TODO ENABLE IN WEB
+
 	galleryMachineIdResource?: URI;
 
-	constructor(readonly options: IBrowserWorkbenchEnvironemntConstructionOptions) { }
+	//#endregion
+
+	constructor(readonly options: IBrowserWorkbenchEnvironmentConstructionOptions) { }
 
 	private resolveExtensionHostDebugEnvironment(): IExtensionHostDebugEnvironment {
 		const extensionHostDebugEnvironment: IExtensionHostDebugEnvironment = {
@@ -256,6 +275,9 @@ export class BrowserWorkbenchEnvironmentService implements IWorkbenchEnvironment
 					case 'extensionDevelopmentPath':
 						extensionHostDebugEnvironment.extensionDevelopmentLocationURI = [URI.parse(value)];
 						extensionHostDebugEnvironment.isExtensionDevelopment = true;
+						break;
+					case 'extensionTestsPath':
+						extensionHostDebugEnvironment.extensionTestsLocationURI = URI.parse(value);
 						break;
 					case 'debugId':
 						extensionHostDebugEnvironment.params.debugId = value;
