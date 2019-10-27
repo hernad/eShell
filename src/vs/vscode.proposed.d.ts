@@ -677,7 +677,6 @@ declare module 'vscode' {
 	}
 
 	//#endregion
-<<<<<<< HEAD
     //
 	////#region André: debug
     //
@@ -740,21 +739,6 @@ declare module 'vscode' {
 	//	 */
 	//	export function startDebugging(folder: WorkspaceFolder | undefined, nameOrConfiguration: string | DebugConfiguration, parentSessionOrOptions?: DebugSession | DebugSessionOptions): Thenable<boolean>;
 	//}
-=======
-
-	//#region André: debug
-
-	// deprecated
-
-	export interface DebugConfigurationProvider {
-		/**
-		 * Deprecated, use DebugAdapterDescriptorFactory.provideDebugAdapter instead.
-		 * @deprecated Use DebugAdapterDescriptorFactory.createDebugAdapterDescriptor instead
-		 */
-		debugAdapterExecutable?(folder: WorkspaceFolder | undefined, token?: CancellationToken): ProviderResult<DebugAdapterExecutable>;
-	}
-
->>>>>>> upstream/master
 	//#endregion
 
 	//#region Rob, Matt: logging
