@@ -79,7 +79,7 @@ import { ISharedProcessMainService, SharedProcessMainService } from 'vs/platform
 import { assign } from 'vs/base/common/objects';
 import { IDialogMainService, DialogMainService } from 'vs/platform/dialogs/electron-main/dialogs';
 import { withNullAsUndefined } from 'vs/base/common/types';
-import { parseArgs, OPTIONS } from 'vs/platform/environment/node/argv';
+// import { parseArgs, OPTIONS } from 'vs/platform/environment/node/argv';
 
 export class CodeApplication extends Disposable {
 
@@ -726,6 +726,7 @@ export class CodeApplication extends Disposable {
 	}
 }
 
+/*
 class ElectronExtensionHostDebugBroadcastChannel<TContext> extends ExtensionHostDebugBroadcastChannel<TContext> {
 
 	constructor(private windowsMainService: IWindowsMainService) {
@@ -750,3 +751,4 @@ class ElectronExtensionHostDebugBroadcastChannel<TContext> extends ExtensionHost
 		}
 	}
 }
+*/
