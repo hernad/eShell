@@ -3,7 +3,7 @@
 	"nameLong": "eShell",
 	"applicationName": "eShell",
 	"dataFolderName": ".eShell",
-	"win32MutexName": "eshell",
+	"win32MutexName": "eShell",
 	"licenseName": "MIT",
 	"licenseUrl": "https://github.com/hernad/eShell/blob/master/LICENSE.txt",
 	"win32AppId": "{{A34003BB-9E10-4501-8C11-BE3FAA83F201}",
