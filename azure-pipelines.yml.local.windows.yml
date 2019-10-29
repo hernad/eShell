@@ -1,0 +1,24 @@
+trigger:
+  branches:
+    include:
+    - electron-6
+    - shell
+    - shell-4
+    - releases/*
+  paths:
+    exclude:
+    - README.md
+    include:
+    - package.json
+
+variables:
+- group: API_KEYS
+
+jobs:
+- job: Windows_x64_local
+  pool: local-dell-xps15
+  variables:
+    VSCODE_ARCH: x64
+    BINTRAY_ARCH: x64
+  steps:
+  - template: build/azure-pipelines/win32/build-win32-local.yml
