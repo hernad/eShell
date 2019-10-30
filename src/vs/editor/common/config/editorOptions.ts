@@ -1210,6 +1210,7 @@ export class EditorFontLigatures extends BaseEditorOption<EditorOption.fontLigat
 						description: nls.localize('fontFeatureSettings', "Explicit font-feature-settings.")
 					}
 				],
+				description: nls.localize('fontLigaturesGeneral', "Configures font ligatures."),
 				default: false
 			}
 		);
@@ -2354,11 +2355,11 @@ class EditorSuggest extends BaseEditorOption<EditorOption.suggest, InternalSugge
 		super(
 			EditorOption.suggest, 'suggest', defaults,
 			{
-				'editor.suggest.overwriteOnAccept': {
-					type: 'boolean',
-					default: defaults.overwriteOnAccept,
-					description: nls.localize('suggest.overwriteOnAccept', "Controls whether words are overwritten when accepting completions.")
-				},
+				// 'editor.suggest.overwriteOnAccept': {
+				// 	type: 'boolean',
+				// 	default: defaults.overwriteOnAccept,
+				// 	description: nls.localize('suggest.overwriteOnAccept', "Controls whether words are overwritten when accepting completions.")
+				// },
 				'editor.suggest.filterGraceful': {
 					type: 'boolean',
 					default: defaults.filterGraceful,
