@@ -29,5 +29,5 @@ steps:
     npx  --node-arg --max-old-space-size=8196 gulp vscode-win32-$(VSCODE_ARCH)-min
     npx gulp vscode-win32-$(VSCODE_ARCH)-inno-updater
     npx --node-arg --max-old-space-size=8196  gulp vscode-win32-$(VSCODE_ARCH)-user-setup
-  displayName: "win32-64bit build $(VSCODE_ARCH) zip"
+  displayName: "win32 build $(VSCODE_ARCH) zip"
 

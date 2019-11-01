@@ -227,7 +227,7 @@ export class Client implements IChannelClient, IDisposable {
 			this.child.on('error', err => console.warn('IPC "' + this.options.serverName + '" errored with ' + err));
 
 			this.child.on('exit', (code: any, signal: any) => {
-				process.removeListener('exit', onExit);
+				process.removeListener('loaded', onExit);
 
 				this.activeRequests.forEach(r => dispose(r));
 				this.activeRequests.clear();
