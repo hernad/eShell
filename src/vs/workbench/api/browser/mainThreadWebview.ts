@@ -27,6 +27,7 @@ import { IEditorGroup, IEditorGroupsService } from 'vs/workbench/services/editor
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { extHostNamedCustomer } from '../common/extHostCustomers';
+import { CustomEditorModel } from 'vs/workbench/contrib/customEditor/browser/customEditorModel';
 
 /**
  * Bi-directional map between webview handles and inputs.
@@ -94,6 +95,7 @@ export class MainThreadWebviews extends Disposable implements extHostProtocol.Ma
 	private readonly _webviewInputs = new WebviewInputStore();
 	private readonly _revivers = new Map<string, IDisposable>();
 	private readonly _editorProviders = new Map<string, IDisposable>();
+	private readonly _models = new Map<string, CustomEditorModel>();
 
 	constructor(
 		context: extHostProtocol.IExtHostContext,
@@ -166,13 +168,6 @@ export class MainThreadWebviews extends Disposable implements extHostProtocol.Ma
 	public $setTitle(handle: extHostProtocol.WebviewPanelHandle, value: string): void {
 		const webview = this.getWebviewInput(handle);
 		webview.setName(value);
-	}
-
-	public $setState(handle: extHostProtocol.WebviewPanelHandle, state: modes.WebviewContentState): void {
-		const webview = this.getWebviewInput(handle);
-		if (webview instanceof CustomFileEditorInput) {
-			webview.setState(state);
-		}
 	}
 
 	public $setIconPath(handle: extHostProtocol.WebviewPanelHandle, value: { light: UriComponents, dark: UriComponents; } | undefined): void {
@@ -268,7 +263,7 @@ export class MainThreadWebviews extends Disposable implements extHostProtocol.Ma
 			canResolve: (webviewInput) => {
 				return webviewInput instanceof CustomFileEditorInput && webviewInput.viewType === viewType;
 			},
-			resolveWebview: async (webviewInput) => {
+			resolveWebview: async (webviewInput: CustomFileEditorInput) => {
 				const handle = webviewInput.id;
 				this._webviewInputs.add(handle, webviewInput);
 				this.hookupWebviewEventDelegate(handle, webviewInput);
@@ -276,11 +271,17 @@ export class MainThreadWebviews extends Disposable implements extHostProtocol.Ma
 				webviewInput.webview.options = options;
 				webviewInput.webview.extension = extension;
 
-				if (webviewInput instanceof CustomFileEditorInput) {
-					webviewInput.onWillSave(e => {
-						e.waitUntil(this._proxy.$save(handle));
-					});
-				}
+				const model = new CustomEditorModel();
+				webviewInput.setModel(model);
+				this._models.set(handle, model);
+
+				webviewInput.onDispose(() => {
+					this._models.delete(handle);
+				});
+
+				model.onUndo(edit => {
+					this._proxy.$undoEdits(handle, [edit]);
+				});
 
 				try {
 					await this._proxy.$resolveWebviewEditor(
@@ -307,6 +308,20 @@ export class MainThreadWebviews extends Disposable implements extHostProtocol.Ma
 
 		provider.dispose();
 		this._editorProviders.delete(viewType);
+	}
+
+	public $onEdit(handle: extHostProtocol.WebviewPanelHandle, editData: string): void {
+		const webview = this.getWebviewInput(handle);
+		if (!(webview instanceof CustomFileEditorInput)) {
+			throw new Error('Webview is not a webview editor');
+		}
+
+		const model = this._models.get(handle);
+		if (!model) {
+			throw new Error('Could not find model for webview editor');
+		}
+
+		model.makeEdit(editData);
 	}
 
 	private hookupWebviewEventDelegate(handle: extHostProtocol.WebviewPanelHandle, input: WebviewInput) {

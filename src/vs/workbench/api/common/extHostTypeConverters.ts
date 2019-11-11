@@ -627,14 +627,39 @@ export namespace DocumentSymbol {
 
 export namespace CallHierarchyItem {
 
-	export function to(item: extHostProtocol.ICallHierarchyItemDto): vscode.CallHierarchyItem {
-		return new types.CallHierarchyItem(
+	export function to(item: extHostProtocol.ICallHierarchyItemDto): types.CallHierarchyItem {
+		const result = new types.CallHierarchyItem(
 			SymbolKind.to(item.kind),
 			item.name,
 			item.detail || '',
 			URI.revive(item.uri),
 			Range.to(item.range),
 			Range.to(item.selectionRange)
+		);
+
+		result._sessionId = item._sessionId;
+		result._itemId = item._itemId;
+
+		return result;
+	}
+}
+
+export namespace CallHierarchyIncomingCall {
+
+	export function to(item: extHostProtocol.IIncomingCallDto): types.CallHierarchyIncomingCall {
+		return new types.CallHierarchyIncomingCall(
+			CallHierarchyItem.to(item.from),
+			item.fromRanges.map(r => Range.to(r))
+		);
+	}
+}
+
+export namespace CallHierarchyOutgoingCall {
+
+	export function to(item: extHostProtocol.IOutgoingCallDto): types.CallHierarchyOutgoingCall {
+		return new types.CallHierarchyOutgoingCall(
+			CallHierarchyItem.to(item.to),
+			item.fromRanges.map(r => Range.to(r))
 		);
 	}
 }
@@ -811,7 +836,7 @@ export namespace CompletionItem {
 		result.preselect = suggestion.preselect;
 		result.commitCharacters = suggestion.commitCharacters;
 		result.range = editorRange.Range.isIRange(suggestion.range) ? Range.to(suggestion.range) : undefined;
-		result.range2 = editorRange.Range.isIRange(suggestion.range) ? undefined : { insert: Range.to(suggestion.range.insert), replace: Range.to(suggestion.range.replace) };
+		result.range2 = editorRange.Range.isIRange(suggestion.range) ? undefined : { inserting: Range.to(suggestion.range.insert), replacing: Range.to(suggestion.range.replace) };
 		result.keepWhitespace = typeof suggestion.insertTextRules === 'undefined' ? false : Boolean(suggestion.insertTextRules & modes.CompletionItemInsertTextRule.KeepWhitespace);
 		// 'inserText'-logic
 		if (typeof suggestion.insertTextRules !== 'undefined' && suggestion.insertTextRules & modes.CompletionItemInsertTextRule.InsertAsSnippet) {
@@ -893,7 +918,7 @@ export namespace DocumentLink {
 		let target: URI | undefined = undefined;
 		if (link.url) {
 			try {
-				target = typeof link.url === 'string' ? URI.parse(link.url) : URI.revive(link.url);
+				target = typeof link.url === 'string' ? URI.parse(link.url, true) : URI.revive(link.url);
 			} catch (err) {
 				// ignore
 			}

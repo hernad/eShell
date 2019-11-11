@@ -22,8 +22,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.window.registerWebviewEditorProvider(
 		PreviewManager.viewType,
 		{
-			async resolveWebviewEditor(resource: vscode.Uri, editor: vscode.WebviewEditor): Promise<void> {
-				previewManager.resolve(resource, editor);
+			async resolveWebviewEditor({ resource }, editor: vscode.WebviewPanel): Promise<vscode.WebviewEditorCapabilities> {
+				return previewManager.resolve(resource, editor);
 			}
 		}));
 

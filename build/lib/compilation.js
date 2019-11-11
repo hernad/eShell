@@ -36,7 +36,7 @@ function getTypeScriptCompilerOptions(src) {
 function createCompile(src, build, emitError) {
     const projectPath = path.join(__dirname, '../../', src, 'tsconfig.json');
     const overrideOptions = Object.assign(Object.assign({}, getTypeScriptCompilerOptions(src)), { inlineSources: Boolean(build) });
-    const compilation = tsb.create(projectPath, overrideOptions, false, err => reporter(err));
+    const compilation = tsb.create(projectPath, overrideOptions, true, err => reporter(err));
     function pipeline(token) {
         const utf8Filter = util.filter(data => /(\/|\\)test(\/|\\).*utf8/.test(data.path));
         const tsFilter = util.filter(data => /\.ts$/.test(data.path));

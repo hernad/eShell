@@ -237,6 +237,8 @@ export interface ITerminalInstance {
 	 */
 	onExit: Event<number | undefined>;
 
+	readonly exitCode: number | undefined;
+
 	processReady: Promise<void>;
 
 	/**

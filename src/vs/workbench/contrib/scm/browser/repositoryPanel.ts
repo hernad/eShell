@@ -466,17 +466,15 @@ class ViewModel {
 	}
 
 	private onDidSpliceGroup(item: IGroupItem, { start, deleteCount, toInsert }: ISplice<ISCMResource>): void {
-		if (this._mode === ViewModelMode.Tree) {
-			for (const resource of toInsert) {
-				item.tree.add(resource.sourceUri, resource);
-			}
-		}
-
 		const deleted = item.resources.splice(start, deleteCount, ...toInsert);
 
 		if (this._mode === ViewModelMode.Tree) {
 			for (const resource of deleted) {
 				item.tree.delete(resource.sourceUri);
+			}
+
+			for (const resource of toInsert) {
+				item.tree.add(resource.sourceUri, resource);
 			}
 		}
 
@@ -573,7 +571,7 @@ export class ToggleViewModeAction extends Action {
 	}
 
 	private onDidChangeMode(mode: ViewModelMode): void {
-		const iconClass = mode === ViewModelMode.List ? 'codicon-filter' : 'codicon-selection';
+		const iconClass = mode === ViewModelMode.List ? 'codicon-list-tree' : 'codicon-list-flat';
 		this.class = `scm-action toggle-view-mode ${iconClass}`;
 	}
 }

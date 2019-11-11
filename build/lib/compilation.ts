@@ -43,7 +43,7 @@ function createCompile(src: string, build: boolean, emitError?: boolean) {
 	const projectPath = path.join(__dirname, '../../', src, 'tsconfig.json');
 	const overrideOptions = { ...getTypeScriptCompilerOptions(src), inlineSources: Boolean(build) };
 
-	const compilation = tsb.create(projectPath, overrideOptions, false, err => reporter(err));
+	const compilation = tsb.create(projectPath, overrideOptions, true, err => reporter(err));
 
 	function pipeline(token?: util.ICancellationToken) {
 
