@@ -491,7 +491,7 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 				.then(undefined, err => console.error(err));
 		}, AbstractExtHostExtensionService.WORKSPACE_CONTAINS_TIMEOUT);
 
-		let exists: boolean = false;
+		let exists: boolean | undefined = false;
 		try {
 			exists = await searchP;
 		} catch (err) {

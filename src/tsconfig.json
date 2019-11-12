@@ -6,7 +6,7 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"outDir": "../out",
-		"target": "es2017",
+		"target": "es2018",
 		"lib": [
 			"dom",
 			"es5",
@@ -28,7 +28,6 @@
 		"./typings/require-monaco.d.ts",
 		"./typings/xterm.d.ts",
 		"./typings/xterm-addon-search.d.ts",
-		"./typings/xterm-addon-web-links.d.ts",
-		"**/test/**/*/*test.ts"
+		"./typings/xterm-addon-web-links.d.ts"
 	]
 }

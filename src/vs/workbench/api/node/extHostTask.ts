@@ -12,7 +12,7 @@ import * as types from 'vs/workbench/api/common/extHostTypes';
 import { IExtHostWorkspace } from 'vs/workbench/api/common/extHostWorkspace';
 import * as vscode from 'vscode';
 import * as tasks from '../common/shared/tasks';
-import * as Objects from 'vs/base/common/objects';
+// import * as Objects from 'vs/base/common/objects';
 // import { ExtHostVariableResolverService } from 'vs/workbench/api/node/extHostDebugService';
 import { IExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
 import { IExtHostConfiguration } from 'vs/workbench/api/common/extHostConfiguration';
@@ -25,7 +25,7 @@ import { ExtHostTaskBase, TaskHandleDTO, TaskDTO, CustomExecutionDTO, HandlerDat
 import { Schemas } from 'vs/base/common/network';
 
 export class ExtHostTask extends ExtHostTaskBase {
-	private _variableResolver: ExtHostVariableResolverService | undefined;
+	// private _variableResolver: ExtHostVariableResolverService | undefined;
 
 	constructor(
 		@IExtHostRpcService extHostRpc: IExtHostRpcService,
@@ -98,6 +98,7 @@ export class ExtHostTask extends ExtHostTaskBase {
 		return resolvedTaskDTO;
 	}
 
+	/*
 	private async getVariableResolver(workspaceFolders: vscode.WorkspaceFolder[]): Promise<ExtHostVariableResolverService> {
 		if (this._variableResolver === undefined) {
 			const configProvider = await this._configurationService.getConfigProvider();
@@ -131,6 +132,7 @@ export class ExtHostTask extends ExtHostTaskBase {
 
 		return resolvedDefinition;
 	}
+	*/
 
 	public async $resolveVariables(uriComponents: UriComponents, toResolve: { process?: { name: string; cwd?: string; path?: string }, variables: string[] }): Promise<{ process?: string, variables: { [key: string]: string; } }> {
 		// const uri: URI = URI.revive(uriComponents);

@@ -388,7 +388,6 @@ export interface ITerminalInstance {
 	 * depending on the platform. This defaults to `true`.
 	 */
 	sendText(text: string, addNewLine: boolean): void;
-    forceResize( cols: number, rows: number): void;
 	/**
 	 * Write text directly to the terminal, skipping the process if it exists.
 	 * @param text The text to write.

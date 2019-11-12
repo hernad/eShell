@@ -155,11 +155,11 @@ export class MainThreadWorkspace implements MainThreadWorkspaceShape {
 			if (!isPromiseCanceledError(err)) {
 				return Promise.reject(err);
 			}
-			return undefined;
+			return null;
 		});
 	}
 
-	$startTextSearch(pattern: IPatternInfo, options: ITextQueryBuilderOptions, requestId: number, token: CancellationToken): Promise<ITextSearchComplete> {
+	$startTextSearch(pattern: IPatternInfo, options: ITextQueryBuilderOptions, requestId: number, token: CancellationToken): Promise<ITextSearchComplete | undefined> {
 		const workspace = this._contextService.getWorkspace();
 		const folders = workspace.folders.map(folder => folder.uri);
 
@@ -187,7 +187,7 @@ export class MainThreadWorkspace implements MainThreadWorkspaceShape {
 		return search;
 	}
 
-	$checkExists(folders: UriComponents[], includes: string[], token: CancellationToken): Promise<boolean> {
+	$checkExists(folders: UriComponents[], includes: string[], token: CancellationToken): Promise<boolean | undefined> {
 		const queryBuilder = this._instantiationService.createInstance(QueryBuilder);
 		const query = queryBuilder.file(folders.map(folder => URI.revive(folder)), {
 			_reason: 'checkExists',

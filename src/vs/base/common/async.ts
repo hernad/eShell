@@ -35,6 +35,8 @@ export function createCancelablePromise<T>(callback: (token: CancellationToken) 
 	});
 
 	return new class implements CancelablePromise<T> {
+		readonly [Symbol.toStringTag] = 'CancelablePromise<T>';
+
 		cancel() {
 			source.cancel();
 		}

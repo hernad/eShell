@@ -182,7 +182,7 @@ export class LanguageConfigurationRegistryImpl {
 		this._onDidChange.fire(new LanguageConfigurationChangeEvent(languageIdentifier));
 		return toDisposable(() => {
 			if (this._entries.get(languageIdentifier.id) === current) {
-				this._entries.set(languageIdentifier.id, previous);
+				this._entries.set(languageIdentifier.id, <any>previous);
 				this._onDidChange.fire(new LanguageConfigurationChangeEvent(languageIdentifier));
 			}
 		});

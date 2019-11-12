@@ -8,7 +8,7 @@ import * as dom from 'vs/base/browser/dom';
 import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
 import { debounce } from 'vs/base/common/decorators';
 import { Emitter, Event } from 'vs/base/common/event';
-// import { KeyCode } from 'vs/base/common/keyCodes';
+import { KeyCode } from 'vs/base/common/keyCodes';
 import { IDisposable, dispose, Disposable } from 'vs/base/common/lifecycle';
 import * as platform from 'vs/base/common/platform';
 import { TabFocus } from 'vs/editor/common/config/commonEditorConfig';
@@ -475,8 +475,6 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		});
 		this._xterm = xterm;
 		this._xtermCore = (xterm as any)._core as XTermCore;
-		/* hernad: xterm-out
-
 		this.updateAccessibilitySupport();
 		this._terminalInstanceService.getXtermSearchConstructor().then(Addon => {
 			this._xtermSearch = new Addon();
@@ -488,11 +486,8 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		this._xterm.onLineFeed(() => this._onLineFeed());
 		this._xterm.onKey(e => this._onKey(e.key, e.domEvent));
 		this._xterm.onSelectionChange(async () => this._onSelectionChange());
-		*/
 
 		this._processManager.onProcessData(data => this._onProcessData(data));
-
-		/* hernad: xterm-out
 		this._xterm.onData(data => this._processManager.write(data));
 		this.processReady.then(async () => {
 			if (this._linkHandler) {
@@ -518,7 +513,6 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		this._commandTrackerAddon = new CommandTrackerAddon();
 		this._xterm.loadAddon(this._commandTrackerAddon);
 		this._register(this._themeService.onThemeChange(theme => this._updateTheme(xterm, theme)));
-		*/
 
 		return xterm;
 	}
@@ -673,8 +667,7 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 				this._attachPressAnyKeyToCloseListener(xterm);
 			}
 
-			// hernad: neverMeasureRenderTime = false -> true
-			const neverMeasureRenderTime = this._storageService.getBoolean(NEVER_MEASURE_RENDER_TIME_STORAGE_KEY, StorageScope.GLOBAL, true);
+			const neverMeasureRenderTime = this._storageService.getBoolean(NEVER_MEASURE_RENDER_TIME_STORAGE_KEY, StorageScope.GLOBAL, false);
 			if (!neverMeasureRenderTime && this._configHelper.config.rendererType === 'auto') {
 				this._measureRenderTime();
 			}
@@ -1003,7 +996,7 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 
 	private _onProcessData(data: string): void {
 		this._widgetManager?.closeMessage();
-		// hernad: xterm-out this._xterm?.write(data);
+		this._xterm?.write(data);
 	}
 
 	/**
@@ -1153,7 +1146,6 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		this._processManager.onProcessData(data => this._onProcessData(data));
 	}
 
-	/* hernad: xterm-out
 	private _onLineFeed(): void {
 		const buffer = this._xterm!.buffer;
 		const newLine = buffer.getLine(buffer.baseY + buffer.cursorY);
@@ -1166,7 +1158,6 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		const buffer = this._xterm!.buffer;
 		this._sendLineData(buffer, buffer.baseY + buffer.cursorY);
 	}
-	*/
 
 	private _onTitleChange(title: string): void {
 		if (this.isTitleSetByProcess) {
@@ -1190,7 +1181,6 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		this._onLineData.fire(lineData);
 	}
 
-	/* hernad: xterm-out
 	private _onKey(key: string, ev: KeyboardEvent): void {
 		const event = new StandardKeyboardEvent(ev);
 
@@ -1207,7 +1197,6 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		}
 	}
 
-
 	@debounce(2000)
 	private async _updateProcessCwd(): Promise<string> {
 		// reset cwd if it has changed, so file based url paths can be resolved
@@ -1217,7 +1206,6 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		}
 		return cwd;
 	}
-	*/
 
 	public updateConfig(): void {
 		const config = this._configHelper.config;
@@ -1313,17 +1301,50 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 
 	@debounce(50)
 	private _resize(): void {
+		let cols = this.cols;
+		let rows = this.rows;
 
-		// hernad: xterm-out
-		// this._processManager.ptyProcessReady.then(() => this._processManager.setDimensions(cols, rows));
-	}
+		if (this._xterm && this._xtermCore) {
+			// Only apply these settings when the terminal is visible so that
+			// the characters are measured correctly.
+			if (this._isVisible) {
+				const font = this._configHelper.getFont(this._xtermCore);
+				const config = this._configHelper.config;
+				this._safeSetOption('letterSpacing', font.letterSpacing);
+				this._safeSetOption('lineHeight', font.lineHeight);
+				this._safeSetOption('fontSize', font.fontSize);
+				this._safeSetOption('fontFamily', font.fontFamily);
+				this._safeSetOption('fontWeight', config.fontWeight);
+				this._safeSetOption('fontWeightBold', config.fontWeightBold);
+				this._safeSetOption('drawBoldTextInBrightColors', config.drawBoldTextInBrightColors);
+			}
 
-	public forceResize( cols: number, rows: number): void {
+			if (isNaN(cols) || isNaN(rows)) {
+				return;
+			}
 
-		if (this._processManager) {
-			this._processManager.ptyProcessReady.then(() => this._processManager!.setDimensions(cols, rows));
+			if (cols !== this._xterm.cols || rows !== this._xterm.rows) {
+				this._onDimensionsChanged.fire();
+			}
+
+			this._xterm.resize(cols, rows);
+			TerminalInstance._lastKnownGridDimensions = { cols, rows };
+
+			if (this._isVisible) {
+				// HACK: Force the renderer to unpause by simulating an IntersectionObserver event.
+				// This is to fix an issue where dragging the window to the top of the screen to
+				// maximize on Windows/Linux would fire an event saying that the terminal was not
+				// visible.
+				if (this._xterm.getOption('rendererType') === 'canvas') {
+					this._xtermCore._renderService._onIntersectionChange({ intersectionRatio: 1 });
+					// HACK: Force a refresh of the screen to ensure links are refresh corrected.
+					// This can probably be removed when the above hack is fixed in Chromium.
+					this._xterm.refresh(0, this._xterm.rows - 1);
+				}
+			}
 		}
-		// hernad: xterm-out
+
+		this._processManager.ptyProcessReady.then(() => this._processManager.setDimensions(cols, rows));
 	}
 
 	public setShellType(shellType: TerminalShellType) {
@@ -1414,11 +1435,9 @@ export class TerminalInstance extends Disposable implements ITerminalInstance {
 		};
 	}
 
-	/* hernad: xterm-out
 	private _updateTheme(xterm: XTermTerminal, theme?: ITheme): void {
 		xterm.setOption('theme', this._getXtermTheme(theme));
 	}
-	*/
 
 	public async toggleEscapeSequenceLogging(): Promise<void> {
 		const xterm = await this._xtermReadyPromise;
