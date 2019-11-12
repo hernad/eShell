@@ -31,7 +31,7 @@ steps:
     exec { yarn gulp "vscode-win32-$env:VSCODE_ARCH-min-ci" }
     exec { yarn gulp "vscode-win32-$env:VSCODE_ARCH-code-helper" }
     exec { yarn gulp "vscode-win32-$env:VSCODE_ARCH-inno-updater" }
-    exec { yarn gulp "vscode-win32-$Arch-archive" "vscode-win32-$Arch-user-setup" }
+    exec { yarn gulp "vscode-win32-$env:VSCODE_ARCH-archive" "vscode-win32-$env:VSCODE_ARCH-user-setup" }
 
   displayName: "win32 build $(VSCODE_ARCH) zip"
 
