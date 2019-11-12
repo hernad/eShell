@@ -16,7 +16,6 @@
 	"reportIssueUrl": "https://github.com/hernad/eShell/issues/new",
 	"keyboardShortcutsUrlLinux" : "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf",
 	"extensionAllowedProposedApi": [
-		"ms-vscode.references-view"
 	],
 	"extensionsGallery": {
 		"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
