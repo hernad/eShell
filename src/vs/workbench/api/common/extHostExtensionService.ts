@@ -11,9 +11,9 @@ import { dispose, toDisposable, DisposableStore } from 'vs/base/common/lifecycle
 import { TernarySearchTree } from 'vs/base/common/map';
 import { URI } from 'vs/base/common/uri';
 import { ILogService } from 'vs/platform/log/common/log';
-import { ExtHostExtensionServiceShape, IInitData, MainContext, MainThreadExtensionServiceShape, MainThreadTelemetryShape, MainThreadWorkspaceShape, IResolveAuthorityResult } from 'vs/workbench/api/common/extHost.protocol';
+import { ExtHostExtensionServiceShape, IInitData, MainContext, MainThreadExtensionServiceShape, /* MainThreadTelemetryShape, */ MainThreadWorkspaceShape, IResolveAuthorityResult } from 'vs/workbench/api/common/extHost.protocol';
 import { ExtHostConfiguration, IExtHostConfiguration } from 'vs/workbench/api/common/extHostConfiguration';
-import { ActivatedExtension, EmptyExtension, ExtensionActivationReason, ExtensionActivationTimes, ExtensionActivationTimesBuilder, ExtensionsActivator, IExtensionAPI, IExtensionModule, HostExtension, ExtensionActivationTimesFragment } from 'vs/workbench/api/common/extHostExtensionActivator';
+import { ActivatedExtension, EmptyExtension, ExtensionActivationReason, ExtensionActivationTimes, ExtensionActivationTimesBuilder, ExtensionsActivator, IExtensionAPI, IExtensionModule, HostExtension /*, ExtensionActivationTimesFragment*/ } from 'vs/workbench/api/common/extHostExtensionActivator';
 import { ExtHostStorage, IExtHostStorage } from 'vs/workbench/api/common/extHostStorage';
 import { ExtHostWorkspace, IExtHostWorkspace } from 'vs/workbench/api/common/extHostWorkspace';
 import { ExtensionActivationError } from 'vs/workbench/services/extensions/common/extensions';
@@ -52,6 +52,7 @@ export interface IHostUtils {
 	realpath(path: string): Promise<string>;
 }
 
+/*
 type TelemetryActivationEventFragment = {
 	id: { classification: 'PublicNonPersonalData', purpose: 'FeatureInsight' };
 	name: { classification: 'PublicNonPersonalData', purpose: 'FeatureInsight' };
@@ -62,6 +63,7 @@ type TelemetryActivationEventFragment = {
 	reason: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 	reasonId: { classification: 'PublicNonPersonalData', purpose: 'FeatureInsight' };
 };
+*/
 
 export abstract class AbstractExtHostExtensionService implements ExtHostExtensionServiceShape {
 
@@ -78,7 +80,7 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 	protected readonly _logService: ILogService;
 
 	protected readonly _mainThreadWorkspaceProxy: MainThreadWorkspaceShape;
-	protected readonly _mainThreadTelemetryProxy: MainThreadTelemetryShape;
+	// protected readonly _mainThreadTelemetryProxy: MainThreadTelemetryShape;
 	protected readonly _mainThreadExtensionsProxy: MainThreadExtensionServiceShape;
 
 	private readonly _almostReadyToRunExtensions: Barrier;
@@ -116,7 +118,7 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 		this._disposables = new DisposableStore();
 
 		this._mainThreadWorkspaceProxy = this._extHostContext.getProxy(MainContext.MainThreadWorkspace);
-		this._mainThreadTelemetryProxy = this._extHostContext.getProxy(MainContext.MainThreadTelemetry);
+		// this._mainThreadTelemetryProxy = this._extHostContext.getProxy(MainContext.MainThreadTelemetry);
 		this._mainThreadExtensionsProxy = this._extHostContext.getProxy(MainContext.MainThreadExtensionService);
 
 		this._almostReadyToRunExtensions = new Barrier();
@@ -294,6 +296,8 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 	}
 
 	private _logExtensionActivationTimes(extensionDescription: IExtensionDescription, reason: ExtensionActivationReason, outcome: string, activationTimes?: ExtensionActivationTimes) {
+
+		/*
 		const event = getTelemetryActivationEvent(extensionDescription, reason);
 		type ExtensionActivationTimesClassification = {
 			outcome: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
@@ -310,17 +314,19 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 			activateResolvedTime?: number;
 		};
 
+
 		this._mainThreadTelemetryProxy.$publicLog2<ExtensionActivationTimesEvent, ExtensionActivationTimesClassification>('extensionActivationTimes', {
 			...event,
 			...(activationTimes || {}),
 			outcome
 		});
+		*/
 	}
 
 	private _doActivateExtension(extensionDescription: IExtensionDescription, reason: ExtensionActivationReason): Promise<ActivatedExtension> {
-		const event = getTelemetryActivationEvent(extensionDescription, reason);
-		type ActivatePluginClassification = {} & TelemetryActivationEventFragment;
-		this._mainThreadTelemetryProxy.$publicLog2<TelemetryActivationEvent, ActivatePluginClassification>('activatePlugin', event);
+		// const event = getTelemetryActivationEvent(extensionDescription, reason);
+		// type ActivatePluginClassification = {} & TelemetryActivationEventFragment;
+		// this._mainThreadTelemetryProxy.$publicLog2<TelemetryActivationEvent, ActivatePluginClassification>('activatePlugin', event);
 		if (!extensionDescription.main) {
 			// Treat the extension as being empty => NOT AN ERROR CASE
 			return Promise.resolve(new EmptyExtension(ExtensionActivationTimes.NONE));
@@ -733,7 +739,7 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 	public abstract async $setRemoteEnvironment(env: { [key: string]: string | null }): Promise<void>;
 }
 
-
+/*
 type TelemetryActivationEvent = {
 	id: string;
 	name: string;
@@ -744,6 +750,7 @@ type TelemetryActivationEvent = {
 	reason: string;
 	reasonId: string;
 };
+
 
 function getTelemetryActivationEvent(extensionDescription: IExtensionDescription, reason: ExtensionActivationReason): TelemetryActivationEvent {
 	const event = {
@@ -759,6 +766,7 @@ function getTelemetryActivationEvent(extensionDescription: IExtensionDescription
 
 	return event;
 }
+*/
 
 
 export const IExtHostExtensionService = createDecorator<IExtHostExtensionService>('IExtHostExtensionService');

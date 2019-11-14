@@ -10,7 +10,7 @@ import * as files from 'vs/platform/files/common/files';
 import { IDisposable, toDisposable, dispose } from 'vs/base/common/lifecycle';
 import { FileChangeType, FileSystemError } from 'vs/workbench/api/common/extHostTypes';
 import * as typeConverter from 'vs/workbench/api/common/extHostTypeConverters';
-import { ExtHostLanguageFeatures } from 'vs/workbench/api/common/extHostLanguageFeatures';
+// import { ExtHostLanguageFeatures } from 'vs/workbench/api/common/extHostLanguageFeatures';
 import { Schemas } from 'vs/base/common/network';
 import { State, StateMachine, LinkComputer, Edge } from 'vs/editor/common/modes/linkComputer';
 import { commonPrefixLength } from 'vs/base/common/strings';
@@ -165,7 +165,10 @@ export class ExtHostFileSystem implements ExtHostFileSystemShape {
 
 	readonly fileSystem: vscode.FileSystem;
 
-	constructor(mainContext: IMainContext, private _extHostLanguageFeatures: ExtHostLanguageFeatures) {
+	constructor(
+		mainContext: IMainContext,
+		// private _extHostLanguageFeatures: ExtHostLanguageFeatures
+	    ) {
 		this._proxy = mainContext.getProxy(MainContext.MainThreadFileSystem);
 		this.fileSystem = new ConsumerFileSystem(this._proxy);
 
@@ -179,7 +182,7 @@ export class ExtHostFileSystem implements ExtHostFileSystemShape {
 
 	private _registerLinkProviderIfNotYetRegistered(): void {
 		if (!this._linkProviderRegistration) {
-			this._linkProviderRegistration = this._extHostLanguageFeatures.registerDocumentLinkProvider(undefined, '*', this._linkProvider);
+			// this._linkProviderRegistration = this._extHostLanguageFeatures.registerDocumentLinkProvider(undefined, '*', this._linkProvider);
 		}
 	}
 

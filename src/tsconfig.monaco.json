@@ -28,6 +28,7 @@
 		"vs/platform/*/browser/*"
 	],
 	"exclude": [
-		"node_modules/*"
+		"node_modules/*",
+		"vs/**/*.test.ts"
 	]
 }

@@ -153,8 +153,8 @@ import 'vs/workbench/contrib/backup/common/backup.contribution';
 
 // Search
 import 'vs/workbench/contrib/search/browser/search.contribution';
-import 'vs/workbench/contrib/search/browser/searchView';
-import 'vs/workbench/contrib/search/browser/openAnythingHandler';
+// import 'vs/workbench/contrib/search/browser/searchView';
+// import 'vs/workbench/contrib/search/browser/openAnythingHandler';
 
 // SCM
 // import 'vs/workbench/contrib/scm/browser/scm.contribution';
@@ -169,10 +169,10 @@ import 'vs/workbench/contrib/search/browser/openAnythingHandler';
 // import 'vs/workbench/contrib/debug/browser/debugViewlet';
 
 // Markers
-import 'vs/workbench/contrib/markers/browser/markers.contribution';
+// import 'vs/workbench/contrib/markers/browser/markers.contribution';
 
 // Comments
-import 'vs/workbench/contrib/comments/browser/comments.contribution';
+// import 'vs/workbench/contrib/comments/browser/comments.contribution';
 
 // URL Support
 import 'vs/workbench/contrib/url/common/url.contribution';
@@ -212,17 +212,17 @@ import 'vs/workbench/contrib/emmet/browser/emmet.contribution';
 import 'vs/workbench/contrib/codeEditor/browser/codeEditor.contribution';
 
 // Execution
-import 'vs/workbench/contrib/externalTerminal/browser/externalTerminal.contribution';
+// import 'vs/workbench/contrib/externalTerminal/browser/externalTerminal.contribution';
 
 // Snippets
-import 'vs/workbench/contrib/snippets/browser/snippets.contribution';
-import 'vs/workbench/contrib/snippets/browser/snippetsService';
-import 'vs/workbench/contrib/snippets/browser/insertSnippet';
-import 'vs/workbench/contrib/snippets/browser/configureSnippets';
-import 'vs/workbench/contrib/snippets/browser/tabCompletion';
+// import 'vs/workbench/contrib/snippets/browser/snippets.contribution';
+// import 'vs/workbench/contrib/snippets/browser/snippetsService';
+// import 'vs/workbench/contrib/snippets/browser/insertSnippet';
+// import 'vs/workbench/contrib/snippets/browser/configureSnippets';
+// import 'vs/workbench/contrib/snippets/browser/tabCompletion';
 
 // Formatter Help
-import 'vs/workbench/contrib/format/browser/format.contribution';
+// import 'vs/workbench/contrib/format/browser/format.contribution';
 
 // Themes
 import 'vs/workbench/contrib/themes/browser/themes.contribution';
@@ -231,16 +231,16 @@ import 'vs/workbench/contrib/themes/browser/themes.contribution';
 import 'vs/workbench/contrib/update/browser/update.contribution';
 
 // Watermark
-import 'vs/workbench/contrib/watermark/browser/watermark';
+// import 'vs/workbench/contrib/watermark/browser/watermark';
 
 // Surveys
-import 'vs/workbench/contrib/surveys/browser/nps.contribution';
-import 'vs/workbench/contrib/surveys/browser/languageSurveys.contribution';
+// import 'vs/workbench/contrib/surveys/browser/nps.contribution';
+// import 'vs/workbench/contrib/surveys/browser/languageSurveys.contribution';
 
 // Welcome
-import 'vs/workbench/contrib/welcome/overlay/browser/welcomeOverlay';
-import 'vs/workbench/contrib/welcome/page/browser/welcomePage.contribution';
-import 'vs/workbench/contrib/welcome/walkThrough/browser/walkThrough.contribution';
+// import 'vs/workbench/contrib/welcome/overlay/browser/welcomeOverlay';
+// import 'vs/workbench/contrib/welcome/page/browser/welcomePage.contribution';
+// import 'vs/workbench/contrib/welcome/walkThrough/browser/walkThrough.contribution';
 
 // Call Hierarchy
 import 'vs/workbench/contrib/callHierarchy/browser/callHierarchy.contribution';
@@ -258,9 +258,9 @@ import 'vs/workbench/contrib/experiments/browser/experiments.contribution';
 import 'vs/workbench/contrib/userDataSync/browser/userDataSync.contribution';
 
 // Code Actions
-import 'vs/workbench/contrib/codeActions/common/codeActions.contribution';
+// import 'vs/workbench/contrib/codeActions/common/codeActions.contribution';
 
 // Test Custom Editors
-import 'vs/workbench/contrib/testCustomEditors/browser/testCustomEditors';
+// import 'vs/workbench/contrib/testCustomEditors/browser/testCustomEditors';
 
 //#endregion

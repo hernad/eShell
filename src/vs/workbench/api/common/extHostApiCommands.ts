@@ -14,7 +14,7 @@ import * as modes from 'vs/editor/common/modes';
 import * as search from 'vs/workbench/contrib/search/common/search';
 import { ICommandHandlerDescription } from 'vs/platform/commands/common/commands';
 import { ExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
-import { CustomCodeAction } from 'vs/workbench/api/common/extHostLanguageFeatures';
+// import { CustomCodeAction } from 'vs/workbench/api/common/extHostLanguageFeatures';
 import { ICommandsExecutor, OpenFolderAPICommand, DiffAPICommand, OpenAPICommand, RemoveFromRecentlyOpenedAPICommand, SetEditorLayoutAPICommand, OpenIssueReporter } from './apiCommands';
 import { EditorGroupLayout } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { isFalsyOrEmpty } from 'vs/base/common/arrays';
@@ -568,6 +568,7 @@ export class ExtHostApiCommands {
 	}
 
 	private _executeCodeActionProvider(resource: URI, rangeOrSelection: types.Range | types.Selection, kind?: string): Promise<(vscode.CodeAction | vscode.Command | undefined)[] | undefined> {
+		/*
 		const args = {
 			resource,
 			rangeOrSelection: types.Selection.isSelection(rangeOrSelection)
@@ -597,6 +598,8 @@ export class ExtHostApiCommands {
 					return ret;
 				}
 			}));
+			*/
+		return new Promise(() => { return undefined; });
 	}
 
 	private _executeCodeLensProvider(resource: URI, itemResolveCount: number): Promise<vscode.CodeLens[] | undefined> {

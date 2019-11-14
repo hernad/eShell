@@ -8511,13 +8511,13 @@ declare module 'vscode' {
 	 * the score is only checked to be `>0`, for other features, like [IntelliSense](#languages.registerCompletionItemProvider) the
 	 * score is used for determining the order in which providers are asked to participate.
 	 */
-	export namespace languages {
+	// export namespace languages {
 
 		/**
 		 * Return the identifiers of all known languages.
 		 * @return Promise resolving to an array of identifier strings.
 		 */
-		export function getLanguages(): Thenable<string[]>;
+		// export function getLanguages(): Thenable<string[]>;
 
 		/**
 		 * Set (and change) the [language](#TextDocument.languageId) that is associated
@@ -8530,7 +8530,7 @@ declare module 'vscode' {
 		 * @param languageId The new language identifier.
 		 * @returns A thenable that resolves with the updated document.
 		 */
-		export function setTextDocumentLanguage(document: TextDocument, languageId: string): Thenable<TextDocument>;
+		// export function setTextDocumentLanguage(document: TextDocument, languageId: string): Thenable<TextDocument>;
 
 		/**
 		 * Compute the match between a document [selector](#DocumentSelector) and a document. Values
@@ -8569,13 +8569,13 @@ declare module 'vscode' {
 		 * @param document A text document.
 		 * @return A number `>0` when the selector matches and `0` when the selector does not match.
 		 */
-		export function match(selector: DocumentSelector, document: TextDocument): number;
+		// export function match(selector: DocumentSelector, document: TextDocument): number;
 
 		/**
 		 * An [event](#Event) which fires when the global set of diagnostics changes. This is
 		 * newly added and removed diagnostics.
 		 */
-		export const onDidChangeDiagnostics: Event<DiagnosticChangeEvent>;
+		// export const onDidChangeDiagnostics: Event<DiagnosticChangeEvent>;
 
 		/**
 		 * Get all diagnostics for a given resource.
@@ -8583,14 +8583,14 @@ declare module 'vscode' {
 		 * @param resource A resource
 		 * @returns An array of [diagnostics](#Diagnostic) objects or an empty array.
 		 */
-		export function getDiagnostics(resource: Uri): Diagnostic[];
+		// export function getDiagnostics(resource: Uri): Diagnostic[];
 
 		/**
 		 * Get all diagnostics.
 		 *
 		 * @returns An array of uri-diagnostics tuples or an empty array.
 		 */
-		export function getDiagnostics(): [Uri, Diagnostic[]][];
+		// export function getDiagnostics(): [Uri, Diagnostic[]][];
 
 		/**
 		 * Create a diagnostics collection.
@@ -8598,7 +8598,7 @@ declare module 'vscode' {
 		 * @param name The [name](#DiagnosticCollection.name) of the collection.
 		 * @return A new diagnostic collection.
 		 */
-		export function createDiagnosticCollection(name?: string): DiagnosticCollection;
+		// export function createDiagnosticCollection(name?: string): DiagnosticCollection;
 
 		/**
 		 * Register a completion provider.
@@ -8619,7 +8619,7 @@ declare module 'vscode' {
 		 * @param triggerCharacters Trigger completion when the user types one of the characters.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerCompletionItemProvider(selector: DocumentSelector, provider: CompletionItemProvider, ...triggerCharacters: string[]): Disposable;
+		// export function registerCompletionItemProvider(selector: DocumentSelector, provider: CompletionItemProvider, ...triggerCharacters: string[]): Disposable;
 
 		/**
 		 * Register a code action provider.
@@ -8633,7 +8633,7 @@ declare module 'vscode' {
 		 * @param metadata Metadata about the kind of code actions the provider providers.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerCodeActionsProvider(selector: DocumentSelector, provider: CodeActionProvider, metadata?: CodeActionProviderMetadata): Disposable;
+		// export function registerCodeActionsProvider(selector: DocumentSelector, provider: CodeActionProvider, metadata?: CodeActionProviderMetadata): Disposable;
 
 		/**
 		 * Register a code lens provider.
@@ -8646,7 +8646,7 @@ declare module 'vscode' {
 		 * @param provider A code lens provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerCodeLensProvider(selector: DocumentSelector, provider: CodeLensProvider): Disposable;
+		// export function registerCodeLensProvider(selector: DocumentSelector, provider: CodeLensProvider): Disposable;
 
 		/**
 		 * Register a definition provider.
@@ -8659,7 +8659,7 @@ declare module 'vscode' {
 		 * @param provider A definition provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerDefinitionProvider(selector: DocumentSelector, provider: DefinitionProvider): Disposable;
+		// export function registerDefinitionProvider(selector: DocumentSelector, provider: DefinitionProvider): Disposable;
 
 		/**
 		 * Register an implementation provider.
@@ -8672,7 +8672,7 @@ declare module 'vscode' {
 		 * @param provider An implementation provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerImplementationProvider(selector: DocumentSelector, provider: ImplementationProvider): Disposable;
+		// export function registerImplementationProvider(selector: DocumentSelector, provider: ImplementationProvider): Disposable;
 
 		/**
 		 * Register a type definition provider.
@@ -8685,7 +8685,7 @@ declare module 'vscode' {
 		 * @param provider A type definition provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerTypeDefinitionProvider(selector: DocumentSelector, provider: TypeDefinitionProvider): Disposable;
+		// export function registerTypeDefinitionProvider(selector: DocumentSelector, provider: TypeDefinitionProvider): Disposable;
 
 		/**
 		 * Register a declaration provider.
@@ -8698,7 +8698,7 @@ declare module 'vscode' {
 		 * @param provider A declaration provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerDeclarationProvider(selector: DocumentSelector, provider: DeclarationProvider): Disposable;
+		// export function registerDeclarationProvider(selector: DocumentSelector, provider: DeclarationProvider): Disposable;
 
 		/**
 		 * Register a hover provider.
@@ -8711,7 +8711,7 @@ declare module 'vscode' {
 		 * @param provider A hover provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerHoverProvider(selector: DocumentSelector, provider: HoverProvider): Disposable;
+		// export function registerHoverProvider(selector: DocumentSelector, provider: HoverProvider): Disposable;
 
 		/**
 		 * Register a document highlight provider.
@@ -8724,7 +8724,7 @@ declare module 'vscode' {
 		 * @param provider A document highlight provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerDocumentHighlightProvider(selector: DocumentSelector, provider: DocumentHighlightProvider): Disposable;
+		// export function registerDocumentHighlightProvider(selector: DocumentSelector, provider: DocumentHighlightProvider): Disposable;
 
 		/**
 		 * Register a document symbol provider.
@@ -8738,7 +8738,7 @@ declare module 'vscode' {
 		 * @param metaData metadata about the provider
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerDocumentSymbolProvider(selector: DocumentSelector, provider: DocumentSymbolProvider, metaData?: DocumentSymbolProviderMetadata): Disposable;
+		// export function registerDocumentSymbolProvider(selector: DocumentSelector, provider: DocumentSymbolProvider, metaData?: DocumentSymbolProviderMetadata): Disposable;
 
 		/**
 		 * Register a workspace symbol provider.
@@ -8750,7 +8750,7 @@ declare module 'vscode' {
 		 * @param provider A workspace symbol provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerWorkspaceSymbolProvider(provider: WorkspaceSymbolProvider): Disposable;
+		// export function registerWorkspaceSymbolProvider(provider: WorkspaceSymbolProvider): Disposable;
 
 		/**
 		 * Register a reference provider.
@@ -8763,7 +8763,7 @@ declare module 'vscode' {
 		 * @param provider A reference provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerReferenceProvider(selector: DocumentSelector, provider: ReferenceProvider): Disposable;
+		// export function registerReferenceProvider(selector: DocumentSelector, provider: ReferenceProvider): Disposable;
 
 		/**
 		 * Register a rename provider.
@@ -8776,7 +8776,7 @@ declare module 'vscode' {
 		 * @param provider A rename provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerRenameProvider(selector: DocumentSelector, provider: RenameProvider): Disposable;
+		// export function registerRenameProvider(selector: DocumentSelector, provider: RenameProvider): Disposable;
 
 		/**
 		 * Register a formatting provider for a document.
@@ -8789,7 +8789,7 @@ declare module 'vscode' {
 		 * @param provider A document formatting edit provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerDocumentFormattingEditProvider(selector: DocumentSelector, provider: DocumentFormattingEditProvider): Disposable;
+		// export function registerDocumentFormattingEditProvider(selector: DocumentSelector, provider: DocumentFormattingEditProvider): Disposable;
 
 		/**
 		 * Register a formatting provider for a document range.
@@ -8806,7 +8806,7 @@ declare module 'vscode' {
 		 * @param provider A document range formatting edit provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerDocumentRangeFormattingEditProvider(selector: DocumentSelector, provider: DocumentRangeFormattingEditProvider): Disposable;
+		// export function registerDocumentRangeFormattingEditProvider(selector: DocumentSelector, provider: DocumentRangeFormattingEditProvider): Disposable;
 
 		/**
 		 * Register a formatting provider that works on type. The provider is active when the user enables the setting `editor.formatOnType`.
@@ -8821,7 +8821,7 @@ declare module 'vscode' {
 		 * @param moreTriggerCharacter More trigger characters.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerOnTypeFormattingEditProvider(selector: DocumentSelector, provider: OnTypeFormattingEditProvider, firstTriggerCharacter: string, ...moreTriggerCharacter: string[]): Disposable;
+		// export function registerOnTypeFormattingEditProvider(selector: DocumentSelector, provider: OnTypeFormattingEditProvider, firstTriggerCharacter: string, ...moreTriggerCharacter: string[]): Disposable;
 
 		/**
 		 * Register a signature help provider.
@@ -8836,8 +8836,8 @@ declare module 'vscode' {
 		 * @param metadata Information about the provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerSignatureHelpProvider(selector: DocumentSelector, provider: SignatureHelpProvider, ...triggerCharacters: string[]): Disposable;
-		export function registerSignatureHelpProvider(selector: DocumentSelector, provider: SignatureHelpProvider, metadata: SignatureHelpProviderMetadata): Disposable;
+		// export function registerSignatureHelpProvider(selector: DocumentSelector, provider: SignatureHelpProvider, ...triggerCharacters: string[]): Disposable;
+		// export function registerSignatureHelpProvider(selector: DocumentSelector, provider: SignatureHelpProvider, metadata: SignatureHelpProviderMetadata): Disposable;
 
 		/**
 		 * Register a document link provider.
@@ -8850,7 +8850,7 @@ declare module 'vscode' {
 		 * @param provider A document link provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerDocumentLinkProvider(selector: DocumentSelector, provider: DocumentLinkProvider): Disposable;
+		// export function registerDocumentLinkProvider(selector: DocumentSelector, provider: DocumentLinkProvider): Disposable;
 
 		/**
 		 * Register a color provider.
@@ -8863,7 +8863,7 @@ declare module 'vscode' {
 		 * @param provider A color provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerColorProvider(selector: DocumentSelector, provider: DocumentColorProvider): Disposable;
+		// export function registerColorProvider(selector: DocumentSelector, provider: DocumentColorProvider): Disposable;
 
 		/**
 		 * Register a folding range provider.
@@ -8880,7 +8880,7 @@ declare module 'vscode' {
 		 * @param provider A folding range provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerFoldingRangeProvider(selector: DocumentSelector, provider: FoldingRangeProvider): Disposable;
+		// export function registerFoldingRangeProvider(selector: DocumentSelector, provider: FoldingRangeProvider): Disposable;
 
 		/**
 		 * Register a selection range provider.
@@ -8893,7 +8893,7 @@ declare module 'vscode' {
 		 * @param provider A selection range provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerSelectionRangeProvider(selector: DocumentSelector, provider: SelectionRangeProvider): Disposable;
+		// export function registerSelectionRangeProvider(selector: DocumentSelector, provider: SelectionRangeProvider): Disposable;
 
 		/**
 		 * Register a call hierarchy provider.
@@ -8902,7 +8902,7 @@ declare module 'vscode' {
 		 * @param provider A call hierarchy provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerCallHierarchyProvider(selector: DocumentSelector, provider: CallHierarchyProvider): Disposable;
+		// export function registerCallHierarchyProvider(selector: DocumentSelector, provider: CallHierarchyProvider): Disposable;
 
 		/**
 		 * Set a [language configuration](#LanguageConfiguration) for a language.
@@ -8911,8 +8911,8 @@ declare module 'vscode' {
 		 * @param configuration Language configuration.
 		 * @return A [disposable](#Disposable) that unsets this configuration.
 		 */
-		export function setLanguageConfiguration(language: string, configuration: LanguageConfiguration): Disposable;
-	}
+		// export function setLanguageConfiguration(language: string, configuration: LanguageConfiguration): Disposable;
+	// }
 
 	/**
 	 * Represents the input box in the Source Control viewlet.
@@ -9439,7 +9439,8 @@ declare module 'vscode' {
 		dispose(): void;
 	}
 
-	namespace comments {
+
+	// namespace comments {
 		/**
 		 * Creates a new [comment controller](#CommentController) instance.
 		 *
@@ -9447,8 +9448,9 @@ declare module 'vscode' {
 		 * @param label A human-readable string for the comment controller.
 		 * @return An instance of [comment controller](#CommentController).
 		 */
-		export function createCommentController(id: string, label: string): CommentController;
-	}
+		// export function createCommentController(id: string, label: string): CommentController;
+	// }
+
 
 	//#endregion
 

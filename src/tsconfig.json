@@ -28,6 +28,15 @@
 		"./typings/require-monaco.d.ts",
 		"./typings/xterm.d.ts",
 		"./typings/xterm-addon-search.d.ts",
-		"./typings/xterm-addon-web-links.d.ts"
+		"./typings/xterm-addon-web-links.d.ts",
+		"./vs/**/*.test.ts",
+		"./vs/workbench/api/browser/mainThreadComments.ts",
+		"./vs/workbench/api/browser/mainThreadTelemetry.ts",
+		"./vs/workbench/api/browser/mainThreadLanguages.ts",
+		"./vs/workbench/api/browser/mainThreadLanguageFeatures.ts",
+		"./vs/workbench/api/common/extHostComments.ts",
+		"./vs/workbench/api/common/extHostLanguages.ts",
+		"./vs/workbench/api/common/extHostLanguageFeatures.ts",
+		"./vs/workbench/contrib/comments/browser/commentService.ts"
 	]
 }

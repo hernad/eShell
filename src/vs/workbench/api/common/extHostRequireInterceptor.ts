@@ -5,7 +5,7 @@
 
 import { TernarySearchTree } from 'vs/base/common/map';
 import { URI } from 'vs/base/common/uri';
-import { MainThreadTelemetryShape, MainContext } from 'vs/workbench/api/common/extHost.protocol';
+import { /*MainThreadTelemetryShape,*/ MainContext } from 'vs/workbench/api/common/extHost.protocol';
 import { ExtHostConfigProvider, IExtHostConfiguration } from 'vs/workbench/api/common/extHostConfiguration';
 import { nullExtensionDescription } from 'vs/workbench/services/extensions/common/extensions';
 import { ExtensionDescriptionRegistry } from 'vs/workbench/services/extensions/common/extensionDescriptionRegistry';
@@ -227,7 +227,7 @@ class OpenNodeModuleFactory implements INodeModuleFactory {
 	private _extensionId: string | undefined;
 	private _original?: IOriginalOpen;
 	private _impl: IOpenModule;
-	private _mainThreadTelemetry: MainThreadTelemetryShape;
+	// private _mainThreadTelemetry: MainThreadTelemetryShape;
 
 	constructor(
 		private readonly _extensionPaths: TernarySearchTree<IExtensionDescription>,
@@ -235,7 +235,7 @@ class OpenNodeModuleFactory implements INodeModuleFactory {
 		@IExtHostRpcService rpcService: IExtHostRpcService,
 	) {
 
-		this._mainThreadTelemetry = rpcService.getProxy(MainContext.MainThreadTelemetry);
+		// this._mainThreadTelemetry = rpcService.getProxy(MainContext.MainThreadTelemetry);
 		const mainThreadWindow = rpcService.getProxy(MainContext.MainThreadWindow);
 
 		this._impl = (target, options) => {
@@ -274,20 +274,24 @@ class OpenNodeModuleFactory implements INodeModuleFactory {
 		if (!this._extensionId) {
 			return;
 		}
+		/*
 		type ShimmingOpenClassification = {
 			extension: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 		};
 		this._mainThreadTelemetry.$publicLog2<{ extension: string }, ShimmingOpenClassification>('shimming.open', { extension: this._extensionId });
+		*/
 	}
 
 	private sendNoForwardTelemetry(): void {
 		if (!this._extensionId) {
 			return;
 		}
+		/*
 		type ShimmingOpenCallNoForwardClassification = {
 			extension: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 		};
 		this._mainThreadTelemetry.$publicLog2<{ extension: string }, ShimmingOpenCallNoForwardClassification>('shimming.open.call.noForward', { extension: this._extensionId });
+		*/
 	}
 }
 

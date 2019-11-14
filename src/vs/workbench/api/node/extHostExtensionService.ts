@@ -61,7 +61,9 @@ export class ExtHostExtensionService extends AbstractExtHostExtensionService {
 
 		// Do this when extension service exists, but extensions are not being activated yet.
 		const configProvider = await this._extHostConfiguration.getConfigProvider();
-		await connectProxyResolver(this._extHostWorkspace, configProvider, this, this._logService, this._mainThreadTelemetryProxy);
+		//await connectProxyResolver(this._extHostWorkspace, configProvider, this, this._logService, this._mainThreadTelemetryProxy);
+		await connectProxyResolver(this._extHostWorkspace, configProvider, this, this._logService );
+
 
 		// Use IPC messages to forward console-calls, note that the console is
 		// already patched to use`process.send()`
