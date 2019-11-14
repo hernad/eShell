@@ -93,7 +93,7 @@ import 'vs/workbench/contrib/files/browser/files.web.contribution';
 import 'vs/workbench/contrib/preferences/browser/keyboardLayoutPicker';
 
 // Debug
-import 'vs/workbench/contrib/debug/browser/extensionHostDebugService';
+// import 'vs/workbench/contrib/debug/browser/extensionHostDebugService';
 
 // Webview
 import 'vs/workbench/contrib/webview/browser/webviewService';
