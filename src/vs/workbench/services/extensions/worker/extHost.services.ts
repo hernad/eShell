@@ -10,16 +10,17 @@ import { IExtHostDecorations, ExtHostDecorations } from 'vs/workbench/api/common
 import { IExtHostConfiguration, ExtHostConfiguration } from 'vs/workbench/api/common/extHostConfiguration';
 import { IExtHostCommands, ExtHostCommands } from 'vs/workbench/api/common/extHostCommands';
 import { IExtHostDocumentsAndEditors, ExtHostDocumentsAndEditors } from 'vs/workbench/api/common/extHostDocumentsAndEditors';
+import { IExtHostTerminalService, WorkerExtHostTerminalService } from 'vs/workbench/api/common/extHostTerminalService';
+import { IExtHostTask, WorkerExtHostTask } from 'vs/workbench/api/common/extHostTask';
+// import { IExtHostDebugService } from 'vs/workbench/api/common/extHostDebugService';
+import { IExtHostSearch, ExtHostSearch } from 'vs/workbench/api/common/extHostSearch';
+import { IExtensionStoragePaths } from 'vs/workbench/api/common/extHostStoragePaths';
 import { IExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
 import { IExtHostStorage, ExtHostStorage } from 'vs/workbench/api/common/extHostStorage';
 import { ExtHostExtensionService } from 'vs/workbench/api/worker/extHostExtensionService';
 import { ILogService } from 'vs/platform/log/common/log';
 import { ExtHostLogService } from 'vs/workbench/api/worker/extHostLogService';
 import { ServiceIdentifier } from 'vs/platform/instantiation/common/instantiation';
-import { IExtHostTask, WorkerExtHostTask } from 'vs/workbench/api/common/extHostTask';
-import { IExtHostTerminalService, WorkerExtHostTerminalService } from 'vs/workbench/api/common/extHostTerminalService';
-import { IExtHostSearch } from 'vs/workbench/api/common/extHostSearch';
-import { IExtensionStoragePaths } from 'vs/workbench/api/common/extHostStoragePaths';
 
 // register singleton services
 registerSingleton(ILogService, ExtHostLogService);
@@ -31,6 +32,7 @@ registerSingleton(IExtHostCommands, ExtHostCommands);
 registerSingleton(IExtHostDocumentsAndEditors, ExtHostDocumentsAndEditors);
 registerSingleton(IExtHostStorage, ExtHostStorage);
 registerSingleton(IExtHostExtensionService, ExtHostExtensionService);
+registerSingleton(IExtHostSearch, ExtHostSearch);
 
 // register services that only throw errors
 function NotImplementedProxy<T>(name: ServiceIdentifier<T>): { new(): T } {
@@ -50,7 +52,6 @@ function NotImplementedProxy<T>(name: ServiceIdentifier<T>): { new(): T } {
 registerSingleton(IExtHostTerminalService, WorkerExtHostTerminalService);
 registerSingleton(IExtHostTask, WorkerExtHostTask);
 // registerSingleton(IExtHostDebugService, class extends NotImplementedProxy(IExtHostDebugService) { });
-registerSingleton(IExtHostSearch, class extends NotImplementedProxy(IExtHostSearch) { });
 registerSingleton(IExtensionStoragePaths, class extends NotImplementedProxy(IExtensionStoragePaths) {
 	whenReady = Promise.resolve();
 });
