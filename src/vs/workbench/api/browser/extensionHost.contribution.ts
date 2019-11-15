@@ -21,7 +21,7 @@ import './mainThreadConfiguration';
 import './mainThreadConsole';
 // import './mainThreadDebugService';
 import './mainThreadDecorations';
-import './mainThreadDiagnostics';
+// import './mainThreadDiagnostics';
 import './mainThreadDialogs';
 import './mainThreadDocumentContentProviders';
 import './mainThreadDocuments';
