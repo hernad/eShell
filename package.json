@@ -1,6 +1,6 @@
 {
   "name": "eshell",
-  "version": "1.41.200",
+  "version": "1.41.300",
   "distro": "9627858bf882fef220a55f51257dca1491763dc1",
   "author": {
     "name": "bring.out"
@@ -56,6 +56,7 @@
     "xterm": "4.3.0-beta18",
     "xterm-addon-search": "0.4.0-beta4",
     "xterm-addon-web-links": "0.2.1",
+    "xterm-addon-webgl": "0.4.0-beta6",
     "yauzl": "^2.9.2",
     "yazl": "^2.4.3"
   },

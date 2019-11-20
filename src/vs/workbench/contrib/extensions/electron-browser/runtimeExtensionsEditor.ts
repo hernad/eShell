@@ -45,6 +45,7 @@ import { SlowExtensionAction } from 'vs/workbench/contrib/extensions/electron-br
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { URI } from 'vs/base/common/uri';
+import { editorBackground } from 'vs/platform/theme/common/colorRegistry';
 
 export const IExtensionHostProfileService = createDecorator<IExtensionHostProfileService>(
 	'extensionHostProfileService'
@@ -415,7 +416,10 @@ export class RuntimeExtensionsEditor extends BaseEditor {
 			parent, delegate, [renderer], {
 			multipleSelectionSupport: false,
 			setRowLineHeight: false,
-			horizontalScrolling: false
+			horizontalScrolling: false,
+			overrideStyles: {
+				listBackground: editorBackground
+			}
 		});
 
 		this._list.splice(0, this._list.length, this._elements || undefined);
