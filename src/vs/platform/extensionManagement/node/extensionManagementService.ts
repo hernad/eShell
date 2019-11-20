@@ -289,14 +289,14 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		const onDidInstallExtensionSuccess = (extension: IGalleryExtension, operation: InstallOperation, local: ILocalExtension) => {
 			this.logService.info(`Extensions installed successfully:`, extension.identifier.id);
 			this._onDidInstallExtension.fire({ identifier: extension.identifier, gallery: extension, local, operation });
-			this.reportTelemetry(this.getTelemetryEvent(operation), getGalleryExtensionTelemetryData(extension), new Date().getTime() - startTime, undefined);
+			// this.reportTelemetry(this.getTelemetryEvent(operation), getGalleryExtensionTelemetryData(extension), new Date().getTime() - startTime, undefined);
 		};
 
 		const onDidInstallExtensionFailure = (extension: IGalleryExtension, operation: InstallOperation, error: Error) => {
 			const errorCode = error && (<ExtensionManagementError>error).code ? (<ExtensionManagementError>error).code : ERROR_UNKNOWN;
 			this.logService.error(`Failed to install extension:`, extension.identifier.id, error ? error.message : errorCode);
 			this._onDidInstallExtension.fire({ identifier: extension.identifier, gallery: extension, operation, error: errorCode });
-			this.reportTelemetry(this.getTelemetryEvent(operation), getGalleryExtensionTelemetryData(extension), new Date().getTime() - startTime, error);
+			// this.reportTelemetry(this.getTelemetryEvent(operation), getGalleryExtensionTelemetryData(extension), new Date().getTime() - startTime, error);
 			if (error instanceof Error) {
 				error.name = errorCode;
 			}
@@ -720,7 +720,7 @@ export class ExtensionManagementService extends Disposable implements IExtension
 				await this.galleryService.reportStatistic(extension.manifest.publisher, extension.manifest.name, extension.manifest.version, StatisticType.Uninstall);
 			}
 		}
-		this.reportTelemetry('extensionGallery:uninstall', getLocalExtensionTelemetryData(extension), undefined, error);
+		// this.reportTelemetry('extensionGallery:uninstall', getLocalExtensionTelemetryData(extension), undefined, error);
 		const errorcode = error ? error instanceof ExtensionManagementError ? error.code : ERROR_UNKNOWN : undefined;
 		this._onDidUninstallExtension.fire({ identifier: extension.identifier, error: errorcode });
 	}
@@ -964,8 +964,9 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		return new Promise((c, e) => promise.then(result => c(result), error => e(error)));
 	}
 
-	private reportTelemetry(eventName: string, extensionData: any, duration?: number, error?: Error): void {
-		const errorcode = error ? error instanceof ExtensionManagementError ? error.code : ERROR_UNKNOWN : undefined;
+
+	//private reportTelemetry(eventName: string, extensionData: any, duration?: number, error?: Error): void {
+	//	const errorcode = error ? error instanceof ExtensionManagementError ? error.code : ERROR_UNKNOWN : undefined;
 		/* __GDPR__
 			"extensionGallery:install" : {
 				"success": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
@@ -997,6 +998,6 @@ export class ExtensionManagementService extends Disposable implements IExtension
 				]
 			}
 		*/
-		this.telemetryService.publicLog(eventName, assign(extensionData, { success: !error, duration, errorcode }));
-	}
+	//	this.telemetryService.publicLog(eventName, assign(extensionData, { success: !error, duration, errorcode }));
+	//}
 }

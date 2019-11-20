@@ -256,7 +256,7 @@ export class RenameAction extends EditorAction {
 				}
 				editor.setPosition(pos);
 				editor.invokeWithinContext(accessor => {
-					this.reportTelemetry(accessor, editor);
+					// this.reportTelemetry(accessor, editor);
 					return this.run(accessor, editor);
 				});
 			}, onUnexpectedError);
