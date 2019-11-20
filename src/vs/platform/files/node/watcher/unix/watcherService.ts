@@ -30,7 +30,7 @@ export class FileWatcher extends Disposable {
 		this.isDisposed = false;
 		this.restartCounter = 0;
 
-		this.startWatching();
+		// this.startWatching();
 	}
 
 	private startWatching(): void {

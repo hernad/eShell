@@ -20,19 +20,19 @@ import { IConfigurationService } from 'vs/platform/configuration/common/configur
 import { ConfigurationService } from 'vs/platform/configuration/node/configurationService';
 import { IRequestService } from 'vs/platform/request/common/request';
 import { RequestService } from 'vs/platform/request/browser/requestService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { combinedAppender, NullTelemetryService, ITelemetryAppender, NullAppender, LogAppender } from 'vs/platform/telemetry/common/telemetryUtils';
-import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
-import { TelemetryAppenderChannel } from 'vs/platform/telemetry/node/telemetryIpc';
-import { TelemetryService, ITelemetryServiceConfig } from 'vs/platform/telemetry/common/telemetryService';
-import { AppInsightsAppender } from 'vs/platform/telemetry/node/appInsightsAppender';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { combinedAppender, NullTelemetryService, ITelemetryAppender, NullAppender, LogAppender } from 'vs/platform/telemetry/common/telemetryUtils';
+// import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
+// import { TelemetryAppenderChannel } from 'vs/platform/telemetry/node/telemetryIpc';
+// import { TelemetryService, ITelemetryServiceConfig } from 'vs/platform/telemetry/common/telemetryService';
+// import { AppInsightsAppender } from 'vs/platform/telemetry/node/appInsightsAppender';
 import { ActiveWindowManager } from 'vs/code/node/activeWindowTracker';
 import { ipcRenderer } from 'electron';
 import { ILogService, LogLevel, ILoggerService } from 'vs/platform/log/common/log';
 import { LoggerChannelClient, FollowerLogService } from 'vs/platform/log/common/logIpc';
 import { LocalizationsService } from 'vs/platform/localizations/node/localizations';
 import { ILocalizationsService } from 'vs/platform/localizations/common/localizations';
-import { combinedDisposable, DisposableStore, toDisposable } from 'vs/base/common/lifecycle';
+import { combinedDisposable, DisposableStore /*, toDisposable*/ } from 'vs/base/common/lifecycle';
 import { DownloadService } from 'vs/platform/download/common/downloadService';
 import { IDownloadService } from 'vs/platform/download/common/download';
 import { IChannel, IServerChannel, StaticRouter } from 'vs/base/parts/ipc/common/ipc';
@@ -47,8 +47,8 @@ import { DiagnosticsService, IDiagnosticsService } from 'vs/platform/diagnostics
 import { DiagnosticsChannel } from 'vs/platform/diagnostics/node/diagnosticsIpc';
 import { FileService } from 'vs/platform/files/common/fileService';
 import { IFileService } from 'vs/platform/files/common/files';
-import { DiskFileSystemProvider } from 'vs/platform/files/electron-browser/diskFileSystemProvider';
-import { Schemas } from 'vs/base/common/network';
+//import { DiskFileSystemProvider } from 'vs/platform/files/electron-browser/diskFileSystemProvider';
+//import { Schemas } from 'vs/base/common/network';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { IUserDataSyncService, IUserDataSyncStoreService, ISettingsMergeService, registerConfiguration, IUserDataSyncLogService } from 'vs/platform/userDataSync/common/userDataSync';
 import { UserDataSyncService, UserDataAutoSync } from 'vs/platform/userDataSync/common/userDataSyncService';
@@ -79,7 +79,7 @@ interface ISharedProcessInitData {
 	logLevel: LogLevel;
 }
 
-const eventPrefix = 'monacoworkbench';
+// const eventPrefix = 'monacoworkbench';
 
 class MainProcessService implements IMainProcessService {
 	constructor(private server: Server, private mainRouter: StaticRouter) { }
@@ -139,23 +139,24 @@ async function main(server: Server, initData: ISharedProcessInitData, configurat
 	services.set(IFileService, fileService);
 	disposables.add(fileService);
 
-	const diskFileSystemProvider = new DiskFileSystemProvider(logService);
-	disposables.add(diskFileSystemProvider);
-	fileService.registerProvider(Schemas.file, diskFileSystemProvider);
+	//const diskFileSystemProvider = new DiskFileSystemProvider(logService);
+	//disposables.add(diskFileSystemProvider);
+	//fileService.registerProvider(Schemas.file, diskFileSystemProvider);
 
 	services.set(IDownloadService, new SyncDescriptor(DownloadService));
 
 	const instantiationService = new InstantiationService(services);
 
-	let telemetryService: ITelemetryService;
+	// let telemetryService: ITelemetryService;
 	instantiationService.invokeFunction(accessor => {
 		const services = new ServiceCollection();
-		const environmentService = accessor.get(IEnvironmentService);
-		const { appRoot, extensionsPath, extensionDevelopmentLocationURI: extensionDevelopmentLocationURI, isBuilt, installSourcePath } = environmentService;
-		const telemetryLogService = new FollowerLogService(loggerClient, new SpdLogService('telemetry', environmentService.logsPath, initData.logLevel));
-		telemetryLogService.info('The below are logs for every telemetry event sent from VS Code once the log level is set to trace.');
-		telemetryLogService.info('===========================================================');
+		// const environmentService = accessor.get(IEnvironmentService);
+		// const { appRoot, extensionsPath, extensionDevelopmentLocationURI: extensionDevelopmentLocationURI, isBuilt, installSourcePath } = environmentService;
+		// const telemetryLogService = new FollowerLogService(loggerClient, new SpdLogService('telemetry', environmentService.logsPath, initData.logLevel));
+		// telemetryLogService.info('The below are logs for every telemetry event sent from VS Code once the log level is set to trace.');
+		// telemetryLogService.info('===========================================================');
 
+		/*
 		let appInsightsAppender: ITelemetryAppender | null = NullAppender;
 		if (!extensionDevelopmentLocationURI && !environmentService.args['disable-telemetry'] && product.enableTelemetry) {
 			if (product.aiConfig && product.aiConfig.asimovKey && isBuilt) {
@@ -168,13 +169,14 @@ async function main(server: Server, initData: ISharedProcessInitData, configurat
 				piiPaths: extensionsPath ? [appRoot, extensionsPath] : [appRoot]
 			};
 
-			telemetryService = new TelemetryService(config, configurationService);
+			// telemetryService = new TelemetryService(config, configurationService);
 			services.set(ITelemetryService, telemetryService);
 		} else {
-			telemetryService = NullTelemetryService;
+			// telemetryService = NullTelemetryService;
 			services.set(ITelemetryService, NullTelemetryService);
 		}
 		server.registerChannel('telemetryAppender', new TelemetryAppenderChannel(appInsightsAppender));
+		*/
 
 		services.set(IExtensionManagementService, new SyncDescriptor(ExtensionManagementService));
 		services.set(IExtensionGalleryService, new SyncDescriptor(ExtensionGalleryService));
