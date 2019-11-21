@@ -10,14 +10,16 @@ import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { AbstractAccessibilityService } from 'vs/platform/accessibility/common/abstractAccessibilityService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 
+/*
 interface AccessibilityMetrics {
 	enabled: boolean;
 }
 type AccessibilityMetricsClassification = {
 	enabled: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 };
+*/
 
 export class AccessibilityService extends AbstractAccessibilityService implements IAccessibilityService {
 
@@ -30,7 +32,7 @@ export class AccessibilityService extends AbstractAccessibilityService implement
 		@IWorkbenchEnvironmentService environmentService: IWorkbenchEnvironmentService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IConfigurationService configurationService: IConfigurationService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService
+		// @ITelemetryService private readonly _telemetryService: ITelemetryService
 	) {
 		super(contextKeyService, configurationService);
 		this.setAccessibilitySupport(environmentService.configuration.accessibilitySupport ? AccessibilitySupport.Enabled : AccessibilitySupport.Disabled);
@@ -64,7 +66,7 @@ export class AccessibilityService extends AbstractAccessibilityService implement
 		this._onDidChangeAccessibilitySupport.fire();
 
 		if (!this.didSendTelemetry && accessibilitySupport === AccessibilitySupport.Enabled) {
-			this._telemetryService.publicLog2<AccessibilityMetrics, AccessibilityMetricsClassification>('accessibility', { enabled: true });
+			// this._telemetryService.publicLog2<AccessibilityMetrics, AccessibilityMetricsClassification>('accessibility', { enabled: true });
 			this.didSendTelemetry = true;
 		}
 	}

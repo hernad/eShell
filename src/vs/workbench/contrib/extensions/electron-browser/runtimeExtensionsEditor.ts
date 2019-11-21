@@ -9,7 +9,7 @@ import * as os from 'os';
 import product from 'vs/platform/product/common/product';
 import { Action, IAction } from 'vs/base/common/actions';
 import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IInstantiationService, createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IExtensionsWorkbenchService, IExtension } from 'vs/workbench/contrib/extensions/common/extensions';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
@@ -115,7 +115,7 @@ export class RuntimeExtensionsEditor extends BaseEditor {
 	private _extensionsHostRecorded: IContextKey<boolean>;
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IExtensionsWorkbenchService private readonly _extensionsWorkbenchService: IExtensionsWorkbenchService,
@@ -129,7 +129,7 @@ export class RuntimeExtensionsEditor extends BaseEditor {
 		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
 		@IOpenerService private readonly _openerService: IOpenerService
 	) {
-		super(RuntimeExtensionsEditor.ID, telemetryService, themeService, storageService);
+		super(RuntimeExtensionsEditor.ID, /*telemetryService,*/ themeService, storageService);
 
 		this._list = null;
 		this._profileInfo = this._extensionHostProfileService.lastProfile;

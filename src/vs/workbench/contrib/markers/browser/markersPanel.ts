@@ -8,7 +8,7 @@ import 'vs/css!./media/markers';
 import { URI } from 'vs/base/common/uri';
 import * as dom from 'vs/base/browser/dom';
 import { IAction, IActionViewItem, Action } from 'vs/base/common/actions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { Panel } from 'vs/workbench/browser/panel';
 import { IEditorService, SIDE_GROUP, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
 import Constants from 'vs/workbench/contrib/markers/browser/constants';
@@ -40,7 +40,7 @@ import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
 import { domEvent } from 'vs/base/browser/event';
 import { ResourceLabels } from 'vs/workbench/browser/labels';
-import { IMarker } from 'vs/platform/markers/common/markers';
+// import { IMarker } from 'vs/platform/markers/common/markers';
 import { withUndefinedAsNull } from 'vs/base/common/types';
 import { MementoObject } from 'vs/workbench/common/memento';
 import { IListVirtualDelegate } from 'vs/base/browser/ui/list/list';
@@ -90,7 +90,7 @@ export class MarkersPanel extends Panel implements IMarkerFilterController {
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@IEditorService private readonly editorService: IEditorService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IMarkersWorkbenchService private readonly markersWorkbenchService: IMarkersWorkbenchService,
 		@IStorageService storageService: IStorageService,
@@ -100,7 +100,7 @@ export class MarkersPanel extends Panel implements IMarkerFilterController {
 		@IMenuService private readonly menuService: IMenuService,
 		@IKeybindingService private readonly keybindingService: IKeybindingService,
 	) {
-		super(Constants.MARKERS_PANEL_ID, telemetryService, themeService, storageService);
+		super(Constants.MARKERS_PANEL_ID, /*telemetryService,*/ themeService, storageService);
 		this.panelFoucusContextKey = Constants.MarkerPanelFocusContextKey.bindTo(contextKeyService);
 		this.panelState = this.getMemento(StorageScope.WORKSPACE);
 		this.markersViewModel = this._register(instantiationService.createInstance(MarkersViewModel, this.panelState['multiline']));
@@ -201,8 +201,8 @@ export class MarkersPanel extends Panel implements IMarkerFilterController {
 	}
 
 	public openFileAtElement(element: any, preserveFocus: boolean, sideByside: boolean, pinned: boolean): boolean {
-		const { resource, selection, event, data } = element instanceof Marker ? { resource: element.resource, selection: element.range, event: 'problems.selectDiagnostic', data: this.getTelemetryData(element.marker) } :
-			element instanceof RelatedInformation ? { resource: element.raw.resource, selection: element.raw, event: 'problems.selectRelatedInformation', data: this.getTelemetryData(element.marker) } : { resource: null, selection: null, event: null, data: null };
+		const { resource, selection, event, /*data*/ } = element instanceof Marker ? { resource: element.resource, selection: element.range, event: 'problems.selectDiagnostic', /*data: this.getTelemetryData(element.marker)*/ } :
+			element instanceof RelatedInformation ? { resource: element.raw.resource, selection: element.raw, event: 'problems.selectRelatedInformation', /*data: this.getTelemetryData(element.marker)*/ } : { resource: null, selection: null, event: null, /*data: null*/ };
 		if (resource && selection && event) {
 			/* __GDPR__
 			"problems.selectDiagnostic" : {
@@ -216,7 +216,7 @@ export class MarkersPanel extends Panel implements IMarkerFilterController {
 					"code" : { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 				}
 			*/
-			this.telemetryService.publicLog(event, data);
+			// this.telemetryService.publicLog(event, data);
 			this.editorService.openEditor({
 				resource,
 				options: {
@@ -389,7 +389,7 @@ export class MarkersPanel extends Panel implements IMarkerFilterController {
 					"code" : { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 				}
 				*/
-				this.telemetryService.publicLog('problems.expandRelatedInformation', this.getTelemetryData(element.marker));
+				// this.telemetryService.publicLog('problems.expandRelatedInformation', this.getTelemetryData(element.marker));
 			}
 		}));
 
@@ -710,9 +710,11 @@ export class MarkersPanel extends Panel implements IMarkerFilterController {
 		return { total: this.markersWorkbenchService.markersModel.total, filtered };
 	}
 
+	/*
 	private getTelemetryData({ source, code }: IMarker): any {
 		return { source, code };
 	}
+	*/
 
 	protected saveState(): void {
 		this.panelState['filter'] = this.filterAction.filterText;

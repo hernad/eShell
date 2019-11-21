@@ -17,15 +17,15 @@ import { EnvironmentService } from 'vs/platform/environment/node/environmentServ
 import { IExtensionManagementService, IExtensionGalleryService, IGalleryExtension, ILocalExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { ExtensionManagementService } from 'vs/platform/extensionManagement/node/extensionManagementService';
 import { ExtensionGalleryService } from 'vs/platform/extensionManagement/common/extensionGalleryService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { combinedAppender, NullTelemetryService } from 'vs/platform/telemetry/common/telemetryUtils';
-import { TelemetryService, ITelemetryServiceConfig } from 'vs/platform/telemetry/common/telemetryService';
-import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { combinedAppender, /*NullTelemetryService*/ } from 'vs/platform/telemetry/common/telemetryUtils';
+// import { TelemetryService, ITelemetryServiceConfig } from 'vs/platform/telemetry/common/telemetryService';
+// import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
 import { IRequestService } from 'vs/platform/request/common/request';
 import { RequestService } from 'vs/platform/request/node/requestService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ConfigurationService } from 'vs/platform/configuration/node/configurationService';
-import { AppInsightsAppender } from 'vs/platform/telemetry/node/appInsightsAppender';
+// import { AppInsightsAppender } from 'vs/platform/telemetry/node/appInsightsAppender';
 import { mkdirp, writeFile } from 'vs/base/node/pfs';
 import { getBaseLabel } from 'vs/base/common/labels';
 import { IStateService } from 'vs/platform/state/node/state';
@@ -40,7 +40,7 @@ import { CancellationToken } from 'vs/base/common/cancellation';
 import { LocalizationsService } from 'vs/platform/localizations/node/localizations';
 import { Schemas } from 'vs/base/common/network';
 import { SpdLogService } from 'vs/platform/log/node/spdlogService';
-import { buildTelemetryMessage } from 'vs/platform/telemetry/node/telemetry';
+// import { buildTelemetryMessage } from 'vs/platform/telemetry/node/telemetry';
 import { FileService } from 'vs/platform/files/common/fileService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemProvider';
@@ -90,8 +90,8 @@ export class Main {
 			await this.uninstallExtension(argv['uninstall-extension']);
 		} else if (argv['locate-extension']) {
 			await this.locateExtension(argv['locate-extension']);
-		} else if (argv['telemetry']) {
-			console.log(buildTelemetryMessage(this.environmentService.appRoot, this.environmentService.extensionsPath ? this.environmentService.extensionsPath : undefined));
+		//} else if (argv['telemetry']) {
+		//	console.log(buildTelemetryMessage(this.environmentService.appRoot, this.environmentService.extensionsPath ? this.environmentService.extensionsPath : undefined));
 		}
 	}
 
@@ -292,7 +292,7 @@ export class Main {
 	}
 }
 
-const eventPrefix = 'monacoworkbench';
+// const eventPrefix = 'monacoworkbench';
 
 export async function main(argv: ParsedArgs): Promise<void> {
 	const services = new ServiceCollection();
@@ -329,18 +329,18 @@ export async function main(argv: ParsedArgs): Promise<void> {
 
 	return instantiationService.invokeFunction(async accessor => {
 		const envService = accessor.get(IEnvironmentService);
-		const stateService = accessor.get(IStateService);
+		// const stateService = accessor.get(IStateService);
 
-		const { appRoot, extensionsPath, extensionDevelopmentLocationURI: extensionDevelopmentLocationURI, isBuilt, installSourcePath } = envService;
+		const { /*appRoot, extensionsPath, extensionDevelopmentLocationURI: extensionDevelopmentLocationURI, isBuilt, installSourcePath*/ } = envService;
 
 		const services = new ServiceCollection();
-
 
 		services.set(IRequestService, new SyncDescriptor(RequestService));
 		services.set(IExtensionManagementService, new SyncDescriptor(ExtensionManagementService));
 		services.set(IExtensionGalleryService, new SyncDescriptor(ExtensionGalleryService));
 
-		const appenders: AppInsightsAppender[] = [];
+		// const appenders: AppInsightsAppender[] = [];
+		/*
 		if (isBuilt && !extensionDevelopmentLocationURI && !envService.args['disable-telemetry'] && product.enableTelemetry) {
 
 			if (product.aiConfig && product.aiConfig.asimovKey) {
@@ -353,11 +353,13 @@ export async function main(argv: ParsedArgs): Promise<void> {
 				piiPaths: extensionsPath ? [appRoot, extensionsPath] : [appRoot]
 			};
 
-			services.set(ITelemetryService, new SyncDescriptor(TelemetryService, [config]));
+
+			// services.set(ITelemetryService, new SyncDescriptor(TelemetryService, [config]));
 
 		} else {
-			services.set(ITelemetryService, NullTelemetryService);
+			// services.set(ITelemetryService, NullTelemetryService);
 		}
+		*/
 
 		const instantiationService2 = instantiationService.createChild(services);
 		const main = instantiationService2.createInstance(Main);
@@ -365,7 +367,7 @@ export async function main(argv: ParsedArgs): Promise<void> {
 		try {
 			await main.run(argv);
 			// Flush the remaining data in AI adapter.
-			await combinedAppender(...appenders).flush();
+			// await combinedAppender(...appenders).flush();
 		} finally {
 			disposables.dispose();
 		}

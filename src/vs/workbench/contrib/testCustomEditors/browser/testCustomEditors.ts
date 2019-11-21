@@ -13,7 +13,7 @@ import { Dimension, addDisposableListener, EventType } from 'vs/base/browser/dom
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IEditorRegistry, EditorDescriptor, Extensions as EditorExtensions } from 'vs/workbench/browser/editor';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IWorkbenchActionRegistry, Extensions } from 'vs/workbench/common/actions';
@@ -59,11 +59,11 @@ class TestCustomEditor extends BaseEditor {
 	private textArea: HTMLTextAreaElement | undefined = undefined;
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IStorageService storageService: IStorageService
 	) {
-		super(TestCustomEditor.ID, telemetryService, themeService, storageService);
+		super(TestCustomEditor.ID, /*telemetryService,*/ themeService, storageService);
 	}
 
 	updateStyles(): void {

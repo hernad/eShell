@@ -8,7 +8,7 @@ import { localize } from 'vs/nls';
 import { Event } from 'vs/base/common/event';
 import { onUnexpectedError } from 'vs/base/common/errors';
 import { Disposable } from 'vs/base/common/lifecycle';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IExtensionManagementService, ILocalExtension, IExtensionIdentifier, InstallOperation } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { IExtensionEnablementService, EnablementState, IExtensionTipsService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
 import { ILifecycleService } from 'vs/platform/lifecycle/common/lifecycle';
@@ -31,7 +31,7 @@ export class KeymapExtensions extends Disposable implements IWorkbenchContributi
 		@IExtensionTipsService private readonly tipsService: IExtensionTipsService,
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@INotificationService private readonly notificationService: INotificationService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 	) {
 		super();
 		this._register(lifecycleService.onShutdown(() => this.dispose()));
@@ -57,11 +57,13 @@ export class KeymapExtensions extends Disposable implements IWorkbenchContributi
 
 	private promptForDisablingOtherKeymaps(newKeymap: IExtensionStatus, oldKeymaps: IExtensionStatus[]): void {
 		const onPrompt = (confirmed: boolean) => {
+			/*
 			const telemetryData: { [key: string]: any; } = {
 				newKeymap: newKeymap.identifier,
 				oldKeymaps: oldKeymaps.map(k => k.identifier),
 				confirmed
 			};
+			*/
 			/* __GDPR__
 				"disableOtherKeymaps" : {
 					"newKeymap": { "${inline}": [ "${ExtensionIdentifier}" ] },
@@ -69,7 +71,7 @@ export class KeymapExtensions extends Disposable implements IWorkbenchContributi
 					"confirmed" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 				}
 			*/
-			this.telemetryService.publicLog('disableOtherKeymaps', telemetryData);
+			// this.telemetryService.publicLog('disableOtherKeymaps', telemetryData);
 			if (confirmed) {
 				this.extensionEnablementService.setEnablement(oldKeymaps.map(keymap => keymap.local), EnablementState.DisabledGlobally);
 			}

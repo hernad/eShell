@@ -27,7 +27,7 @@ import { IExtensionService } from 'vs/workbench/services/extensions/common/exten
 import { ViewContainerViewlet } from 'vs/workbench/browser/parts/views/viewsViewlet';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
@@ -322,7 +322,7 @@ class ViewsExtensionHandler implements IWorkbenchContribution {
 				constructor(
 					@IConfigurationService configurationService: IConfigurationService,
 					@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
-					@ITelemetryService telemetryService: ITelemetryService,
+					// @ITelemetryService telemetryService: ITelemetryService,
 					@IWorkspaceContextService contextService: IWorkspaceContextService,
 					@IStorageService storageService: IStorageService,
 					@IEditorService editorService: IEditorService,
@@ -331,7 +331,7 @@ class ViewsExtensionHandler implements IWorkbenchContribution {
 					@IContextMenuService contextMenuService: IContextMenuService,
 					@IExtensionService extensionService: IExtensionService
 				) {
-					super(id, `${id}.state`, true, configurationService, layoutService, telemetryService, storageService, instantiationService, themeService, contextMenuService, extensionService, contextService);
+					super(id, `${id}.state`, true, configurationService, layoutService, /*telemetryService,*/ storageService, instantiationService, themeService, contextMenuService, extensionService, contextService);
 				}
 			}
 			const viewletDescriptor = ViewletDescriptor.create(

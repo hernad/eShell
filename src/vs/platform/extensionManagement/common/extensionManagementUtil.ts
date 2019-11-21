@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ILocalExtension, IGalleryExtension, IExtensionIdentifier, IReportedExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
+import { ILocalExtension, /*IGalleryExtension,*/ IExtensionIdentifier, IReportedExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { compareIgnoreCase } from 'vs/base/common/strings';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 
@@ -91,6 +91,7 @@ export function getLocalExtensionTelemetryData(extension: ILocalExtension): any 
 		]
 	}
 */
+/*
 export function getGalleryExtensionTelemetryData(extension: IGalleryExtension): any {
 	return {
 		id: extension.identifier.id,
@@ -103,7 +104,7 @@ export function getGalleryExtensionTelemetryData(extension: IGalleryExtension): 
 		...extension.telemetryData
 	};
 }
-
+*/
 export const BetterMergeId = new ExtensionIdentifier('pprice.better-merge');
 
 export function getMaliciousExtensionsSet(report: IReportedExtension[]): Set<string> {

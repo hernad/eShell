@@ -36,6 +36,5 @@ export async function resolveWorkbenchCommonProperties(
 	result['common.instanceId'] = instanceId;
 	// __GDPR__COMMON__ "common.remoteAuthority" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
 	result['common.remoteAuthority'] = cleanRemoteAuthority(remoteAuthority);
-
 	return result;
 }

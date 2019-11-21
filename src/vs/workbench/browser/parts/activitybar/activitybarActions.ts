@@ -15,7 +15,7 @@ import { URI } from 'vs/base/common/uri';
 import { SyncActionDescriptor, IMenuService, MenuId } from 'vs/platform/actions/common/actions';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { activeContrastBorder, focusBorder } from 'vs/platform/theme/common/colorRegistry';
 import { ICssStyleCollector, ITheme, IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { ActivityAction, ActivityActionViewItem, ICompositeBar, ICompositeBarColors, ToggleCompositePinnedAction } from 'vs/workbench/browser/parts/compositeBarActions';
@@ -35,7 +35,7 @@ export class ViewletActivityAction extends ActivityAction {
 
 	private readonly viewletService: IViewletService;
 	private readonly layoutService: IWorkbenchLayoutService;
-	private readonly telemetryService: ITelemetryService;
+	// private readonly telemetryService: ITelemetryService;
 
 	private lastRun: number;
 
@@ -43,7 +43,7 @@ export class ViewletActivityAction extends ActivityAction {
 		activity: IActivity,
 		@IViewletService viewletService: IViewletService,
 		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
-		@ITelemetryService telemetryService: ITelemetryService
+		// @ITelemetryService telemetryService: ITelemetryService
 	) {
 		ViewletActivityAction.generateIconCSS(activity);
 		super(activity);
@@ -51,7 +51,7 @@ export class ViewletActivityAction extends ActivityAction {
 		this.lastRun = 0;
 		this.viewletService = viewletService;
 		this.layoutService = layoutService;
-		this.telemetryService = telemetryService;
+		// this.telemetryService = telemetryService;
 	}
 
 	private static generateIconCSS(activity: IActivity): void {
@@ -102,11 +102,13 @@ export class ViewletActivityAction extends ActivityAction {
 	}
 
 	private logAction(action: string) {
+		/*
 		type ActivityBarActionClassification = {
 			viewletId: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 			action: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 		};
-		this.telemetryService.publicLog2<{ viewletId: String, action: String }, ActivityBarActionClassification>('activityBarAction', { viewletId: this.activity.id, action });
+		*/
+		// this.telemetryService.publicLog2<{ viewletId: String, action: String }, ActivityBarActionClassification>('activityBarAction', { viewletId: this.activity.id, action });
 	}
 }
 
@@ -198,9 +200,9 @@ export class PlaceHolderViewletActivityAction extends ViewletActivityAction {
 		iconUrl: URI | undefined,
 		@IViewletService viewletService: IViewletService,
 		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
-		@ITelemetryService telemetryService: ITelemetryService
+		// @ITelemetryService telemetryService: ITelemetryService
 	) {
-		super({ id, name: id, iconUrl }, viewletService, layoutService, telemetryService);
+		super({ id, name: id, iconUrl }, viewletService, layoutService /*, telemetryService*/ );
 	}
 }
 

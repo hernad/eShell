@@ -8,7 +8,7 @@ import { Action, IAction } from 'vs/base/common/actions';
 import { IActionViewItem } from 'vs/base/browser/ui/actionbar/actionbar';
 import { ICodeEditor } from 'vs/editor/browser/editorBrowser';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { ITextResourceConfigurationService } from 'vs/editor/common/services/resourceConfiguration';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
@@ -34,7 +34,7 @@ export class OutputPanel extends AbstractTextResourceEditor {
 	private _focus = false;
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IStorageService storageService: IStorageService,
 		@IConfigurationService private readonly baseConfigurationService: IConfigurationService,
@@ -48,7 +48,7 @@ export class OutputPanel extends AbstractTextResourceEditor {
 		@IHostService hostService: IHostService,
 		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService
 	) {
-		super(OUTPUT_PANEL_ID, telemetryService, instantiationService, storageService, textResourceConfigurationService, themeService, editorGroupService, textFileService, editorService, hostService, filesConfigurationService);
+		super(OUTPUT_PANEL_ID, /*telemetryService,*/ instantiationService, storageService, textResourceConfigurationService, themeService, editorGroupService, textFileService, editorService, hostService, filesConfigurationService);
 
 		this.scopedInstantiationService = instantiationService;
 	}

@@ -7,14 +7,14 @@ import * as nls from 'vs/nls';
 import { language } from 'vs/base/common/platform';
 import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
 import { Severity, INotificationService } from 'vs/platform/notification/common/notification';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { platform } from 'vs/base/common/process';
+// import { URI } from 'vs/base/common/uri';
+// import { platform } from 'vs/base/common/process';
 
 const PROBABILITY = 0.15;
 const SESSION_COUNT_KEY = 'nps/sessionCount';
@@ -27,7 +27,7 @@ class NPSContribution implements IWorkbenchContribution {
 	constructor(
 		@IStorageService storageService: IStorageService,
 		@INotificationService notificationService: INotificationService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IOpenerService openerService: IOpenerService,
 		@IProductService productService: IProductService
 	) {
@@ -71,11 +71,13 @@ class NPSContribution implements IWorkbenchContribution {
 			[{
 				label: nls.localize('takeSurvey', "Take Survey"),
 				run: () => {
+					/*
 					telemetryService.getTelemetryInfo().then(info => {
 						openerService.open(URI.parse(`${productService.npsSurveyUrl}?o=${encodeURIComponent(platform)}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(info.machineId)}`));
 						storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
 						storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
 					});
+					*/
 				}
 			}, {
 				label: nls.localize('remindLater', "Remind Me later"),

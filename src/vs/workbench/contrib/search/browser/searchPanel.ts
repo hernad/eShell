@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { PANEL_ID } from 'vs/workbench/services/search/common/search';
@@ -19,12 +19,12 @@ export class SearchPanel extends Panel {
 	private readonly searchView: SearchView;
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IStorageService storageService: IStorageService,
 		@IInstantiationService instantiationService: IInstantiationService,
 	) {
-		super(PANEL_ID, telemetryService, themeService, storageService);
+		super(PANEL_ID, /*telemetryService,*/ themeService, storageService);
 		this.searchView = this._register(instantiationService.createInstance(SearchView, SearchViewPosition.Panel, { id: PANEL_ID, title: localize('search', "Search"), actionRunner: this.getActionRunner() }));
 		this._register(this.searchView.onDidChangeTitleArea(() => this.updateTitleArea()));
 		this._register(this.onDidChangeVisibility(visible => this.searchView.setVisible(visible)));

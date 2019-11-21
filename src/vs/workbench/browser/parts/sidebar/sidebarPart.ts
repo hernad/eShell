@@ -16,7 +16,7 @@ import { IWorkbenchLayoutService, Parts, Position as SideBarPosition } from 'vs/
 import { IViewlet, SidebarFocusContext, ActiveViewletContext } from 'vs/workbench/common/viewlet';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { KeyMod, KeyCode } from 'vs/base/common/keyCodes';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
@@ -84,7 +84,7 @@ export class SidebarPart extends CompositePart<Viewlet> implements IViewletServi
 	constructor(
 		@INotificationService notificationService: INotificationService,
 		@IStorageService storageService: IStorageService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IContextMenuService contextMenuService: IContextMenuService,
 		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
 		@IKeybindingService keybindingService: IKeybindingService,
@@ -96,7 +96,7 @@ export class SidebarPart extends CompositePart<Viewlet> implements IViewletServi
 		super(
 			notificationService,
 			storageService,
-			telemetryService,
+			/* telemetryService,*/
 			contextMenuService,
 			layoutService,
 			keybindingService,
@@ -105,7 +105,7 @@ export class SidebarPart extends CompositePart<Viewlet> implements IViewletServi
 			Registry.as<ViewletRegistry>(ViewletExtensions.Viewlets),
 			SidebarPart.activeViewletSettingsKey,
 			Registry.as<ViewletRegistry>(ViewletExtensions.Viewlets).getDefaultViewletId(),
-			'sideBar',
+			// 'sideBar',
 			'viewlet',
 			SIDE_BAR_TITLE_FOREGROUND,
 			Parts.SIDEBAR_PART,

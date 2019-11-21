@@ -11,8 +11,8 @@ import { mapToSerializable, serializableToMap, values } from 'vs/base/common/map
 import { Disposable, IDisposable, dispose } from 'vs/base/common/lifecycle';
 import { onUnexpectedError } from 'vs/base/common/errors';
 import { ILogService } from 'vs/platform/log/common/log';
-import { generateUuid } from 'vs/base/common/uuid';
-import { instanceStorageKey, firstSessionDateStorageKey, lastSessionDateStorageKey, currentSessionDateStorageKey } from 'vs/platform/telemetry/common/telemetry';
+// import { generateUuid } from 'vs/base/common/uuid';
+// import { instanceStorageKey, firstSessionDateStorageKey, lastSessionDateStorageKey, currentSessionDateStorageKey } from 'vs/platform/telemetry/common/telemetry';
 
 type Key = string;
 type Value = string;
@@ -56,12 +56,13 @@ export class GlobalStorageDatabaseChannel extends Disposable implements IServerC
 		// Apply global telemetry values as part of the initialization
 		// These are global across all windows and thereby should be
 		// written from the main process once.
-		this.initTelemetry();
+		// this.initTelemetry();
 
 		// Setup storage change listeners
 		this.registerListeners();
 	}
 
+	/*
 	private initTelemetry(): void {
 		const instanceId = this.storageMainService.get(instanceStorageKey, undefined);
 		if (instanceId === undefined) {
@@ -78,6 +79,7 @@ export class GlobalStorageDatabaseChannel extends Disposable implements IServerC
 		this.storageMainService.store(lastSessionDateStorageKey, typeof lastSessionDate === 'undefined' ? null : lastSessionDate);
 		this.storageMainService.store(currentSessionDateStorageKey, currentSessionDate);
 	}
+	*/
 
 	private registerListeners(): void {
 

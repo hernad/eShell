@@ -33,7 +33,7 @@ export class TaskService extends AbstractTaskService {
 			this._taskSystem = this.createTerminalTaskSystem();
 		} else {
 			let system = new ProcessTaskSystem(
-				this.markerService, this.modelService, this.telemetryService, this.outputService,
+				this.markerService, this.modelService, /*this.telemetryService,*/ this.outputService,
 				this.configurationResolverService, TaskService.OutputChannelId,
 			);
 			system.hasErrors(this._configHasErrors);

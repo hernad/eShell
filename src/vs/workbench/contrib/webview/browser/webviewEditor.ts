@@ -10,7 +10,7 @@ import { DisposableStore, IDisposable, MutableDisposable } from 'vs/base/common/
 import { isWeb } from 'vs/base/common/platform';
 import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
 import { EditorPart } from 'vs/workbench/browser/parts/editor/editorPart';
@@ -38,7 +38,7 @@ export class WebviewEditor extends BaseEditor {
 	public get onDidFocus(): Event<any> { return this._onDidFocusWebview.event; }
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IStorageService storageService: IStorageService,
 		@IContextKeyService private readonly _contextKeyService: IContextKeyService,
@@ -46,7 +46,7 @@ export class WebviewEditor extends BaseEditor {
 		@IEditorGroupsService private readonly _editorGroupsService: IEditorGroupsService,
 		@IHostService private readonly _hostService: IHostService,
 	) {
-		super(WebviewEditor.ID, telemetryService, themeService, storageService);
+		super(WebviewEditor.ID, /*telemetryService,*/ themeService, storageService);
 
 		this._findWidgetVisible = KEYBINDING_CONTEXT_WEBVIEW_FIND_WIDGET_VISIBLE.bindTo(_contextKeyService);
 	}

@@ -11,7 +11,7 @@ import { isCodeEditor } from 'vs/editor/browser/editorBrowser';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { ILifecycleService, StartupKind } from 'vs/platform/lifecycle/common/lifecycle';
 import product from 'vs/platform/product/common/product';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IUpdateService } from 'vs/platform/update/common/update';
 import { IElectronService } from 'vs/platform/electron/node/electron';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
@@ -30,7 +30,7 @@ export class StartupTimings implements IWorkbenchContribution {
 		@IEditorService private readonly _editorService: IEditorService,
 		@IViewletService private readonly _viewletService: IViewletService,
 		@IPanelService private readonly _panelService: IPanelService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@ILifecycleService private readonly _lifecycleService: ILifecycleService,
 		@IUpdateService private readonly _updateService: IUpdateService,
 		@IEnvironmentService private readonly _envService: IEnvironmentService
@@ -47,7 +47,7 @@ export class StartupTimings implements IWorkbenchContribution {
 	}
 
 	private async _reportStartupTimes(): Promise<void> {
-		const metrics = await this._timerService.startupMetrics;
+		// const metrics = await this._timerService.startupMetrics;
 
 		/* __GDPR__
 			"startupTimeVaried" : {
@@ -56,7 +56,7 @@ export class StartupTimings implements IWorkbenchContribution {
 				]
 			}
 		*/
-		this._telemetryService.publicLog('startupTimeVaried', metrics);
+		// this._telemetryService.publicLog('startupTimeVaried', metrics);
 	}
 
 	private async _appendStartupTimes(isStandardStartup: boolean) {
@@ -66,7 +66,8 @@ export class StartupTimings implements IWorkbenchContribution {
 			return;
 		}
 
-		const { sessionId } = await this._telemetryService.getTelemetryInfo();
+		// const { sessionId } = await this._telemetryService.getTelemetryInfo();
+		const sessionId = '0';
 
 		Promise.all([
 			this._timerService.startupMetrics,
@@ -124,7 +125,7 @@ export class StartupTimings implements IWorkbenchContribution {
 				"entries": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
 			}
 		*/
-		this._telemetryService.publicLog('startupRawTimers', { entries });
+		// this._telemetryService.publicLog('startupRawTimers', { entries });
 	}
 }
 

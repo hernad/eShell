@@ -22,7 +22,7 @@ import { LRUCache } from 'vs/base/common/map';
 
 import { ILifecycleService } from 'vs/platform/lifecycle/common/lifecycle';
 import { IMarkerService } from 'vs/platform/markers/common/markers';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
 import { IFileService, IFileStat } from 'vs/platform/files/common/files';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
@@ -131,9 +131,11 @@ export interface WorkspaceFolderConfigurationResult {
 	hasErrors: boolean;
 }
 
+/*
 interface TaskCustomizationTelemetryEvent {
 	properties: string[];
 }
+*/
 
 function isWorkspaceFolder(folder: IWorkspace | IWorkspaceFolder): folder is IWorkspaceFolder {
 	return 'uri' in folder;
@@ -188,12 +190,14 @@ interface TaskQuickPickEntry extends IQuickPickItem {
 	task: Task | undefined | null;
 }
 
+/*
 interface ProblemMatcherDisableMetrics {
 	type: string;
 }
 type ProblemMatcherDisableMetricsClassification = {
 	type: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 };
+*/
 
 export abstract class AbstractTaskService extends Disposable implements ITaskService {
 
@@ -201,7 +205,7 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 	private static readonly RecentlyUsedTasks_Key = 'workbench.tasks.recentlyUsedTasks';
 	private static readonly IgnoreTask010DonotShowAgain_key = 'workbench.tasks.ignoreTask010Shown';
 
-	private static CustomizationTelemetryEventName: string = 'taskService.customize';
+	// private static CustomizationTelemetryEventName: string = 'taskService.customize';
 	public _serviceBrand: undefined;
 	public static OutputChannelId: string = 'tasks';
 	public static OutputChannelLabel: string = nls.localize('tasks', "Tasks");
@@ -238,7 +242,7 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 		@IEditorService private readonly editorService: IEditorService,
 		@IFileService protected readonly fileService: IFileService,
 		@IWorkspaceContextService protected readonly contextService: IWorkspaceContextService,
-		@ITelemetryService protected readonly telemetryService: ITelemetryService,
+		// @ITelemetryService protected readonly telemetryService: ITelemetryService,
 		@ITextFileService private readonly textFileService: ITextFileService,
 		@ILifecycleService lifecycleService: ILifecycleService,
 		@IModelService protected readonly modelService: IModelService,
@@ -781,7 +785,7 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 	}
 
 	private async updateNeverProblemMatcherSetting(type: string): Promise<void> {
-		this.telemetryService.publicLog2<ProblemMatcherDisableMetrics, ProblemMatcherDisableMetricsClassification>('problemMatcherDisabled', { type });
+		// this.telemetryService.publicLog2<ProblemMatcherDisableMetrics, ProblemMatcherDisableMetricsClassification>('problemMatcherDisabled', { type });
 		const current = this.configurationService.getValue(PROBLEM_MATCHER_NEVER_CONFIG);
 		if (current === true) {
 			return;
@@ -1050,15 +1054,17 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 			return Promise.resolve(undefined);
 		}
 		return promise.then(() => {
+			/*
 			let event: TaskCustomizationTelemetryEvent = {
 				properties: properties ? Object.getOwnPropertyNames(properties) : []
 			};
+			*/
 			/* __GDPR__
 				"taskService.customize" : {
 					"properties" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 				}
 			*/
-			this.telemetryService.publicLog(AbstractTaskService.CustomizationTelemetryEventName, event);
+			// this.telemetryService.publicLog(AbstractTaskService.CustomizationTelemetryEventName, event);
 			if (openConfig) {
 				this.openEditorAtTask(workspaceFolder.toResource('.vscode/tasks.json'), toCustomize);
 			}
@@ -1313,7 +1319,7 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 	protected createTerminalTaskSystem(): ITaskSystem {
 		return new TerminalTaskSystem(
 			this.terminalService, this.outputService, this.panelService, this.markerService,
-			this.modelService, this.configurationResolverService, this.telemetryService,
+			this.modelService, this.configurationResolverService, /*this.telemetryService,*/
 			this.contextService, this.environmentService,
 			AbstractTaskService.OutputChannelId, this.fileService, this.terminalInstanceService,
 			this.remoteAgentService,
@@ -2434,6 +2440,7 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 					content = content.replace(/(\n)(\t+)/g, (_, s1, s2) => s1 + strings.repeat(' ', s2.length * editorConfig.editor.tabSize));
 				}
 				configFileCreated = true;
+				/*
 				type TaskServiceTemplateClassification = {
 					templateId?: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 					autoDetect: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
@@ -2442,11 +2449,14 @@ export abstract class AbstractTaskService extends Disposable implements ITaskSer
 					templateId?: string;
 					autoDetect: boolean;
 				};
+				*/
 				return this.textFileService.create(resource, content).then((result): URI => {
+					/*
 					this.telemetryService.publicLog2<TaskServiceEvent, TaskServiceTemplateClassification>('taskService.template', {
 						templateId: selection.id,
 						autoDetect: selection.autoDetect
 					});
+					*/
 					return result.resource;
 				});
 			});

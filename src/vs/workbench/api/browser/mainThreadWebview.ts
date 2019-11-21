@@ -14,7 +14,7 @@ import { localize } from 'vs/nls';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { IProductService } from 'vs/platform/product/common/productService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import * as extHostProtocol from 'vs/workbench/api/common/extHost.protocol';
 import { editorGroupToViewColumn, EditorViewColumn, viewColumnToEditorGroup } from 'vs/workbench/api/common/shared/editor';
 import { IEditorInput } from 'vs/workbench/common/editor';
@@ -104,7 +104,7 @@ export class MainThreadWebviews extends Disposable implements extHostProtocol.Ma
 		@IEditorService private readonly _editorService: IEditorService,
 		@IOpenerService private readonly _openerService: IOpenerService,
 		@IProductService private readonly _productService: IProductService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@IWebviewWorkbenchService private readonly _webviewWorkbenchService: IWebviewWorkbenchService,
 	) {
 		super();
@@ -157,7 +157,7 @@ export class MainThreadWebviews extends Disposable implements extHostProtocol.Ma
 				"extensionId" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 			}
 		*/
-		this._telemetryService.publicLog('webviews:createWebviewPanel', { extensionId: extension.id.value });
+		// this._telemetryService.publicLog('webviews:createWebviewPanel', { extensionId: extension.id.value });
 	}
 
 	public $disposeWebview(handle: extHostProtocol.WebviewPanelHandle): void {

@@ -18,7 +18,7 @@ import { IOutputChannelModel, AbstractFileOutputChannelModel, IOutputChannelMode
 import { OutputAppender } from 'vs/workbench/services/output/node/outputAppender';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { toLocalISOString } from 'vs/base/common/date';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { Emitter, Event } from 'vs/base/common/event';
 import { IElectronEnvironmentService } from 'vs/workbench/services/electron/electron-browser/electronEnvironmentService';
@@ -155,7 +155,7 @@ class DelegatedOutputChannelModel extends Disposable implements IOutputChannelMo
 		outputDir: Promise<URI>,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@ILogService private readonly logService: ILogService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 	) {
 		super();
 		this.outputChannelModel = this.createOutputChannelModel(id, modelUri, mimeType, outputDir);
@@ -170,7 +170,7 @@ class DelegatedOutputChannelModel extends Disposable implements IOutputChannelMo
 		} catch (e) {
 			// Do not crash if spdlog rotating logger cannot be loaded (workaround for https://github.com/Microsoft/vscode/issues/47883)
 			this.logService.error(e);
-			this.telemetryService.publicLog2('output.channel.creation.error');
+			// this.telemetryService.publicLog2('output.channel.creation.error');
 			outputChannelModel = this.instantiationService.createInstance(BufferredOutputChannel, modelUri, mimeType);
 		}
 		this._register(outputChannelModel);

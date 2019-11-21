@@ -13,13 +13,13 @@ import { WalkThroughInput } from 'vs/workbench/contrib/welcome/walkThrough/brows
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { onUnexpectedError, isPromiseCanceledError } from 'vs/base/common/errors';
+import { onUnexpectedError /*, isPromiseCanceledError*/ } from 'vs/base/common/errors';
 import { IWindowOpenable } from 'vs/platform/windows/common/windows';
 import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
 import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
 import { localize } from 'vs/nls';
-import { Action, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { Action, /*WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification*/ } from 'vs/base/common/actions';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { Schemas } from 'vs/base/common/network';
 import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
 import { getInstalledExtensions, IExtensionStatus, onExtensionChanged, isKeymapExtension } from 'vs/workbench/contrib/extensions/common/extensionsUtils';
@@ -263,7 +263,7 @@ class WelcomePage extends Disposable {
 		@IExtensionTipsService private readonly tipsService: IExtensionTipsService,
 		@IExtensionsWorkbenchService private readonly extensionsWorkbenchService: IExtensionsWorkbenchService,
 		@ILifecycleService lifecycleService: ILifecycleService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IHostService private readonly hostService: IHostService,
 		@IProductService private readonly productService: IProductService,
 
@@ -370,10 +370,12 @@ class WelcomePage extends Disposable {
 			a.setAttribute('aria-label', localize('welcomePage.openFolderWithPath', "Open folder {0} with path {1}", name, parentPath));
 			a.href = 'javascript:void(0)';
 			a.addEventListener('click', e => {
+				/*
 				this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', {
 					id: 'openRecentFolder',
 					from: telemetryFrom
 				});
+				*/
 				this.hostService.openWindow([windowOpenable], { forceNewWindow: e.ctrlKey || e.metaKey });
 				e.preventDefault();
 				e.stopPropagation();
@@ -434,10 +436,12 @@ class WelcomePage extends Disposable {
 				"extensionId": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 			}
 		*/
+		/*
 		this.telemetryService.publicLog(strings.installEvent, {
 			from: telemetryFrom,
 			extensionId: extensionSuggestion.id,
 		});
+		*/
 		this.instantiationService.invokeFunction(getInstalledExtensions).then(extensions => {
 			const installedExtension = arrays.first(extensions, extension => areSameExtensions(extension.identifier, { id: extensionSuggestion.id }));
 			if (installedExtension && installedExtension.globallyEnabled) {
@@ -448,11 +452,13 @@ class WelcomePage extends Disposable {
 						"outcome": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 					}
 				*/
+				/*
 				this.telemetryService.publicLog(strings.installedEvent, {
 					from: telemetryFrom,
 					extensionId: extensionSuggestion.id,
 					outcome: 'already_enabled',
 				});
+				*/
 				this.notificationService.info(strings.alreadyInstalled.replace('{0}', extensionSuggestion.name));
 				return;
 			}
@@ -496,11 +502,13 @@ class WelcomePage extends Disposable {
 														"outcome": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 													}
 												*/
+												/*
 												this.telemetryService.publicLog(strings.installedEvent, {
 													from: telemetryFrom,
 													extensionId: extensionSuggestion.id,
 													outcome: installedExtension ? 'enabled' : 'installed',
 												});
+												*/
 												return this.hostService.reload();
 											});
 									} else {
@@ -511,11 +519,13 @@ class WelcomePage extends Disposable {
 												"outcome": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 											}
 										*/
+										/*
 										this.telemetryService.publicLog(strings.installedEvent, {
 											from: telemetryFrom,
 											extensionId: extensionSuggestion.id,
 											outcome: 'not_found',
 										});
+										*/
 										this.notificationService.error(strings.extensionNotFound.replace('{0}', extensionSuggestion.name).replace('{1}', extensionSuggestion.id));
 										return undefined;
 									}
@@ -529,12 +539,14 @@ class WelcomePage extends Disposable {
 										"error": { "classification": "CallstackOrException", "purpose": "PerformanceAndHealth" }
 									}
 								*/
+								/*
 								this.telemetryService.publicLog(strings.installedEvent, {
 									from: telemetryFrom,
 									extensionId: extensionSuggestion.id,
 									outcome: isPromiseCanceledError(err) ? 'canceled' : 'error',
 									error: String(err),
 								});
+								*/
 								this.notificationService.error(err);
 							});
 					}
@@ -547,10 +559,12 @@ class WelcomePage extends Disposable {
 								"extensionId": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 							}
 						*/
+						/*
 						this.telemetryService.publicLog(strings.detailsEvent, {
 							from: telemetryFrom,
 							extensionId: extensionSuggestion.id,
 						});
+						*/
 						this.extensionsWorkbenchService.queryGallery({ names: [extensionSuggestion.id] }, CancellationToken.None)
 							.then(result => this.extensionsWorkbenchService.open(result.firstPage[0]))
 							.then(undefined, onUnexpectedError);
@@ -566,12 +580,14 @@ class WelcomePage extends Disposable {
 					"error": { "classification": "CallstackOrException", "purpose": "PerformanceAndHealth" }
 				}
 			*/
+			/*
 			this.telemetryService.publicLog(strings.installedEvent, {
 				from: telemetryFrom,
 				extensionId: extensionSuggestion.id,
 				outcome: isPromiseCanceledError(err) ? 'canceled' : 'error',
 				error: String(err),
 			});
+			*/
 			this.notificationService.error(err);
 		});
 	}

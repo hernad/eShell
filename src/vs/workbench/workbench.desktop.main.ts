@@ -40,7 +40,7 @@ import 'vs/workbench/services/extensions/electron-browser/extensionService';
 import 'vs/workbench/services/contextmenu/electron-browser/contextmenuService';
 import 'vs/workbench/services/extensionManagement/electron-browser/extensionManagementServerService';
 import 'vs/workbench/services/remote/electron-browser/remoteAgentServiceImpl';
-import 'vs/workbench/services/telemetry/electron-browser/telemetryService';
+// import 'vs/workbench/services/telemetry/electron-browser/telemetryService';
 import 'vs/workbench/services/configurationResolver/electron-browser/configurationResolverService';
 import 'vs/workbench/services/extensionManagement/node/extensionManagementService';
 import 'vs/workbench/services/accessibility/node/accessibilityService';
@@ -132,7 +132,7 @@ import 'vs/workbench/contrib/tasks/electron-browser/taskService';
 import 'vs/workbench/contrib/userDataSync/electron-browser/userDataSync.contribution';
 
 // Telemetry Opt Out
-import 'vs/workbench/contrib/welcome/telemetryOptOut/electron-browser/telemetryOptOut.contribution';
+// import 'vs/workbench/contrib/welcome/telemetryOptOut/electron-browser/telemetryOptOut.contribution';
 
 // Configuration Exporter
 import 'vs/workbench/contrib/configExporter/node/configurationExportHelper.contribution';

@@ -221,8 +221,8 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
 
 		// namespace: env
 		const env: typeof vscode.env = {
-			get machineId() { return initData.telemetryInfo.machineId; },
-			get sessionId() { return initData.telemetryInfo.sessionId; },
+			get machineId() { return /* initData.telemetryInfo.machineId;*/ '0'; },
+			get sessionId() { return /*initData.telemetryInfo.sessionId;*/ '0'; },
 			get language() { return initData.environment.appLanguage; },
 			get appName() { return initData.environment.appName; },
 			get appRoot() { return initData.environment.appRoot!.fsPath; },

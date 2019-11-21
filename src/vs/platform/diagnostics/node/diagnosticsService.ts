@@ -15,7 +15,7 @@ import { isWindows } from 'vs/base/common/platform';
 import { URI } from 'vs/base/common/uri';
 import { ProcessItem } from 'vs/base/common/processes';
 import { IMainProcessInfo } from 'vs/platform/launch/common/launch';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 
 export const ID = 'diagnosticsService';
@@ -249,7 +249,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 
 	_serviceBrand: undefined;
 
-	constructor(@ITelemetryService private readonly telemetryService: ITelemetryService) { }
+	constructor(/*@ITelemetryService private readonly telemetryService: ITelemetryService*/) { }
 
 	private formatMachineInfo(info: IMachineInfo): string {
 		const output: string[] = [];
@@ -537,6 +537,7 @@ export class DiagnosticsService implements IDiagnosticsService {
 			if (folderUri.scheme === 'file') {
 				const folder = folderUri.fsPath;
 				collectWorkspaceStats(folder, ['node_modules', '.git']).then(stats => {
+					/*
 					type WorkspaceStatsClassification = {
 						'workspace.id': { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 						rendererSessionId: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
@@ -559,26 +560,34 @@ export class DiagnosticsService implements IDiagnosticsService {
 						type: string;
 						count: number;
 					};
+					*/
+
 					stats.fileTypes.forEach(e => {
+						/*
 						this.telemetryService.publicLog2<WorkspaceStatsFileEvent, WorkspaceStatsFileClassification>('workspace.stats.file', {
 							rendererSessionId: workspace.rendererSessionId,
 							type: e.name,
 							count: e.count
 						});
+						*/
 					});
 					stats.launchConfigFiles.forEach(e => {
+						/*
 						this.telemetryService.publicLog2<WorkspaceStatsFileEvent, WorkspaceStatsFileClassification>('workspace.stats.launchConfigFile', {
 							rendererSessionId: workspace.rendererSessionId,
 							type: e.name,
 							count: e.count
 						});
+						*/
 					});
 					stats.configFiles.forEach(e => {
+						/*
 						this.telemetryService.publicLog2<WorkspaceStatsFileEvent, WorkspaceStatsFileClassification>('workspace.stats.configFiles', {
 							rendererSessionId: workspace.rendererSessionId,
 							type: e.name,
 							count: e.count
 						});
+						*/
 					});
 				}).catch(_ => {
 					// Report nothing if collecting metadata fails.

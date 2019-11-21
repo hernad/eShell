@@ -26,11 +26,11 @@ import { IEnvironmentService } from 'vs/platform/environment/common/environment'
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IURLService, IOpenURLOptions } from 'vs/platform/url/common/url';
 import { URLHandlerChannelClient, URLHandlerRouter } from 'vs/platform/url/common/urlIpc';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { NullTelemetryService, combinedAppender, LogAppender } from 'vs/platform/telemetry/common/telemetryUtils';
-import { TelemetryAppenderClient } from 'vs/platform/telemetry/node/telemetryIpc';
-import { TelemetryService, ITelemetryServiceConfig } from 'vs/platform/telemetry/common/telemetryService';
-import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { NullTelemetryService, combinedAppender, LogAppender } from 'vs/platform/telemetry/common/telemetryUtils';
+// import { TelemetryAppenderClient } from 'vs/platform/telemetry/node/telemetryIpc';
+// import { TelemetryService, ITelemetryServiceConfig } from 'vs/platform/telemetry/common/telemetryService';
+// import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
 import { getDelayedChannel, StaticRouter } from 'vs/base/parts/ipc/common/ipc';
 import { createChannelReceiver } from 'vs/base/parts/ipc/node/ipc';
 import product from 'vs/platform/product/common/product';
@@ -476,15 +476,15 @@ export class CodeApplication extends Disposable {
 
 		// Telemetry
 		if (!this.environmentService.isExtensionDevelopment && !this.environmentService.args['disable-telemetry'] && !!product.enableTelemetry) {
-			const channel = getDelayedChannel(sharedProcessClient.then(client => client.getChannel('telemetryAppender')));
-			const appender = combinedAppender(new TelemetryAppenderClient(channel), new LogAppender(this.logService));
-			const commonProperties = resolveCommonProperties(product.commit, product.version, machineId, product.msftInternalDomains, this.environmentService.installSourcePath);
-			const piiPaths = this.environmentService.extensionsPath ? [this.environmentService.appRoot, this.environmentService.extensionsPath] : [this.environmentService.appRoot];
-			const config: ITelemetryServiceConfig = { appender, commonProperties, piiPaths, trueMachineId };
+			// const channel = getDelayedChannel(sharedProcessClient.then(client => client.getChannel('telemetryAppender')));
+			// const appender = combinedAppender(/*new TelemetryAppenderClient(channel),*/ new LogAppender(this.logService));
+			// const commonProperties = resolveCommonProperties(product.commit, product.version, machineId, product.msftInternalDomains, this.environmentService.installSourcePath);
+			// const piiPaths = this.environmentService.extensionsPath ? [this.environmentService.appRoot, this.environmentService.extensionsPath] : [this.environmentService.appRoot];
+			// const config: ITelemetryServiceConfig = { appender, commonProperties, piiPaths, trueMachineId };
 
-			services.set(ITelemetryService, new SyncDescriptor(TelemetryService, [config]));
+			// services.set(ITelemetryService, new SyncDescriptor(TelemetryService, [config]));
 		} else {
-			services.set(ITelemetryService, NullTelemetryService);
+			// services.set(ITelemetryService, NullTelemetryService);
 		}
 
 		// Init services that require it

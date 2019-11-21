@@ -7,7 +7,7 @@ import 'vs/css!./remoteViewlet';
 import * as nls from 'vs/nls';
 import { URI } from 'vs/base/common/uri';
 import { IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
@@ -230,7 +230,7 @@ export class RemoteViewlet extends FilterViewContainerViewlet {
 
 	constructor(
 		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IWorkspaceContextService contextService: IWorkspaceContextService,
 		@IStorageService storageService: IStorageService,
 		@IConfigurationService configurationService: IConfigurationService,
@@ -240,7 +240,7 @@ export class RemoteViewlet extends FilterViewContainerViewlet {
 		@IExtensionService extensionService: IExtensionService,
 		@IRemoteExplorerService remoteExplorerService: IRemoteExplorerService
 	) {
-		super(VIEWLET_ID, remoteExplorerService.onDidChangeTargetType, configurationService, layoutService, telemetryService, storageService, instantiationService, themeService, contextMenuService, extensionService, contextService);
+		super(VIEWLET_ID, remoteExplorerService.onDidChangeTargetType, configurationService, layoutService, /*telemetryService,*/ storageService, instantiationService, themeService, contextMenuService, extensionService, contextService);
 	}
 
 	protected getFilterOn(viewDescriptor: IViewDescriptor): string | undefined {

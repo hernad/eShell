@@ -20,7 +20,7 @@ import { Viewlet, ViewletRegistry, Extensions } from 'vs/workbench/browser/viewl
 import { ToolBar } from 'vs/base/browser/ui/toolbar/toolbar';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { PanelView, IPanelViewOptions, IPanelOptions, Panel } from 'vs/base/browser/ui/splitview/panelview';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
@@ -258,11 +258,11 @@ export class PanelViewlet extends Viewlet {
 		@IConfigurationService configurationService: IConfigurationService,
 		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
 		@IContextMenuService protected contextMenuService: IContextMenuService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IStorageService storageService: IStorageService
 	) {
-		super(id, configurationService, layoutService, telemetryService, themeService, storageService);
+		super(id, configurationService, layoutService, /*telemetryService,*/ themeService, storageService);
 	}
 
 	create(parent: HTMLElement): void {

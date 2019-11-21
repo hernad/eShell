@@ -11,7 +11,7 @@ import { FileOperationError, FileOperationResult, IFileService } from 'vs/platfo
 import { MIN_MAX_MEMORY_SIZE_MB, FALLBACK_MAX_MEMORY_SIZE_MB } from 'vs/platform/files/node/files';
 import { createErrorWithActions } from 'vs/base/common/errorsWithActions';
 import { Action } from 'vs/base/common/actions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
@@ -33,7 +33,7 @@ import { IFilesConfigurationService } from 'vs/workbench/services/filesConfigura
 export class NativeTextFileEditor extends TextFileEditor {
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IFileService fileService: IFileService,
 		@IViewletService viewletService: IViewletService,
 		@IInstantiationService instantiationService: IInstantiationService,
@@ -50,7 +50,7 @@ export class NativeTextFileEditor extends TextFileEditor {
 		@IExplorerService explorerService: IExplorerService,
 		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService
 	) {
-		super(telemetryService, fileService, viewletService, instantiationService, contextService, storageService, configurationService, editorService, themeService, editorGroupService, textFileService, hostService, explorerService, filesConfigurationService);
+		super( /*telemetryService,*/ fileService, viewletService, instantiationService, contextService, storageService, configurationService, editorService, themeService, editorGroupService, textFileService, hostService, explorerService, filesConfigurationService);
 	}
 
 	protected handleSetInputError(error: Error, input: FileEditorInput, options: EditorOptions | undefined): void {

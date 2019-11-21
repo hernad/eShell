@@ -8,7 +8,7 @@ import { Emitter } from 'vs/base/common/event';
 import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { WebviewExtensionDescription, WebviewOptions, WebviewContentOptions } from 'vs/workbench/contrib/webview/browser/webview';
 import { URI } from 'vs/base/common/uri';
 import { areWebviewInputOptionsEqual } from 'vs/workbench/contrib/webview/browser/webviewWorkbenchService';
@@ -65,7 +65,7 @@ export abstract class BaseWebview<T extends HTMLElement> extends Disposable {
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 		private readonly webviewThemeDataProvider: WebviewThemeDataProvider,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@IEnvironmentService private readonly _environementService: IEnvironmentService,
 		@IWorkbenchEnvironmentService protected readonly workbenchEnvironmentService: IWorkbenchEnvironmentService,
 	) {
@@ -190,6 +190,7 @@ export abstract class BaseWebview<T extends HTMLElement> extends Disposable {
 				this._onMissingCsp.fire(this.extension.id);
 			}
 
+			/*
 			type TelemetryClassification = {
 				extension?: { classification: 'SystemMetaData', purpose: 'FeatureInsight'; };
 			};
@@ -200,6 +201,7 @@ export abstract class BaseWebview<T extends HTMLElement> extends Disposable {
 			this._telemetryService.publicLog2<TelemetryData, TelemetryClassification>('webviewMissingCsp', {
 				extension: this.extension.id.value
 			});
+			*/
 		}
 	}
 

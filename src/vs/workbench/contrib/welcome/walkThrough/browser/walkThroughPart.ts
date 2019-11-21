@@ -12,7 +12,7 @@ import { URI } from 'vs/base/common/uri';
 import { IDisposable, dispose, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
 import { EditorOptions, IEditorMemento } from 'vs/workbench/common/editor';
 import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { WalkThroughInput } from 'vs/workbench/contrib/welcome/walkThrough/browser/walkThroughInput';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import * as marked from 'vs/base/common/marked/marked';
@@ -68,7 +68,7 @@ export class WalkThroughPart extends BaseEditor {
 	private editorMemento: IEditorMemento<IWalkThroughEditorViewState>;
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IModelService modelService: IModelService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
@@ -80,7 +80,7 @@ export class WalkThroughPart extends BaseEditor {
 		@INotificationService private readonly notificationService: INotificationService,
 		@IEditorGroupsService editorGroupService: IEditorGroupsService
 	) {
-		super(WalkThroughPart.ID, telemetryService, themeService, storageService);
+		super(WalkThroughPart.ID, /*telemetryService,*/ themeService, storageService);
 		this.editorFocus = WALK_THROUGH_FOCUS.bindTo(this.contextKeyService);
 		this.editorMemento = this.getEditorMemento<IWalkThroughEditorViewState>(editorGroupService, WALK_THROUGH_EDITOR_VIEW_STATE_PREFERENCE_KEY);
 	}
@@ -360,6 +360,7 @@ export class WalkThroughPart extends BaseEditor {
 						}
 					}));
 
+					/*
 					type WalkThroughSnippetInteractionClassification = {
 						from?: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 						type: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
@@ -370,27 +371,34 @@ export class WalkThroughPart extends BaseEditor {
 						type: string,
 						snippet: number
 					};
+					*/
 
 					this.contentDisposables.push(Event.once(editor.onMouseDown)(() => {
+						/*
 						this.telemetryService.publicLog2<WalkThroughSnippetInteractionEvent, WalkThroughSnippetInteractionClassification>('walkThroughSnippetInteraction', {
 							from: this.input instanceof WalkThroughInput ? this.input.getTelemetryFrom() : undefined,
 							type: 'mouseDown',
 							snippet: i
 						});
+						*/
 					}));
 					this.contentDisposables.push(Event.once(editor.onKeyDown)(() => {
+						/*
 						this.telemetryService.publicLog2<WalkThroughSnippetInteractionEvent, WalkThroughSnippetInteractionClassification>('walkThroughSnippetInteraction', {
 							from: this.input instanceof WalkThroughInput ? this.input.getTelemetryFrom() : undefined,
 							type: 'keyDown',
 							snippet: i
 						});
+						*/
 					}));
 					this.contentDisposables.push(Event.once(editor.onDidChangeModelContent)(() => {
+						/*
 						this.telemetryService.publicLog2<WalkThroughSnippetInteractionEvent, WalkThroughSnippetInteractionClassification>('walkThroughSnippetInteraction', {
 							from: this.input instanceof WalkThroughInput ? this.input.getTelemetryFrom() : undefined,
 							type: 'changeModelContent',
 							snippet: i
 						});
+						*/
 					}));
 				});
 				this.updateSizeClasses();

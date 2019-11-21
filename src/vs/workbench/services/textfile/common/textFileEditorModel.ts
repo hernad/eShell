@@ -5,13 +5,13 @@
 
 import * as nls from 'vs/nls';
 import { Emitter } from 'vs/base/common/event';
-import { guessMimeTypes } from 'vs/base/common/mime';
+// import { guessMimeTypes } from 'vs/base/common/mime';
 import { toErrorMessage } from 'vs/base/common/errorMessage';
 import { URI } from 'vs/base/common/uri';
 import { isUndefinedOrNull, assertIsDefined } from 'vs/base/common/types';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { ITextFileService, ModelState, ITextFileEditorModel, ISaveErrorHandler, ISaveParticipant, StateChange, ITextFileStreamContent, ILoadOptions, LoadReason, IResolvedTextFileEditorModel, ITextFileSaveOptions } from 'vs/workbench/services/textfile/common/textfiles';
+import { ITextFileService, ModelState, ITextFileEditorModel, ISaveErrorHandler, ISaveParticipant, StateChange, ITextFileStreamContent, ILoadOptions, /*LoadReason,*/ IResolvedTextFileEditorModel, ITextFileSaveOptions } from 'vs/workbench/services/textfile/common/textfiles';
 import { EncodingMode, IRevertOptions, SaveReason } from 'vs/workbench/common/editor';
 import { BaseTextEditorModel } from 'vs/workbench/common/editor/textEditorModel';
 import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
@@ -19,16 +19,16 @@ import { IFileService, FileOperationError, FileOperationResult, CONTENT_CHANGE_E
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import { IModelService } from 'vs/editor/common/services/modelService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { RunOnceScheduler, timeout } from 'vs/base/common/async';
 import { ITextBufferFactory } from 'vs/editor/common/model';
-import { hash } from 'vs/base/common/hash';
+// import { hash } from 'vs/base/common/hash';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { toDisposable, MutableDisposable } from 'vs/base/common/lifecycle';
 import { ILogService } from 'vs/platform/log/common/log';
 import { isEqual, isEqualOrParent, extname, basename, joinPath } from 'vs/base/common/resources';
 import { onUnexpectedError } from 'vs/base/common/errors';
-import { Schemas } from 'vs/base/common/network';
+// import { Schemas } from 'vs/base/common/network';
 import { IWorkingCopyService, WorkingCopyCapabilities } from 'vs/workbench/services/workingCopy/common/workingCopyService';
 import { IFilesConfigurationService, IAutoSaveConfiguration } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
 
@@ -40,6 +40,7 @@ export interface IBackupMetaData {
 	orphaned: boolean;
 }
 
+/*
 type FileTelemetryDataFragment = {
 	mimeType: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 	ext: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
@@ -55,6 +56,7 @@ type TelemetryData = {
 	reason?: number;
 	whitelistedjson?: string;
 };
+*/
 
 /**
  * The text file editor model listens to changes to its underlying code editor model and saves these changes through the file service back to the disk.
@@ -116,7 +118,7 @@ export class TextFileEditorModel extends BaseTextEditorModel implements ITextFil
 		@IModelService modelService: IModelService,
 		@IFileService private readonly fileService: IFileService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@ITextFileService private readonly textFileService: ITextFileService,
 		@IBackupFileService private readonly backupFileService: IBackupFileService,
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
@@ -452,15 +454,16 @@ export class TextFileEditorModel extends BaseTextEditorModel implements ITextFil
 		// Telemetry: We log the fileGet telemetry event after the model has been loaded to ensure a good mimetype
 		const settingsType = this.getTypeIfSettings();
 		if (settingsType) {
+			/*
 			type SettingsReadClassification = {
 				settingsType: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 			};
-
-			this.telemetryService.publicLog2<{ settingsType: string }, SettingsReadClassification>('settingsRead', { settingsType }); // Do not log read to user settings.json and .vscode folder as a fileGet event as it ruins our JSON usage data
+			*/
+			// this.telemetryService.publicLog2<{ settingsType: string }, SettingsReadClassification>('settingsRead', { settingsType }); // Do not log read to user settings.json and .vscode folder as a fileGet event as it ruins our JSON usage data
 		} else {
-			type FileGetClassification = {} & FileTelemetryDataFragment;
+			// type FileGetClassification = {} & FileTelemetryDataFragment;
 
-			this.telemetryService.publicLog2<TelemetryData, FileGetClassification>('fileGet', this.getTelemetryData(options?.reason ?? LoadReason.OTHER));
+			// this.telemetryService.publicLog2<TelemetryData, FileGetClassification>('fileGet', this.getTelemetryData(options?.reason ?? LoadReason.OTHER));
 		}
 
 		return this;
@@ -766,6 +769,7 @@ export class TextFileEditorModel extends BaseTextEditorModel implements ITextFil
 				this._onDidStateChange.fire(StateChange.SAVED);
 				this._onDidChangeDirty.fire();
 
+				/*
 				// Telemetry
 				const settingsType = this.getTypeIfSettings();
 				if (settingsType) {
@@ -777,6 +781,7 @@ export class TextFileEditorModel extends BaseTextEditorModel implements ITextFil
 					type FilePutClassfication = {} & FileTelemetryDataFragment;
 					this.telemetryService.publicLog2<TelemetryData, FilePutClassfication>('filePUT', this.getTelemetryData(options.reason));
 				}
+				*/
 			}, error => {
 				this.logService.error(`doSave(${versionId}) - exit - resulted in a save error: ${error.toString()}`, this.resource);
 
@@ -831,6 +836,7 @@ export class TextFileEditorModel extends BaseTextEditorModel implements ITextFil
 		return '';
 	}
 
+	/*
 	private getTelemetryData(reason: number | undefined): TelemetryData {
 		const ext = extname(this.resource);
 		const fileName = basename(this.resource);
@@ -849,6 +855,7 @@ export class TextFileEditorModel extends BaseTextEditorModel implements ITextFil
 
 		return telemetryData;
 	}
+	*/
 
 	private doTouch(versionId: number): Promise<void> {
 		if (!this.isResolved()) {

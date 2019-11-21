@@ -23,7 +23,7 @@ import { IInstantiationService } from 'vs/platform/instantiation/common/instanti
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IUntitledTextEditorService } from 'vs/workbench/services/untitled/common/untitledTextEditorService';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { parseSearchPort } from 'vs/platform/environment/node/environmentService';
@@ -33,14 +33,14 @@ export class LocalSearchService extends SearchService {
 		@IModelService modelService: IModelService,
 		@IUntitledTextEditorService untitledTextEditorService: IUntitledTextEditorService,
 		@IEditorService editorService: IEditorService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@ILogService logService: ILogService,
 		@IExtensionService extensionService: IExtensionService,
 		@IFileService fileService: IFileService,
 		@IWorkbenchEnvironmentService readonly environmentService: IWorkbenchEnvironmentService,
 		@IInstantiationService readonly instantiationService: IInstantiationService
 	) {
-		super(modelService, untitledTextEditorService, editorService, telemetryService, logService, extensionService, fileService);
+		super(modelService, untitledTextEditorService, editorService, /*telemetryService,*/ logService, extensionService, fileService);
 
 
 		this.diskSearch = instantiationService.createInstance(DiskSearch, !environmentService.isBuilt || environmentService.verbose, parseSearchPort(environmentService.args, environmentService.isBuilt));

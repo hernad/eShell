@@ -10,7 +10,7 @@ import { IExtensionDescription } from 'vs/platform/extensions/common/extensions'
 import { IRemoteAgentEnvironment } from 'vs/platform/remote/common/remoteAgentEnvironment';
 import { IDiagnosticInfoOptions, IDiagnosticInfo } from 'vs/platform/diagnostics/common/diagnostics';
 import { RemoteAuthorities } from 'vs/base/common/network';
-import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
 
 export interface IGetEnvironmentDataArguments {
 	language: string;
@@ -68,6 +68,7 @@ export class RemoteExtensionEnvironmentChannelClient {
 		return this.channel.call<IDiagnosticInfo>('getDiagnosticInfo', options);
 	}
 
+/*
 	disableTelemetry(): Promise<void> {
 		return this.channel.call<void>('disableTelemetry');
 	}
@@ -79,4 +80,5 @@ export class RemoteExtensionEnvironmentChannelClient {
 	flushTelemetry(): Promise<void> {
 		return this.channel.call<void>('flushTelemetry');
 	}
+*/
 }

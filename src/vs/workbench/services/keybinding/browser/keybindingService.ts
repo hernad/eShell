@@ -25,7 +25,7 @@ import { IKeybindingItem, IKeybindingRule2, KeybindingWeight, KeybindingsRegistr
 import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { ExtensionMessageCollector, ExtensionsRegistry } from 'vs/workbench/services/extensions/common/extensionsRegistry';
 import { IUserKeybindingItem, KeybindingIO, OutputBuilder } from 'vs/workbench/services/keybinding/common/keybindingIO';
 import { IKeyboardMapper } from 'vs/workbench/services/keybinding/common/keyboardMapper';
@@ -153,7 +153,7 @@ export class WorkbenchKeybindingService extends AbstractKeybindingService {
 	constructor(
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@ICommandService commandService: ICommandService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@INotificationService notificationService: INotificationService,
 		@IEnvironmentService environmentService: IEnvironmentService,
 		@IConfigurationService configurationService: IConfigurationService,
@@ -162,7 +162,7 @@ export class WorkbenchKeybindingService extends AbstractKeybindingService {
 		@IFileService fileService: IFileService,
 		@IKeymapService private readonly keymapService: IKeymapService
 	) {
-		super(contextKeyService, commandService, telemetryService, notificationService);
+		super(contextKeyService, commandService, /*telemetryService,*/ notificationService);
 
 		this.updateSchema();
 
@@ -193,13 +193,17 @@ export class WorkbenchKeybindingService extends AbstractKeybindingService {
 			}
 		});
 		this._register(this.userKeybindings.onDidChange(() => {
+			/*
 			type CustomKeybindingsChangedClassification = {
 				keyCount: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true }
 			};
+			*/
 
+			/*
 			this._telemetryService.publicLog2<{ keyCount: number }, CustomKeybindingsChangedClassification>('customKeybindingsChanged', {
 				keyCount: this.userKeybindings.keybindings.length
 			});
+			*/
 			this.updateResolver({
 				source: KeybindingSource.User,
 				keybindings: this.userKeybindings.keybindings
@@ -228,15 +232,17 @@ export class WorkbenchKeybindingService extends AbstractKeybindingService {
 			}
 		}));
 
-		let data = this.keymapService.getCurrentKeyboardLayout();
+		// let data = this.keymapService.getCurrentKeyboardLayout();
 		/* __GDPR__
 			"keyboardLayout" : {
 				"currentKeyboardLayout": { "${inline}": [ "${IKeyboardLayoutInfo}" ] }
 			}
 		*/
+		/*
 		telemetryService.publicLog('keyboardLayout', {
 			currentKeyboardLayout: data
 		});
+		*/
 
 		this._register(browser.onDidChangeFullscreen(() => {
 			const keyboard: IKeyboard | null = (<INavigatorWithKeyboard>navigator).keyboard;

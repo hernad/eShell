@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { getErrorMessage, isPromiseCanceledError, canceled } from 'vs/base/common/errors';
+import { /*getErrorMessage,*/ isPromiseCanceledError, canceled } from 'vs/base/common/errors';
 import { StatisticType, IGalleryExtension, IExtensionGalleryService, IGalleryExtensionAsset, IQueryOptions, SortBy, SortOrder, IExtensionIdentifier, IReportedExtension, InstallOperation, ITranslation, IGalleryExtensionVersion, IGalleryExtensionAssets, isIExtensionIdentifier } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { getGalleryExtensionId, getGalleryExtensionTelemetryData, adoptToGalleryExtensionId } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
+import { getGalleryExtensionId, /* getGalleryExtensionTelemetryData, */ adoptToGalleryExtensionId } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { assign, getOrDefault } from 'vs/base/common/objects';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IPager } from 'vs/base/common/paging';
 import { IRequestService, asJson, asText } from 'vs/platform/request/common/request';
 import { IRequestOptions, IRequestContext, IHeaders } from 'vs/base/parts/request/common/request';
@@ -311,11 +311,13 @@ function toExtension(galleryExtension: IRawGalleryExtension, version: IRawGaller
 				"querySource": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 			}
 		*/
+		/*
 		telemetryData: {
 			index: ((query.pageNumber - 1) * query.pageSize) + index,
 			searchText: query.searchText,
 			querySource
 		},
+		*/
 		preview: getIsPreview(galleryExtension.flags)
 	};
 }
@@ -338,7 +340,7 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 		@IRequestService private readonly requestService: IRequestService,
 		@ILogService private readonly logService: ILogService,
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IFileService private readonly fileService: IFileService,
 		@IProductService private readonly productService: IProductService,
 		@optional(IStorageService) private readonly storageService: IStorageService,
@@ -411,10 +413,11 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 			return Promise.reject(new Error('No extension gallery service configured.'));
 		}
 
-		const type = options.names ? 'ids' : (options.text ? 'text' : 'all');
+		// const type = options.names ? 'ids' : (options.text ? 'text' : 'all');
 		let text = options.text || '';
 		const pageSize = getOrDefault(options, o => o.pageSize, 50);
 
+		/*
 		type GalleryServiceQueryClassification = {
 			type: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 			text: { classification: 'CustomerContent', purpose: 'FeatureInsight' };
@@ -423,7 +426,8 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 			type: string;
 			text: string;
 		};
-		this.telemetryService.publicLog2<GalleryServiceQueryEvent, GalleryServiceQueryClassification>('galleryService:query', { type, text });
+		*/
+		// this.telemetryService.publicLog2<GalleryServiceQueryEvent, GalleryServiceQueryClassification>('galleryService:query', { type, text });
 
 		let query = new Query()
 			.withFlags(Flags.IncludeLatestVersionOnly, Flags.IncludeAssetUri, Flags.IncludeStatistics, Flags.IncludeFiles, Flags.IncludeVersionProperties)
@@ -545,8 +549,8 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 	download(extension: IGalleryExtension, location: URI, operation: InstallOperation): Promise<URI> {
 		this.logService.trace('ExtensionGalleryService#download', extension.identifier.id);
 		const zip = joinPath(location, generateUuid());
-		const data = getGalleryExtensionTelemetryData(extension);
-		const startTime = new Date().getTime();
+		// const data = getGalleryExtensionTelemetryData(extension);
+		// const startTime = new Date().getTime();
 		/* __GDPR__
 			"galleryService:downloadVSIX" : {
 				"duration": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
@@ -555,7 +559,7 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 				]
 			}
 		*/
-		const log = (duration: number) => this.telemetryService.publicLog('galleryService:downloadVSIX', assign(data, { duration }));
+		// const log = (duration: number) => this.telemetryService.publicLog('galleryService:downloadVSIX', assign(data, { duration }));
 
 		const operationParam = operation === InstallOperation.Install ? 'install' : operation === InstallOperation.Update ? 'update' : '';
 		const downloadAsset = operationParam ? {
@@ -565,7 +569,7 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 
 		return this.getAsset(downloadAsset)
 			.then(context => this.fileService.writeFile(zip, context.stream))
-			.then(() => log(new Date().getTime() - startTime))
+			//.then(() => log(new Date().getTime() - startTime))
 			.then(() => zip);
 	}
 
@@ -658,6 +662,7 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 						return Promise.reject(err);
 					}
 
+					/*
 					const message = getErrorMessage(err);
 					type GalleryServiceCDNFallbackClassification = {
 						url: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
@@ -667,7 +672,8 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 						url: string;
 						message: string;
 					};
-					this.telemetryService.publicLog2<GalleryServiceCDNFallbackEvent, GalleryServiceCDNFallbackClassification>('galleryService:cdnFallback', { url, message });
+					*/
+					// this.telemetryService.publicLog2<GalleryServiceCDNFallbackEvent, GalleryServiceCDNFallbackClassification>('galleryService:cdnFallback', { url, message });
 
 					const fallbackOptions = assign({}, options, { url: fallbackUrl });
 					return this.requestService.request(fallbackOptions, token);

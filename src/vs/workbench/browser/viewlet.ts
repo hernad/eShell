@@ -12,7 +12,7 @@ import { IViewlet } from 'vs/workbench/common/viewlet';
 import { Composite, CompositeDescriptor, CompositeRegistry } from 'vs/workbench/browser/composite';
 import { IConstructorSignature0, BrandedService } from 'vs/platform/instantiation/common/instantiation';
 import { ToggleSidebarVisibilityAction, ToggleSidebarPositionAction } from 'vs/workbench/browser/actions/layoutActions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IWorkbenchLayoutService, Parts } from 'vs/workbench/services/layout/browser/layoutService';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
@@ -28,11 +28,11 @@ export abstract class Viewlet extends Composite implements IViewlet {
 	constructor(id: string,
 		protected configurationService: IConfigurationService,
 		private layoutService: IWorkbenchLayoutService,
-		telemetryService: ITelemetryService,
+		// telemetryService: ITelemetryService,
 		themeService: IThemeService,
 		storageService: IStorageService
 	) {
-		super(id, telemetryService, themeService, storageService);
+		super(id, /*telemetryService,*/ themeService, storageService);
 	}
 
 	getOptimalWidth(): number | undefined {

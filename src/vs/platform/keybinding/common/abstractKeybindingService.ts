@@ -15,8 +15,8 @@ import { IKeybindingEvent, IKeybindingService, IKeyboardEvent, KeybindingsSchema
 import { IResolveResult, KeybindingResolver } from 'vs/platform/keybinding/common/keybindingResolver';
 import { ResolvedKeybindingItem } from 'vs/platform/keybinding/common/resolvedKeybindingItem';
 import { INotificationService } from 'vs/platform/notification/common/notification';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
 
 interface CurrentChord {
 	keypress: string;
@@ -38,7 +38,7 @@ export abstract class AbstractKeybindingService extends Disposable implements IK
 	constructor(
 		private _contextKeyService: IContextKeyService,
 		protected _commandService: ICommandService,
-		protected _telemetryService: ITelemetryService,
+		// protected _telemetryService: ITelemetryService,
 		private _notificationService: INotificationService,
 	) {
 		super();
@@ -197,7 +197,7 @@ export abstract class AbstractKeybindingService extends Disposable implements IK
 			} else {
 				this._commandService.executeCommand(resolveResult.commandId, resolveResult.commandArgs).then(undefined, err => this._notificationService.warn(err));
 			}
-			this._telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: resolveResult.commandId, from: 'keybinding' });
+			// this._telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: resolveResult.commandId, from: 'keybinding' });
 		}
 
 		return shouldPreventDefault;

@@ -15,18 +15,18 @@ import * as os from 'os';
 import { debounce } from 'vs/base/common/decorators';
 import * as platform from 'vs/base/common/platform';
 import { Disposable } from 'vs/base/common/lifecycle';
-import { getDelayedChannel } from 'vs/base/parts/ipc/common/ipc';
-import { createChannelSender } from 'vs/base/parts/ipc/node/ipc';
-import { connect as connectNet } from 'vs/base/parts/ipc/node/ipc.net';
+// import { getDelayedChannel } from 'vs/base/parts/ipc/common/ipc';
+// import { createChannelSender } from 'vs/base/parts/ipc/node/ipc';
+// import { connect as connectNet } from 'vs/base/parts/ipc/node/ipc.net';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { IWindowConfiguration } from 'vs/platform/windows/common/windows';
-import { NullTelemetryService, combinedAppender, LogAppender } from 'vs/platform/telemetry/common/telemetryUtils';
+// import { NullTelemetryService, combinedAppender, LogAppender } from 'vs/platform/telemetry/common/telemetryUtils';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
-import { ITelemetryServiceConfig, TelemetryService } from 'vs/platform/telemetry/common/telemetryService';
-import { TelemetryAppenderClient } from 'vs/platform/telemetry/node/telemetryIpc';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
-import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
+// import { ITelemetryServiceConfig, TelemetryService } from 'vs/platform/telemetry/common/telemetryService';
+// import { TelemetryAppenderClient } from 'vs/platform/telemetry/node/telemetryIpc';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { InstantiationService } from 'vs/platform/instantiation/common/instantiationService';
+// import { resolveCommonProperties } from 'vs/platform/telemetry/node/commonProperties';
 import { MainProcessService, IMainProcessService } from 'vs/platform/ipc/electron-browser/mainProcessService';
 import { EnvironmentService } from 'vs/platform/environment/node/environmentService';
 import { IssueReporterModel, IssueReporterData as IssueReporterModelData } from 'vs/code/electron-browser/issue/issueReporterModel';
@@ -39,7 +39,7 @@ import { normalizeGitHubUrl } from 'vs/code/common/issue/issueReporterUtil';
 import { Button } from 'vs/base/browser/ui/button/button';
 import { SystemInfo, isRemoteDiagnosticError } from 'vs/platform/diagnostics/common/diagnostics';
 import { SpdLogService } from 'vs/platform/log/node/spdlogService';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
+// import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
 
 const MAX_URL_LENGTH = 2045;
 
@@ -64,7 +64,7 @@ export function startup(configuration: IssueReporterConfiguration) {
 
 export class IssueReporter extends Disposable {
 	private environmentService!: IEnvironmentService;
-	private telemetryService!: ITelemetryService;
+	// private telemetryService!: ITelemetryService;
 	private logService!: ILogService;
 	private readonly issueReporterModel: IssueReporterModel;
 	private numberOfSearchResultsDisplayed = 0;
@@ -302,26 +302,28 @@ export class IssueReporter extends Disposable {
 		const loggerClient = new LoggerChannelClient(mainProcessService.getChannel('logger'));
 		this.logService = new FollowerLogService(loggerClient, logService);
 
-		const sharedProcessService = createChannelSender<ISharedProcessService>(mainProcessService.getChannel('sharedProcess'));
+		// const sharedProcessService = createChannelSender<ISharedProcessService>(mainProcessService.getChannel('sharedProcess'));
 
-		const sharedProcess = sharedProcessService.whenSharedProcessReady()
-			.then(() => connectNet(this.environmentService.sharedIPCHandle, `window:${configuration.windowId}`));
+		// const sharedProcess = sharedProcessService.whenSharedProcessReady()
+		//	.then(() => connectNet(this.environmentService.sharedIPCHandle, `window:${configuration.windowId}`));
 
+		/*
 		const instantiationService = new InstantiationService(serviceCollection, true);
 		if (!this.environmentService.isExtensionDevelopment && !this.environmentService.args['disable-telemetry'] && !!product.enableTelemetry) {
 			const channel = getDelayedChannel(sharedProcess.then(c => c.getChannel('telemetryAppender')));
 			const appender = combinedAppender(new TelemetryAppenderClient(channel), new LogAppender(logService));
 			const commonProperties = resolveCommonProperties(product.commit || 'Commit unknown', product.version, configuration.machineId, product.msftInternalDomains, this.environmentService.installSourcePath);
 			const piiPaths = this.environmentService.extensionsPath ? [this.environmentService.appRoot, this.environmentService.extensionsPath] : [this.environmentService.appRoot];
-			const config: ITelemetryServiceConfig = { appender, commonProperties, piiPaths };
+			//const config: ITelemetryServiceConfig = { appender, commonProperties, piiPaths };
 
-			const telemetryService = instantiationService.createInstance(TelemetryService, config);
-			this._register(telemetryService);
+			//const telemetryService = instantiationService.createInstance(TelemetryService, config);
+			//this._register(telemetryService);
 
-			this.telemetryService = telemetryService;
+			// this.telemetryService = telemetryService;
 		} else {
-			this.telemetryService = NullTelemetryService;
+			// this.telemetryService = NullTelemetryService;
 		}
+		*/
 	}
 
 	private setEventHandlers(): void {
@@ -676,6 +678,7 @@ export class IssueReporter extends Disposable {
 
 	private logSearchError(error: Error) {
 		this.logService.warn('issueReporter#search ', error.message);
+		/*
 		type IssueReporterSearchErrorClassification = {
 			message: { classification: 'CallstackOrException', purpose: 'PerformanceAndHealth' }
 		};
@@ -684,6 +687,7 @@ export class IssueReporter extends Disposable {
 			message: string;
 		};
 		this.telemetryService.publicLog2<IssueReporterSearchError, IssueReporterSearchErrorClassification>('issueReporterSearchError', { message: error.message });
+	    */
 	}
 
 	private setUpTypes(): void {
@@ -875,6 +879,7 @@ export class IssueReporter extends Disposable {
 			return false;
 		}
 
+		/*
 		type IssueReporterSubmitClassification = {
 			issueType: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 			numSimilarIssuesDisplayed: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
@@ -883,7 +888,8 @@ export class IssueReporter extends Disposable {
 			issueType: any;
 			numSimilarIssuesDisplayed: number;
 		};
-		this.telemetryService.publicLog2<IssueReporterSubmitEvent, IssueReporterSubmitClassification>('issueReporterSubmit', { issueType: this.issueReporterModel.getData().issueType, numSimilarIssuesDisplayed: this.numberOfSearchResultsDisplayed });
+		*/
+		// this.telemetryService.publicLog2<IssueReporterSubmitEvent, IssueReporterSubmitClassification>('issueReporterSubmit', { issueType: this.issueReporterModel.getData().issueType, numSimilarIssuesDisplayed: this.numberOfSearchResultsDisplayed });
 		this.hasBeenSubmitted = true;
 
 		const baseUrl = this.getIssueUrlWithTitle((<HTMLInputElement>this.getElementById('issue-title')).value);
@@ -1110,7 +1116,7 @@ export class IssueReporter extends Disposable {
 		// Exclude right click
 		if (event.which < 3) {
 			shell.openExternal((<HTMLAnchorElement>event.target).href);
-			this.telemetryService.publicLog2('issueReporterViewSimilarIssue');
+			// this.telemetryService.publicLog2('issueReporterViewSimilarIssue');
 		}
 	}
 

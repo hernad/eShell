@@ -23,7 +23,7 @@ import { IStorageService, StorageScope } from 'vs/platform/storage/common/storag
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 import { VIEWLET_ID as EXTENSIONS_VIEWLET_ID, IExtensionsViewlet } from 'vs/workbench/contrib/extensions/common/extensions';
 import { minimumTranslatedStrings } from 'vs/workbench/contrib/localizations/browser/minimalTranslations';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { CancellationToken } from 'vs/base/common/cancellation';
 import { ExtensionType } from 'vs/platform/extensions/common/extensions';
 
@@ -41,7 +41,7 @@ export class LocalizationWorkbenchContribution extends Disposable implements IWo
 		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
 		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
 		@IViewletService private readonly viewletService: IViewletService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService
+		// @ITelemetryService private readonly telemetryService: ITelemetryService
 	) {
 		super();
 		this.checkAndInstall();
@@ -131,7 +131,7 @@ export class LocalizationWorkbenchContribution extends Disposable implements IWo
 										"language": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 									}
 								*/
-								this.telemetryService.publicLog('languagePackSuggestion:popup', { userReaction, language });
+								// this.telemetryService.publicLog('languagePackSuggestion:popup', { userReaction, language });
 							};
 
 							const searchAction = {

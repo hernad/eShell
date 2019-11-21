@@ -6,7 +6,7 @@
 import { IAction, IActionRunner, ActionRunner } from 'vs/base/common/actions';
 import { IActionViewItem } from 'vs/base/browser/ui/actionbar/actionbar';
 import { Component } from 'vs/workbench/common/component';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IComposite, ICompositeControl } from 'vs/workbench/common/composite';
 import { Event, Emitter } from 'vs/base/common/event';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
@@ -81,7 +81,7 @@ export abstract class Composite extends Component implements IComposite {
 
 	constructor(
 		id: string,
-		private _telemetryService: ITelemetryService,
+		/* private _telemetryService: ITelemetryService,*/
 		themeService: IThemeService,
 		storageService: IStorageService
 	) {
@@ -94,9 +94,11 @@ export abstract class Composite extends Component implements IComposite {
 		return undefined;
 	}
 
+	/*
 	protected get telemetryService(): ITelemetryService {
 		return this._telemetryService;
 	}
+	*/
 
 	/**
 	 * Note: Clients should not call this method, the workbench calls this

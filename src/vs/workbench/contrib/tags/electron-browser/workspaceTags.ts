@@ -4,18 +4,18 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as crypto from 'crypto';
-import { onUnexpectedError } from 'vs/base/common/errors';
+// import { onUnexpectedError } from 'vs/base/common/errors';
 import { URI } from 'vs/base/common/uri';
-import { IFileService, IFileStat } from 'vs/platform/files/common/files';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
+// import { IFileService, IFileStat } from 'vs/platform/files/common/files';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { endsWith } from 'vs/base/common/strings';
-import { ITextFileService, } from 'vs/workbench/services/textfile/common/textfiles';
-import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
-import { IWorkspaceTagsService, Tags } from 'vs/workbench/contrib/tags/common/workspaceTags';
-import { IWorkspaceInformation } from 'vs/platform/diagnostics/common/diagnostics';
-import { IRequestService } from 'vs/platform/request/common/request';
+// import { ITextFileService, } from 'vs/workbench/services/textfile/common/textfiles';
+// import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
+// import { IWorkspaceTagsService, Tags } from 'vs/workbench/contrib/tags/common/workspaceTags';
+// import { IWorkspaceInformation } from 'vs/platform/diagnostics/common/diagnostics';
+// import { IRequestService } from 'vs/platform/request/common/request';
 import { isWindows } from 'vs/base/common/platform';
 
 const SshProtocolMatcher = /^([^@:]+@)?([^:]+):/;
@@ -24,6 +24,7 @@ const AuthorityMatcher = /^([^@]+@)?([^:]+)(:\d+)?$/;
 const SecondLevelDomainMatcher = /([^@:.]+\.[^@:.]+)(:\d+)?$/;
 const RemoteMatcher = /^\s*url\s*=\s*(.+\S)\s*$/mg;
 const AnyButDot = /[^.]/g;
+/*
 const SecondLevelDomainWhitelist = [
 	'github.com',
 	'bitbucket.org',
@@ -38,7 +39,7 @@ const SecondLevelDomainWhitelist = [
 	'rhcloud.com',
 	'google.com'
 ];
-
+*/
 function stripLowLevelDomains(domain: string): string | null {
 	const match = domain.match(SecondLevelDomainMatcher);
 	return match ? match[1] : null;
@@ -140,19 +141,22 @@ export function getHashedRemotesFromConfig(text: string, stripEndingDotGit: bool
 export class WorkspaceTags implements IWorkbenchContribution {
 
 	constructor(
-		@IFileService private readonly fileService: IFileService,
-		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IRequestService private readonly requestService: IRequestService,
-		@ITextFileService private readonly textFileService: ITextFileService,
-		@ISharedProcessService private readonly sharedProcessService: ISharedProcessService,
-		@IWorkspaceTagsService private readonly workspaceTagsService: IWorkspaceTagsService
+		// @IFileService private readonly fileService: IFileService,
+		// @IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @IRequestService private readonly requestService: IRequestService,
+		// @ITextFileService private readonly textFileService: ITextFileService,
+		// @ISharedProcessService private readonly sharedProcessService: ISharedProcessService,
+		// @IWorkspaceTagsService private readonly workspaceTagsService: IWorkspaceTagsService
 	) {
+		/*
 		if (this.telemetryService.isOptedIn) {
 			this.report();
 		}
+		*/
 	}
 
+	/*
 	private async report(): Promise<void> {
 		// Windows-only Edition Event
 		this.reportWindowsEdition();
@@ -169,6 +173,7 @@ export class WorkspaceTags implements IWorkbenchContribution {
 		const diagnosticsChannel = this.sharedProcessService.getChannel('diagnostics');
 		this.getWorkspaceInformation().then(stats => diagnosticsChannel.call('reportWorkspaceStats', stats));
 	}
+	*/
 
 	async reportWindowsEdition(): Promise<void> {
 		if (!isWindows) {
@@ -186,9 +191,10 @@ export class WorkspaceTags implements IWorkbenchContribution {
 			value = 'Unknown';
 		}
 
-		this.telemetryService.publicLog2<{ edition: string }, { edition: { classification: 'SystemMetaData', purpose: 'BusinessInsight' } }>('windowsEdition', { edition: value });
+		// this.telemetryService.publicLog2<{ edition: string }, { edition: { classification: 'SystemMetaData', purpose: 'BusinessInsight' } }>('windowsEdition', { edition: value });
 	}
 
+	/*
 	private async getWorkspaceInformation(): Promise<IWorkspaceInformation> {
 		const workspace = this.contextService.getWorkspace();
 		const state = this.contextService.getWorkbenchState();
@@ -205,13 +211,13 @@ export class WorkspaceTags implements IWorkbenchContribution {
 	}
 
 	private reportWorkspaceTags(tags: Tags): void {
-		/* __GDPR__
+		* __GDPR__
 			"workspce.tags" : {
 				"${include}": [
 					"${WorkspaceTags}"
 				]
 			}
-		*/
+		*
 		this.telemetryService.publicLog('workspce.tags', tags);
 	}
 
@@ -232,11 +238,11 @@ export class WorkspaceTags implements IWorkbenchContribution {
 			const set = domains.reduce((set, list) => list.reduce((set, item) => set.add(item), set), new Set<string>());
 			const list: string[] = [];
 			set.forEach(item => list.push(item));
-			/* __GDPR__
+			* __GDPR__
 				"workspace.remotes" : {
 					"domains" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 				}
-			*/
+			*
 			this.telemetryService.publicLog('workspace.remotes', { domains: list.sort() });
 		}, onUnexpectedError);
 	}
@@ -245,20 +251,20 @@ export class WorkspaceTags implements IWorkbenchContribution {
 		Promise.all<string[]>(workspaceUris.map(workspaceUri => {
 			return this.workspaceTagsService.getHashedRemotesFromUri(workspaceUri, true);
 		})).then(hashedRemotes => {
-			/* __GDPR__
+			* __GDPR__
 					"workspace.hashedRemotes" : {
 						"remotes" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 					}
-				*/
+				*
 			this.telemetryService.publicLog('workspace.hashedRemotes', { remotes: hashedRemotes });
 		}, onUnexpectedError);
 	}
 
-	/* __GDPR__FRAGMENT__
+	* __GDPR__FRAGMENT__
 		"AzureTags" : {
 			"node" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 		}
-	*/
+	*
 	private reportAzureNode(workspaceUris: URI[], tags: Tags): Promise<Tags> {
 		// TODO: should also work for `node_modules` folders several levels down
 		const uris = workspaceUris.map(workspaceUri => {
@@ -278,16 +284,20 @@ export class WorkspaceTags implements IWorkbenchContribution {
 				return tags;
 			});
 	}
+	*/
 
+	/*
 	private static searchArray(arr: string[], regEx: RegExp): boolean | undefined {
 		return arr.some(v => v.search(regEx) > -1) || undefined;
 	}
+	*/
 
 	/* __GDPR__FRAGMENT__
 		"AzureTags" : {
 			"java" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 		}
 	*/
+	/*
 	private reportAzureJava(workspaceUris: URI[], tags: Tags): Promise<Tags> {
 		return Promise.all(workspaceUris.map(workspaceUri => {
 			const path = workspaceUri.path;
@@ -315,13 +325,13 @@ export class WorkspaceTags implements IWorkbenchContribution {
 			return this.reportAzureJava(uris, tags);
 		}).then((tags) => {
 			if (Object.keys(tags).length) {
-				/* __GDPR__
+				* __GDPR__
 					"workspace.azure" : {
 						"${include}": [
 							"${AzureTags}"
 						]
 					}
-				*/
+				*
 				this.telemetryService.publicLog('workspace.azure', tags);
 			}
 		}).then(undefined, onUnexpectedError);
@@ -349,4 +359,5 @@ export class WorkspaceTags implements IWorkbenchContribution {
 				this.telemetryService.publicLog2<{ type: String }, ResolveProxyStatsClassification>('resolveProxy.stats', { type });
 			}).then(undefined, onUnexpectedError);
 	}
+	*/
 }

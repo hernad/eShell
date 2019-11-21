@@ -14,7 +14,7 @@ import { IExtensionEnablementService } from 'vs/workbench/services/extensionMana
 import { BetterMergeId } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { ActivationTimes, ExtensionPointContribution, IExtensionService, IExtensionsStatus, IMessage, IWillActivateEvent, IResponsiveStateChangeEvent, toExtension } from 'vs/workbench/services/extensions/common/extensions';
 import { ExtensionMessageCollector, ExtensionPoint, ExtensionsRegistry, IExtensionPoint, IExtensionPointUser } from 'vs/workbench/services/extensions/common/extensionsRegistry';
 import { ExtensionDescriptionRegistry } from 'vs/workbench/services/extensions/common/extensionDescriptionRegistry';
@@ -67,7 +67,7 @@ export abstract class AbstractExtensionService extends Disposable implements IEx
 		@IInstantiationService protected readonly _instantiationService: IInstantiationService,
 		@INotificationService protected readonly _notificationService: INotificationService,
 		@IWorkbenchEnvironmentService protected readonly _environmentService: IWorkbenchEnvironmentService,
-		@ITelemetryService protected readonly _telemetryService: ITelemetryService,
+		// @ITelemetryService protected readonly _telemetryService: ITelemetryService,
 		@IExtensionEnablementService protected readonly _extensionEnablementService: IExtensionEnablementService,
 		@IFileService protected readonly _fileService: IFileService,
 		@IProductService protected readonly _productService: IProductService
@@ -348,6 +348,7 @@ export abstract class AbstractExtensionService extends Disposable implements IEx
 		}
 
 		if (!this._isDev && msg.extensionId) {
+			/*
 			const { type, extensionId, extensionPointId, message } = msg;
 			type ExtensionsMessageClassification = {
 				type: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
@@ -361,9 +362,10 @@ export abstract class AbstractExtensionService extends Disposable implements IEx
 				extensionPointId: string;
 				message: string;
 			};
-			this._telemetryService.publicLog2<ExtensionsMessageEvent, ExtensionsMessageClassification>('extensionsMessage', {
-				type, extensionId: extensionId.value, extensionPointId, message
-			});
+			*/
+			// this._telemetryService.publicLog2<ExtensionsMessageEvent, ExtensionsMessageClassification>('extensionsMessage', {
+			// 	type, extensionId: extensionId.value, extensionPointId, message
+			// });
 		}
 	}
 

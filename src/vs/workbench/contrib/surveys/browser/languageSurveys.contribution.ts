@@ -8,15 +8,15 @@ import { language } from 'vs/base/common/platform';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IWorkbenchContributionsRegistry, IWorkbenchContribution, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
 import { Registry } from 'vs/platform/registry/common/platform';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { ISurveyData, IProductService } from 'vs/platform/product/common/productService';
 import { LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
 import { Severity, INotificationService } from 'vs/platform/notification/common/notification';
 import { ITextFileService, StateChange } from 'vs/workbench/services/textfile/common/textfiles';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
-import { URI } from 'vs/base/common/uri';
-import { platform } from 'vs/base/common/process';
+// import { URI } from 'vs/base/common/uri';
+// import { platform } from 'vs/base/common/process';
 
 class LanguageSurvey {
 
@@ -24,7 +24,7 @@ class LanguageSurvey {
 		data: ISurveyData,
 		storageService: IStorageService,
 		notificationService: INotificationService,
-		telemetryService: ITelemetryService,
+		// telemetryService: ITelemetryService,
 		modelService: IModelService,
 		textFileService: ITextFileService,
 		openerService: IOpenerService,
@@ -87,7 +87,7 @@ class LanguageSurvey {
 		}
 
 		// __GDPR__TODO__ Need to move away from dynamic event names as those cannot be registered statically
-		telemetryService.publicLog(`${data.surveyId}.survey/userAsked`);
+		// telemetryService.publicLog(`${data.surveyId}.survey/userAsked`);
 
 		notificationService.prompt(
 			Severity.Info,
@@ -95,24 +95,26 @@ class LanguageSurvey {
 			[{
 				label: nls.localize('takeShortSurvey', "Take Short Survey"),
 				run: () => {
+					/*
 					telemetryService.publicLog(`${data.surveyId}.survey/takeShortSurvey`);
 					telemetryService.getTelemetryInfo().then(info => {
 						openerService.open(URI.parse(`${data.surveyUrl}?o=${encodeURIComponent(platform)}&v=${encodeURIComponent(productService.version)}&m=${encodeURIComponent(info.machineId)}`));
 						storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
 						storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
 					});
+					*/
 				}
 			}, {
 				label: nls.localize('remindLater', "Remind Me later"),
 				run: () => {
-					telemetryService.publicLog(`${data.surveyId}.survey/remindMeLater`);
+					// telemetryService.publicLog(`${data.surveyId}.survey/remindMeLater`);
 					storageService.store(SESSION_COUNT_KEY, sessionCount - 3, StorageScope.GLOBAL);
 				}
 			}, {
 				label: nls.localize('neverAgain', "Don't Show Again"),
 				isSecondary: true,
 				run: () => {
-					telemetryService.publicLog(`${data.surveyId}.survey/dontShowAgain`);
+					// telemetryService.publicLog(`${data.surveyId}.survey/dontShowAgain`);
 					storageService.store(IS_CANDIDATE_KEY, false, StorageScope.GLOBAL);
 					storageService.store(SKIP_VERSION_KEY, productService.version, StorageScope.GLOBAL);
 				}
@@ -127,7 +129,7 @@ class LanguageSurveysContribution implements IWorkbenchContribution {
 	constructor(
 		@IStorageService storageService: IStorageService,
 		@INotificationService notificationService: INotificationService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IModelService modelService: IModelService,
 		@ITextFileService textFileService: ITextFileService,
 		@IOpenerService openerService: IOpenerService,
@@ -139,7 +141,7 @@ class LanguageSurveysContribution implements IWorkbenchContribution {
 
 		productService.surveys
 			.filter(surveyData => surveyData.surveyId && surveyData.editCount && surveyData.languageId && surveyData.surveyUrl && surveyData.userProbability)
-			.map(surveyData => new LanguageSurvey(surveyData, storageService, notificationService, telemetryService, modelService, textFileService, openerService, productService));
+			.map(surveyData => new LanguageSurvey(surveyData, storageService, notificationService, /*telemetryService,*/ modelService, textFileService, openerService, productService));
 	}
 }
 

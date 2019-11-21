@@ -34,7 +34,7 @@ import 'vs/workbench/services/textfile/browser/browserTextFileService';
 import 'vs/workbench/services/keybinding/browser/keymapService';
 import 'vs/workbench/services/extensions/browser/extensionService';
 import 'vs/workbench/services/extensionManagement/common/extensionManagementServerService';
-import 'vs/workbench/services/telemetry/browser/telemetryService';
+// import 'vs/workbench/services/telemetry/browser/telemetryService';
 import 'vs/workbench/services/configurationResolver/browser/configurationResolverService';
 import 'vs/workbench/services/credentials/browser/credentialsService';
 import 'vs/workbench/services/url/browser/urlService';
@@ -107,7 +107,7 @@ import 'vs/workbench/contrib/terminal/browser/terminalInstanceService';
 import 'vs/workbench/contrib/tasks/browser/taskService';
 
 // Telemetry Opt Out
-import 'vs/workbench/contrib/welcome/telemetryOptOut/browser/telemetryOptOut.contribution';
+// import 'vs/workbench/contrib/welcome/telemetryOptOut/browser/telemetryOptOut.contribution';
 
 // Issues
 import 'vs/workbench/contrib/issue/browser/issue.contribution';

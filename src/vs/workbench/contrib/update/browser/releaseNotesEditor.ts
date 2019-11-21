@@ -15,7 +15,7 @@ import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { IRequestService, asText } from 'vs/platform/request/common/request';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { IWebviewWorkbenchService } from 'vs/workbench/contrib/webview/browser/webviewWorkbenchService';
 import { IEditorService, ACTIVE_GROUP } from 'vs/workbench/services/editor/common/editorService';
@@ -40,7 +40,7 @@ export class ReleaseNotesManager {
 		@IModeService private readonly _modeService: IModeService,
 		@IOpenerService private readonly _openerService: IOpenerService,
 		@IRequestService private readonly _requestService: IRequestService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@IEditorService private readonly _editorService: IEditorService,
 		@IEditorGroupsService private readonly _editorGroupService: IEditorGroupsService,
 		@IWebviewWorkbenchService private readonly _webviewWorkbenchService: IWebviewWorkbenchService,
@@ -167,7 +167,8 @@ export class ReleaseNotesManager {
 	private async  addGAParameters(uri: URI, origin: string, experiment = '1'): Promise<URI> {
 		if (this._environmentService.isBuilt && !this._environmentService.isExtensionDevelopment && !this._environmentService.args['disable-telemetry'] && !!this._productService.enableTelemetry) {
 			if (uri.scheme === 'https' && uri.authority === 'code.visualstudio.com') {
-				const info = await this._telemetryService.getTelemetryInfo();
+				// const info = await this._telemetryService.getTelemetryInfo();
+				const info = { instanceId: '0' };
 
 				return uri.with({ query: `${uri.query ? uri.query + '&' : ''}utm_source=VsCode&utm_medium=${encodeURIComponent(origin)}&utm_campaign=${encodeURIComponent(info.instanceId)}&utm_content=${encodeURIComponent(experiment)}` });
 			}

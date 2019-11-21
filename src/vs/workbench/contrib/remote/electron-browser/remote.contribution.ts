@@ -300,6 +300,7 @@ class RemoteExtensionHostEnvironmentUpdater implements IWorkbenchContribution {
 	}
 }
 
+/*
 class RemoteTelemetryEnablementUpdater extends Disposable implements IWorkbenchContribution {
 	constructor(
 		@IRemoteAgentService private readonly remoteAgentService: IRemoteAgentService,
@@ -318,13 +319,13 @@ class RemoteTelemetryEnablementUpdater extends Disposable implements IWorkbenchC
 
 	private updateRemoteTelemetryEnablement(): Promise<void> {
 		if (!this.configurationService.getValue('telemetry.enableTelemetry')) {
-			return this.remoteAgentService.disableTelemetry();
+			// return this.remoteAgentService.disableTelemetry();
 		}
 
 		return Promise.resolve();
 	}
 }
-
+*/
 
 class RemoteEmptyWorkbenchPresentation extends Disposable implements IWorkbenchContribution {
 	constructor(
@@ -363,7 +364,7 @@ workbenchContributionsRegistry.registerWorkbenchContribution(RemoteChannelsContr
 workbenchContributionsRegistry.registerWorkbenchContribution(RemoteAgentDiagnosticListener, LifecyclePhase.Eventually);
 workbenchContributionsRegistry.registerWorkbenchContribution(RemoteExtensionHostEnvironmentUpdater, LifecyclePhase.Eventually);
 workbenchContributionsRegistry.registerWorkbenchContribution(RemoteWindowActiveIndicator, LifecyclePhase.Starting);
-workbenchContributionsRegistry.registerWorkbenchContribution(RemoteTelemetryEnablementUpdater, LifecyclePhase.Ready);
+// workbenchContributionsRegistry.registerWorkbenchContribution(RemoteTelemetryEnablementUpdater, LifecyclePhase.Ready);
 workbenchContributionsRegistry.registerWorkbenchContribution(RemoteEmptyWorkbenchPresentation, LifecyclePhase.Starting);
 
 const extensionKindSchema: IJSONSchema = {

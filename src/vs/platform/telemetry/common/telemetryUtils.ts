@@ -3,14 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IDisposable } from 'vs/base/common/lifecycle';
-import { IConfigurationService, ConfigurationTarget, ConfigurationTargetToString } from 'vs/platform/configuration/common/configuration';
-import { ITelemetryService, ITelemetryInfo, ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
-import { ILogService } from 'vs/platform/log/common/log';
-import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
-import { safeStringify } from 'vs/base/common/objects';
-import { isObject } from 'vs/base/common/types';
+// import { IDisposable } from 'vs/base/common/lifecycle';
+// import { IConfigurationService, ConfigurationTarget, ConfigurationTargetToString } from 'vs/platform/configuration/common/configuration';
+// import { ITelemetryService, ITelemetryInfo, ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
+// import { ILogService } from 'vs/platform/log/common/log';
+// import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
+// import { safeStringify } from 'vs/base/common/objects';
+// import { isObject } from 'vs/base/common/types';
 
+/*
 export const NullTelemetryService = new class implements ITelemetryService {
 	_serviceBrand: undefined;
 	publicLog(eventName: string, data?: ITelemetryData) {
@@ -64,6 +65,7 @@ export class LogAppender implements ITelemetryAppender {
 		this._logService.trace(`telemetry/${eventName}`, strippedData);
 	}
 }
+*/
 
 /* __GDPR__FRAGMENT__
 	"URIDescriptor" : {
@@ -73,6 +75,7 @@ export class LogAppender implements ITelemetryAppender {
 		"path": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 	}
 */
+/*
 export interface URIDescriptor {
 	mimeType?: string;
 	scheme?: string;
@@ -140,6 +143,7 @@ export function validateTelemetryData(data?: any): { properties: Properties, mea
 		measurements
 	};
 }
+*/
 
 export function cleanRemoteAuthority(remoteAuthority?: string): string {
 	if (!remoteAuthority) {
@@ -157,6 +161,7 @@ export function cleanRemoteAuthority(remoteAuthority?: string): string {
 	return ret;
 }
 
+/*
 function flatten(obj: any, result: { [key: string]: any }, order: number = 0, prefix?: string): void {
 	if (!obj) {
 		return;
@@ -202,3 +207,4 @@ function flatKeys(result: string[], prefix: string, value: { [key: string]: any 
 		result.push(prefix);
 	}
 }
+*/

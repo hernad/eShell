@@ -8,7 +8,7 @@ import { createDecorator } from 'vs/platform/instantiation/common/instantiation'
 import { URI } from 'vs/base/common/uri';
 import { basename } from 'vs/base/common/resources';
 import { localize } from 'vs/nls';
-import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
 
 export interface FileFilter {
 	extensions: string[];
@@ -64,7 +64,7 @@ export interface IShowResult {
 export interface IPickAndOpenOptions {
 	forceNewWindow?: boolean;
 	defaultUri?: URI;
-	telemetryExtraData?: ITelemetryData;
+	// telemetryExtraData?: ITelemetryData;
 	availableFileSystems?: string[];
 }
 

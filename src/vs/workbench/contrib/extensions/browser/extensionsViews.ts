@@ -25,7 +25,7 @@ import { attachBadgeStyler } from 'vs/platform/theme/common/styler';
 import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewlet';
 import { OpenGlobalSettingsAction } from 'vs/workbench/contrib/preferences/browser/preferencesActions';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { CountBadge } from 'vs/base/browser/ui/countBadge/countBadge';
 import { Separator } from 'vs/base/browser/ui/actionbar/actionbar';
 import { InstallWorkspaceRecommendedExtensionsAction, ConfigureWorkspaceFolderRecommendedExtensionsAction, ManageExtensionAction, InstallLocalExtensionsInRemoteAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
@@ -96,7 +96,7 @@ export class ExtensionsListView extends ViewletPanel {
 		@IExtensionsWorkbenchService protected extensionsWorkbenchService: IExtensionsWorkbenchService,
 		@IEditorService private readonly editorService: IEditorService,
 		@IExtensionTipsService protected tipsService: IExtensionTipsService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IWorkspaceContextService protected contextService: IWorkspaceContextService,
 		@IExperimentService private readonly experimentService: IExperimentService,
@@ -533,13 +533,14 @@ export class ExtensionsListView extends ViewletPanel {
 				return Promise.all([othersPromise, workspacePromise])
 					.then(([others, workspaceRecommendations]) => {
 						const names = this.getTrimmedRecommendations(local, value, fileBasedRecommendations, others, workspaceRecommendations);
-						const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
+						// const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
 						/* __GDPR__
 							"extensionAllRecommendations:open" : {
 								"count" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 								"recommendations": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 							}
 						*/
+						/*
 						this.telemetryService.publicLog('extensionAllRecommendations:open', {
 							count: names.length,
 							recommendations: names.map(id => {
@@ -549,6 +550,7 @@ export class ExtensionsListView extends ViewletPanel {
 								};
 							})
 						});
+						*/
 						if (!names.length) {
 							return Promise.resolve(new PagedModel([]));
 						}
@@ -591,7 +593,7 @@ export class ExtensionsListView extends ViewletPanel {
 						others = others.filter(x => workspaceRecommendations.every(({ extensionId }) => x.extensionId !== extensionId));
 
 						const names = this.getTrimmedRecommendations(local, value, fileBasedRecommendations, others, []);
-						const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
+						// const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
 
 						/* __GDPR__
 							"extensionRecommendations:open" : {
@@ -599,6 +601,7 @@ export class ExtensionsListView extends ViewletPanel {
 								"recommendations": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 							}
 						*/
+						/*
 						this.telemetryService.publicLog('extensionRecommendations:open', {
 							count: names.length,
 							recommendations: names.map(id => {
@@ -608,6 +611,7 @@ export class ExtensionsListView extends ViewletPanel {
 								};
 							})
 						});
+						*/
 
 						if (!names.length) {
 							return Promise.resolve(new PagedModel([]));
@@ -665,7 +669,7 @@ export class ExtensionsListView extends ViewletPanel {
 						"count" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 					}
 				*/
-				this.telemetryService.publicLog('extensionWorkspaceRecommendations:open', { count: names.length });
+				// this.telemetryService.publicLog('extensionWorkspaceRecommendations:open', { count: names.length });
 
 				if (!names.length) {
 					return Promise.resolve(new PagedModel([]));
@@ -855,7 +859,7 @@ export class ServerExtensionsView extends ExtensionsListView {
 		@IExtensionService extensionService: IExtensionService,
 		@IEditorService editorService: IEditorService,
 		@IExtensionTipsService tipsService: IExtensionTipsService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IWorkspaceContextService contextService: IWorkspaceContextService,
 		@IExperimentService experimentService: IExperimentService,
@@ -866,7 +870,7 @@ export class ServerExtensionsView extends ExtensionsListView {
 		@IContextKeyService contextKeyService: IContextKeyService
 	) {
 		options.server = server;
-		super(options, notificationService, keybindingService, contextMenuService, instantiationService, themeService, extensionService, extensionsWorkbenchService, editorService, tipsService, telemetryService, configurationService, contextService, experimentService, workbenchThemeService, extensionManagementServerService, productService, contextKeyService);
+		super(options, notificationService, keybindingService, contextMenuService, instantiationService, themeService, extensionService, extensionsWorkbenchService, editorService, tipsService, /*telemetryService,*/ configurationService, contextService, experimentService, workbenchThemeService, extensionManagementServerService, productService, contextKeyService);
 		this._register(onDidChangeTitle(title => this.updateTitle(title)));
 	}
 

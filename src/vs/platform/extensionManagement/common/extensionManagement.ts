@@ -79,7 +79,7 @@ export interface IGalleryExtension {
 	ratingCount: number;
 	assets: IGalleryExtensionAssets;
 	properties: IGalleryExtensionProperties;
-	telemetryData: any;
+	// telemetryData: any;
 	preview: boolean;
 }
 

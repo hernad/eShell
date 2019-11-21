@@ -16,7 +16,7 @@ import { loadLocalResource, WebviewResourceResponse } from 'vs/workbench/contrib
 import { WebviewThemeDataProvider } from 'vs/workbench/contrib/webview/common/themeing';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { BaseWebview, WebviewMessageChannels } from 'vs/workbench/contrib/webview/browser/baseWebviewElement';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 
 export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Webview {
@@ -30,11 +30,11 @@ export class IFrameWebview extends BaseWebview<HTMLIFrameElement> implements Web
 		@ITunnelService tunnelService: ITunnelService,
 		@IFileService private readonly fileService: IFileService,
 		@IConfigurationService private readonly _configurationService: IConfigurationService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IEnvironmentService environementService: IEnvironmentService,
 		@IWorkbenchEnvironmentService workbenchEnvironmentService: IWorkbenchEnvironmentService,
 	) {
-		super(id, options, contentOptions, webviewThemeDataProvider, telemetryService, environementService, workbenchEnvironmentService);
+		super(id, options, contentOptions, webviewThemeDataProvider, /*telemetryService,*/ environementService, workbenchEnvironmentService);
 
 		if (!this.useExternalEndpoint && (!workbenchEnvironmentService.options || typeof workbenchEnvironmentService.webviewExternalEndpoint !== 'string')) {
 			throw new Error('To use iframe based webviews, you must configure `environmentService.webviewExternalEndpoint`');

@@ -21,7 +21,7 @@ import { ContentWidgetPositionPreference, ICodeEditor, IContentWidget, IContentW
 import { Context as SuggestContext, CompletionItem } from './suggest';
 import { CompletionModel } from './completionModel';
 import { alert } from 'vs/base/browser/ui/aria/aria';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { attachListStyler } from 'vs/platform/theme/common/styler';
 import { IThemeService, ITheme, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { registerColor, editorWidgetBackground, listFocusBackground, activeContrastBorder, listHighlightForeground, editorForeground, editorWidgetBorder, focusBorder, textLinkForeground, textCodeBlockBackground } from 'vs/platform/theme/common/colorRegistry';
@@ -483,7 +483,7 @@ export class SuggestWidget implements IContentWidget, IListVirtualDelegate<Compl
 
 	constructor(
 		private readonly editor: ICodeEditor,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 		@IThemeService themeService: IThemeService,
 		@IStorageService storageService: IStorageService,
@@ -831,7 +831,7 @@ export class SuggestWidget implements IContentWidget, IListVirtualDelegate<Compl
 						]
 					}
 				*/
-				this.telemetryService.publicLog('suggestWidget', { ...stats });
+				// this.telemetryService.publicLog('suggestWidget', { ...stats });
 			}
 
 			this.focusedItem = null;
@@ -965,7 +965,7 @@ export class SuggestWidget implements IContentWidget, IListVirtualDelegate<Compl
 				this.details.element.style.borderColor = this.detailsFocusBorderColor;
 			}
 		}
-		this.telemetryService.publicLog2('suggestWidget:toggleDetailsFocus');
+		// this.telemetryService.publicLog2('suggestWidget:toggleDetailsFocus');
 	}
 
 	toggleDetails(): void {
@@ -979,7 +979,7 @@ export class SuggestWidget implements IContentWidget, IListVirtualDelegate<Compl
 			removeClass(this.element, 'docs-side');
 			removeClass(this.element, 'docs-below');
 			this.editor.layoutContentWidget(this);
-			this.telemetryService.publicLog2('suggestWidget:collapseDetails');
+			// this.telemetryService.publicLog2('suggestWidget:collapseDetails');
 		} else {
 			if (this.state !== State.Open && this.state !== State.Details && this.state !== State.Frozen) {
 				return;
@@ -988,7 +988,7 @@ export class SuggestWidget implements IContentWidget, IListVirtualDelegate<Compl
 			this.updateExpandDocsSetting(true);
 			this.showDetails(false);
 			this._ariaAlert(this.details.getAriaLabel());
-			this.telemetryService.publicLog2('suggestWidget:expandDetails');
+			// this.telemetryService.publicLog2('suggestWidget:expandDetails');
 		}
 	}
 

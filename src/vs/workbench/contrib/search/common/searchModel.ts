@@ -20,8 +20,8 @@ import { IModelService } from 'vs/editor/common/services/modelService';
 import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IProgress, IProgressStep } from 'vs/platform/progress/common/progress';
 import { ReplacePattern } from 'vs/workbench/services/search/common/replace';
-import { IFileMatch, IPatternInfo, ISearchComplete, ISearchProgressItem, ISearchConfigurationProperties, ISearchService, ITextQuery, ITextSearchPreviewOptions, ITextSearchMatch, ITextSearchStats, resultIsMatch, ISearchRange, OneLineRange } from 'vs/workbench/services/search/common/search';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+import { IFileMatch, IPatternInfo, ISearchComplete, ISearchProgressItem, ISearchConfigurationProperties, ISearchService, ITextQuery, ITextSearchPreviewOptions, ITextSearchMatch, /*ITextSearchStats,*/ resultIsMatch, ISearchRange, OneLineRange } from 'vs/workbench/services/search/common/search';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { overviewRulerFindMatchForeground, minimapFindMatch } from 'vs/platform/theme/common/colorRegistry';
 import { themeColorFromId } from 'vs/platform/theme/common/themeService';
 import { IReplaceService } from 'vs/workbench/contrib/search/common/replace';
@@ -644,7 +644,7 @@ export class SearchResult extends Disposable {
 	constructor(
 		private _searchModel: SearchModel,
 		@IReplaceService private readonly replaceService: IReplaceService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@IModelService private readonly modelService: IModelService,
 	) {
@@ -769,13 +769,13 @@ export class SearchResult extends Disposable {
 		this.replacingAll = true;
 
 		const promise = this.replaceService.replace(this.matches(), progress);
-		const onDone = Event.stopwatch(Event.fromPromise(promise));
+		// const onDone = Event.stopwatch(Event.fromPromise(promise));
 		/* __GDPR__
 			"replaceAll.started" : {
 				"duration" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true }
 			}
 		*/
-		onDone(duration => this.telemetryService.publicLog('replaceAll.started', { duration }));
+		// onDone(duration => this.telemetryService.publicLog('replaceAll.started', { duration }));
 
 		return promise.then(() => {
 			this.replacingAll = false;
@@ -918,7 +918,7 @@ export class SearchModel extends Disposable {
 
 	constructor(
 		@ISearchService private readonly searchService: ISearchService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService
 	) {
@@ -991,15 +991,15 @@ export class SearchModel extends Disposable {
 		const dispose = () => tokenSource.dispose();
 		currentRequest.then(dispose, dispose);
 
-		const onDone = Event.fromPromise(currentRequest);
-		const onFirstRender = Event.any<any>(onDone, progressEmitter.event);
-		const onFirstRenderStopwatch = Event.stopwatch(onFirstRender);
+		// const onDone = Event.fromPromise(currentRequest);
+		// const onFirstRender = Event.any<any>(onDone, progressEmitter.event);
+		// const onFirstRenderStopwatch = Event.stopwatch(onFirstRender);
 		/* __GDPR__
 			"searchResultsFirstRender" : {
 				"duration" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true }
 			}
 		*/
-		onFirstRenderStopwatch(duration => this.telemetryService.publicLog('searchResultsFirstRender', { duration }));
+		// onFirstRenderStopwatch(duration => this.telemetryService.publicLog('searchResultsFirstRender', { duration }));
 
 		const start = Date.now();
 		currentRequest.then(
@@ -1012,7 +1012,7 @@ export class SearchModel extends Disposable {
 					"duration" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true }
 				}
 			*/
-			this.telemetryService.publicLog('searchResultsFinished', { duration: Date.now() - start });
+			// this.telemetryService.publicLog('searchResultsFinished', { duration: Date.now() - start });
 		});
 	}
 
@@ -1027,6 +1027,7 @@ export class SearchModel extends Disposable {
 		const options: IPatternInfo = objects.assign({}, this._searchQuery.contentPattern);
 		delete options.pattern;
 
+		/*
 		const stats = completed && completed.stats as ITextSearchStats;
 
 		const fileSchemeOnly = this._searchQuery.folderQueries.every(fq => fq.folder.scheme === 'file');
@@ -1035,6 +1036,7 @@ export class SearchModel extends Disposable {
 			otherSchemeOnly ? 'other' :
 				'mixed';
 
+		*/
 		/* __GDPR__
 			"searchResultsShown" : {
 				"count" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
@@ -1045,7 +1047,6 @@ export class SearchModel extends Disposable {
 				"scheme" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" },
 				"searchOnTypeEnabled" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 			}
-		*/
 		this.telemetryService.publicLog('searchResultsShown', {
 			count: this._searchResult.count(),
 			fileCount: this._searchResult.fileCount(),
@@ -1055,6 +1056,7 @@ export class SearchModel extends Disposable {
 			scheme,
 			searchOnTypeEnabled: this.searchConfig.searchOnType
 		});
+		*/
 		return completed;
 	}
 

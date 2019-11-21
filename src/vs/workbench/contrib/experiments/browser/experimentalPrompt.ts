@@ -6,7 +6,7 @@
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 import { INotificationService, Severity, IPromptChoice } from 'vs/platform/notification/common/notification';
 import { IExperimentService, IExperiment, ExperimentActionType, IExperimentActionPromptProperties, IExperimentActionPromptCommand, ExperimentState } from 'vs/workbench/contrib/experiments/common/experimentService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IExtensionsViewlet } from 'vs/workbench/contrib/extensions/common/extensions';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { Disposable } from 'vs/base/common/lifecycle';
@@ -20,7 +20,7 @@ export class ExperimentalPrompts extends Disposable implements IWorkbenchContrib
 		@IExperimentService private readonly experimentService: IExperimentService,
 		@IViewletService private readonly viewletService: IViewletService,
 		@INotificationService private readonly notificationService: INotificationService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IOpenerService private readonly openerService: IOpenerService
 
 	) {
@@ -45,11 +45,13 @@ export class ExperimentalPrompts extends Disposable implements IWorkbenchContrib
 					"cancelled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 				}
 			*/
+			/*
 			this.telemetryService.publicLog('experimentalPrompts', {
 				experimentId: experiment.id,
 				commandText,
 				cancelled: !commandText
 			});
+			*/
 		};
 
 		const actionProperties = (<IExperimentActionPromptProperties>experiment.action.properties);

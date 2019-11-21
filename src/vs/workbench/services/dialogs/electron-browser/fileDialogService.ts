@@ -42,7 +42,7 @@ export class FileDialogService extends AbstractFileDialogService implements IFil
 	private toNativeOpenDialogOptions(options: IPickAndOpenOptions): INativeOpenDialogOptions {
 		return {
 			forceNewWindow: options.forceNewWindow,
-			telemetryExtraData: options.telemetryExtraData,
+			// telemetryExtraData: options.telemetryExtraData,
 			defaultPath: options.defaultUri && options.defaultUri.fsPath
 		};
 	}

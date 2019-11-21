@@ -56,7 +56,7 @@ export interface IExtension {
 	readonly enablementState: EnablementState;
 	readonly dependencies: string[];
 	readonly extensionPack: string[];
-	readonly telemetryData: any;
+	// readonly telemetryData: any;
 	readonly preview: boolean;
 	getManifest(token: CancellationToken): Promise<IExtensionManifest | null>;
 	getReadme(token: CancellationToken): Promise<string>;

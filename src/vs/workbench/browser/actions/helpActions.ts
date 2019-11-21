@@ -7,7 +7,7 @@ import { Action } from 'vs/base/common/actions';
 import * as nls from 'vs/nls';
 import product from 'vs/platform/product/common/product';
 import { isMacintosh, isLinux, language } from 'vs/base/common/platform';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { URI } from 'vs/base/common/uri';
 import { Registry } from 'vs/platform/registry/common/platform';
@@ -122,17 +122,17 @@ class OpenNewsletterSignupUrlAction extends Action {
 	constructor(
 		id: string,
 		label: string,
-		@IOpenerService private readonly openerService: IOpenerService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IProductService private readonly productService: IProductService
+		// @IOpenerService private readonly openerService: IOpenerService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @IProductService private readonly productService: IProductService
 	) {
 		super(id, label);
 	}
 
 	async run(): Promise<void> {
-		const info = await this.telemetryService.getTelemetryInfo();
+		// const info = await this.telemetryService.getTelemetryInfo();
 
-		this.openerService.open(URI.parse(`${this.productService.newsletterSignupUrl}?machineId=${encodeURIComponent(info.machineId)}`));
+		// this.openerService.open(URI.parse(`${this.productService.newsletterSignupUrl}?machineId=${encodeURIComponent(info.machineId)}`));
 	}
 }
 

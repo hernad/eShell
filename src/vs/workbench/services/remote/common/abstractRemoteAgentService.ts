@@ -21,7 +21,7 @@ import { IDiagnosticInfoOptions, IDiagnosticInfo } from 'vs/platform/diagnostics
 import { Emitter } from 'vs/base/common/event';
 import { ISignService } from 'vs/platform/sign/common/sign';
 import { ILogService } from 'vs/platform/log/common/log';
-import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
 
 export abstract class AbstractRemoteAgentService extends Disposable {
 
@@ -60,7 +60,7 @@ export abstract class AbstractRemoteAgentService extends Disposable {
 
 		return Promise.resolve(undefined);
 	}
-
+/*
 	disableTelemetry(): Promise<void> {
 		const connection = this.getConnection();
 		if (connection) {
@@ -90,6 +90,7 @@ export abstract class AbstractRemoteAgentService extends Disposable {
 
 		return Promise.resolve(undefined);
 	}
+*/
 }
 
 export class RemoteAgentConnection extends Disposable implements IRemoteAgentConnection {

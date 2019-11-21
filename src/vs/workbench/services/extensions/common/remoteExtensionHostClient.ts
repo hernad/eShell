@@ -9,7 +9,7 @@ import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/
 import { ILabelService } from 'vs/platform/label/common/label';
 import { ILogService } from 'vs/platform/log/common/log';
 import { connectRemoteAgentExtensionHost, IRemoteExtensionHostStartParams, IConnectionOptions, ISocketFactory } from 'vs/platform/remote/common/remoteAgentConnection';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
 import { IInitData, UIKind } from 'vs/workbench/api/common/extHost.protocol';
 import { MessageType, createMessageOfType, isMessageOfType } from 'vs/workbench/services/extensions/common/extensionHostProtocol';
@@ -50,7 +50,7 @@ export class RemoteExtensionHostClient extends Disposable implements IExtensionH
 		private readonly _socketFactory: ISocketFactory,
 		@IWorkspaceContextService private readonly _contextService: IWorkspaceContextService,
 		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@ILifecycleService private readonly _lifecycleService: ILifecycleService,
 		@ILogService private readonly _logService: ILogService,
 		@ILabelService private readonly _labelService: ILabelService,
@@ -178,7 +178,7 @@ export class RemoteExtensionHostClient extends Disposable implements IExtensionH
 	}
 
 	private _createExtHostInitData(isExtensionDevelopmentDebug: boolean): Promise<IInitData> {
-		return Promise.all([this._allExtensions, this._telemetryService.getTelemetryInfo(), this._initDataProvider.getInitData()]).then(([allExtensions, telemetryInfo, remoteExtensionHostData]) => {
+		return Promise.all([this._allExtensions, /*this._telemetryService.getTelemetryInfo(),*/ this._initDataProvider.getInitData()]).then(([allExtensions, /*telemetryInfo,*/ remoteExtensionHostData]) => {
 			// Collect all identifiers for extension ids which can be considered "resolved"
 			const resolvedExtensions = allExtensions.filter(extension => !extension.main).map(extension => extension.identifier);
 			const hostExtensions = allExtensions.filter(extension => extension.main && extension.api === 'none').map(extension => extension.identifier);
@@ -213,7 +213,7 @@ export class RemoteExtensionHostClient extends Disposable implements IExtensionH
 				resolvedExtensions: resolvedExtensions,
 				hostExtensions: hostExtensions,
 				extensions: remoteExtensionHostData.extensions,
-				telemetryInfo,
+				/* telemetryInfo,*/
 				logLevel: this._logService.getLevel(),
 				logsLocation: remoteExtensionHostData.extensionHostLogsPath,
 				autoStart: true,

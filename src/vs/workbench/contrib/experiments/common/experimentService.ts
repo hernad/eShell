@@ -6,7 +6,7 @@
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { Emitter, Event } from 'vs/base/common/event';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryService, lastSessionDateStorageKey } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService, lastSessionDateStorageKey } from 'vs/platform/telemetry/common/telemetry';
 import { ILifecycleService, LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
@@ -119,7 +119,7 @@ export class ExperimentService extends Disposable implements IExperimentService 
 		@IStorageService private readonly storageService: IStorageService,
 		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
 		@ITextFileService private readonly textFileService: ITextFileService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@ILifecycleService private readonly lifecycleService: ILifecycleService,
 		@IRequestService private readonly requestService: IRequestService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
@@ -274,10 +274,12 @@ export class ExperimentService extends Disposable implements IExperimentService 
 
 			});
 			return Promise.all(promises).then(() => {
+				/*
 				type ExperimentsClassification = {
 					experiments: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 				};
-				this.telemetryService.publicLog2<{ experiments: IExperiment[] }, ExperimentsClassification>('experiments', { experiments: this._experiments });
+				*/
+				// this.telemetryService.publicLog2<{ experiments: IExperiment[] }, ExperimentsClassification>('experiments', { experiments: this._experiments });
 			});
 		});
 	}
@@ -339,11 +341,13 @@ export class ExperimentService extends Disposable implements IExperimentService 
 			return Promise.resolve(ExperimentState.NoRun);
 		}
 
+		/*
 		const isNewUser = !this.storageService.get(lastSessionDateStorageKey, StorageScope.GLOBAL);
 		if ((condition.newUser === true && !isNewUser)
 			|| (condition.newUser === false && isNewUser)) {
 			return Promise.resolve(ExperimentState.NoRun);
 		}
+		*/
 
 		if (typeof condition.displayLanguage === 'string') {
 			let localeToCheck = condition.displayLanguage.toLowerCase();

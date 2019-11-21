@@ -13,7 +13,7 @@ import { ModeServiceImpl } from 'vs/editor/common/services/modeServiceImpl';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ModelServiceImpl } from 'vs/editor/common/services/modelServiceImpl';
 import { ITextResourceConfigurationService, ITextResourcePropertiesService } from 'vs/editor/common/services/resourceConfiguration';
-import { SimpleBulkEditService, SimpleConfigurationService, SimpleDialogService, SimpleNotificationService, SimpleEditorProgressService, SimpleResourceConfigurationService, SimpleResourcePropertiesService, SimpleUriLabelService, SimpleWorkspaceContextService, StandaloneCommandService, StandaloneKeybindingService, StandaloneTelemetryService, SimpleLayoutService } from 'vs/editor/standalone/browser/simpleServices';
+import { SimpleBulkEditService, SimpleConfigurationService, SimpleDialogService, SimpleNotificationService, SimpleEditorProgressService, SimpleResourceConfigurationService, SimpleResourcePropertiesService, SimpleUriLabelService, SimpleWorkspaceContextService, StandaloneCommandService, StandaloneKeybindingService, /*StandaloneTelemetryService,*/ SimpleLayoutService } from 'vs/editor/standalone/browser/simpleServices';
 import { StandaloneCodeEditorServiceImpl } from 'vs/editor/standalone/browser/standaloneCodeServiceImpl';
 import { StandaloneThemeServiceImpl } from 'vs/editor/standalone/browser/standaloneThemeServiceImpl';
 import { IStandaloneThemeService } from 'vs/editor/standalone/common/standaloneThemeService';
@@ -38,7 +38,7 @@ import { IMarkerService } from 'vs/platform/markers/common/markers';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { IEditorProgressService } from 'vs/platform/progress/common/progress';
 import { IStorageService, InMemoryStorageService } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { MenuService } from 'vs/platform/actions/common/menuService';
@@ -134,7 +134,7 @@ export module StaticServices {
 
 	export const labelService = define(ILabelService, () => new SimpleUriLabelService());
 
-	export const telemetryService = define(ITelemetryService, () => new StandaloneTelemetryService());
+	// export const telemetryService = define(ITelemetryService, () => new StandaloneTelemetryService());
 
 	export const dialogService = define(IDialogService, () => new SimpleDialogService());
 
@@ -175,7 +175,7 @@ export class DynamicStandaloneServices extends Disposable {
 
 		const configurationService = this.get(IConfigurationService);
 		const notificationService = this.get(INotificationService);
-		const telemetryService = this.get(ITelemetryService);
+		// const telemetryService = this.get(ITelemetryService);
 		const themeService = this.get(IThemeService);
 
 		let ensure = <T>(serviceId: ServiceIdentifier<T>, factory: () => T): T => {
@@ -198,14 +198,14 @@ export class DynamicStandaloneServices extends Disposable {
 
 		let commandService = ensure(ICommandService, () => new StandaloneCommandService(this._instantiationService));
 
-		let keybindingService = ensure(IKeybindingService, () => this._register(new StandaloneKeybindingService(contextKeyService, commandService, telemetryService, notificationService, domElement)));
+		let keybindingService = ensure(IKeybindingService, () => this._register(new StandaloneKeybindingService(contextKeyService, commandService, /*telemetryService,*/ notificationService, domElement)));
 
 		let layoutService = ensure(ILayoutService, () => new SimpleLayoutService(domElement));
 
 		let contextViewService = ensure(IContextViewService, () => this._register(new ContextViewService(layoutService)));
 
 		ensure(IContextMenuService, () => {
-			const contextMenuService = new ContextMenuService(telemetryService, notificationService, contextViewService, keybindingService, themeService);
+			const contextMenuService = new ContextMenuService( /*telemetryService,*/ notificationService, contextViewService, keybindingService, themeService);
 			contextMenuService.configure({ blockMouse: false }); // we do not want that in the standalone editor
 
 			return this._register(contextMenuService);

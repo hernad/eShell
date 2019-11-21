@@ -8,7 +8,7 @@ import { Event, Emitter } from 'vs/base/common/event';
 import { EditorInput, EditorOptions } from 'vs/workbench/common/editor';
 import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
 import { BinaryEditorModel } from 'vs/workbench/common/editor/binaryEditorModel';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { DomScrollableElement } from 'vs/base/browser/ui/scrollbar/scrollableElement';
 import { ScrollbarVisibility } from 'vs/base/common/scrollable';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
@@ -46,12 +46,12 @@ export abstract class BaseBinaryResourceEditor extends BaseEditor {
 	constructor(
 		id: string,
 		callbacks: IOpenCallbacks,
-		telemetryService: ITelemetryService,
+		// telemetryService: ITelemetryService,
 		themeService: IThemeService,
 		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
 		@IStorageService storageService: IStorageService,
 	) {
-		super(id, telemetryService, themeService, storageService);
+		super(id, /*telemetryService,*/ themeService, storageService);
 
 		this.callbacks = callbacks;
 	}

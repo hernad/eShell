@@ -14,10 +14,10 @@ import { URI as uri } from 'vs/base/common/uri';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IFileService } from 'vs/platform/files/common/files';
 import { ILogService } from 'vs/platform/log/common/log';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
-import { deserializeSearchError, FileMatch, ICachedSearchStats, IFileMatch, IFileQuery, IFileSearchStats, IFolderQuery, IProgressMessage, ISearchComplete, ISearchEngineStats, ISearchProgressItem, ISearchQuery, ISearchResultProvider, ISearchService, ITextQuery, pathIncludedInQuery, QueryType, SearchError, SearchErrorCode, SearchProviderType, isFileMatch, isProgressMessage } from 'vs/workbench/services/search/common/search';
+import { deserializeSearchError, FileMatch, /*ICachedSearchStats,*/ IFileMatch, IFileQuery, IFileSearchStats, IFolderQuery, IProgressMessage, ISearchComplete, /*ISearchEngineStats,*/ ISearchProgressItem, ISearchQuery, ISearchResultProvider, ISearchService, ITextQuery, pathIncludedInQuery, QueryType, SearchError, /*SearchErrorCode,*/ SearchProviderType, isFileMatch, isProgressMessage } from 'vs/workbench/services/search/common/search';
 import { addContextToEditorMatches, editorMatchesToTextSearchResults } from 'vs/workbench/services/search/common/searchHelpers';
 import { IUntitledTextEditorService } from 'vs/workbench/services/untitled/common/untitledTextEditorService';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
@@ -34,7 +34,7 @@ export class SearchService extends Disposable implements ISearchService {
 		private readonly modelService: IModelService,
 		private readonly untitledTextEditorService: IUntitledTextEditorService,
 		private readonly editorService: IEditorService,
-		private readonly telemetryService: ITelemetryService,
+		// private readonly telemetryService: ITelemetryService,
 		private readonly logService: ILogService,
 		private readonly extensionService: IExtensionService,
 		private readonly fileService: IFileService
@@ -240,15 +240,18 @@ export class SearchService extends Disposable implements ISearchService {
 	}
 
 	private sendTelemetry(query: ISearchQuery, endToEndTime: number, complete?: ISearchComplete, err?: SearchError): void {
-		const fileSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme === 'file');
-		const otherSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme !== 'file');
+		// const fileSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme === 'file');
+		// const otherSchemeOnly = query.folderQueries.every(fq => fq.folder.scheme !== 'file');
+		/*
 		const scheme = fileSchemeOnly ? 'file' :
 			otherSchemeOnly ? 'other' :
 				'mixed';
+		*/
 
 		if (query.type === QueryType.File && complete && complete.stats) {
 			const fileSearchStats = complete.stats as IFileSearchStats;
 			if (fileSearchStats.fromCache) {
+				/*
 				const cacheStats: ICachedSearchStats = fileSearchStats.detailStats as ICachedSearchStats;
 
 				type CachedSearchCompleteClassifcation = {
@@ -290,9 +293,11 @@ export class SearchService extends Disposable implements ISearchService {
 					cacheEntryCount: cacheStats.cacheEntryCount,
 					scheme
 				});
+				*/
 			} else {
-				const searchEngineStats: ISearchEngineStats = fileSearchStats.detailStats as ISearchEngineStats;
+				// const searchEngineStats: ISearchEngineStats = fileSearchStats.detailStats as ISearchEngineStats;
 
+				/*
 				type SearchCompleteClassification = {
 					reason?: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth' };
 					resultCount: { classification: 'SystemMetaData', purpose: 'PerformanceAndHealth', isMeasurement: true };
@@ -337,8 +342,10 @@ export class SearchService extends Disposable implements ISearchService {
 					cmdResultCount: searchEngineStats.cmdResultCount,
 					scheme
 				});
+				*/
 			}
 		} else if (query.type === QueryType.Text) {
+			/*
 			let errorType: string | undefined;
 			if (err) {
 				errorType = err.code === SearchErrorCode.regexParseError ? 'regex' :
@@ -373,6 +380,7 @@ export class SearchService extends Disposable implements ISearchService {
 				error: errorType,
 				usePCRE2: !!query.usePCRE2
 			});
+			*/
 		}
 	}
 
@@ -444,12 +452,12 @@ export class RemoteSearchService extends SearchService {
 		@IModelService modelService: IModelService,
 		@IUntitledTextEditorService untitledTextEditorService: IUntitledTextEditorService,
 		@IEditorService editorService: IEditorService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@ILogService logService: ILogService,
 		@IExtensionService extensionService: IExtensionService,
 		@IFileService fileService: IFileService
 	) {
-		super(modelService, untitledTextEditorService, editorService, telemetryService, logService, extensionService, fileService);
+		super(modelService, untitledTextEditorService, editorService, /*telemetryService,*/ logService, extensionService, fileService);
 	}
 }
 

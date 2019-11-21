@@ -8,7 +8,7 @@ import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
 import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
 import { ITreeElement } from 'vs/base/browser/ui/tree/tree';
 import { Action } from 'vs/base/common/actions';
-import * as arrays from 'vs/base/common/arrays';
+// import * as arrays from 'vs/base/common/arrays';
 import { Delayer, ThrottledDelayer, timeout } from 'vs/base/common/async';
 import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
 import * as collections from 'vs/base/common/collections';
@@ -28,7 +28,7 @@ import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { ILogService } from 'vs/platform/log/common/log';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { badgeBackground, badgeForeground, contrastBorder, editorForeground } from 'vs/platform/theme/common/colorRegistry';
 import { attachStylerCallback } from 'vs/platform/theme/common/styler';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
@@ -144,7 +144,7 @@ export class SettingsEditor2 extends BaseEditor {
 	private dimension!: DOM.Dimension;
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IThemeService themeService: IThemeService,
 		@IPreferencesService private readonly preferencesService: IPreferencesService,
@@ -157,7 +157,7 @@ export class SettingsEditor2 extends BaseEditor {
 		@IEditorGroupsService protected editorGroupService: IEditorGroupsService,
 		@IKeybindingService private readonly keybindingService: IKeybindingService
 	) {
-		super(SettingsEditor2.ID, telemetryService, themeService, storageService);
+		super(SettingsEditor2.ID, /*telemetryService,*/ themeService, storageService);
 		this.delayedFilterLogging = new Delayer<void>(1000);
 		this.localSearchDelayer = new Delayer(300);
 		this.remoteSearchThrottle = new ThrottledDelayer(200);
@@ -833,6 +833,7 @@ export class SettingsEditor2 extends BaseEditor {
 	private reportModifiedSetting(props: { key: string, query: string, searchResults: ISearchResult[] | null, rawResults: ISearchResult[] | null, showConfiguredOnly: boolean, isReset: boolean, settingsTarget: SettingsTarget }): void {
 		this.pendingSettingUpdate = null;
 
+		/*
 		let groupId: string | undefined = undefined;
 		let nlpIndex: number | undefined = undefined;
 		let displayIndex: number | undefined = undefined;
@@ -873,6 +874,7 @@ export class SettingsEditor2 extends BaseEditor {
 			isReset: props.isReset,
 			target: reportedTarget
 		};
+		*/
 
 		/* __GDPR__
 			"settingsEditor.settingModified" : {
@@ -886,7 +888,7 @@ export class SettingsEditor2 extends BaseEditor {
 				"target" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 			}
 		*/
-		this.telemetryService.publicLog('settingsEditor.settingModified', data);
+		// this.telemetryService.publicLog('settingsEditor.settingModified', data);
 	}
 
 	private render(token: CancellationToken): Promise<any> {
@@ -1184,12 +1186,14 @@ export class SettingsEditor2 extends BaseEditor {
 	}
 
 	private reportFilteringUsed(query: string, results: ISearchResult[]): void {
+		/*
 		const nlpResult = results[SearchResultIdx.Remote];
 		const nlpMetadata = nlpResult && nlpResult.metadata;
 
 		const durations = {
 			nlpResult: nlpMetadata && nlpMetadata.duration
 		};
+
 
 		// Count unique results
 		const counts: { nlpResult?: number, filterResult?: number } = {};
@@ -1204,12 +1208,14 @@ export class SettingsEditor2 extends BaseEditor {
 
 		const requestCount = nlpMetadata && nlpMetadata.requestCount;
 
+
 		const data = {
 			query,
 			durations,
 			counts,
 			requestCount
 		};
+		*/
 
 		/* __GDPR__
 			"settingsEditor.filter" : {
@@ -1220,7 +1226,7 @@ export class SettingsEditor2 extends BaseEditor {
 				"requestCount" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 			}
 		*/
-		this.telemetryService.publicLog('settingsEditor.filter', data);
+		// this.telemetryService.publicLog('settingsEditor.filter', data);
 	}
 
 	private triggerFilterPreferences(query: string): Promise<void> {
@@ -1341,7 +1347,7 @@ export class SettingsEditor2 extends BaseEditor {
 					const message = getErrorMessage(err).trim();
 					if (message && message !== 'Error') {
 						// "Error" = any generic network error
-						this.telemetryService.publicLog('settingsEditor.searchError', { message, filter });
+						// this.telemetryService.publicLog('settingsEditor.searchError', { message, filter });
 						this.logService.info('Setting search error: ' + message);
 					}
 					return null;

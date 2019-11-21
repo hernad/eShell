@@ -14,7 +14,7 @@ import { CancellationToken } from 'vs/base/common/cancellation';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { formatDocumentRangeWithProvider, formatDocumentWithProvider, getRealAndSyntheticDocumentFormattersOrdered, FormattingConflicts, FormattingMode } from 'vs/editor/contrib/format/format';
 import { Range } from 'vs/editor/common/core/range';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from 'vs/platform/configuration/common/configurationRegistry';
@@ -169,26 +169,27 @@ interface IIndexedPick extends IQuickPickItem {
 	index: number;
 }
 
+/*
 function logFormatterTelemetry<T extends { extensionId?: ExtensionIdentifier }>(telemetryService: ITelemetryService, mode: 'document' | 'range', options: T[], pick?: T) {
 
 	function extKey(obj: T): string {
 		return obj.extensionId ? ExtensionIdentifier.toKey(obj.extensionId) : 'unknown';
 	}
-	/*
+
 	 * __GDPR__
 		"formatterpick" : {
 			"mode" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 			"extensions" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
 			"pick" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 		}
-	 */
+	 *
 	telemetryService.publicLog('formatterpick', {
 		mode,
 		extensions: options.map(extKey),
 		pick: pick ? extKey(pick) : 'none'
 	});
 }
-
+*/
 async function showFormatterPick(accessor: ServicesAccessor, model: ITextModel, formatters: FormattingEditProvider[]): Promise<number | undefined> {
 	const quickPickService = accessor.get(IQuickInputService);
 	const configService = accessor.get(IConfigurationService);
@@ -265,14 +266,14 @@ registerEditorAction(class FormatDocumentMultipleAction extends EditorAction {
 			return;
 		}
 		const instaService = accessor.get(IInstantiationService);
-		const telemetryService = accessor.get(ITelemetryService);
+		// const telemetryService = accessor.get(ITelemetryService);
 		const model = editor.getModel();
 		const provider = getRealAndSyntheticDocumentFormattersOrdered(model);
 		const pick = await instaService.invokeFunction(showFormatterPick, model, provider);
 		if (typeof pick === 'number') {
 			await instaService.invokeFunction(formatDocumentWithProvider, provider[pick], editor, FormattingMode.Explicit, CancellationToken.None);
 		}
-		logFormatterTelemetry(telemetryService, 'document', provider, typeof pick === 'number' && provider[pick] || undefined);
+		// logFormatterTelemetry(telemetryService, 'document', provider, typeof pick === 'number' && provider[pick] || undefined);
 	}
 });
 
@@ -297,7 +298,7 @@ registerEditorAction(class FormatSelectionMultipleAction extends EditorAction {
 			return;
 		}
 		const instaService = accessor.get(IInstantiationService);
-		const telemetryService = accessor.get(ITelemetryService);
+		// const telemetryService = accessor.get(ITelemetryService);
 
 		const model = editor.getModel();
 		let range: Range = editor.getSelection();
@@ -311,6 +312,6 @@ registerEditorAction(class FormatSelectionMultipleAction extends EditorAction {
 			await instaService.invokeFunction(formatDocumentRangeWithProvider, provider[pick], editor, range, CancellationToken.None);
 		}
 
-		logFormatterTelemetry(telemetryService, 'range', provider, typeof pick === 'number' && provider[pick] || undefined);
+		// logFormatterTelemetry(telemetryService, 'range', provider, typeof pick === 'number' && provider[pick] || undefined);
 	}
 });

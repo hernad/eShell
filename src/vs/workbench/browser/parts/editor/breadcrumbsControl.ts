@@ -41,7 +41,7 @@ import { BreadcrumbsPicker, createBreadcrumbsPicker } from 'vs/workbench/browser
 import { SideBySideEditorInput } from 'vs/workbench/common/editor';
 import { ACTIVE_GROUP, ACTIVE_GROUP_TYPE, IEditorService, SIDE_GROUP, SIDE_GROUP_TYPE } from 'vs/workbench/services/editor/common/editorService';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { IEditorGroupView } from 'vs/workbench/browser/parts/editor/editor';
 import { onDidChangeZoomLevel } from 'vs/base/browser/browser';
@@ -169,7 +169,7 @@ export class BreadcrumbsControl {
 		@IQuickOpenService private readonly _quickOpenService: IQuickOpenService,
 		@IConfigurationService private readonly _configurationService: IConfigurationService,
 		@IFileService private readonly _fileService: IFileService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@ILabelService private readonly _labelService: ILabelService,
 		@IBreadcrumbsService breadcrumbsService: IBreadcrumbsService,
 	) {
@@ -317,10 +317,12 @@ export class BreadcrumbsControl {
 		const { element } = event.item as Item;
 		this._editorGroup.focus();
 
+		/*
 		type BreadcrumbSelectClassification = {
 			type: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 		};
-		this._telemetryService.publicLog2<{ type: string }, BreadcrumbSelectClassification>('breadcrumbs/select', { type: element instanceof TreeElement ? 'symbol' : 'file' });
+		*/
+		// this._telemetryService.publicLog2<{ type: string }, BreadcrumbSelectClassification>('breadcrumbs/select', { type: element instanceof TreeElement ? 'symbol' : 'file' });
 
 		const group = this._getEditorGroup(event.payload);
 		if (group !== undefined) {
@@ -365,7 +367,7 @@ export class BreadcrumbsControl {
 							"type": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this._telemetryService.publicLog('breadcrumbs/open', { type: !data ? 'nothing' : data.target instanceof TreeElement ? 'symbol' : 'file' });
+					// this._telemetryService.publicLog('breadcrumbs/open', { type: !data ? 'nothing' : data.target instanceof TreeElement ? 'symbol' : 'file' });
 				});
 				let focusListener = picker.onDidFocusElement(data => {
 					if (!editor || !(data.target instanceof OutlineElement)) {

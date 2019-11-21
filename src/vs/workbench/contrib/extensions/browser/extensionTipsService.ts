@@ -21,7 +21,7 @@ import { IWorkspaceContextService, IWorkspaceFolder, IWorkspace, IWorkspaceFolde
 import { IFileService } from 'vs/platform/files/common/files';
 import { IExtensionsConfiguration, ConfigurationKey, ShowRecommendationsOnlyOnDemandKey, IExtensionsViewlet, IExtensionsWorkbenchService, EXTENSIONS_CONFIG } from 'vs/workbench/contrib/extensions/common/extensions';
 import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configuration/common/configuration';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { flatten, distinct, shuffle, coalesce } from 'vs/base/common/arrays';
 import { guessMimeTypes, MIME_UNKNOWN } from 'vs/base/common/mime';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
@@ -30,7 +30,7 @@ import { isNumber } from 'vs/base/common/types';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { Emitter, Event } from 'vs/base/common/event';
-import { assign } from 'vs/base/common/objects';
+// import { assign } from 'vs/base/common/objects';
 import { URI } from 'vs/base/common/uri';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { IExperimentService, ExperimentActionType, ExperimentState } from 'vs/workbench/contrib/experiments/common/experimentService';
@@ -98,7 +98,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 		@IFileService private readonly fileService: IFileService,
 		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
 		@IExtensionService private readonly extensionService: IExtensionService,
 		@IRequestService private readonly requestService: IRequestService,
@@ -159,7 +159,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							]
 						}
 					*/
-					this.telemetryService.publicLog('extensionGallery:install:recommendations', assign(e.gallery.telemetryData, { recommendationReason: recommendationReason.reasonId }));
+					// this.telemetryService.publicLog('extensionGallery:install:recommendations', assign(e.gallery.telemetryData, { recommendationReason: recommendationReason.reasonId }));
 				}
 			}
 		}));
@@ -230,7 +230,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 						"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 					}
 				*/
-				this.telemetryService.publicLog('extensionsRecommendations:ignoreRecommendation', { id: extensionId, recommendationReason: reason.reasonId });
+				// this.telemetryService.publicLog('extensionsRecommendations:ignoreRecommendation', { id: extensionId, recommendationReason: reason.reasonId });
 			}
 		}
 
@@ -443,7 +443,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 								"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 							}
 							*/
-							this.telemetryService.publicLog('extensionWorkspaceRecommendations:popup', { userReaction: 'install' });
+							// this.telemetryService.publicLog('extensionWorkspaceRecommendations:popup', { userReaction: 'install' });
 
 							const installAllAction = this.instantiationService.createInstance(InstallWorkspaceRecommendedExtensionsAction, InstallWorkspaceRecommendedExtensionsAction.ID, localize('installAll', "Install All"), recommendations);
 							installAllAction.run();
@@ -459,7 +459,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 								}
 							*/
-							this.telemetryService.publicLog('extensionWorkspaceRecommendations:popup', { userReaction: 'show' });
+							// this.telemetryService.publicLog('extensionWorkspaceRecommendations:popup', { userReaction: 'show' });
 
 							const showAction = this.instantiationService.createInstance(ShowRecommendedExtensionsAction, ShowRecommendedExtensionsAction.ID, localize('showRecommendations', "Show Recommendations"));
 							showAction.run();
@@ -476,7 +476,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 								}
 							*/
-							this.telemetryService.publicLog('extensionWorkspaceRecommendations:popup', { userReaction: 'neverShowAgain' });
+							// this.telemetryService.publicLog('extensionWorkspaceRecommendations:popup', { userReaction: 'neverShowAgain' });
 							this.storageService.store(storageKey, true, StorageScope.WORKSPACE);
 
 							c(undefined);
@@ -490,7 +490,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 								}
 							*/
-							this.telemetryService.publicLog('extensionWorkspaceRecommendations:popup', { userReaction: 'cancelled' });
+							// this.telemetryService.publicLog('extensionWorkspaceRecommendations:popup', { userReaction: 'cancelled' });
 
 							c(undefined);
 						}
@@ -510,7 +510,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 
 		const installed = await this.extensionManagementService.getInstalled(ExtensionType.User);
 		recommendationsToSuggest = this.filterInstalled(recommendationsToSuggest, installed, (extensionId) => {
-			const tip = this._importantExeBasedRecommendations[extensionId];
+			// const tip = this._importantExeBasedRecommendations[extensionId];
 
 			/* __GDPR__
 			"exeExtensionRecommendations:alreadyInstalled" : {
@@ -518,7 +518,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 				"exeName": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 			}
 			*/
-			this.telemetryService.publicLog('exeExtensionRecommendations:alreadyInstalled', { extensionId, exeName: basename(tip.windowsPath!) });
+			// this.telemetryService.publicLog('exeExtensionRecommendations:alreadyInstalled', { extensionId, exeName: basename(tip.windowsPath!) });
 
 		});
 
@@ -554,7 +554,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 						"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 					}
 					*/
-					this.telemetryService.publicLog('exeExtensionRecommendations:popup', { userReaction: 'install', extensionId });
+					// this.telemetryService.publicLog('exeExtensionRecommendations:popup', { userReaction: 'install', extensionId });
 					this.instantiationService.createInstance(InstallRecommendedExtensionAction, extensionId).run();
 				}
 			}, {
@@ -566,7 +566,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this.telemetryService.publicLog('exeExtensionRecommendations:popup', { userReaction: 'show', extensionId });
+					// this.telemetryService.publicLog('exeExtensionRecommendations:popup', { userReaction: 'show', extensionId });
 
 					const recommendationsAction = this.instantiationService.createInstance(ShowRecommendedExtensionsAction, ShowRecommendedExtensionsAction.ID, localize('showRecommendations', "Show Recommendations"));
 					recommendationsAction.run();
@@ -583,7 +583,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this.telemetryService.publicLog('exeExtensionRecommendations:popup', { userReaction: 'neverShowAgain', extensionId });
+					// this.telemetryService.publicLog('exeExtensionRecommendations:popup', { userReaction: 'neverShowAgain', extensionId });
 					this.notificationService.prompt(
 						Severity.Info,
 						localize('ignoreExtensionRecommendations', "Do you want to ignore all extension recommendations?"),
@@ -606,7 +606,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this.telemetryService.publicLog('exeExtensionRecommendations:popup', { userReaction: 'cancelled', extensionId });
+					// this.telemetryService.publicLog('exeExtensionRecommendations:popup', { userReaction: 'cancelled', extensionId });
 				}
 			}
 		);
@@ -798,7 +798,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 						"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 					}
 					*/
-					this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'install', extensionId: name });
+					// this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'install', extensionId: name });
 					this.instantiationService.createInstance(InstallRecommendedExtensionAction, id).run();
 				}
 			}, {
@@ -810,7 +810,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'show', extensionId: name });
+					// this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'show', extensionId: name });
 
 					const recommendationsAction = this.instantiationService.createInstance(ShowRecommendedExtensionsAction, ShowRecommendedExtensionsAction.ID, localize('showRecommendations', "Show Recommendations"));
 					recommendationsAction.run();
@@ -827,7 +827,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'neverShowAgain', extensionId: name });
+					// this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'neverShowAgain', extensionId: name });
 					this.notificationService.prompt(
 						Severity.Info,
 						localize('ignoreExtensionRecommendations', "Do you want to ignore all extension recommendations?"),
@@ -850,7 +850,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'cancelled', extensionId: name });
+					// this.telemetryService.publicLog('extensionRecommendations:popup', { userReaction: 'cancelled', extensionId: name });
 				}
 			}
 		);
@@ -887,7 +887,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							"fileExtension": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this.telemetryService.publicLog('fileExtensionSuggestion:popup', { userReaction: 'ok', fileExtension: fileExtension });
+					// this.telemetryService.publicLog('fileExtensionSuggestion:popup', { userReaction: 'ok', fileExtension: fileExtension });
 					this.viewletService.openViewlet('workbench.view.extensions', true)
 						.then(viewlet => viewlet as IExtensionsViewlet)
 						.then(viewlet => {
@@ -910,7 +910,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							"fileExtension": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this.telemetryService.publicLog('fileExtensionSuggestion:popup', { userReaction: 'neverShowAgain', fileExtension: fileExtension });
+					// this.telemetryService.publicLog('fileExtensionSuggestion:popup', { userReaction: 'neverShowAgain', fileExtension: fileExtension });
 				}
 			}],
 			{
@@ -922,7 +922,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 							"fileExtension": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 						}
 					*/
-					this.telemetryService.publicLog('fileExtensionSuggestion:popup', { userReaction: 'cancelled', fileExtension: fileExtension });
+					// this.telemetryService.publicLog('fileExtensionSuggestion:popup', { userReaction: 'cancelled', fileExtension: fileExtension });
 				}
 			}
 		);
@@ -1097,7 +1097,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 					"cache" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 				}
 			*/
-			this.telemetryService.publicLog('dynamicWorkspaceRecommendations', { count: this._dynamicWorkspaceRecommendations.length, cache: 1 });
+			// this.telemetryService.publicLog('dynamicWorkspaceRecommendations', { count: this._dynamicWorkspaceRecommendations.length, cache: 1 });
 		}
 	}
 
@@ -1149,7 +1149,7 @@ export class ExtensionTipsService extends Disposable implements IExtensionTipsSe
 										"cache" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 									}
 								*/
-								this.telemetryService.publicLog('dynamicWorkspaceRecommendations', { count: this._dynamicWorkspaceRecommendations.length, cache: 0 });
+								// this.telemetryService.publicLog('dynamicWorkspaceRecommendations', { count: this._dynamicWorkspaceRecommendations.length, cache: 0 });
 							}
 						}
 					}

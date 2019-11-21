@@ -3,9 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
+// import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+// import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
 
+/*
 export const ITelemetryService = createDecorator<ITelemetryService>('telemetryService');
 
 export interface ITelemetryInfo {
@@ -25,10 +26,10 @@ export interface ITelemetryService {
 
 	_serviceBrand: undefined;
 
-	/**
+	**
 	 * Sends a telemetry event that has been privacy approved.
 	 * Do not call this unless you have been given approval.
-	 */
+	 *
 	publicLog(eventName: string, data?: ITelemetryData, anonymizeFilePaths?: boolean): Promise<void>;
 
 	publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>, anonymizeFilePaths?: boolean): Promise<void>;
@@ -39,6 +40,7 @@ export interface ITelemetryService {
 
 	isOptedIn: boolean;
 }
+*/
 
 // Keys
 export const instanceStorageKey = 'telemetry.instanceId';

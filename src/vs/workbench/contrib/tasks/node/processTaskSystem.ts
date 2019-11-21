@@ -21,7 +21,7 @@ import { IConfigurationResolverService } from 'vs/workbench/services/configurati
 import { IMarkerService } from 'vs/platform/markers/common/markers';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { ProblemMatcher, ProblemMatcherRegistry } from 'vs/workbench/contrib/tasks/common/problemMatcher';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 
 import { StartStopProblemCollector, WatchingProblemCollector, ProblemCollectorEventKind } from 'vs/workbench/contrib/tasks/common/problemCollectors';
 import {
@@ -45,7 +45,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 	private markerService: IMarkerService;
 	private modelService: IModelService;
 	private outputService: IOutputService;
-	private telemetryService: ITelemetryService;
+	// private telemetryService: ITelemetryService;
 	private configurationResolverService: IConfigurationResolverService;
 
 	private errorsShown: boolean;
@@ -55,12 +55,12 @@ export class ProcessTaskSystem implements ITaskSystem {
 
 	private readonly _onDidStateChange: Emitter<TaskEvent>;
 
-	constructor(markerService: IMarkerService, modelService: IModelService, telemetryService: ITelemetryService,
+	constructor(markerService: IMarkerService, modelService: IModelService, /*telemetryService: ITelemetryService,*/
 		outputService: IOutputService, configurationResolverService: IConfigurationResolverService, private outputChannelId: string) {
 		this.markerService = markerService;
 		this.modelService = modelService;
 		this.outputService = outputService;
-		this.telemetryService = telemetryService;
+		// this.telemetryService = telemetryService;
 		this.configurationResolverService = configurationResolverService;
 
 		this.childProcess = null;
@@ -164,7 +164,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 						]
 					}
 				*/
-				this.telemetryService.publicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
+				// this.telemetryService.publicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
 				return success;
 			}, (err: any) => {
 				telemetryEvent.success = false;
@@ -175,7 +175,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 						]
 					}
 				*/
-				this.telemetryService.publicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
+				// this.telemetryService.publicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
 				return Promise.reject<ITaskSummary>(err);
 			});
 			return result;
@@ -188,7 +188,7 @@ export class ProcessTaskSystem implements ITaskSystem {
 					]
 				}
 			*/
-			this.telemetryService.publicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
+			// this.telemetryService.publicLog(ProcessTaskSystem.TelemetryEventName, telemetryEvent);
 			if (err instanceof TaskError) {
 				throw err;
 			} else if (err instanceof Error) {

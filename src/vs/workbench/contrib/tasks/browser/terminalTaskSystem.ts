@@ -24,7 +24,7 @@ import { IModelService } from 'vs/editor/common/services/modelService';
 import { ProblemMatcher, ProblemMatcherRegistry /*, ProblemPattern, getResource */ } from 'vs/workbench/contrib/tasks/common/problemMatcher';
 import Constants from 'vs/workbench/contrib/markers/browser/constants';
 
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 
 import { IConfigurationResolverService } from 'vs/workbench/services/configurationResolver/common/configurationResolver';
 import { IShellLaunchConfig } from 'vs/workbench/contrib/terminal/common/terminal';
@@ -37,7 +37,7 @@ import {
 } from 'vs/workbench/contrib/tasks/common/tasks';
 import {
 	ITaskSystem, ITaskSummary, ITaskExecuteResult, TaskExecuteKind, TaskError, TaskErrors, ITaskResolver,
-	TelemetryEvent, Triggers, TaskTerminateResponse, TaskSystemInfoResolver, TaskSystemInfo, ResolveSet, ResolvedVariables
+	/*TelemetryEvent,*/ Triggers, TaskTerminateResponse, TaskSystemInfoResolver, TaskSystemInfo, ResolveSet, ResolvedVariables
 } from 'vs/workbench/contrib/tasks/common/taskSystem';
 import { URI } from 'vs/base/common/uri';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
@@ -170,7 +170,7 @@ export class TerminalTaskSystem implements ITaskSystem {
 		private panelService: IPanelService,
 		private markerService: IMarkerService, private modelService: IModelService,
 		private configurationResolverService: IConfigurationResolverService,
-		private telemetryService: ITelemetryService,
+		// private telemetryService: ITelemetryService,
 		private contextService: IWorkspaceContextService,
 		private environmentService: IWorkbenchEnvironmentService,
 		private outputChannelId: string,
@@ -563,6 +563,7 @@ export class TerminalTaskSystem implements ITaskSystem {
 
 	private async executeInTerminal(task: CustomTask | ContributedTask, trigger: string, resolver: VariableResolver, workspaceFolder: IWorkspaceFolder | undefined): Promise<ITaskSummary> {
 		let terminal: ITerminalInstance | undefined = undefined;
+		// @ts-ignore
 		let executedCommand: string | undefined = undefined;
 		let error: TaskError | undefined = undefined;
 		let promise: Promise<ITaskSummary> | undefined = undefined;
@@ -782,6 +783,7 @@ export class TerminalTaskSystem implements ITaskSystem {
 		this._onDidStateChange.fire(TaskEvent.create(TaskEventKind.Changed));
 		return promise.then((summary) => {
 			try {
+				/*
 				let telemetryEvent: TelemetryEvent = {
 					trigger: trigger,
 					runner: 'terminal',
@@ -790,6 +792,7 @@ export class TerminalTaskSystem implements ITaskSystem {
 					success: true,
 					exitCode: summary.exitCode
 				};
+				*/
 				/* __GDPR__
 					"taskService" : {
 						"${include}": [
@@ -797,12 +800,13 @@ export class TerminalTaskSystem implements ITaskSystem {
 						]
 					}
 				*/
-				this.telemetryService.publicLog(TerminalTaskSystem.TelemetryEventName, telemetryEvent);
+				// this.telemetryService.publicLog(TerminalTaskSystem.TelemetryEventName, telemetryEvent);
 			} catch (error) {
 			}
 			return summary;
 		}, (error) => {
 			try {
+				/*
 				let telemetryEvent: TelemetryEvent = {
 					trigger: trigger,
 					runner: 'terminal',
@@ -810,6 +814,7 @@ export class TerminalTaskSystem implements ITaskSystem {
 					command: this.getSanitizedCommand(executedCommand!),
 					success: false
 				};
+				*/
 				/* __GDPR__
 					"taskService" : {
 						"${include}": [
@@ -817,7 +822,7 @@ export class TerminalTaskSystem implements ITaskSystem {
 						]
 					}
 				*/
-				this.telemetryService.publicLog(TerminalTaskSystem.TelemetryEventName, telemetryEvent);
+				// this.telemetryService.publicLog(TerminalTaskSystem.TelemetryEventName, telemetryEvent);
 			} catch (error) {
 			}
 			return Promise.reject<ITaskSummary>(error);

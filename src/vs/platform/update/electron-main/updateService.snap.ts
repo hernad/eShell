@@ -12,8 +12,8 @@ import { ILogService } from 'vs/platform/log/common/log';
 import * as path from 'vs/base/common/path';
 import { realpath, watch } from 'fs';
 import { spawn } from 'child_process';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { UpdateNotAvailableClassification } from 'vs/platform/update/electron-main/abstractUpdateService';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { UpdateNotAvailableClassification } from 'vs/platform/update/electron-main/abstractUpdateService';
 
 abstract class AbstractUpdateService2 implements IUpdateService {
 
@@ -142,7 +142,7 @@ export class SnapUpdateService extends AbstractUpdateService2 {
 		@ILifecycleMainService lifecycleMainService: ILifecycleMainService,
 		@IEnvironmentService environmentService: IEnvironmentService,
 		@ILogService logService: ILogService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService
+		// @ITelemetryService private readonly telemetryService: ITelemetryService
 	) {
 		super(lifecycleMainService, environmentService, logService);
 
@@ -164,13 +164,13 @@ export class SnapUpdateService extends AbstractUpdateService2 {
 			if (result) {
 				this.setState(State.Ready({ version: 'something', productVersion: 'something' }));
 			} else {
-				this.telemetryService.publicLog2<{ explicit: boolean }, UpdateNotAvailableClassification>('update:notAvailable', { explicit: !!context });
+				// this.telemetryService.publicLog2<{ explicit: boolean }, UpdateNotAvailableClassification>('update:notAvailable', { explicit: !!context });
 
 				this.setState(State.Idle(UpdateType.Snap));
 			}
 		}, err => {
 			this.logService.error(err);
-			this.telemetryService.publicLog2<{ explicit: boolean }, UpdateNotAvailableClassification>('update:notAvailable', { explicit: !!context });
+			// this.telemetryService.publicLog2<{ explicit: boolean }, UpdateNotAvailableClassification>('update:notAvailable', { explicit: !!context });
 			this.setState(State.Idle(UpdateType.Snap, err.message || err));
 		});
 	}

@@ -9,7 +9,7 @@ import { Widget } from 'vs/base/browser/ui/widget';
 import * as arrays from 'vs/base/common/arrays';
 import { Delayer, ThrottledDelayer } from 'vs/base/common/async';
 import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
-import { IStringDictionary } from 'vs/base/common/collections';
+// import { IStringDictionary } from 'vs/base/common/collections';
 import { getErrorMessage, isPromiseCanceledError, onUnexpectedError } from 'vs/base/common/errors';
 import { Emitter, Event } from 'vs/base/common/event';
 import { ArrayNavigator } from 'vs/base/common/iterator';
@@ -34,7 +34,7 @@ import { ILogService } from 'vs/platform/log/common/log';
 import { IEditorProgressService } from 'vs/platform/progress/common/progress';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { scrollbarShadow } from 'vs/platform/theme/common/colorRegistry';
 import { attachStylerCallback } from 'vs/platform/theme/common/styler';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
@@ -90,7 +90,7 @@ export class PreferencesEditor extends BaseEditor {
 
 	constructor(
 		@IPreferencesService private readonly preferencesService: IPreferencesService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IEditorService private readonly editorService: IEditorService,
 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
@@ -98,7 +98,7 @@ export class PreferencesEditor extends BaseEditor {
 		@IEditorProgressService private readonly editorProgressService: IEditorProgressService,
 		@IStorageService storageService: IStorageService
 	) {
-		super(PreferencesEditor.ID, telemetryService, themeService, storageService);
+		super(PreferencesEditor.ID, /*telemetryService,*/ themeService, storageService);
 		this.defaultSettingsEditorContextKey = CONTEXT_SETTINGS_EDITOR.bindTo(this.contextKeyService);
 		this.defaultSettingsJSONEditorContextKey = CONTEXT_SETTINGS_JSON_EDITOR.bindTo(this.contextKeyService);
 		this.searchFocusContextKey = CONTEXT_SETTINGS_SEARCH_FOCUS.bindTo(this.contextKeyService);
@@ -284,6 +284,7 @@ export class PreferencesEditor extends BaseEditor {
 		}
 	}
 
+	/*
 	private _countById(settingsGroups: ISettingsGroup[]): IStringDictionary<number> {
 		const result: IStringDictionary<number> = {};
 
@@ -298,11 +299,12 @@ export class PreferencesEditor extends BaseEditor {
 
 		return result;
 	}
+	*/
 
 	private reportFilteringUsed(filter: string, filterResult: IFilterResult | null): void {
 		if (filter && filter !== this._lastReportedFilter) {
 			const metadata = filterResult && filterResult.metadata;
-			const counts = filterResult && this._countById(filterResult.filteredGroups);
+			// const counts = filterResult && this._countById(filterResult.filteredGroups);
 
 			let durations: any;
 			if (metadata) {
@@ -310,12 +312,14 @@ export class PreferencesEditor extends BaseEditor {
 				Object.keys(metadata).forEach(key => durations[key] = metadata[key].duration);
 			}
 
+			/*
 			const data = {
 				filter,
 				durations,
 				counts,
 				requestCount: metadata && metadata['nlpResult'] && metadata['nlpResult'].requestCount
 			};
+			*/
 
 			/* __GDPR__
 				"defaultSettings.filter" : {
@@ -327,7 +331,7 @@ export class PreferencesEditor extends BaseEditor {
 					"requestCount" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 				}
 			*/
-			this.telemetryService.publicLog('defaultSettings.filter', data);
+			// this.telemetryService.publicLog('defaultSettings.filter', data);
 			this._lastReportedFilter = filter;
 		}
 	}
@@ -375,7 +379,7 @@ class PreferencesRenderersController extends Disposable {
 
 	constructor(
 		@IPreferencesSearchService private readonly preferencesSearchService: IPreferencesSearchService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IPreferencesService private readonly preferencesService: IPreferencesService,
 		@IWorkspaceContextService private readonly workspaceContextService: IWorkspaceContextService,
 		@ILogService private readonly logService: ILogService
@@ -613,7 +617,7 @@ class PreferencesRenderersController extends Disposable {
 					const message = getErrorMessage(err).trim();
 					if (message && message !== 'Error') {
 						// "Error" = any generic network error
-						this.telemetryService.publicLog('defaultSettings.searchError', { message, filter });
+						// this.telemetryService.publicLog('defaultSettings.searchError', { message, filter });
 						this.logService.info('Setting search error: ' + message);
 					}
 					return undefined;
@@ -716,7 +720,7 @@ class PreferencesRenderersController extends Disposable {
 				"editableSide" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 			}
 		*/
-		this.telemetryService.publicLog('defaultSettingsActions.copySetting', data);
+		// this.telemetryService.publicLog('defaultSettingsActions.copySetting', data);
 	}
 
 	private _findSetting(filterResult: IFilterResult, key: string): { groupIdx: number, settingIdx: number, overallSettingIdx: number; } | undefined {
@@ -974,7 +978,7 @@ export class DefaultPreferencesEditor extends BaseTextEditor {
 	static readonly ID: string = 'workbench.editor.defaultPreferences';
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IStorageService storageService: IStorageService,
 		@ITextResourceConfigurationService configurationService: ITextResourceConfigurationService,
@@ -985,7 +989,7 @@ export class DefaultPreferencesEditor extends BaseTextEditor {
 		@IHostService hostService: IHostService,
 		@IFilesConfigurationService filesConfigurationService: IFilesConfigurationService
 	) {
-		super(DefaultPreferencesEditor.ID, telemetryService, instantiationService, storageService, configurationService, themeService, textFileService, editorService, editorGroupService, hostService, filesConfigurationService);
+		super(DefaultPreferencesEditor.ID, /*telemetryService,*/ instantiationService, storageService, configurationService, themeService, textFileService, editorService, editorGroupService, hostService, filesConfigurationService);
 	}
 
 	private static _getContributions(): IEditorContributionDescription[] {

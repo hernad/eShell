@@ -7,7 +7,7 @@ import { localize } from 'vs/nls';
 import { distinct } from 'vs/base/common/arrays';
 import { withNullAsUndefined, isFunction } from 'vs/base/common/types';
 import { Language } from 'vs/base/common/platform';
-import { Action, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
+import { Action, /*WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification*/ } from 'vs/base/common/actions';
 import { Mode, IEntryRunContext, IAutoFocus, IModel, IQuickNavigateConfiguration } from 'vs/base/parts/quickopen/common/quickOpen';
 import { QuickOpenEntryGroup, IHighlight, QuickOpenModel, QuickOpenEntry } from 'vs/base/parts/quickopen/browser/quickOpenModel';
 import { IMenuService, MenuId, MenuItemAction } from 'vs/platform/actions/common/actions';
@@ -16,7 +16,7 @@ import { QuickOpenHandler, IWorkbenchQuickOpenConfiguration } from 'vs/workbench
 import { IEditorAction } from 'vs/editor/common/editorCommon';
 import { matchesWords, matchesPrefix, matchesContiguousSubString, or } from 'vs/base/common/filters';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { IQuickOpenService } from 'vs/platform/quickOpen/common/quickOpen';
 import { registerEditorAction, EditorAction } from 'vs/editor/browser/editorExtensions';
@@ -245,7 +245,7 @@ abstract class BaseCommandEntry extends QuickOpenEntryGroup {
 		highlights: { label: IHighlight[] | null, alias: IHighlight[] | null },
 		private onBeforeRun: (commandId: string) => void,
 		@INotificationService private readonly notificationService: INotificationService,
-		@ITelemetryService protected telemetryService: ITelemetryService
+		// @ITelemetryService protected telemetryService: ITelemetryService
 	) {
 		super();
 
@@ -317,7 +317,7 @@ abstract class BaseCommandEntry extends QuickOpenEntryGroup {
 		const commandRunner = (async () => {
 			if (action && (!(action instanceof Action) || action.enabled)) {
 				try {
-					this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: action.id, from: 'quick open' });
+					// this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: action.id, from: 'quick open' });
 
 					const promise = action.run();
 					if (promise) {
@@ -367,9 +367,9 @@ class EditorActionCommandEntry extends BaseCommandEntry {
 		private action: IEditorAction,
 		onBeforeRun: (commandId: string) => void,
 		@INotificationService notificationService: INotificationService,
-		@ITelemetryService telemetryService: ITelemetryService
+		// @ITelemetryService telemetryService: ITelemetryService
 	) {
-		super(commandId, keybinding, label, meta, highlights, onBeforeRun, notificationService, telemetryService);
+		super(commandId, keybinding, label, meta, highlights, onBeforeRun, notificationService, /*telemetryService*/);
 	}
 
 	protected getAction(): Action | IEditorAction {
@@ -388,9 +388,9 @@ class ActionCommandEntry extends BaseCommandEntry {
 		private action: Action,
 		onBeforeRun: (commandId: string) => void,
 		@INotificationService notificationService: INotificationService,
-		@ITelemetryService telemetryService: ITelemetryService
+		// @ITelemetryService telemetryService: ITelemetryService
 	) {
-		super(commandId, keybinding, label, alias, highlights, onBeforeRun, notificationService, telemetryService);
+		super(commandId, keybinding, label, alias, highlights, onBeforeRun, notificationService, /*telemetryService*/);
 	}
 
 	protected getAction(): Action | IEditorAction {

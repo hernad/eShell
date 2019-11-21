@@ -13,7 +13,7 @@ export const machineIdKey = 'telemetry.machineId';
 
 import * as Platform from 'vs/base/common/platform';
 import * as uuid from 'vs/base/common/uuid';
-import { cleanRemoteAuthority } from 'vs/platform/telemetry/common/telemetryUtils';
+// import { cleanRemoteAuthority } from 'vs/platform/telemetry/common/telemetryUtils';
 import { mixin } from 'vs/base/common/objects';
 
 export async function resolveWorkbenchCommonProperties(
@@ -44,7 +44,7 @@ export async function resolveWorkbenchCommonProperties(
 	// __GDPR__COMMON__ "common.isNewSession" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 	result['common.isNewSession'] = !lastSessionDate ? '1' : '0';
 	// __GDPR__COMMON__ "common.remoteAuthority" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
-	result['common.remoteAuthority'] = cleanRemoteAuthority(remoteAuthority);
+	// result['common.remoteAuthority'] = cleanRemoteAuthority(remoteAuthority);
 
 	// __GDPR__COMMON__ "common.machineId" : { "endPoint": "MacAddressHash", "classification": "EndUserPseudonymizedInformation", "purpose": "FeatureInsight" }
 	result['common.machineId'] = machineId;

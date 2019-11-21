@@ -21,7 +21,7 @@ import {
 	INSTALL_ERROR_MALICIOUS,
 	INSTALL_ERROR_INCOMPATIBLE
 } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { areSameExtensions, getGalleryExtensionId, groupByExtension, getMaliciousExtensionsSet, getGalleryExtensionTelemetryData, getLocalExtensionTelemetryData, ExtensionIdentifierWithVersion } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
+import { areSameExtensions, getGalleryExtensionId, groupByExtension, getMaliciousExtensionsSet, /*getGalleryExtensionTelemetryData, getLocalExtensionTelemetryData,*/ ExtensionIdentifierWithVersion } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { localizeManifest } from '../common/extensionNls';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { Limiter, createCancelablePromise, CancelablePromise, Queue } from 'vs/base/common/async';
@@ -34,7 +34,7 @@ import { ILogService } from 'vs/platform/log/common/log';
 import { ExtensionsManifestCache } from 'vs/platform/extensionManagement/node/extensionsManifestCache';
 import { ExtensionsLifecycle } from 'vs/platform/extensionManagement/node/extensionLifecycle';
 import { toErrorMessage } from 'vs/base/common/errorMessage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { isEngineValid } from 'vs/platform/extensions/common/extensionValidator';
 import { tmpdir } from 'os';
 import { generateUuid } from 'vs/base/common/uuid';
@@ -131,7 +131,7 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
 		@ILogService private readonly logService: ILogService,
 		@optional(IDownloadService) private downloadService: IDownloadService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		//@ITelemetryService private readonly telemetryService: ITelemetryService,
 	) {
 		super();
 		this.systemExtensionsPath = environmentService.builtinExtensionsPath;
@@ -284,7 +284,7 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		if (!this.galleryService.isEnabled()) {
 			return Promise.reject(new Error(nls.localize('MarketPlaceDisabled', "Marketplace is not enabled")));
 		}
-		const startTime = new Date().getTime();
+		//const startTime = new Date().getTime();
 
 		const onDidInstallExtensionSuccess = (extension: IGalleryExtension, operation: InstallOperation, local: ILocalExtension) => {
 			this.logService.info(`Extensions installed successfully:`, extension.identifier.id);
@@ -390,9 +390,11 @@ export class ExtensionManagementService extends Disposable implements IExtension
 			});
 	}
 
+	/*
 	private getTelemetryEvent(operation: InstallOperation): string {
 		return operation === InstallOperation.Update ? 'extensionGallery:update' : 'extensionGallery:install';
 	}
+	*/
 
 	private isMalicious(extension: IGalleryExtension): Promise<boolean> {
 		return this.getExtensionsReport()

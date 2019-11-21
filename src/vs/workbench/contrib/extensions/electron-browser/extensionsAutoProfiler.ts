@@ -5,7 +5,7 @@
 
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { IExtensionService, IResponsiveStateChangeEvent, IExtensionHostProfile, ProfileSession } from 'vs/workbench/services/extensions/common/extensions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { Disposable } from 'vs/base/common/lifecycle';
 import { ILogService } from 'vs/platform/log/common/log';
 import { CancellationTokenSource } from 'vs/base/common/cancellation';
@@ -31,7 +31,7 @@ export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchCont
 	constructor(
 		@IExtensionService private readonly _extensionService: IExtensionService,
 		@IExtensionHostProfileService private readonly _extensionProfileService: IExtensionHostProfileService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@ILogService private readonly _logService: ILogService,
 		@INotificationService private readonly _notificationService: INotificationService,
 		@IEditorService private readonly _editorService: IEditorService,
@@ -150,10 +150,12 @@ export class ExtensionsAutoProfiler extends Disposable implements IWorkbenchCont
 				"data": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" }
 			}
 		*/
+		/*
 		this._telemetryService.publicLog('exthostunresponsive', {
 			duration,
 			data,
 		});
+		*/
 
 		// add to running extensions view
 		this._extensionProfileService.setUnresponsiveProfile(extension.identifier, profile);

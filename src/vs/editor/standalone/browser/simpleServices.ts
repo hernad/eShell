@@ -39,12 +39,12 @@ import { USLayoutResolvedKeybinding } from 'vs/platform/keybinding/common/usLayo
 import { ILabelService, ResourceLabelFormatter } from 'vs/platform/label/common/label';
 import { INotification, INotificationHandle, INotificationService, IPromptChoice, IPromptOptions, NoOpNotification, IStatusMessageOptions, NotificationsFilter } from 'vs/platform/notification/common/notification';
 import { IProgressRunner, IEditorProgressService } from 'vs/platform/progress/common/progress';
-import { ITelemetryInfo, ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryInfo, ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IWorkspace, IWorkspaceContextService, IWorkspaceFolder, IWorkspaceFoldersChangeEvent, WorkbenchState, WorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 import { ISingleFolderWorkspaceIdentifier, IWorkspaceIdentifier } from 'vs/platform/workspaces/common/workspaces';
 import { ILayoutService, IDimension } from 'vs/platform/layout/browser/layoutService';
 import { SimpleServicesNLS } from 'vs/editor/common/standaloneStrings';
-import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
+// import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
 import { basename } from 'vs/base/common/resources';
 
 export class SimpleModel implements IResolvedTextEditorModel {
@@ -291,11 +291,11 @@ export class StandaloneKeybindingService extends AbstractKeybindingService {
 	constructor(
 		contextKeyService: IContextKeyService,
 		commandService: ICommandService,
-		telemetryService: ITelemetryService,
+		// telemetryService: ITelemetryService,
 		notificationService: INotificationService,
 		domNode: HTMLElement
 	) {
-		super(contextKeyService, commandService, telemetryService, notificationService);
+		super(contextKeyService, commandService, /*telemetryService,*/ notificationService);
 
 		this._cachedResolver = null;
 		this._dynamicKeybindings = [];
@@ -535,6 +535,7 @@ export class SimpleResourcePropertiesService implements ITextResourcePropertiesS
 	}
 }
 
+/*
 export class StandaloneTelemetryService implements ITelemetryService {
 	_serviceBrand: undefined;
 
@@ -554,7 +555,9 @@ export class StandaloneTelemetryService implements ITelemetryService {
 	public getTelemetryInfo(): Promise<ITelemetryInfo> {
 		throw new Error(`Not available`);
 	}
+
 }
+*/
 
 export class SimpleWorkspaceContextService implements IWorkspaceContextService {
 

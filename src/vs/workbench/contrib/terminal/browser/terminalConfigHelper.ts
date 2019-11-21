@@ -16,7 +16,7 @@ import { Emitter, Event } from 'vs/base/common/event';
 import { basename } from 'vs/base/common/path';
 import { IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { ExtensionType } from 'vs/platform/extensions/common/extensions';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { InstallRecommendedExtensionAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
 import { IProductService } from 'vs/platform/product/common/productService';
@@ -45,7 +45,7 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 		@IExtensionManagementService private readonly _extensionManagementService: IExtensionManagementService,
 		@INotificationService private readonly _notificationService: INotificationService,
 		@IStorageService private readonly _storageService: IStorageService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@IProductService private readonly productService: IProductService
 	) {
@@ -290,7 +290,7 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 									"extensionId": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight" }
 								}
 								*/
-								this.telemetryService.publicLog('terminalLaunchRecommendation:popup', { userReaction: 'install', extId });
+								// this.telemetryService.publicLog('terminalLaunchRecommendation:popup', { userReaction: 'install', extId });
 								this.instantiationService.createInstance(InstallRecommendedExtensionAction, extId).run();
 							}
 						}
@@ -304,7 +304,7 @@ export class TerminalConfigHelper implements IBrowserTerminalConfigHelper {
 									"userReaction" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 								}
 							*/
-							this.telemetryService.publicLog('terminalLaunchRecommendation:popup', { userReaction: 'cancelled' });
+							// this.telemetryService.publicLog('terminalLaunchRecommendation:popup', { userReaction: 'cancelled' });
 						}
 					}
 				);

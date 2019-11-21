@@ -16,7 +16,7 @@ import { IAction, Action } from 'vs/base/common/actions';
 import { ActionBar, Separator } from 'vs/base/browser/ui/actionbar/actionbar';
 import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
 import { EditorOptions } from 'vs/workbench/common/editor';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
 import { KeybindingsEditorModel, IKeybindingItemEntry, IListEntry, KEYBINDING_ENTRY_TEMPLATE_ID } from 'vs/workbench/services/preferences/common/keybindingsEditorModel';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
@@ -94,7 +94,7 @@ export class KeybindingsEditor extends BaseEditor implements IKeybindingsEditor 
 	private ariaLabelElement!: HTMLElement;
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IKeybindingService private readonly keybindingsService: IKeybindingService,
 		@IContextMenuService private readonly contextMenuService: IContextMenuService,
@@ -106,7 +106,7 @@ export class KeybindingsEditor extends BaseEditor implements IKeybindingsEditor 
 		@IEditorService private readonly editorService: IEditorService,
 		@IStorageService storageService: IStorageService
 	) {
-		super(KeybindingsEditor.ID, telemetryService, themeService, storageService);
+		super(KeybindingsEditor.ID, /*telemetryService,*/ themeService, storageService);
 		this.delayedFiltering = new Delayer<void>(300);
 		this._register(keybindingsService.onDidUpdateKeybindings(() => this.render(!!this.keybindingFocusContextKey.get())));
 
@@ -741,10 +741,12 @@ export class KeybindingsEditor extends BaseEditor implements IKeybindingsEditor 
 
 	private reportFilteringUsed(filter: string): void {
 		if (filter) {
+			/*
 			const data = {
 				filter,
 				emptyFilters: this.getLatestEmptyFiltersForTelemetry()
 			};
+			*/
 			this.latestEmptyFilters = [];
 			/* __GDPR__
 				"keybindings.filter" : {
@@ -752,7 +754,7 @@ export class KeybindingsEditor extends BaseEditor implements IKeybindingsEditor 
 					"emptyFilters" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
 				}
 			*/
-			this.telemetryService.publicLog('keybindings.filter', data);
+			// this.telemetryService.publicLog('keybindings.filter', data);
 		}
 	}
 
@@ -760,14 +762,16 @@ export class KeybindingsEditor extends BaseEditor implements IKeybindingsEditor 
 	 * Put a rough limit on the size of the telemetry data, since otherwise it could be an unbounded large amount
 	 * of data. 8192 is the max size of a property value. This is rough since that probably includes ""s, etc.
 	 */
+	/*
 	private getLatestEmptyFiltersForTelemetry(): string[] {
 		let cumulativeSize = 0;
 		return this.latestEmptyFilters.filter(filterText => (cumulativeSize += filterText.length) <= 8192);
 	}
+	*/
 
 	private reportKeybindingAction(action: string, command: string, keybinding: ResolvedKeybinding | string): void {
 		// __GDPR__TODO__ Need to move off dynamic event names and properties as they cannot be registered statically
-		this.telemetryService.publicLog(action, { command, keybinding: keybinding ? (typeof keybinding === 'string' ? keybinding : keybinding.getUserSettingsLabel()) : '' });
+		// this.telemetryService.publicLog(action, { command, keybinding: keybinding ? (typeof keybinding === 'string' ? keybinding : keybinding.getUserSettingsLabel()) : '' });
 	}
 
 	private onKeybindingEditingError(error: any): void {

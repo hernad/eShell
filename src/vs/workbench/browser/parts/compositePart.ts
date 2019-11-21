@@ -14,7 +14,7 @@ import { ToolBar } from 'vs/base/browser/ui/toolbar/toolbar';
 import { IActionViewItem, ActionsOrientation } from 'vs/base/browser/ui/actionbar/actionbar';
 import { ProgressBar } from 'vs/base/browser/ui/progressbar/progressbar';
 import { prepareActions } from 'vs/workbench/browser/actions';
-import { IAction, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
+import { IAction, /*WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification*/ } from 'vs/base/common/actions';
 import { Part, IPartOptions } from 'vs/workbench/browser/part';
 import { Composite, CompositeRegistry } from 'vs/workbench/browser/composite';
 import { IComposite } from 'vs/workbench/common/composite';
@@ -25,7 +25,7 @@ import { IContextMenuService } from 'vs/platform/contextview/browser/contextView
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
 import { IProgressIndicator, IEditorProgressService } from 'vs/platform/progress/common/progress';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { attachProgressBarStyler } from 'vs/platform/theme/common/styler';
@@ -74,7 +74,7 @@ export abstract class CompositePart<T extends Composite> extends Part {
 	constructor(
 		private notificationService: INotificationService,
 		protected storageService: IStorageService,
-		private telemetryService: ITelemetryService,
+		// private telemetryService: ITelemetryService,
 		protected contextMenuService: IContextMenuService,
 		protected layoutService: IWorkbenchLayoutService,
 		protected keybindingService: IKeybindingService,
@@ -83,7 +83,7 @@ export abstract class CompositePart<T extends Composite> extends Part {
 		protected readonly registry: CompositeRegistry<T>,
 		private activeCompositeSettingsKey: string,
 		private defaultCompositeId: string,
-		private nameForTelemetry: string,
+		// private nameForTelemetry: string,
 		private compositeCSSClass: string,
 		private titleForegroundColor: string | undefined,
 		id: string,
@@ -260,9 +260,11 @@ export abstract class CompositePart<T extends Composite> extends Part {
 			}
 
 			// Log in telemetry
+			/*
 			if (this.telemetryService) {
 				this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', { id: e.action.id, from: this.nameForTelemetry });
 			}
+			*/
 		});
 
 		// Indicate to composite that it is now visible

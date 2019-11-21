@@ -5,7 +5,7 @@
 
 import { Action } from 'vs/base/common/actions';
 import * as nls from 'vs/nls';
-import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
 import { IWorkspaceContextService, WorkbenchState, IWorkspaceFolder } from 'vs/platform/workspace/common/workspace';
 import { IWorkspaceEditingService } from 'vs/workbench/services/workspaces/common/workspaceEditing';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
@@ -37,8 +37,8 @@ export class OpenFileAction extends Action {
 		super(id, label);
 	}
 
-	run(event?: any, data?: ITelemetryData): Promise<any> {
-		return this.dialogService.pickFileAndOpen({ forceNewWindow: false, telemetryExtraData: data });
+	run(event?: any /*, data?: ITelemetryData*/ ): Promise<any> {
+		return this.dialogService.pickFileAndOpen({ forceNewWindow: false, /*telemetryExtraData: data*/ });
 	}
 }
 
@@ -55,8 +55,8 @@ export class OpenFolderAction extends Action {
 		super(id, label);
 	}
 
-	run(event?: any, data?: ITelemetryData): Promise<any> {
-		return this.dialogService.pickFolderAndOpen({ forceNewWindow: false, telemetryExtraData: data });
+	run(event?: any, /*data?: ITelemetryData*/ ): Promise<any> {
+		return this.dialogService.pickFolderAndOpen({ forceNewWindow: false, /*telemetryExtraData: data*/ });
 	}
 }
 
@@ -73,8 +73,8 @@ export class OpenFileFolderAction extends Action {
 		super(id, label);
 	}
 
-	run(event?: any, data?: ITelemetryData): Promise<any> {
-		return this.dialogService.pickFileFolderAndOpen({ forceNewWindow: false, telemetryExtraData: data });
+	run(event?: any /*, data?: ITelemetryData*/ ): Promise<any> {
+		return this.dialogService.pickFileFolderAndOpen({ forceNewWindow: false, /* telemetryExtraData: data */ });
 	}
 }
 
@@ -91,8 +91,8 @@ export class OpenWorkspaceAction extends Action {
 		super(id, label);
 	}
 
-	run(event?: any, data?: ITelemetryData): Promise<any> {
-		return this.dialogService.pickWorkspaceAndOpen({ telemetryExtraData: data });
+	run(event?: any, /*data?: ITelemetryData*/ ): Promise<any> {
+		return this.dialogService.pickWorkspaceAndOpen({ /*telemetryExtraData: data*/ });
 	}
 }
 

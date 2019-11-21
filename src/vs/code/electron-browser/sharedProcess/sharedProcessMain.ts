@@ -47,8 +47,8 @@ import { DiagnosticsService, IDiagnosticsService } from 'vs/platform/diagnostics
 import { DiagnosticsChannel } from 'vs/platform/diagnostics/node/diagnosticsIpc';
 import { FileService } from 'vs/platform/files/common/fileService';
 import { IFileService } from 'vs/platform/files/common/files';
-//import { DiskFileSystemProvider } from 'vs/platform/files/electron-browser/diskFileSystemProvider';
-//import { Schemas } from 'vs/base/common/network';
+import { DiskFileSystemProvider } from 'vs/platform/files/electron-browser/diskFileSystemProvider';
+import { Schemas } from 'vs/base/common/network';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { IUserDataSyncService, IUserDataSyncStoreService, ISettingsMergeService, registerConfiguration, IUserDataSyncLogService } from 'vs/platform/userDataSync/common/userDataSync';
 import { UserDataSyncService, UserDataAutoSync } from 'vs/platform/userDataSync/common/userDataSyncService';
@@ -139,9 +139,9 @@ async function main(server: Server, initData: ISharedProcessInitData, configurat
 	services.set(IFileService, fileService);
 	disposables.add(fileService);
 
-	//const diskFileSystemProvider = new DiskFileSystemProvider(logService);
-	//disposables.add(diskFileSystemProvider);
-	//fileService.registerProvider(Schemas.file, diskFileSystemProvider);
+	const diskFileSystemProvider = new DiskFileSystemProvider(logService);
+	disposables.add(diskFileSystemProvider);
+	fileService.registerProvider(Schemas.file, diskFileSystemProvider);
 
 	services.set(IDownloadService, new SyncDescriptor(DownloadService));
 

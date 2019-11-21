@@ -26,7 +26,7 @@ import { ILifecycleService, WillShutdownEvent } from 'vs/platform/lifecycle/comm
 import { ILogService } from 'vs/platform/log/common/log';
 import product from 'vs/platform/product/common/product';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 // import { IElectronService } from 'vs/platform/electron/node/electron';
 import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/common/workspace';
 import { IInitData, UIKind } from 'vs/workbench/api/common/extHost.protocol';
@@ -74,7 +74,7 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 		// @IElectronService private readonly _electronService: IElectronService,
 		@ILifecycleService private readonly _lifecycleService: ILifecycleService,
 		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
-		@ITelemetryService private readonly _telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@ILogService private readonly _logService: ILogService,
 		@ILabelService private readonly _labelService: ILabelService,
 		// @IExtensionHostDebugService private readonly _extensionHostDebugService: IExtensionHostDebugService,
@@ -389,8 +389,8 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 	}
 
 	private _createExtHostInitData(): Promise<IInitData> {
-		return Promise.all([this._telemetryService.getTelemetryInfo(), this._extensions])
-			.then(([telemetryInfo, extensionDescriptions]) => {
+		return Promise.all([ /*this._telemetryService.getTelemetryInfo(),*/ this._extensions])
+			.then(([ /*telemetryInfo,*/ extensionDescriptions]) => {
 				const workspace = this._contextService.getWorkspace();
 				const r: IInitData = {
 					commit: product.commit,
@@ -423,7 +423,7 @@ export class ExtensionHostProcessWorker implements IExtensionHostStarter {
 					resolvedExtensions: [],
 					hostExtensions: [],
 					extensions: extensionDescriptions,
-					telemetryInfo,
+					/* telemetryInfo,*/
 					logLevel: this._logService.getLevel(),
 					logsLocation: this._extensionHostLogsLocation,
 					autoStart: this._autoStart,

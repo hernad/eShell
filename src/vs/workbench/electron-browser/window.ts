@@ -6,14 +6,14 @@
 import * as nls from 'vs/nls';
 import { URI } from 'vs/base/common/uri';
 import * as errors from 'vs/base/common/errors';
-import { equals, deepClone, assign } from 'vs/base/common/objects';
+import { equals, deepClone, /*assign*/ } from 'vs/base/common/objects';
 import * as DOM from 'vs/base/browser/dom';
 import { Separator } from 'vs/base/browser/ui/actionbar/actionbar';
 import { IAction } from 'vs/base/common/actions';
 import { IFileService } from 'vs/platform/files/common/files';
 import { toResource, IUntitledTextResourceInput, SideBySideEditor, pathsToEditors } from 'vs/workbench/common/editor';
 import { IEditorService, IResourceEditor } from 'vs/workbench/services/editor/common/editorService';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IWindowSettings, IOpenFileRequest, IWindowsConfiguration, IAddFoldersRequest, IRunActionInWindowRequest, IRunKeybindingInWindowRequest, getTitleBarStyle } from 'vs/platform/windows/common/windows';
 import { ITitleService } from 'vs/workbench/services/title/common/titleService';
 import { IWorkbenchThemeService, VS_HC_THEME } from 'vs/workbench/services/themes/common/workbenchThemeService';
@@ -89,7 +89,7 @@ export class ElectronWindow extends Disposable {
 		@INotificationService private readonly notificationService: INotificationService,
 		@ICommandService private readonly commandService: ICommandService,
 		@IKeybindingService private readonly keybindingService: IKeybindingService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IWorkspaceEditingService private readonly workspaceEditingService: IWorkspaceEditingService,
 		@IFileService private readonly fileService: IFileService,
 		@IMenuService private readonly menuService: IMenuService,
@@ -147,11 +147,13 @@ export class ElectronWindow extends Disposable {
 			try {
 				await this.commandService.executeCommand(request.id, ...args);
 
+				/*
 				type CommandExecutedClassifcation = {
 					id: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 					from: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 				};
 				this.telemetryService.publicLog2<{ id: String, from: String }, CommandExecutedClassifcation>('commandExecuted', { id: request.id, from: request.from });
+				*/
 			} catch (error) {
 				this.notificationService.error(error);
 			}
@@ -549,8 +551,8 @@ export class ElectronWindow extends Disposable {
 		};
 
 		// mixin telemetry info
-		const info = await this.telemetryService.getTelemetryInfo();
-		assign(options.extra, { vscode_sessionId: info.sessionId });
+		// const info = await this.telemetryService.getTelemetryInfo();
+		// assign(options.extra, { vscode_sessionId: info.sessionId });
 
 		// start crash reporter right here
 		crashReporter.start(deepClone(options));
