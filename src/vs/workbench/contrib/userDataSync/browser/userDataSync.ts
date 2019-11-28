@@ -27,7 +27,6 @@ import { IEditorInput } from 'vs/workbench/common/editor';
 import { IAuthTokenService, AuthTokenStatus } from 'vs/platform/auth/common/auth';
 import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { FalseContext } from 'vs/platform/contextkey/common/contextkeys';
-import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 import { isWeb } from 'vs/base/common/platform';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
@@ -39,7 +38,7 @@ const SYNC_PUSH_DARK_ICON_URI = URI.parse(registerAndGetAmdImageURL(`vs/workbenc
 
 export class UserDataSyncWorkbenchContribution extends Disposable implements IWorkbenchContribution {
 
-	private static readonly ENABLEMENT_SETTING = 'configurationSync.enable';
+	private static readonly ENABLEMENT_SETTING = 'sync.enable';
 
 	private readonly userDataSyncStore: IUserDataSyncStore | undefined;
 	private readonly syncStatusContext: IContextKey<string>;
@@ -47,6 +46,7 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 	private readonly badgeDisposable = this._register(new MutableDisposable());
 	private readonly conflictsWarningDisposable = this._register(new MutableDisposable());
 	private readonly signInNotificationDisposable = this._register(new MutableDisposable());
+	private previousAuthStatus: AuthTokenStatus | undefined;
 
 	constructor(
 		@IUserDataSyncService private readonly userDataSyncService: IUserDataSyncService,
@@ -60,7 +60,6 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 		@IHistoryService private readonly historyService: IHistoryService,
 		@IWorkbenchEnvironmentService private readonly workbenchEnvironmentService: IWorkbenchEnvironmentService,
 		@IDialogService private readonly dialogService: IDialogService,
-		@IStorageService private readonly storageService: IStorageService,
 		@IQuickInputService private readonly quickInputService: IQuickInputService,
 		@IInstantiationService instantiationService: IInstantiationService,
 	) {
@@ -88,8 +87,13 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 		this.authTokenContext.set(status);
 		if (status === AuthTokenStatus.SignedIn) {
 			this.signInNotificationDisposable.clear();
+
+			if (this.previousAuthStatus === AuthTokenStatus.SigningIn) {
+				this.notificationService.info(localize('signedIn', "Successfully signed in."));
+			}
 		}
 		this.updateBadge();
+		this.previousAuthStatus = status;
 	}
 
 	private onDidChangeSyncStatus(status: SyncStatus) {
@@ -180,32 +184,24 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 	}
 
 	private async configureSyncOptions(): Promise<void> {
-		if (this.storageService.getBoolean('userDataSync.configureOptions.donotAsk', StorageScope.GLOBAL, false)) {
-			return;
-		}
 		return new Promise((c, e) => {
 			const disposables: DisposableStore = new DisposableStore();
 			const quickPick = this.quickInputService.createQuickPick();
 			disposables.add(quickPick);
+			quickPick.title = localize('configure sync title', "Sync: Configure");
 			quickPick.placeholder = localize('select configurations to sync', "Choose what to sync");
 			quickPick.canSelectMany = true;
+			quickPick.ignoreFocusOut = true;
 			const items = [{
-				id: 'configurationSync.enableSettings',
+				id: 'sync.enableSettings',
 				label: localize('user settings', "User Settings")
 			}, {
-				id: 'configurationSync.enableExtensions',
+				id: 'sync.enableExtensions',
 				label: localize('extensions', "Extensions")
 			}];
 			quickPick.items = items;
 			quickPick.selectedItems = items.filter(item => this.configurationService.getValue(item.id));
-			quickPick.customButton = true;
-			quickPick.customLabel = localize('do not ask', "Don't Ask Again");
-			disposables.add(quickPick.onDidCustom(() => {
-				this.storageService.store('userDataSync.configureOptions.donotAsk', true, StorageScope.GLOBAL);
-				quickPick.hide();
-			}));
-			disposables.add(quickPick.onDidAccept(() => quickPick.hide()));
-			disposables.add(quickPick.onDidHide(() => {
+			disposables.add(quickPick.onDidAccept(() => {
 				for (const item of items) {
 					const wasEnabled = this.configurationService.getValue(item.id);
 					const isEnabled = !!quickPick.selectedItems.filter(selected => selected.id === item.id)[0];
@@ -213,6 +209,9 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 						this.configurationService.updateValue(item.id!, isEnabled);
 					}
 				}
+				quickPick.hide();
+			}));
+			disposables.add(quickPick.onDidHide(() => {
 				disposables.dispose();
 				c();
 			}));

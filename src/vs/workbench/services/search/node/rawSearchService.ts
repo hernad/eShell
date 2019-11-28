@@ -386,8 +386,8 @@ export class SearchService implements IRawSearchService {
 			cancel() {
 				// Do nothing
 			}
-			then(resolve: any, reject: any) {
-				return <any>promise.then(resolve, reject);
+			then<TResult1 = C, TResult2 = never>(resolve?: ((value: C) => TResult1 | Promise<TResult1>) | undefined | null, reject?: ((reason: any) => TResult2 | Promise<TResult2>) | undefined | null): Promise<TResult1 | TResult2> {
+				return promise.then(resolve, reject);
 			}
 			catch(reject?: any) {
 				return this.then(undefined, reject);
