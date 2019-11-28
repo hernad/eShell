@@ -3015,6 +3015,9 @@ declare module 'vscode' {
 		 * be a range or a range and a placeholder text. The placeholder text should be the identifier of the symbol
 		 * which is being renamed - when omitted the text in the returned range is used.
 		 *
+		 * *Note: * This function should throw an error or return a rejected thenable when the provided location
+		 * doesn't allow for a rename.
+		 *
 		 * @param document The document in which rename will be invoked.
 		 * @param position The position at which rename will be invoked.
 		 * @param token A cancellation token.
@@ -4922,7 +4925,7 @@ declare module 'vscode' {
 		 * The extension kind describes if an extension runs where the UI runs
 		 * or if an extension runs where the remote extension host runs. The extension kind
 		 * is defined in the `package.json`-file of extensions but can also be refined
-		 * via the the `remote.extensionKind`-setting. When no remote extension host exists,
+		 * via the `remote.extensionKind`-setting. When no remote extension host exists,
 		 * the value is [`ExtensionKind.UI`](#ExtensionKind.UI).
 		 */
 		extensionKind: ExtensionKind;
@@ -7283,6 +7286,12 @@ declare module 'vscode' {
 		 * Setting the message to null, undefined, or empty string will remove the message from the view.
 		 */
 		message?: string;
+
+		/**
+		 * The tree view title is initially taken from the extension package.json
+		 * Changes to the title property will be properly reflected in the UI in the title of the view.
+		 */
+		title?: string;
 
 		/**
 		 * Reveals the given element in the tree view.

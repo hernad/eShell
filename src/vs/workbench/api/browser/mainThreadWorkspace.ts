@@ -159,9 +159,10 @@ export class MainThreadWorkspace implements MainThreadWorkspaceShape {
 		});
 	}
 
-	$startTextSearch(pattern: IPatternInfo, options: ITextQueryBuilderOptions, requestId: number, token: CancellationToken): Promise<ITextSearchComplete | undefined> {
+	$startTextSearch(pattern: IPatternInfo, _folder: UriComponents | null, options: ITextQueryBuilderOptions, requestId: number, token: CancellationToken): Promise<ITextSearchComplete | null> {
+		const folder = URI.revive(_folder);
 		const workspace = this._contextService.getWorkspace();
-		const folders = workspace.folders.map(folder => folder.uri);
+		const folders = folder ? [folder] : workspace.folders.map(folder => folder.uri);
 
 		const query = this._queryBuilder.text(pattern, folders, options);
 		query._reason = 'startTextSearch';
@@ -181,13 +182,13 @@ export class MainThreadWorkspace implements MainThreadWorkspaceShape {
 					return Promise.reject(err);
 				}
 
-				return undefined;
+				return null;
 			});
 
 		return search;
 	}
 
-	$checkExists(folders: UriComponents[], includes: string[], token: CancellationToken): Promise<boolean | undefined> {
+	$checkExists(folders: UriComponents[], includes: string[], token: CancellationToken): Promise<boolean> {
 		const queryBuilder = this._instantiationService.createInstance(QueryBuilder);
 		const query = queryBuilder.file(folders.map(folder => URI.revive(folder)), {
 			_reason: 'checkExists',
@@ -198,14 +199,14 @@ export class MainThreadWorkspace implements MainThreadWorkspaceShape {
 
 		return this._searchService.fileSearch(query, token).then(
 			result => {
-				return result.limitHit;
+				return !!result.limitHit;
 			},
 			err => {
 				if (!isPromiseCanceledError(err)) {
 					return Promise.reject(err);
 				}
 
-				return undefined;
+				return false;
 			});
 	}
 
