@@ -4,53 +4,53 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Action } from 'vs/base/common/actions';
-import { distinct } from 'vs/base/common/arrays';
+// import { distinct } from 'vs/base/common/arrays';
 import { illegalArgument, onUnexpectedError } from 'vs/base/common/errors';
 import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
 import * as objects from 'vs/base/common/objects';
 import * as platform from 'vs/base/common/platform';
-import { dirname } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
+// import { dirname } from 'vs/base/common/resources';
+// import { URI } from 'vs/base/common/uri';
 import { registerLanguageCommand } from 'vs/editor/browser/editorExtensions';
 import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
 import { getSelectionSearchString } from 'vs/editor/contrib/find/findController';
 import { ToggleCaseSensitiveKeybinding, ToggleRegexKeybinding, ToggleWholeWordKeybinding } from 'vs/editor/contrib/find/findModel';
 import * as nls from 'vs/nls';
 import { ICommandAction, MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/platform/actions/common/actions';
-import { CommandsRegistry, ICommandHandler } from 'vs/platform/commands/common/commands';
+import { CommandsRegistry, /*ICommandHandler*/ } from 'vs/platform/commands/common/commands';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { ConfigurationScope, Extensions as ConfigurationExtensions, IConfigurationRegistry } from 'vs/platform/configuration/common/configurationRegistry';
 import { ContextKeyExpr } from 'vs/platform/contextkey/common/contextkey';
-import { IFileService } from 'vs/platform/files/common/files';
+// import { IFileService } from 'vs/platform/files/common/files';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
 import { LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
-import { IListService, WorkbenchListFocusContextKey, WorkbenchObjectTree } from 'vs/platform/list/browser/listService';
+import { /*IListService, WorkbenchListFocusContextKey,*/ WorkbenchObjectTree } from 'vs/platform/list/browser/listService';
 import { IQuickOpenService } from 'vs/platform/quickOpen/common/quickOpen';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { Extensions as PanelExtensions, PanelDescriptor, PanelRegistry } from 'vs/workbench/browser/panel';
 import { defaultQuickOpenContextKey } from 'vs/workbench/browser/parts/quickopen/quickopen';
 import { Extensions as QuickOpenExtensions, IQuickOpenRegistry, QuickOpenHandlerDescriptor } from 'vs/workbench/browser/quickopen';
-import { Extensions as ViewletExtensions, ViewletDescriptor, ViewletRegistry } from 'vs/workbench/browser/viewlet';
+// import { Extensions as ViewletExtensions, ViewletDescriptor, ViewletRegistry } from 'vs/workbench/browser/viewlet';
 import { Extensions as ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
 import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
 import { Extensions as ViewExtensions, IViewsRegistry } from 'vs/workbench/common/views';
-import { getMultiSelectedResources } from 'vs/workbench/contrib/files/browser/files';
-import { ExplorerFolderContext, ExplorerRootContext, FilesExplorerFocusCondition, IExplorerService, VIEWLET_ID as VIEWLET_ID_FILES } from 'vs/workbench/contrib/files/common/files';
+// import { getMultiSelectedResources } from 'vs/workbench/contrib/files/browser/files';
+import { /*ExplorerFolderContext, ExplorerRootContext, FilesExplorerFocusCondition,*/ IExplorerService, VIEWLET_ID as VIEWLET_ID_FILES } from 'vs/workbench/contrib/files/common/files';
 import { OpenAnythingHandler } from 'vs/workbench/contrib/search/browser/openAnythingHandler';
 import { OpenSymbolHandler } from 'vs/workbench/contrib/search/browser/openSymbolHandler';
 import { registerContributions as replaceContributions } from 'vs/workbench/contrib/search/browser/replaceContributions';
-import { clearHistoryCommand, ClearSearchResultsAction, CloseReplaceAction, CollapseDeepestExpandedLevelAction, copyAllCommand, copyMatchCommand, copyPathCommand, FocusNextInputAction, FocusNextSearchResultAction, FocusPreviousInputAction, FocusPreviousSearchResultAction, focusSearchListCommand, getSearchView, openSearchView, OpenSearchViewletAction, RefreshAction, RemoveAction, ReplaceAction, ReplaceAllAction, ReplaceAllInFolderAction, ReplaceInFilesAction, toggleCaseSensitiveCommand, toggleRegexCommand, toggleWholeWordCommand, FindInFilesCommand, ToggleSearchOnTypeAction, OpenResultsInEditorAction, RerunEditorSearchAction } from 'vs/workbench/contrib/search/browser/searchActions';
+import { clearHistoryCommand, ClearSearchResultsAction, /*CloseReplaceAction,*/ CollapseDeepestExpandedLevelAction, copyAllCommand, /*copyMatchCommand, copyPathCommand, FocusNextInputAction,*/ FocusNextSearchResultAction, /*FocusPreviousInputAction,*/ FocusPreviousSearchResultAction, focusSearchListCommand, getSearchView, openSearchView, OpenSearchViewletAction, RefreshAction, /*RemoveAction, ReplaceAction, ReplaceAllAction, ReplaceAllInFolderAction,*/ ReplaceInFilesAction, toggleCaseSensitiveCommand, toggleRegexCommand, toggleWholeWordCommand, FindInFilesCommand, ToggleSearchOnTypeAction, OpenResultsInEditorAction, RerunEditorSearchAction } from 'vs/workbench/contrib/search/browser/searchActions';
 import { SearchPanel } from 'vs/workbench/contrib/search/browser/searchPanel';
 import { SearchView, SearchViewPosition } from 'vs/workbench/contrib/search/browser/searchView';
-import { SearchViewlet } from 'vs/workbench/contrib/search/browser/searchViewlet';
+// import { SearchViewlet } from 'vs/workbench/contrib/search/browser/searchViewlet';
 import { registerContributions as searchWidgetContributions } from 'vs/workbench/contrib/search/browser/searchWidget';
 import * as Constants from 'vs/workbench/contrib/search/common/constants';
 import { getWorkspaceSymbols } from 'vs/workbench/contrib/search/common/search';
 import { ISearchHistoryService, SearchHistoryService } from 'vs/workbench/contrib/search/common/searchHistoryService';
-import { FileMatchOrMatch, ISearchWorkbenchService, RenderableMatch, SearchWorkbenchService, FileMatch, Match, FolderMatch } from 'vs/workbench/contrib/search/common/searchModel';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { FileMatchOrMatch, ISearchWorkbenchService, RenderableMatch, SearchWorkbenchService, FileMatch, /*Match, FolderMatch*/ } from 'vs/workbench/contrib/search/common/searchModel';
+// import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { IPanelService } from 'vs/workbench/services/panel/common/panelService';
 import { ISearchConfiguration, ISearchConfigurationProperties, PANEL_ID, VIEWLET_ID, VIEW_CONTAINER, VIEW_ID } from 'vs/workbench/services/search/common/search';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
@@ -66,6 +66,7 @@ searchWidgetContributions();
 
 const category = nls.localize('search', "Search");
 
+/*
 KeybindingsRegistry.registerCommandAndKeybindingRule({
 	id: 'workbench.action.search.toggleQueryDetails',
 	weight: KeybindingWeight.WorkbenchContrib,
@@ -301,6 +302,7 @@ MenuRegistry.appendMenuItem(MenuId.SearchContext, {
 	group: 'search_2',
 	order: 3
 });
+*/
 
 CommandsRegistry.registerCommand({
 	id: Constants.CopyAllCommandId,
@@ -370,18 +372,21 @@ const ToggleSearchViewPositionCommand: ICommandAction = {
 	category
 };
 MenuRegistry.addCommand(ToggleSearchViewPositionCommand);
+
+/*
 MenuRegistry.appendMenuItem(MenuId.SearchContext, {
 	command: ToggleSearchViewPositionCommand,
 	when: Constants.SearchViewVisibleKey,
 	group: 'search_9',
 	order: 1
 });
-
+*/
 CommandsRegistry.registerCommand({
 	id: Constants.FocusSearchListCommandID,
 	handler: focusSearchListCommand
 });
 
+/*
 const focusSearchListCommandLabel = nls.localize('focusSearchListCommandLabel', "Focus List");
 const FocusSearchListCommand: ICommandAction = {
 	id: Constants.FocusSearchListCommandID,
@@ -389,6 +394,7 @@ const FocusSearchListCommand: ICommandAction = {
 	category
 };
 MenuRegistry.addCommand(FocusSearchListCommand);
+
 
 const searchInFolderCommand: ICommandHandler = (accessor, resource?: URI) => {
 	const listService = accessor.get(IListService);
@@ -416,7 +422,9 @@ const searchInFolderCommand: ICommandHandler = (accessor, resource?: URI) => {
 		return undefined;
 	});
 };
+*/
 
+/*
 const FIND_IN_FOLDER_ID = 'filesExplorer.findInFolder';
 KeybindingsRegistry.registerCommandAndKeybindingRule({
 	id: FIND_IN_FOLDER_ID,
@@ -425,6 +433,7 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 	primary: KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
 	handler: searchInFolderCommand
 });
+*/
 
 CommandsRegistry.registerCommand({
 	id: ClearSearchResultsAction.ID,
@@ -452,6 +461,7 @@ CommandsRegistry.registerCommand({
 	}
 });
 
+/*
 MenuRegistry.appendMenuItem(MenuId.ExplorerContext, {
 	group: '4_search',
 	order: 10,
@@ -471,7 +481,7 @@ MenuRegistry.appendMenuItem(MenuId.ExplorerContext, {
 	},
 	when: ContextKeyExpr.and(ExplorerRootContext, ExplorerFolderContext.toNegated())
 });
-
+*/
 
 class ShowAllSymbolsAction extends Action {
 	static readonly ID = 'workbench.action.showAllSymbols';
@@ -503,6 +513,7 @@ class ShowAllSymbolsAction extends Action {
 	}
 }
 
+/*
 Registry.as<ViewletRegistry>(ViewletExtensions.Viewlets).registerViewlet(ViewletDescriptor.create(
 	SearchViewlet,
 	VIEWLET_ID,
@@ -518,7 +529,7 @@ Registry.as<PanelRegistry>(PanelExtensions.Panels).registerPanel(PanelDescriptor
 	'search',
 	10
 ));
-
+*/
 class RegisterSearchViewContribution implements IWorkbenchContribution {
 
 	constructor(
