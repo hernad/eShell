@@ -1,0 +1,22 @@
+trigger:
+  branches:
+    include:
+    - light-electron-6
+    - releases/*
+  paths:
+    exclude:
+    - README.md
+    include:
+    - package.json
+
+variables:
+- group: API_KEYS
+
+jobs:
+- job: Linux_x64_local
+  pool: local-dell-xps15
+  variables:
+    VSCODE_ARCH: x64
+    BINTRAY_ARCH: x64
+  steps:
+  - template: build/azure-pipelines/linux/build-linux.yml
