@@ -18,7 +18,7 @@ steps:
 # https://github.com/Microsoft/azure-pipelines-tasks/blob/master/Tasks/NodeToolV0/nodetool.ts
 - task: NodeTool@0
   inputs:
-    versionSpec: "8.15.0"
+    versionSpec: "12.14.0"
 - script: |
     npm install -g yarn
   displayName: Install yarn with npm

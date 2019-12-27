@@ -53,13 +53,3 @@ jobs:
   steps:
   - template: build/azure-pipelines/linux/build-linux.yml
 
-- job: Linux_x32
-  pool:
-    #name: Default
-    vmImage: 'Ubuntu-16.04'
-  container: vscode-ia32
-  variables:
-    VSCODE_ARCH: ia32
-    BINTRAY_ARCH: x86
-  steps:
-  - template: build/azure-pipelines/linux/build-linux.yml
