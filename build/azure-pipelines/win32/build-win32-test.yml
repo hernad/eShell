@@ -1,0 +1,19 @@
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: "12.14.0"
+- powershell: |
+    npm install -g yarn
+  displayName: hernad - Install yarn with npm
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '2.x'
+    addToPath: true
+
+- script: |
+    test_azure_pipelines.bat
+  displayName: test windows test_azure_pipelines.bat
+  env:
+    CHERE_INVOKING: yes
+    BINTRAY_API_KEY: $(BINTRAY_BRINGOUT_API_KEY)
+    BINTRAY_ARCH: x64
