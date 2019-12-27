@@ -55,9 +55,11 @@ JSON_CONTENT="{\"name\":\"${BINTRAY_PACKAGE_VER}\", \"desc\": \"verzija ${BINTRA
 echo creating bintray RPM version ...
 echo JSON_CONTENT="$JSON_CONTENT"
 
+echo publish version ${BINTRAY_PACKAGE_VER}
 curl -X POST \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
     --header "Content-Type: application/json" \
+		--header "X-Bintray-Publish: 1" \
     -d "$JSON_CONTENT" \
      https://api.bintray.com/packages/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/versions
 
@@ -66,12 +68,13 @@ echo uploading RPM $FILE to bintray ...
 curl -s -T $FILE \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
       --header "X-Bintray-Override: 1" \
+			--header "X-Bintray-Publish: 1" \
      https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$FILE
 
-curl -s -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
-   -X POST https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/publish
+#curl -s -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
+#   -X POST https://api.bintray.com/content/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/publish
 
-# recalc rpm metadata
+echo  "recalc rpm metadata"
 curl -X POST -u ${BINTRAY_OWNER}:${BINTRAY_API_KEY} \
    https://api.bintray.com/calc_metadata/$BINTRAY_OWNER/$BINTRAY_REPOS
 
