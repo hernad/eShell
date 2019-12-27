@@ -51,15 +51,15 @@ ls -lh $FILE
 # https://gist.github.com/subfuzion/08c5d85437d5d4f00e58#curl-usage
 
 
-JSON_CONTENT="{"name":\"${BINTRAY_PACKAGE_VER}\", "desc": \"verzija ${BINTRAY_PACKAGE_VER}\"}"
+JSON_CONTENT="{\"name\":\"${BINTRAY_PACKAGE_VER}\", \"desc\": \"verzija ${BINTRAY_PACKAGE_VER}\"}"
 echo creating bintray RPM version ...
 echo JSON_CONTENT="$JSON_CONTENT"
 
-curl /X POST \
+curl -X POST \
       -u $BINTRAY_OWNER:$BINTRAY_API_KEY \
     --header "Content-Type: application/json" \
     -d "$JSON_CONTENT" \
-     https://api.bintray.com/packages/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/$BINTRAY_PACKAGE_VER/$FILE
+     https://api.bintray.com/packages/$BINTRAY_OWNER/$BINTRAY_REPOS/$BINTRAY_PACKAGE/versions
 
 
 echo uploading RPM $FILE to bintray ...
