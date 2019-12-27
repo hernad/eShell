@@ -13,7 +13,7 @@ variables:
 - group: API_KEYS
 
 jobs:
-- job: Linux_x64_local
+- job: Linux_x64_Ubuntu1604
   pool:
     vmImage: 'Ubuntu-16.04'
   variables:
