@@ -14,7 +14,7 @@ Potrebno: Windows 7, Windows 10
 
 #### 64-bit
 
-[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x64/images/download.svg?version=1.33.103) ](https://dl.bintray.com/bringout/eShell/eShell-windows-x64_1.33.103.zip)
+[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x64/images/download.svg?version=1.41.303) ](https://dl.bintray.com/bringout/eShell/eShell-windows-x64_1.41.303.zip)
 
 #### 32-bit
 
