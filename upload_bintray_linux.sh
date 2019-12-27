@@ -51,7 +51,7 @@ ls -lh $FILE
 # https://gist.github.com/subfuzion/08c5d85437d5d4f00e58#curl-usage
 
 
-JSON_CONTENT="'{"name":\"${BINTRAY_PACKAGE_VER}\", "desc": \"verzija ${BINTRAY_PACKAGE_VER}\"}'"
+JSON_CONTENT="{"name":\"${BINTRAY_PACKAGE_VER}\", "desc": \"verzija ${BINTRAY_PACKAGE_VER}\"}"
 echo creating bintray RPM version ...
 echo JSON_CONTENT="$JSON_CONTENT"
 
