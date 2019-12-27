@@ -11,11 +11,12 @@ echo %NODE_PROG% | node > tmpFile
 set /p BINTRAY_PACKAGE_VER= < tmpFile
 del tmpFile
 
-IF [%BINTRAY_ARCH%] EQU  [x64] move .build/win32-x64/user-setup/eShellSetup.exe eShellSetup-x64-%BINTRAY_PACKAGE_VER%.exe
+REM x64
+IF [%BINTRAY_ARCH%] EQU  [x64] move .build\win32-x64\user-setup\eShellSetup.exe eShellSetup-x64-%BINTRAY_PACKAGE_VER%.exe
 IF [%BINTRAY_ARCH%] EQU  [x64] set FILE=eShellSetup-x64-%BINTRAY_PACKAGE_VER%.exe
 
-
-IF [%BINTRAY_ARCH%] NEQ  [x64] move .build/win32-ia32/user-setup/eShellSetup.exe eShellSetup-x86-%BINTRAY_PACKAGE_VER%.exe
+REM x86
+IF [%BINTRAY_ARCH%] NEQ  [x64] move .build\win32-ia32\user-setup\eShellSetup.exe eShellSetup-x86-%BINTRAY_PACKAGE_VER%.exe
 IF [%BINTRAY_ARCH%] NEQ  [x64] set FILE=eShellSetup-x86-%BINTRAY_PACKAGE_VER%.exe
 
 
