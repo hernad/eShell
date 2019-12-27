@@ -32,7 +32,7 @@ REM zip -r -v $FILE $EXE
 dir  %FILE%
 echo uploading %FILE% to bintray ...
 
-%CURL% -s -T $FILE ^
+%CURL% -s -T %FILE% ^
       -u %BINTRAY_OWNER%:%BINTRAY_API_KEY% ^
       --header "X-Bintray-Override: 1"  ^
      https://api.bintray.com/content/%BINTRAY_OWNER%/%BINTRAY_REPO%/%BINTRAY_PACKAGE%/%BINTRAY_PACKAGE_VER%/%FILE%
