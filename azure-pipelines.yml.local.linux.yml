@@ -14,7 +14,7 @@ variables:
 
 jobs:
 - job: Linux_x64_local
-  pool: local-dell-xps15
+  pool: Default
   variables:
     VSCODE_ARCH: x64
     BINTRAY_ARCH: x64
