@@ -40,7 +40,7 @@ steps:
   displayName: "win32 build $(VSCODE_ARCH) zip"
 
 - script: |
-    upload_binary_win32.bat
+    upload_bintray_win32.bat
   displayName: upload to bintray eShell windows 32-bit
   env:
     CHERE_INVOKING: yes
