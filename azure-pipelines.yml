@@ -1,7 +1,6 @@
 trigger:
   branches:
     include:
-    - electron-6
     - light-electron-6
     - releases/*
   paths:
@@ -13,11 +12,54 @@ trigger:
 variables:
 - group: API_KEYS
 
+resources:
+  containers:
+  - container: vscode-x64
+    image: joaomoreno/vscode-linux-build-agent:x64
+  - container: vscode-ia32
+    image: joaomoreno/vscode-linux-build-agent:ia32
+#  - container: snapcraft
+#    image: snapcore/snapcraft
+
 jobs:
-- job: Windows_ia32_local
-  pool: local-dell-xps15
+- job: Windows_x64
+  pool:
+    vmImage: VS2017-Win2016
+  variables:
+    VSCODE_ARCH: x64
+    BINTRAY_ARCH: x64
+  steps:
+  - template: build/azure-pipelines/win32/build-win32-x64.yml
+
+- job: Windows_ia32
+  pool:
+    vmImage: VS2017-Win2016
   variables:
     VSCODE_ARCH: ia32
     BINTRAY_ARCH: x86
   steps:
-  - template: build/azure-pipelines/win32/build-win32-local.yml
+  - template: build/azure-pipelines/win32/build-win32-ia32.yml
+
+
+- job: Linux_x64
+  pool:
+    #name: Default
+    vmImage: 'Ubuntu-16.04'
+  # unutar containera izvrsiti operacije
+  container: vscode-x64
+  variables:
+    VSCODE_ARCH: x64
+    BINTRAY_ARCH: x64
+  steps:
+  - template: build/azure-pipelines/linux/build-linux.yml
+
+- job: Linux_x32
+  pool:
+    #name: Default
+    vmImage: 'Ubuntu-16.04'
+  container: vscode-ia32
+  variables:
+    VSCODE_ARCH: ia32
+    BINTRAY_ARCH: x86
+  steps:
+  - template: build/azure-pipelines/linux/build-linux.yml
