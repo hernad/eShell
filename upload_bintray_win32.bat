@@ -29,6 +29,7 @@ echo uploading %FILE% to bintray ...
 %CURL% -s -T %FILE% ^
       -u %BINTRAY_OWNER%:%BINTRAY_API_KEY% ^
       --header "X-Bintray-Override: 1"  ^
+	  	--header "X-Bintray-Publish: 1"  ^
      https://api.bintray.com/content/%BINTRAY_OWNER%/%BINTRAY_REPO%/%BINTRAY_PACKAGE%/%BINTRAY_PACKAGE_VER%/%FILE%
 
 %CURL% -s -u %BINTRAY_OWNER%:%BINTRAY_API_KEY% ^

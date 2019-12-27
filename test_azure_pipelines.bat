@@ -1,5 +1,7 @@
 REM BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
 
+REM https://bintray.com/bringout/eShell/eShell-windows-x64
+
 set BINTRAY_OWNER=bringout
 set BINTRAY_REPOS=eShell
 set BINTRAY_PACKAGE=eShell-windows-%BINTRAY_ARCH%
@@ -35,6 +37,7 @@ echo uploading %FILE% to bintray ...
 %CURL% -s -T %FILE% ^
       -u %BINTRAY_OWNER%:%BINTRAY_API_KEY% ^
       --header "X-Bintray-Override: 1"  ^
+	--header "X-Bintray-Publish: 1" ^
      https://api.bintray.com/content/%BINTRAY_OWNER%/%BINTRAY_REPO%/%BINTRAY_PACKAGE%/%BINTRAY_PACKAGE_VER%/%FILE%
 
 %CURL% -s -u %BINTRAY_OWNER%:%BINTRAY_API_KEY% ^
