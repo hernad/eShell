@@ -13,7 +13,7 @@ variables:
 - group: API_KEYS
 
 jobs:
-- job: Linux_x64_local
+- job: Linux_x64_local_centos7
   pool: Default
   variables:
     VSCODE_ARCH: x64
