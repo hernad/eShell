@@ -6,7 +6,7 @@
 import 'vs/css!./media/tree';
 import { IDisposable, dispose, Disposable, toDisposable, DisposableStore } from 'vs/base/common/lifecycle';
 import { IListOptions, List, IListStyles, MouseController, DefaultKeyboardNavigationDelegate } from 'vs/base/browser/ui/list/listWidget';
-import { IListVirtualDelegate, IListRenderer, IListMouseEvent, IListEvent, IListContextMenuEvent, IListDragAndDrop, IListDragOverReaction, IKeyboardNavigationLabelProvider, IIdentityProvider, IKeyboardNavigationDelegate } from 'vs/base/browser/ui/list/list';
+import { IListVirtualDelegate, IListRenderer, IListMouseEvent, IListEvent, IListContextMenuEvent, IListDragAndDrop, IListDragOverReaction, IKeyboardNavigationLabelProvider, IIdentityProvider, IKeyboardNavigationDelegate, ListAriaRootRole } from 'vs/base/browser/ui/list/list';
 import { append, $, toggleClass, getDomNodePagePosition, removeClass, addClass, hasClass, hasParentWithClass, createStyleSheet, clearNode, addClasses, removeClasses } from 'vs/base/browser/dom';
 import { Event, Relay, Emitter, EventBufferer } from 'vs/base/common/event';
 import { StandardKeyboardEvent } from 'vs/base/browser/keyboardEvent';
@@ -14,7 +14,7 @@ import { KeyCode } from 'vs/base/common/keyCodes';
 import { ITreeModel, ITreeNode, ITreeRenderer, ITreeEvent, ITreeMouseEvent, ITreeContextMenuEvent, ITreeFilter, ITreeNavigator, ICollapseStateChangeEvent, ITreeDragAndDrop, TreeDragOverBubble, TreeVisibility, TreeFilterResult, ITreeModelSpliceEvent, TreeMouseEventTarget } from 'vs/base/browser/ui/tree/tree';
 import { ISpliceable } from 'vs/base/common/sequence';
 import { IDragAndDropData, StaticDND, DragAndDropData } from 'vs/base/browser/dnd';
-import { range, equals, distinctES6, fromSet } from 'vs/base/common/arrays';
+import { range, equals, distinctES6 } from 'vs/base/common/arrays';
 import { ElementsDragAndDropData } from 'vs/base/browser/ui/list/listView';
 import { domEvent } from 'vs/base/browser/event';
 import { fuzzyScore, FuzzyScore } from 'vs/base/common/filters';
@@ -161,12 +161,16 @@ function asListOptions<T, TFilterData, TRef>(modelProvider: () => ITreeModel<T, 
 			}
 		},
 		accessibilityProvider: options.accessibilityProvider && {
+			...options.accessibilityProvider,
 			getAriaLabel(e) {
 				return options.accessibilityProvider!.getAriaLabel(e.element);
 			},
 			getAriaLevel(node) {
 				return node.depth;
-			}
+			},
+			getActiveDescendantId: options.accessibilityProvider.getActiveDescendantId && (node => {
+				return options.accessibilityProvider!.getActiveDescendantId!(node.element);
+			})
 		},
 		keyboardNavigationLabelProvider: options.keyboardNavigationLabelProvider && {
 			...options.keyboardNavigationLabelProvider,
@@ -186,8 +190,15 @@ function asListOptions<T, TFilterData, TRef>(modelProvider: () => ITreeModel<T, 
 			},
 			getPosInSet(node) {
 				return node.visibleChildIndex + 1;
-			}
-		}
+			},
+			isChecked: options.ariaProvider && options.ariaProvider.isChecked ? (node) => {
+				return options.ariaProvider!.isChecked!(node.element);
+			} : undefined,
+			getRole: options.ariaProvider && options.ariaProvider.getRole ? (node) => {
+				return options.ariaProvider!.getRole!(node.element);
+			} : () => 'treeitem'
+		},
+		ariaRole: ListAriaRootRole.TREE
 	};
 }
 
@@ -1294,7 +1305,7 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 		onDidModelSplice(() => null, null, this.disposables);
 
 		// Active nodes can change when the model changes or when focus or selection change.
-		// We debouce it with 0 delay since these events may fire in the same stack and we only
+		// We debounce it with 0 delay since these events may fire in the same stack and we only
 		// want to run this once. It also doesn't matter if it runs on the next tick since it's only
 		// a nice to have UI feature.
 		onDidChangeActiveNodes.input = Event.chain(Event.any<any>(onDidModelSplice, this.focus.onDidChange, this.selection.onDidChange))
@@ -1310,7 +1321,7 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 					set.add(node);
 				}
 
-				return fromSet(set);
+				return values(set);
 			}).event;
 
 		if (_options.keyboardSupport !== false) {
@@ -1575,7 +1586,7 @@ export abstract class AbstractTree<T, TFilterData, TRef> implements IDisposable 
 	}
 
 	open(elements: TRef[], browserEvent?: UIEvent): void {
-		const indexes = elements.map(e => this.model.getListIndex(e));
+		const indexes = elements.map(e => this.model.getListIndex(e)).filter(i => i >= 0);
 		this.view.open(indexes, browserEvent);
 	}
 

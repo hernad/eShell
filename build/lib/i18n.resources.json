@@ -31,6 +31,14 @@
 			"project": "vscode-workbench"
 		},
 		{
+			"name": "vs/workbench/contrib/backup",
+			"project": "vscode-workbench"
+		},
+		{
+			"name": "vs/workbench/contrib/bulkEdit",
+			"project": "vscode-workbench"
+		},
+		{
 			"name": "vs/workbench/contrib/cli",
 			"project": "vscode-workbench"
 		},
@@ -51,15 +59,15 @@
 			"project": "vscode-workbench"
 		},
 		{
-			"name": "vs/workbench/contrib/testCustomEditors",
-			"project": "vscode-workbench"
-		},
-		{
 			"name": "vs/workbench/contrib/debug",
 			"project": "vscode-workbench"
 		},
 		{
 			"name": "vs/workbench/contrib/emmet",
+			"project": "vscode-workbench"
+		},
+		{
+			"name": "vs/workbench/contrib/experiments",
 			"project": "vscode-workbench"
 		},
 		{
@@ -103,11 +111,19 @@
 			"project": "vscode-workbench"
 		},
 		{
+			"name": "vs/workbench/contrib/openInDesktop",
+			"project": "vscode-workbench"
+		},
+		{
 			"name": "vs/workbench/contrib/performance",
 			"project": "vscode-workbench"
 		},
 		{
 			"name": "vs/workbench/contrib/preferences",
+			"project": "vscode-workbench"
+		},
+		{
+			"name": "vs/workbench/contrib/quickaccess",
 			"project": "vscode-workbench"
 		},
 		{
@@ -132,6 +148,10 @@
 		},
 		{
 			"name": "vs/workbench/contrib/search",
+			"project": "vscode-workbench"
+		},
+		{
+			"name": "vs/workbench/contrib/searchEditor",
 			"project": "vscode-workbench"
 		},
 		{
@@ -247,6 +267,10 @@
 			"project": "vscode-workbench"
 		},
 		{
+			"name": "vs/workbench/services/log",
+			"project": "vscode-workbench"
+		},
+		{
 			"name": "vs/workbench/services/integrity",
 			"project": "vscode-workbench"
 		},
@@ -271,6 +295,10 @@
 			"project": "vscode-workbench"
 		},
 		{
+			"name": "vs/workbench/services/search",
+			"project": "vscode-workbench"
+		},
+		{
 			"name": "vs/workbench/services/textfile",
 			"project": "vscode-workbench"
 		},
@@ -280,6 +308,10 @@
 		},
 		{
 			"name": "vs/workbench/services/textMate",
+			"project": "vscode-workbench"
+		},
+		{
+			"name": "vs/workbench/services/workingCopy",
 			"project": "vscode-workbench"
 		},
 		{
@@ -304,6 +336,14 @@
 		},
 		{
 			"name": "vs/workbench/services/userData",
+			"project": "vscode-workbench"
+		},
+		{
+			"name": "vs/workbench/services/userDataSync",
+			"project": "vscode-workbench"
+		},
+		{
+			"name": "vs/workbench/contrib/timeline",
 			"project": "vscode-workbench"
 		}
 	]

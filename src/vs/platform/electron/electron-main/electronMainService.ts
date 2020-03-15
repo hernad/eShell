@@ -20,8 +20,9 @@ import { dirExists } from 'vs/base/node/pfs';
 import { URI } from 'vs/base/common/uri';
 import { ITelemetryData, ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { ILogService } from 'vs/platform/log/common/log';
 
-export interface IElectronMainService extends AddFirstParameterToFunctions<IElectronService, Promise<any> /* only methods, not events */, number | undefined /* window ID */> { }
+export interface IElectronMainService extends AddFirstParameterToFunctions<IElectronService, Promise<unknown> /* only methods, not events */, number | undefined /* window ID */> { }
 
 export const IElectronMainService = createDecorator<IElectronService>('electronMainService');
 
@@ -34,7 +35,8 @@ export class ElectronMainService implements IElectronMainService {
 		@IDialogMainService private readonly dialogMainService: IDialogMainService,
 		@ILifecycleMainService private readonly lifecycleMainService: ILifecycleMainService,
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService
+		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		@ILogService private readonly logService: ILogService
 	) {
 	}
 
@@ -99,6 +101,7 @@ export class ElectronMainService implements IElectronMainService {
 				cli: this.environmentService.args,
 				forceNewWindow: options.forceNewWindow,
 				forceReuseWindow: options.forceReuseWindow,
+				preferNewWindow: options.preferNewWindow,
 				diffMode: options.diffMode,
 				addMode: options.addMode,
 				gotoLineMode: options.gotoLineMode,
@@ -154,15 +157,6 @@ export class ElectronMainService implements IElectronMainService {
 		if (window) {
 			window.win.minimize();
 		}
-	}
-
-	async isWindowFocused(windowId: number | undefined): Promise<boolean> {
-		const window = this.windowById(windowId);
-		if (window) {
-			return window.win.isFocused();
-		}
-
-		return false;
 	}
 
 	async focusWindow(windowId: number | undefined, options?: { windowId?: number; }): Promise<void> {
@@ -366,15 +360,13 @@ export class ElectronMainService implements IElectronMainService {
 	//#region Connectivity
 
 	async resolveProxy(windowId: number | undefined, url: string): Promise<string | undefined> {
-		return new Promise(resolve => {
-			const window = this.windowById(windowId);
-			const session = window?.win?.webContents?.session;
-			if (session) {
-				session.resolveProxy(url, proxy => resolve(proxy));
-			} else {
-				resolve();
-			}
-		});
+		const window = this.windowById(windowId);
+		const session = window?.win?.webContents?.session;
+		if (session) {
+			return session.resolveProxy(url);
+		} else {
+			return undefined;
+		}
 	}
 
 	//#endregion
@@ -402,6 +394,7 @@ export class ElectronMainService implements IElectronMainService {
 
 	async startCrashReporter(windowId: number | undefined, options: CrashReporterStartOptions): Promise<void> {
 		crashReporter.start(options);
+		this.logService.trace('ElectronMainService#crashReporter', JSON.stringify(options));
 	}
 
 	//#endregion

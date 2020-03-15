@@ -52,7 +52,7 @@ class PreviewStore extends Disposable {
 	}
 }
 
-export class MarkdownPreviewManager extends Disposable implements vscode.WebviewPanelSerializer, vscode.WebviewEditorProvider {
+export class MarkdownPreviewManager extends Disposable implements vscode.WebviewPanelSerializer, vscode.CustomTextEditorProvider {
 	private static readonly markdownPreviewActiveContextKey = 'markdownPreviewFocus';
 
 	private readonly _topmostLineMonitor = new TopmostLineMonitor();
@@ -70,7 +70,7 @@ export class MarkdownPreviewManager extends Disposable implements vscode.Webview
 	) {
 		super();
 		this._register(vscode.window.registerWebviewPanelSerializer(DynamicMarkdownPreview.viewType, this));
-		this._register(vscode.window.registerWebviewEditorProvider('vscode.markdown.preview.editor', this));
+		this._register(vscode.window.registerCustomEditorProvider('vscode.markdown.preview.editor', this));
 	}
 
 	public refresh() {
@@ -148,12 +148,16 @@ export class MarkdownPreviewManager extends Disposable implements vscode.Webview
 		this.registerDynamicPreview(preview);
 	}
 
-	public async resolveWebviewEditor(
-		input: { readonly resource: vscode.Uri; },
+	public async resolveCustomDocument(_document: vscode.CustomDocument): Promise<void> {
+		// noop
+	}
+
+	public async resolveCustomTextEditor(
+		document: vscode.TextDocument,
 		webview: vscode.WebviewPanel
-	): Promise<vscode.WebviewEditorCapabilities> {
+	): Promise<void> {
 		const preview = DynamicMarkdownPreview.revive(
-			{ resource: input.resource, locked: false, resourceColumn: vscode.ViewColumn.One },
+			{ resource: document.uri, locked: false, resourceColumn: vscode.ViewColumn.One },
 			webview,
 			this._contentProvider,
 			this._previewConfigurations,
@@ -161,7 +165,6 @@ export class MarkdownPreviewManager extends Disposable implements vscode.Webview
 			this._topmostLineMonitor,
 			this._contributions);
 		this.registerStaticPreview(preview);
-		return {};
 	}
 
 	private createNewDynamicPreview(

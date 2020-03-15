@@ -13,15 +13,14 @@ import { basename, dirname, toLocalResource } from 'vs/base/common/resources';
 import { URI } from 'vs/base/common/uri';
 import { QuickOpenEntry, QuickOpenModel } from 'vs/base/parts/quickopen/browser/quickOpenModel';
 import { IAutoFocus } from 'vs/base/parts/quickopen/common/quickOpen';
-import { IPreparedQuery, prepareQuery } from 'vs/base/parts/quickopen/common/quickOpenScorer';
+import { IPreparedQuery, prepareQuery } from 'vs/base/common/fuzzyScorer';
 import { IRange } from 'vs/editor/common/core/range';
 import { getIconClasses } from 'vs/editor/common/services/getIconClasses';
 import { IModelService } from 'vs/editor/common/services/modelService';
 import { IModeService } from 'vs/editor/common/services/modeService';
 import * as nls from 'vs/nls';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IResourceInput } from 'vs/platform/editor/common/editor';
-import { IEnvironmentService } from 'vs/platform/environment/common/environment';
+import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
 import { IFileService } from 'vs/platform/files/common/files';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ILabelService } from 'vs/platform/label/common/label';
@@ -94,8 +93,8 @@ export class FileEntry extends EditorQuickOpenEntry {
 		return true;
 	}
 
-	getInput(): IResourceInput | EditorInput {
-		const input: IResourceInput = {
+	getInput(): IResourceEditorInput | EditorInput {
+		const input: IResourceEditorInput = {
 			resource: this.resource,
 			options: {
 				pinned: !this.configurationService.getValue<IWorkbenchEditorConfiguration>().workbench.editor.enablePreviewFromQuickOpen,
@@ -121,11 +120,10 @@ export class OpenFileHandler extends QuickOpenHandler {
 		@IWorkbenchThemeService private readonly themeService: IWorkbenchThemeService,
 		@IWorkspaceContextService private readonly contextService: IWorkspaceContextService,
 		@ISearchService private readonly searchService: ISearchService,
-		@IEnvironmentService private readonly environmentService: IEnvironmentService,
+		@IRemotePathService private readonly remotePathService: IRemotePathService,
 		@IWorkbenchEnvironmentService private readonly workbenchEnvironmentService: IWorkbenchEnvironmentService,
 		@IFileService private readonly fileService: IFileService,
-		@ILabelService private readonly labelService: ILabelService,
-		@IRemotePathService private readonly remotePathService: IRemotePathService,
+		@ILabelService private readonly labelService: ILabelService
 	) {
 		super();
 
@@ -169,7 +167,11 @@ export class OpenFileHandler extends QuickOpenHandler {
 		}
 
 		else {
-			complete = await this.searchService.fileSearch(this.queryBuilder.file(this.contextService.getWorkspace().folders.map(folder => folder.uri), queryOptions), token);
+			let fileQuery = this.queryBuilder.file(
+				this.contextService.getWorkspace().folders,
+				queryOptions
+			);
+			complete = await this.searchService.fileSearch(fileQuery, token);
 		}
 
 		const results: QuickOpenEntry[] = [];
@@ -187,11 +189,12 @@ export class OpenFileHandler extends QuickOpenHandler {
 	}
 
 	private async getAbsolutePathResult(query: IPreparedQuery): Promise<URI | undefined> {
-		const detildifiedQuery = untildify(query.original, this.environmentService.userHome);
+		const detildifiedQuery = untildify(query.original, (await this.remotePathService.userHome).path);
 		if ((await this.remotePathService.path).isAbsolute(detildifiedQuery)) {
 			const resource = toLocalResource(
 				await this.remotePathService.fileURI(detildifiedQuery),
-				this.workbenchEnvironmentService.configuration.remoteAuthority);
+				this.workbenchEnvironmentService.configuration.remoteAuthority
+			);
 
 			try {
 				const stat = await this.fileService.resolve(resource);
@@ -239,10 +242,7 @@ export class OpenFileHandler extends QuickOpenHandler {
 			sortByScore: true,
 		};
 
-		const folderResources = this.contextService.getWorkspace().folders.map(folder => folder.uri);
-		const query = this.queryBuilder.file(folderResources, options);
-
-		return query;
+		return this.queryBuilder.file(this.contextService.getWorkspace().folders, options);
 	}
 
 	get isCacheLoaded(): boolean {

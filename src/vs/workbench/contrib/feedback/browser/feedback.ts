@@ -11,7 +11,7 @@ import { IContextViewService } from 'vs/platform/contextview/browser/contextView
 import * as dom from 'vs/base/browser/dom';
 import { ICommandService } from 'vs/platform/commands/common/commands';
 import { IIntegrityService } from 'vs/workbench/services/integrity/common/integrity';
-import { IThemeService, registerThemingParticipant, ITheme, ICssStyleCollector } from 'vs/platform/theme/common/themeService';
+import { IThemeService, registerThemingParticipant, IColorTheme, ICssStyleCollector } from 'vs/platform/theme/common/themeService';
 import { attachButtonStyler, attachStylerCallback } from 'vs/platform/theme/common/styler';
 import { editorWidgetBackground, editorWidgetForeground, widgetShadow, inputBorder, inputForeground, inputBackground, inputActiveOptionBorder, editorBackground, buttonBackground, contrastBorder, darken } from 'vs/platform/theme/common/colorRegistry';
 import { IAnchor } from 'vs/base/browser/ui/contextview/contextview';
@@ -94,7 +94,7 @@ export class FeedbackDropdown extends Dropdown {
 
 		return {
 			x: position.left + position.width, // center above the container
-			y: position.top - 9, // above status bar
+			y: position.top - 26, // above status bar and beak
 			width: position.width,
 			height: position.height
 		};
@@ -119,7 +119,7 @@ export class FeedbackDropdown extends Dropdown {
 		closeBtn.title = nls.localize('close', "Close");
 
 		disposables.add(dom.addDisposableListener(closeBtn, dom.EventType.MOUSE_OVER, () => {
-			const theme = this.themeService.getTheme();
+			const theme = this.themeService.getColorTheme();
 			let darkenFactor: number | undefined;
 			switch (theme.type) {
 				case 'light':
@@ -277,12 +277,12 @@ export class FeedbackDropdown extends Dropdown {
 		disposables.add(attachStylerCallback(this.themeService, { widgetShadow, editorWidgetBackground, editorWidgetForeground, inputBackground, inputForeground, inputBorder, editorBackground, contrastBorder }, colors => {
 			if (this.feedbackForm) {
 				this.feedbackForm.style.backgroundColor = colors.editorWidgetBackground ? colors.editorWidgetBackground.toString() : '';
-				this.feedbackForm.style.color = colors.editorWidgetForeground ? colors.editorWidgetForeground.toString() : null;
+				this.feedbackForm.style.color = colors.editorWidgetForeground ? colors.editorWidgetForeground.toString() : '';
 				this.feedbackForm.style.boxShadow = colors.widgetShadow ? `0 0 8px ${colors.widgetShadow}` : '';
 			}
 			if (this.feedbackDescriptionInput) {
 				this.feedbackDescriptionInput.style.backgroundColor = colors.inputBackground ? colors.inputBackground.toString() : '';
-				this.feedbackDescriptionInput.style.color = colors.inputForeground ? colors.inputForeground.toString() : null;
+				this.feedbackDescriptionInput.style.color = colors.inputForeground ? colors.inputForeground.toString() : '';
 				this.feedbackDescriptionInput.style.border = `1px solid ${colors.inputBorder || 'transparent'}`;
 			}
 
@@ -423,7 +423,7 @@ export class FeedbackDropdown extends Dropdown {
 	}
 }
 
-registerThemingParticipant((theme: ITheme, collector: ICssStyleCollector) => {
+registerThemingParticipant((theme: IColorTheme, collector: ICssStyleCollector) => {
 
 	// Sentiment Buttons
 	const inputActiveOptionBorderColor = theme.getColor(inputActiveOptionBorder);

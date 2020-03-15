@@ -9,7 +9,7 @@ import { ProgressLocation } from './extHostTypeConverters';
 import { Progress, IProgressStep } from 'vs/platform/progress/common/progress';
 import { localize } from 'vs/nls';
 import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
-import { debounce } from 'vs/base/common/decorators';
+import { throttle } from 'vs/base/common/decorators';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 
 export class ExtHostProgress implements ExtHostProgressShape {
@@ -24,9 +24,10 @@ export class ExtHostProgress implements ExtHostProgressShape {
 
 	withProgress<R>(extension: IExtensionDescription, options: ProgressOptions, task: (progress: Progress<IProgressStep>, token: CancellationToken) => Thenable<R>): Thenable<R> {
 		const handle = this._handles++;
-		const { title, location, cancellable } = options;
+		const { title, location, cancellable, viewId } = options;
 		const source = localize('extensionSource', "{0} (Extension)", extension.displayName || extension.name);
-		this._proxy.$startProgress(handle, { location: ProgressLocation.from(location), title, source, cancellable }, extension);
+
+		this._proxy.$startProgress(handle, { location: ProgressLocation.from(location, viewId), title, source, cancellable }, extension);
 		return this._withProgress(handle, task, !!cancellable);
 	}
 
@@ -85,7 +86,7 @@ class ProgressCallback extends Progress<IProgressStep> {
 		super(p => this.throttledReport(p));
 	}
 
-	@debounce(100, (result: IProgressStep, currentValue: IProgressStep) => mergeProgress(result, currentValue), () => Object.create(null))
+	@throttle(100, (result: IProgressStep, currentValue: IProgressStep) => mergeProgress(result, currentValue), () => Object.create(null))
 	throttledReport(p: IProgressStep): void {
 		this._proxy.$progressReport(this._handle, p);
 	}

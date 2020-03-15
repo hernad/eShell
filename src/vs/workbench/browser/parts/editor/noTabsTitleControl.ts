@@ -166,9 +166,14 @@ export class NoTabsTitleControl extends TitleControl {
 	updateEditorDirty(editor: IEditorInput): void {
 		this.ifEditorIsActive(editor, () => {
 			const titleContainer = assertIsDefined(this.titleContainer);
-			if (editor.isDirty()) {
+
+			// Signal dirty (unless saving)
+			if (editor.isDirty() && !editor.isSaving()) {
 				addClass(titleContainer, 'dirty');
-			} else {
+			}
+
+			// Otherwise, clear dirty
+			else {
 				removeClass(titleContainer, 'dirty');
 			}
 		});
@@ -255,9 +260,6 @@ export class NoTabsTitleControl extends TitleControl {
 			this.updateEditorDirty(editor);
 
 			// Editor Label
-			const resource = toResource(editor, { supportSideBySide: SideBySideEditor.MASTER });
-			const name = editor.getName();
-
 			const { labelFormat } = this.accessor.partOptions;
 			let description: string;
 			if (this.breadcrumbsControl && !this.breadcrumbsControl.isHidden()) {
@@ -273,11 +275,23 @@ export class NoTabsTitleControl extends TitleControl {
 				title = ''; // dont repeat what is already shown
 			}
 
-			editorLabel.setResource({ name, description, resource }, { title: typeof title === 'string' ? title : undefined, italic: !isEditorPinned, extraClasses: ['no-tabs', 'title-label'] });
+			editorLabel.setResource(
+				{
+					resource: toResource(editor, { supportSideBySide: SideBySideEditor.BOTH }),
+					name: editor.getName(),
+					description
+				},
+				{
+					title,
+					italic: !isEditorPinned,
+					extraClasses: ['no-tabs', 'title-label']
+				}
+			);
+
 			if (isGroupActive) {
-				editorLabel.element.style.color = this.getColor(TAB_ACTIVE_FOREGROUND);
+				editorLabel.element.style.color = this.getColor(TAB_ACTIVE_FOREGROUND) || '';
 			} else {
-				editorLabel.element.style.color = this.getColor(TAB_UNFOCUSED_ACTIVE_FOREGROUND);
+				editorLabel.element.style.color = this.getColor(TAB_UNFOCUSED_ACTIVE_FOREGROUND) || '';
 			}
 
 			// Update Editor Actions Toolbar

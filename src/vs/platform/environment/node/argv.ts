@@ -52,6 +52,7 @@ export const OPTIONS: OptionDescriptions<Required<ParsedArgs>> = {
 	'telemetry': { type: 'boolean', cat: 'o', description: localize('telemetry', "Shows all telemetry events which VS code collects.") },
 	'folder-uri': { type: 'string[]', cat: 'o', args: 'uri', description: localize('folderUri', "Opens a window with given folder uri(s)") },
 	'file-uri': { type: 'string[]', cat: 'o', args: 'uri', description: localize('fileUri', "Opens a window with given file uri(s)") },
+	'sync': { type: 'string', cat: 'o', description: localize('turn sync', "Turn sync on or off"), args: ['on', 'off'] },
 
 	'extensions-dir': { type: 'string', deprecates: 'extensionHomePath', cat: 'e', args: 'dir', description: localize('extensionHomePath', "Set the root path for extensions.") },
 	'builtin-extensions-dir': { type: 'string' },
@@ -80,7 +81,6 @@ export const OPTIONS: OptionDescriptions<Required<ParsedArgs>> = {
 	'locate-extension': { type: 'string[]' },
 	'extensionDevelopmentPath': { type: 'string[]' },
 	'extensionTestsPath': { type: 'string' },
-	'extension-development-confirm-save': { type: 'boolean' },
 	'debugId': { type: 'string' },
 	'inspect-search': { type: 'string', deprecates: 'debugSearch' },
 	'inspect-brk-search': { type: 'string', deprecates: 'debugBrkSearch' },
@@ -119,6 +119,8 @@ export const OPTIONS: OptionDescriptions<Required<ParsedArgs>> = {
 	'nolazy': { type: 'boolean' }, // node inspect
 	'force-device-scale-factor': { type: 'string' },
 	'force-renderer-accessibility': { type: 'boolean' },
+	'ignore-certificate-error': { type: 'boolean' },
+	'allow-insecure-localhost': { type: 'boolean' },
 	'_urls': { type: 'string[]' },
 
 	_: { type: 'string[]' } // main arguments

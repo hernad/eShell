@@ -6,7 +6,7 @@
 import {
 	createConnection, IConnection,
 	TextDocuments, InitializeParams, InitializeResult, NotificationType, RequestType,
-	DocumentRangeFormattingRequest, Disposable, ServerCapabilities, TextDocumentSyncKind
+	DocumentRangeFormattingRequest, Disposable, ServerCapabilities, TextDocumentSyncKind, TextEdit
 } from 'vscode-languageserver';
 
 import { xhr, XHRResponse, configure as configureHttpRequests, getErrorStatusDescription } from 'request-light';
@@ -16,15 +16,20 @@ import * as URL from 'url';
 import { posix } from 'path';
 import { setTimeout, clearTimeout } from 'timers';
 import { formatError, runSafe, runSafeAsync } from './utils/runner';
-import { TextDocument, JSONDocument, JSONSchema, getLanguageService, DocumentLanguageSettings, SchemaConfiguration, ClientCapabilities, SchemaRequestService, Diagnostic } from 'vscode-json-languageservice';
+import { TextDocument, JSONDocument, JSONSchema, getLanguageService, DocumentLanguageSettings, SchemaConfiguration, ClientCapabilities, SchemaRequestService, Diagnostic, Range, Position } from 'vscode-json-languageservice';
 import { getLanguageModelCache } from './languageModelCache';
 
 interface ISchemaAssociations {
 	[pattern: string]: string[];
 }
 
+interface ISchemaAssociation {
+	fileMatch: string[];
+	uri: string;
+}
+
 namespace SchemaAssociationNotification {
-	export const type: NotificationType<ISchemaAssociations, any> = new NotificationType('json/schemaAssociations');
+	export const type: NotificationType<ISchemaAssociations | ISchemaAssociation[], any> = new NotificationType('json/schemaAssociations');
 }
 
 namespace VSCodeContentRequest {
@@ -33,6 +38,10 @@ namespace VSCodeContentRequest {
 
 namespace SchemaContentChangeNotification {
 	export const type: NotificationType<string, any> = new NotificationType('json/schemaContent');
+}
+
+namespace ResultLimitReachedNotification {
+	export const type: NotificationType<string, any> = new NotificationType('json/resultLimitReached');
 }
 
 namespace ForceValidateRequest {
@@ -122,12 +131,13 @@ let hierarchicalDocumentSymbolSupport = false;
 let foldingRangeLimitDefault = Number.MAX_VALUE;
 let foldingRangeLimit = Number.MAX_VALUE;
 let resultLimit = Number.MAX_VALUE;
+let formatterMaxNumberOfEdits = Number.MAX_VALUE;
 
 // After the server has started the client sends an initialize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilities.
 connection.onInitialize((params: InitializeParams): InitializeResult => {
 
-	const handledProtocols = params.initializationOptions && params.initializationOptions['handledSchemaProtocols'];
+	const handledProtocols = params.initializationOptions?.handledSchemaProtocols;
 
 	languageService = getLanguageService({
 		schemaRequestService: getSchemaRequestService(handledProtocols),
@@ -149,12 +159,16 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
 	}
 
 	clientSnippetSupport = getClientCapability('textDocument.completion.completionItem.snippetSupport', false);
-	dynamicFormatterRegistration = getClientCapability('textDocument.rangeFormatting.dynamicRegistration', false) && (typeof params.initializationOptions.provideFormatter !== 'boolean');
+	dynamicFormatterRegistration = getClientCapability('textDocument.rangeFormatting.dynamicRegistration', false) && (typeof params.initializationOptions?.provideFormatter !== 'boolean');
 	foldingRangeLimitDefault = getClientCapability('textDocument.foldingRange.rangeLimit', Number.MAX_VALUE);
 	hierarchicalDocumentSymbolSupport = getClientCapability('textDocument.documentSymbol.hierarchicalDocumentSymbolSupport', false);
+	formatterMaxNumberOfEdits = params.initializationOptions?.customCapabilities?.rangeFormatting?.editLimit || Number.MAX_VALUE;
 	const capabilities: ServerCapabilities = {
 		textDocumentSync: TextDocumentSyncKind.Incremental,
-		completionProvider: clientSnippetSupport ? { resolveProvider: true, triggerCharacters: ['"', ':'] } : undefined,
+		completionProvider: clientSnippetSupport ? {
+			resolveProvider: false, // turn off resolving as the current language service doesn't do anything on resolve. Also fixes #91747
+			triggerCharacters: ['"', ':']
+		} : undefined,
 		hoverProvider: true,
 		documentSymbolProvider: true,
 		documentRangeFormattingProvider: params.initializationOptions.provideFormatter === true,
@@ -211,7 +225,7 @@ namespace LimitExceededWarnings {
 			} else {
 				warning = { features: { [name]: name } };
 				warning.timeout = setTimeout(() => {
-					connection.window.showInformationMessage(`${posix.basename(uri)}: For performance reasons, ${Object.keys(warning.features).join(' and ')} have been limited to ${resultLimit} items.`);
+					connection.sendNotification(ResultLimitReachedNotification.type, `${posix.basename(uri)}: For performance reasons, ${Object.keys(warning.features).join(' and ')} have been limited to ${resultLimit} items.`);
 					warning.timeout = undefined;
 				}, 2000);
 				pendingWarnings[uri] = warning;
@@ -221,7 +235,7 @@ namespace LimitExceededWarnings {
 }
 
 let jsonConfigurationSettings: JSONSchemaSettings[] | undefined = undefined;
-let schemaAssociations: ISchemaAssociations | undefined = undefined;
+let schemaAssociations: ISchemaAssociations | ISchemaAssociation[] | undefined = undefined;
 let formatterRegistration: Thenable<Disposable> | null = null;
 
 // The settings have changed. Is send on server activation as well.
@@ -282,12 +296,16 @@ function updateConfiguration() {
 		schemas: new Array<SchemaConfiguration>()
 	};
 	if (schemaAssociations) {
-		for (const pattern in schemaAssociations) {
-			const association = schemaAssociations[pattern];
-			if (Array.isArray(association)) {
-				association.forEach(uri => {
-					languageSettings.schemas.push({ uri, fileMatch: [pattern] });
-				});
+		if (Array.isArray(schemaAssociations)) {
+			Array.prototype.push.apply(languageSettings.schemas, schemaAssociations);
+		} else {
+			for (const pattern in schemaAssociations) {
+				const association = schemaAssociations[pattern];
+				if (Array.isArray(association)) {
+					association.forEach(uri => {
+						languageSettings.schemas.push({ uri, fileMatch: [pattern] });
+					});
+				}
 			}
 		}
 	}
@@ -323,7 +341,7 @@ documents.onDidClose(event => {
 });
 
 const pendingValidationRequests: { [uri: string]: NodeJS.Timer; } = {};
-const validationDelayMs = 500;
+const validationDelayMs = 300;
 
 function cleanPendingValidation(textDocument: TextDocument): void {
 	const request = pendingValidationRequests[textDocument.uri];
@@ -357,12 +375,12 @@ function validateTextDocument(textDocument: TextDocument, callback?: (diagnostic
 
 	const documentSettings: DocumentLanguageSettings = textDocument.languageId === 'jsonc' ? { comments: 'ignore', trailingCommas: 'warning' } : { comments: 'error', trailingCommas: 'error' };
 	languageService.doValidation(textDocument, jsonDocument, documentSettings).then(diagnostics => {
-		setTimeout(() => {
+		setImmediate(() => {
 			const currDocument = documents.get(textDocument.uri);
 			if (currDocument && currDocument.version === version) {
 				respond(diagnostics); // Send the computed diagnostics to VSCode.
 			}
-		}, 100);
+		});
 	}, error => {
 		connection.console.error(formatError(`Error while validating ${textDocument.uri}`, error));
 	});
@@ -441,7 +459,12 @@ connection.onDocumentRangeFormatting((formatParams, token) => {
 	return runSafe(() => {
 		const document = documents.get(formatParams.textDocument.uri);
 		if (document) {
-			return languageService.format(document, formatParams.range, formatParams.options);
+			const edits = languageService.format(document, formatParams.range, formatParams.options);
+			if (edits.length > formatterMaxNumberOfEdits) {
+				const newText = TextDocument.applyEdits(document, edits);
+				return [TextEdit.replace(Range.create(Position.create(0, 0), document.positionAt(document.getText().length)), newText)];
+			}
+			return edits;
 		}
 		return [];
 	}, [], `Error while formatting range for ${formatParams.textDocument.uri}`, token);

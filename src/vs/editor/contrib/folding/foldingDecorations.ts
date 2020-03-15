@@ -13,27 +13,47 @@ export class FoldingDecorationProvider implements IDecorationProvider {
 	private static readonly COLLAPSED_VISUAL_DECORATION = ModelDecorationOptions.register({
 		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
 		afterContentClassName: 'inline-folded',
-		linesDecorationsClassName: 'codicon codicon-chevron-right'
+		isWholeLine: true,
+		firstLineDecorationClassName: 'codicon codicon-chevron-right'
+	});
+
+	private static readonly COLLAPSED_HIGHLIGHTED_VISUAL_DECORATION = ModelDecorationOptions.register({
+		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
+		afterContentClassName: 'inline-folded',
+		className: 'folded-background',
+		isWholeLine: true,
+		firstLineDecorationClassName: 'codicon codicon-chevron-right'
 	});
 
 	private static readonly EXPANDED_AUTO_HIDE_VISUAL_DECORATION = ModelDecorationOptions.register({
 		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
-		linesDecorationsClassName: 'codicon codicon-chevron-down'
+		isWholeLine: true,
+		firstLineDecorationClassName: 'codicon codicon-chevron-down'
 	});
 
 	private static readonly EXPANDED_VISUAL_DECORATION = ModelDecorationOptions.register({
 		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
-		linesDecorationsClassName: 'codicon codicon-chevron-down alwaysShowFoldIcons'
+		isWholeLine: true,
+		firstLineDecorationClassName: 'codicon codicon-chevron-down alwaysShowFoldIcons'
+	});
+
+	private static readonly HIDDEN_RANGE_DECORATION = ModelDecorationOptions.register({
+		stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
 	});
 
 	public autoHideFoldingControls: boolean = true;
 
+	public showFoldingHighlights: boolean = true;
+
 	constructor(private readonly editor: ICodeEditor) {
 	}
 
-	getDecorationOption(isCollapsed: boolean): ModelDecorationOptions {
+	getDecorationOption(isCollapsed: boolean, isHidden: boolean): ModelDecorationOptions {
+		if (isHidden) {
+			return FoldingDecorationProvider.HIDDEN_RANGE_DECORATION;
+		}
 		if (isCollapsed) {
-			return FoldingDecorationProvider.COLLAPSED_VISUAL_DECORATION;
+			return this.showFoldingHighlights ? FoldingDecorationProvider.COLLAPSED_HIGHLIGHTED_VISUAL_DECORATION : FoldingDecorationProvider.COLLAPSED_VISUAL_DECORATION;
 		} else if (this.autoHideFoldingControls) {
 			return FoldingDecorationProvider.EXPANDED_AUTO_HIDE_VISUAL_DECORATION;
 		} else {

@@ -8,10 +8,10 @@ import { localize } from 'vs/nls';
 import { Event, Emitter } from 'vs/base/common/event';
 import { basename } from 'vs/base/common/resources';
 import { IDisposable, dispose, Disposable, DisposableStore, combinedDisposable } from 'vs/base/common/lifecycle';
-import { ViewletPane, IViewletPaneOptions } from 'vs/workbench/browser/parts/views/paneViewlet';
+import { ViewPane, IViewPaneOptions } from 'vs/workbench/browser/parts/views/viewPaneContainer';
 import { append, $, toggleClass } from 'vs/base/browser/dom';
 import { IListVirtualDelegate, IListRenderer, IListContextMenuEvent, IListEvent } from 'vs/base/browser/ui/list/list';
-import { ISCMService, ISCMRepository } from 'vs/workbench/contrib/scm/common/scm';
+import { ISCMRepository } from 'vs/workbench/contrib/scm/common/scm';
 import { CountBadge } from 'vs/base/browser/ui/countBadge/countBadge';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
@@ -25,11 +25,15 @@ import { ActionBar, ActionViewItem } from 'vs/base/browser/ui/actionbar/actionba
 import { IThemeService } from 'vs/platform/theme/common/themeService';
 import { attachBadgeStyler } from 'vs/platform/theme/common/styler';
 import { Command } from 'vs/editor/common/modes';
-import { renderCodicons } from 'vs/base/browser/ui/codiconLabel/codiconLabel';
+import { renderCodicons } from 'vs/base/common/codicons';
+import { escape } from 'vs/base/common/strings';
 import { WorkbenchList } from 'vs/platform/list/browser/listService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { IViewDescriptor } from 'vs/workbench/common/views';
+import { IViewDescriptor, IViewDescriptorService } from 'vs/workbench/common/views';
 import { SIDE_BAR_BACKGROUND } from 'vs/workbench/common/theme';
+import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
+import { IOpenerService } from 'vs/platform/opener/common/opener';
+import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 
 export interface ISpliceEvent<T> {
 	index: number;
@@ -83,7 +87,7 @@ class StatusBarActionViewItem extends ActionViewItem {
 
 	updateLabel(): void {
 		if (this.options.label && this.label) {
-			this.label.innerHTML = renderCodicons(this.getAction().label);
+			this.label.innerHTML = renderCodicons(escape(this.getAction().label));
 		}
 	}
 }
@@ -168,7 +172,7 @@ class ProviderRenderer implements IListRenderer<ISCMRepository, RepositoryTempla
 	}
 }
 
-export class MainPane extends ViewletPane {
+export class MainPane extends ViewPane {
 
 	static readonly ID = 'scm.mainPane';
 	static readonly TITLE = localize('scm providers', "Source Control Providers");
@@ -177,24 +181,29 @@ export class MainPane extends ViewletPane {
 
 	constructor(
 		protected viewModel: IViewModel,
-		options: IViewletPaneOptions,
+		options: IViewPaneOptions,
 		@IKeybindingService protected keybindingService: IKeybindingService,
 		@IContextMenuService protected contextMenuService: IContextMenuService,
-		@ISCMService protected scmService: ISCMService,
-		@IInstantiationService private readonly instantiationService: IInstantiationService,
-		@IContextKeyService private readonly contextKeyService: IContextKeyService,
+		@IInstantiationService instantiationService: IInstantiationService,
+		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
+		@IContextKeyService contextKeyService: IContextKeyService,
 		@IMenuService private readonly menuService: IMenuService,
-		@IConfigurationService configurationService: IConfigurationService
+		@IConfigurationService configurationService: IConfigurationService,
+		@IOpenerService openerService: IOpenerService,
+		@IThemeService themeService: IThemeService,
+		@ITelemetryService telemetryService: ITelemetryService,
 	) {
-		super(options, keybindingService, contextMenuService, configurationService, contextKeyService);
+		super(options, keybindingService, contextMenuService, configurationService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, telemetryService);
 	}
 
 	protected renderBody(container: HTMLElement): void {
+		super.renderBody(container);
+
 		const delegate = new ProvidersListDelegate();
 		const renderer = this.instantiationService.createInstance(ProviderRenderer);
 		const identityProvider = { getId: (r: ISCMRepository) => r.provider.id };
 
-		this.list = this.instantiationService.createInstance<typeof WorkbenchList, WorkbenchList<ISCMRepository>>(WorkbenchList, `SCM Main`, container, delegate, [renderer], {
+		this.list = <WorkbenchList<ISCMRepository>>this.instantiationService.createInstance(WorkbenchList, `SCM Main`, container, delegate, [renderer], {
 			identityProvider,
 			horizontalScrolling: false,
 			overrideStyles: {
@@ -203,8 +212,8 @@ export class MainPane extends ViewletPane {
 		});
 
 		this._register(renderer.onDidRenderElement(e => this.list.updateWidth(this.viewModel.repositories.indexOf(e)), null));
-		this._register(this.list.onSelectionChange(this.onListSelectionChange, this));
-		this._register(this.list.onFocusChange(this.onListFocusChange, this));
+		this._register(this.list.onDidChangeSelection(this.onListSelectionChange, this));
+		this._register(this.list.onDidChangeFocus(this.onListFocusChange, this));
 		this._register(this.list.onContextMenu(this.onListContextMenu, this));
 
 		this._register(this.viewModel.onDidChangeVisibleRepositories(this.updateListSelection, this));
@@ -319,7 +328,7 @@ export class MainPaneDescriptor implements IViewDescriptor {
 
 	readonly id = MainPane.ID;
 	readonly name = MainPane.TITLE;
-	readonly ctorDescriptor: { ctor: any, arguments?: any[] };
+	readonly ctorDescriptor: SyncDescriptor<MainPane>;
 	readonly canToggleVisibility = true;
 	readonly hideByDefault = false;
 	readonly order = -1000;
@@ -327,6 +336,6 @@ export class MainPaneDescriptor implements IViewDescriptor {
 	readonly when = ContextKeyExpr.or(ContextKeyExpr.equals('config.scm.alwaysShowProviders', true), ContextKeyExpr.and(ContextKeyExpr.notEquals('scm.providerCount', 0), ContextKeyExpr.notEquals('scm.providerCount', 1)));
 
 	constructor(viewModel: IViewModel) {
-		this.ctorDescriptor = { ctor: MainPane, arguments: [viewModel] };
+		this.ctorDescriptor = new SyncDescriptor(MainPane, [viewModel]);
 	}
 }

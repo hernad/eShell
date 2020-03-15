@@ -68,7 +68,7 @@ jobs:
   - template: linux/product-build-linux-multiarch.yml
 
 - job: LinuxArm64
-  condition: and(succeeded(), eq(variables['VSCODE_COMPILE_ONLY'], 'false'), eq(variables['VSCODE_BUILD_LINUX_ARM64'], 'true'), ne(variables['VSCODE_QUALITY'], 'stable'))
+  condition: and(succeeded(), eq(variables['VSCODE_COMPILE_ONLY'], 'false'), eq(variables['VSCODE_BUILD_LINUX_ARM64'], 'true'))
   pool:
     vmImage: 'Ubuntu-16.04'
   variables:

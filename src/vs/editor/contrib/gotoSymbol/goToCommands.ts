@@ -27,7 +27,7 @@ import { KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegis
 import { INotificationService } from 'vs/platform/notification/common/notification';
 import { IEditorProgressService } from 'vs/platform/progress/common/progress';
 import { getDefinitionsAtPosition, getImplementationsAtPosition, getTypeDefinitionsAtPosition, getDeclarationsAtPosition, getReferencesAtPosition } from './goToSymbol';
-import { CommandsRegistry } from 'vs/platform/commands/common/commands';
+import { CommandsRegistry, ICommandService } from 'vs/platform/commands/common/commands';
 import { EditorStateCancellationTokenSource, CodeEditorStateFlag } from 'vs/editor/browser/core/editorState';
 import { ISymbolNavigationService } from 'vs/editor/contrib/gotoSymbol/symbolNavigation';
 import { EditorOption, GoToLocationValues } from 'vs/editor/common/config/editorOptions';
@@ -36,6 +36,8 @@ import { URI } from 'vs/base/common/uri';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ScrollType, IEditorAction } from 'vs/editor/common/editorCommon';
 import { assertType } from 'vs/base/common/types';
+import { EmbeddedCodeEditorWidget } from 'vs/editor/browser/widget/embeddedCodeEditorWidget';
+import { TextEditorSelectionRevealType } from 'vs/platform/editor/common/editor';
 
 
 MenuRegistry.appendMenuItem(MenuId.EditorContext, <ISubmenuItem>{
@@ -129,7 +131,7 @@ abstract class SymbolNavigationAction extends EditorAction {
 	private async _onResult(editorService: ICodeEditorService, symbolNavService: ISymbolNavigationService, editor: IActiveCodeEditor, model: ReferencesModel): Promise<void> {
 
 		const gotoLocation = this._getGoToPreference(editor);
-		if (this._configuration.openInPeek || (gotoLocation === 'peek' && model.references.length > 1)) {
+		if (!(editor instanceof EmbeddedCodeEditorWidget) && (this._configuration.openInPeek || (gotoLocation === 'peek' && model.references.length > 1))) {
 			this._openInPeek(editor, model);
 
 		} else {
@@ -165,7 +167,7 @@ abstract class SymbolNavigationAction extends EditorAction {
 			resource: reference.uri,
 			options: {
 				selection: Range.collapseToStart(range),
-				revealInCenterIfOutsideViewport: true
+				selectionRevealType: TextEditorSelectionRevealType.NearTopIfOutsideViewport
 			}
 		}, editor, sideBySide);
 
@@ -588,11 +590,7 @@ registerEditorAction(class PeekImplementationAction extends ImplementationAction
 
 //#region --- REFERENCES
 
-class ReferencesAction extends SymbolNavigationAction {
-
-	protected async _getLocationModel(model: ITextModel, position: corePosition.Position, token: CancellationToken): Promise<ReferencesModel> {
-		return new ReferencesModel(await getReferencesAtPosition(model, position, token), nls.localize('ref.title', 'References'));
-	}
+abstract class ReferencesAction extends SymbolNavigationAction {
 
 	protected _getNoResultFoundMessage(info: IWordAtPosition | null): string {
 		return info
@@ -642,6 +640,10 @@ registerEditorAction(class GoToReferencesAction extends ReferencesAction {
 			},
 		});
 	}
+
+	protected async _getLocationModel(model: ITextModel, position: corePosition.Position, token: CancellationToken): Promise<ReferencesModel> {
+		return new ReferencesModel(await getReferencesAtPosition(model, position, true, token), nls.localize('ref.title', 'References'));
+	}
 });
 
 registerEditorAction(class PeekReferencesAction extends ReferencesAction {
@@ -667,6 +669,10 @@ registerEditorAction(class PeekReferencesAction extends ReferencesAction {
 			}
 		});
 	}
+
+	protected async _getLocationModel(model: ITextModel, position: corePosition.Position, token: CancellationToken): Promise<ReferencesModel> {
+		return new ReferencesModel(await getReferencesAtPosition(model, position, false, token), nls.localize('ref.title', 'References'));
+	}
 });
 
 //#endregion
@@ -677,14 +683,11 @@ registerEditorAction(class PeekReferencesAction extends ReferencesAction {
 class GenericGoToLocationAction extends SymbolNavigationAction {
 
 	constructor(
+		config: SymbolNavigationActionConfig,
 		private readonly _references: Location[],
-		private readonly _gotoMultipleBehaviour: GoToLocationValues | undefined
+		private readonly _gotoMultipleBehaviour: GoToLocationValues | undefined,
 	) {
-		super({
-			muteMessage: true,
-			openInPeek: false,
-			openToSide: false
-		}, {
+		super(config, {
 			id: 'editor.action.goToLocation',
 			label: nls.localize('label.generic', "Go To Any Symbol"),
 			alias: 'Go To Any Symbol',
@@ -721,11 +724,12 @@ CommandsRegistry.registerCommand({
 			{ name: 'multiple', description: 'Define what to do when having multiple results, either `peek`, `gotoAndPeek`, or `goto' },
 		]
 	},
-	handler: async (accessor: ServicesAccessor, resource: any, position: any, references: any, multiple?: any) => {
+	handler: async (accessor: ServicesAccessor, resource: any, position: any, references: any, multiple?: any, openInPeek?: boolean) => {
 		assertType(URI.isUri(resource));
 		assertType(corePosition.Position.isIPosition(position));
 		assertType(Array.isArray(references));
 		assertType(typeof multiple === 'undefined' || typeof multiple === 'string');
+		assertType(typeof openInPeek === 'undefined' || typeof openInPeek === 'boolean');
 
 		const editorService = accessor.get(ICodeEditorService);
 		const editor = await editorService.openCodeEditor({ resource }, editorService.getFocusedCodeEditor());
@@ -735,10 +739,26 @@ CommandsRegistry.registerCommand({
 			editor.revealPositionInCenterIfOutsideViewport(position, ScrollType.Smooth);
 
 			return editor.invokeWithinContext(accessor => {
-				const command = new GenericGoToLocationAction(references, multiple as GoToLocationValues);
+				const command = new GenericGoToLocationAction({ muteMessage: true, openInPeek: Boolean(openInPeek), openToSide: false }, references, multiple as GoToLocationValues);
 				accessor.get(IInstantiationService).invokeFunction(command.run.bind(command), editor);
 			});
 		}
+	}
+});
+
+CommandsRegistry.registerCommand({
+	id: 'editor.action.peekLocations',
+	description: {
+		description: 'Peek locations from a position in a file',
+		args: [
+			{ name: 'uri', description: 'The text document in which to start', constraint: URI },
+			{ name: 'position', description: 'The position at which to start', constraint: corePosition.Position.isIPosition },
+			{ name: 'locations', description: 'An array of locations.', constraint: Array },
+			{ name: 'multiple', description: 'Define what to do when having multiple results, either `peek`, `gotoAndPeek`, or `goto' },
+		]
+	},
+	handler: async (accessor: ServicesAccessor, resource: any, position: any, references: any, multiple?: any) => {
+		accessor.get(ICommandService).executeCommand('editor.action.goToLocations', resource, position, references, multiple, true);
 	}
 });
 
@@ -764,7 +784,7 @@ CommandsRegistry.registerCommand({
 				return undefined;
 			}
 
-			const references = createCancelablePromise(token => getReferencesAtPosition(control.getModel(), corePosition.Position.lift(position), token).then(references => new ReferencesModel(references, nls.localize('ref.title', 'References'))));
+			const references = createCancelablePromise(token => getReferencesAtPosition(control.getModel(), corePosition.Position.lift(position), false, token).then(references => new ReferencesModel(references, nls.localize('ref.title', 'References'))));
 			const range = new Range(position.lineNumber, position.column, position.lineNumber, position.column);
 			return Promise.resolve(controller.toggleWidget(range, references, false));
 		});
@@ -772,6 +792,6 @@ CommandsRegistry.registerCommand({
 });
 
 // use NEW command
-CommandsRegistry.registerCommandAlias('editor.action.showReferences', 'editor.action.goToLocations');
+CommandsRegistry.registerCommandAlias('editor.action.showReferences', 'editor.action.peekLocations');
 
 //#endregion
