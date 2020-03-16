@@ -121,7 +121,7 @@ export interface IEncodedTokens {
 	getMetadata(tokenIndex: number): number;
 
 	clear(): void;
-	acceptDeleteRange(startDeltaLine: number, startCharacter: number, endDeltaLine: number, endCharacter: number): void;
+	acceptDeleteRange(horizontalShiftForFirstLineTokens: number, startDeltaLine: number, startCharacter: number, endDeltaLine: number, endCharacter: number): void;
 	acceptInsertText(deltaLine: number, character: number, eolCount: number, firstLineLength: number, lastLineLength: number, firstCharCode: number): void;
 }
 
@@ -173,7 +173,7 @@ export class SparseEncodedTokens implements IEncodedTokens {
 		this._tokenCount = 0;
 	}
 
-	public acceptDeleteRange(startDeltaLine: number, startCharacter: number, endDeltaLine: number, endCharacter: number): void {
+	public acceptDeleteRange(horizontalShiftForFirstLineTokens: number, startDeltaLine: number, startCharacter: number, endDeltaLine: number, endCharacter: number): void {
 		// This is a bit complex, here are the cases I used to think about this:
 		//
 		// 1. The token starts before the deletion range
@@ -292,9 +292,13 @@ export class SparseEncodedTokens implements IEncodedTokens {
 				tokenDeltaLine -= deletedLineCount;
 			} else if (tokenDeltaLine === endDeltaLine && tokenStartCharacter >= endCharacter) {
 				// 4. (continued) The token starts after the deletion range, on the last line where a deletion occurs
+				if (horizontalShiftForFirstLineTokens && tokenDeltaLine === 0) {
+					tokenStartCharacter += horizontalShiftForFirstLineTokens;
+					tokenEndCharacter += horizontalShiftForFirstLineTokens;
+				}
 				tokenDeltaLine -= deletedLineCount;
-				tokenStartCharacter -= endCharacter;
-				tokenEndCharacter -= endCharacter;
+				tokenStartCharacter -= (endCharacter - startCharacter);
+				tokenEndCharacter -= (endCharacter - startCharacter);
 			} else {
 				throw new Error(`Not possible!`);
 			}
@@ -373,8 +377,8 @@ export class SparseEncodedTokens implements IEncodedTokens {
 					}
 				}
 				// => the token must move and keep its size constant
-				tokenDeltaLine += eolCount;
 				if (tokenDeltaLine === deltaLine) {
+					tokenDeltaLine += eolCount;
 					// this token is on the line where the insertion is taking place
 					if (eolCount === 0) {
 						tokenStartCharacter += firstLineLength;
@@ -384,6 +388,8 @@ export class SparseEncodedTokens implements IEncodedTokens {
 						tokenStartCharacter = lastLineLength + (tokenStartCharacter - character);
 						tokenEndCharacter = tokenStartCharacter + tokenLength;
 					}
+				} else {
+					tokenDeltaLine += eolCount;
 				}
 			}
 
@@ -527,9 +533,9 @@ export class MultilineTokens2 {
 			const deletedBefore = -firstLineIndex;
 			this.startLineNumber -= deletedBefore;
 
-			this.tokens.acceptDeleteRange(0, 0, lastLineIndex, range.endColumn - 1);
+			this.tokens.acceptDeleteRange(range.startColumn - 1, 0, 0, lastLineIndex, range.endColumn - 1);
 		} else {
-			this.tokens.acceptDeleteRange(firstLineIndex, range.startColumn - 1, lastLineIndex, range.endColumn - 1);
+			this.tokens.acceptDeleteRange(0, firstLineIndex, range.startColumn - 1, lastLineIndex, range.endColumn - 1);
 		}
 	}
 
@@ -775,46 +781,63 @@ export class TokensStore2 {
 
 		let aIndex = 0;
 		let result: number[] = [], resultLen = 0;
+		let lastEndOffset = 0;
+
+		const emitToken = (endOffset: number, metadata: number) => {
+			if (endOffset === lastEndOffset) {
+				return;
+			}
+			lastEndOffset = endOffset;
+			result[resultLen++] = endOffset;
+			result[resultLen++] = metadata;
+		};
+
 		for (let bIndex = 0; bIndex < bLen; bIndex++) {
 			const bStartCharacter = bTokens.getStartCharacter(bIndex);
 			const bEndCharacter = bTokens.getEndCharacter(bIndex);
 			const bMetadata = bTokens.getMetadata(bIndex);
 
+			const bMask = (
+				((bMetadata & MetadataConsts.SEMANTIC_USE_ITALIC) ? MetadataConsts.ITALIC_MASK : 0)
+				| ((bMetadata & MetadataConsts.SEMANTIC_USE_BOLD) ? MetadataConsts.BOLD_MASK : 0)
+				| ((bMetadata & MetadataConsts.SEMANTIC_USE_UNDERLINE) ? MetadataConsts.UNDERLINE_MASK : 0)
+				| ((bMetadata & MetadataConsts.SEMANTIC_USE_FOREGROUND) ? MetadataConsts.FOREGROUND_MASK : 0)
+				| ((bMetadata & MetadataConsts.SEMANTIC_USE_BACKGROUND) ? MetadataConsts.BACKGROUND_MASK : 0)
+			) >>> 0;
+			const aMask = (~bMask) >>> 0;
+
 			// push any token from `a` that is before `b`
 			while (aIndex < aLen && aTokens.getEndOffset(aIndex) <= bStartCharacter) {
-				result[resultLen++] = aTokens.getEndOffset(aIndex);
-				result[resultLen++] = aTokens.getMetadata(aIndex);
+				emitToken(aTokens.getEndOffset(aIndex), aTokens.getMetadata(aIndex));
 				aIndex++;
 			}
 
 			// push the token from `a` if it intersects the token from `b`
 			if (aIndex < aLen && aTokens.getStartOffset(aIndex) < bStartCharacter) {
-				result[resultLen++] = bStartCharacter;
-				result[resultLen++] = aTokens.getMetadata(aIndex);
+				emitToken(bStartCharacter, aTokens.getMetadata(aIndex));
 			}
 
 			// skip any tokens from `a` that are contained inside `b`
-			while (aIndex < aLen && aTokens.getEndOffset(aIndex) <= bEndCharacter) {
+			while (aIndex < aLen && aTokens.getEndOffset(aIndex) < bEndCharacter) {
+				emitToken(aTokens.getEndOffset(aIndex), (aTokens.getMetadata(aIndex) & aMask) | (bMetadata & bMask));
 				aIndex++;
 			}
 
-			const aMetadata = aTokens.getMetadata(aIndex - 1 > 0 ? aIndex - 1 : aIndex);
-			const languageId = TokenMetadata.getLanguageId(aMetadata);
-			const tokenType = TokenMetadata.getTokenType(aMetadata);
+			if (aIndex < aLen && aTokens.getEndOffset(aIndex) === bEndCharacter) {
+				// `a` ends exactly at the same spot as `b`!
+				emitToken(aTokens.getEndOffset(aIndex), (aTokens.getMetadata(aIndex) & aMask) | (bMetadata & bMask));
+				aIndex++;
+			} else {
+				const aMergeIndex = Math.min(Math.max(0, aIndex - 1), aLen - 1);
 
-			// push the token from `b`
-			result[resultLen++] = bEndCharacter;
-			result[resultLen++] = (
-				(bMetadata & MetadataConsts.LANG_TTYPE_CMPL)
-				| ((languageId << MetadataConsts.LANGUAGEID_OFFSET) >>> 0)
-				| ((tokenType << MetadataConsts.TOKEN_TYPE_OFFSET) >>> 0)
-			);
+				// push the token from `b`
+				emitToken(bEndCharacter, (aTokens.getMetadata(aMergeIndex) & aMask) | (bMetadata & bMask));
+			}
 		}
 
 		// push the remaining tokens from `a`
 		while (aIndex < aLen) {
-			result[resultLen++] = aTokens.getEndOffset(aIndex);
-			result[resultLen++] = aTokens.getMetadata(aIndex);
+			emitToken(aTokens.getEndOffset(aIndex), aTokens.getMetadata(aIndex));
 			aIndex++;
 		}
 
@@ -946,10 +969,35 @@ export class TokensStore {
 		this._len += insertCount;
 	}
 
-	public setTokens(topLevelLanguageId: LanguageId, lineIndex: number, lineTextLength: number, _tokens: Uint32Array | ArrayBuffer | null): void {
+	public setTokens(topLevelLanguageId: LanguageId, lineIndex: number, lineTextLength: number, _tokens: Uint32Array | ArrayBuffer | null, checkEquality: boolean): boolean {
 		const tokens = TokensStore._massageTokens(topLevelLanguageId, lineTextLength, _tokens);
 		this._ensureLine(lineIndex);
+		const oldTokens = this._lineTokens[lineIndex];
 		this._lineTokens[lineIndex] = tokens;
+
+		if (checkEquality) {
+			return !TokensStore._equals(oldTokens, tokens);
+		}
+		return false;
+	}
+
+	private static _equals(_a: Uint32Array | ArrayBuffer | null, _b: Uint32Array | ArrayBuffer | null) {
+		if (!_a || !_b) {
+			return !_a && !_b;
+		}
+
+		const a = toUint32Array(_a);
+		const b = toUint32Array(_b);
+
+		if (a.length !== b.length) {
+			return false;
+		}
+		for (let i = 0, len = a.length; i < len; i++) {
+			if (a[i] !== b[i]) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	//#region Editing

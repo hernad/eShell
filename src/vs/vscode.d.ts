@@ -790,21 +790,29 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * A reference to a named icon. Currently only [File](#ThemeIcon.File) and [Folder](#ThemeIcon.Folder) are supported.
+	 * A reference to a named icon. Currently, [File](#ThemeIcon.File), [Folder](#ThemeIcon.Folder),
+	 * and [codicons](https://microsoft.github.io/vscode-codicons/dist/codicon.html) are supported.
 	 * Using a theme icon is preferred over a custom icon as it gives theme authors the possibility to change the icons.
+	 *
+	 * *Note* that theme icons can also be rendered inside labels and descriptions. Places that support theme icons spell this out
+	 * and they use the `$(<name>)`-syntax, for instance `quickPick.label = "Hello World $(globe)"`.
 	 */
 	export class ThemeIcon {
 		/**
-		 * Reference to a icon representing a file. The icon is taken from the current file icon theme or a placeholder icon.
+		 * Reference to an icon representing a file. The icon is taken from the current file icon theme or a placeholder icon is used.
 		 */
 		static readonly File: ThemeIcon;
 
 		/**
-		 * Reference to a icon representing a folder. The icon is taken from the current file icon theme or a placeholder icon.
+		 * Reference to an icon representing a folder. The icon is taken from the current file icon theme or a placeholder icon is used.
 		 */
 		static readonly Folder: ThemeIcon;
 
-		private constructor(id: string);
+		/**
+		 * Creates a reference to a theme icon.
+		 * @param id id of the icon. The avaiable icons are listed in https://microsoft.github.io/vscode-codicons/dist/codicon.html.
+		 */
+		constructor(id: string);
 	}
 
 	/**
@@ -1188,7 +1196,6 @@ declare module 'vscode' {
 	 * A complex edit that will be applied in one transaction on a TextEditor.
 	 * This holds a description of the edits and if the edits are valid (i.e. no overlapping regions, document was not changed in the meantime, etc.)
 	 * they can be applied on a [document](#TextDocument) associated with a [text editor](#TextEditor).
-	 *
 	 */
 	export interface TextEditorEdit {
 		/**
@@ -1493,7 +1500,7 @@ declare module 'vscode' {
 
 	/**
 	 * A file system watcher notifies about changes to files and folders
-	 * on disk.
+	 * on disk or from other [FileSystemProviders](#FileSystemProvider).
 	 *
 	 * To get an instance of a `FileSystemWatcher` use
 	 * [createFileSystemWatcher](#workspace.createFileSystemWatcher).
@@ -1574,17 +1581,20 @@ declare module 'vscode' {
 	export interface QuickPickItem {
 
 		/**
-		 * A human readable string which is rendered prominent.
+		 * A human-readable string which is rendered prominent. Supports rendering of [theme icons](#ThemeIcon) via
+		 * the `$(<name>)`-syntax.
 		 */
 		label: string;
 
 		/**
-		 * A human readable string which is rendered less prominent.
+		 * A human-readable string which is rendered less prominent in the same line. Supports rendering of
+		 * [theme icons](#ThemeIcon) via the `$(<name>)`-syntax.
 		 */
 		description?: string;
 
 		/**
-		 * A human readable string which is rendered less prominent.
+		 * A human-readable string which is rendered less prominent in a separate line. Supports rendering of
+		 * [theme icons](#ThemeIcon) via the `$(<name>)`-syntax.
 		 */
 		detail?: string;
 
@@ -1617,7 +1627,7 @@ declare module 'vscode' {
 		matchOnDetail?: boolean;
 
 		/**
-		 * An optional string to show as place holder in the input box to guide the user what to pick on.
+		 * An optional string to show as placeholder in the input box to guide the user what to pick on.
 		 */
 		placeHolder?: string;
 
@@ -1643,7 +1653,7 @@ declare module 'vscode' {
 	export interface WorkspaceFolderPickOptions {
 
 		/**
-		 * An optional string to show as place holder in the input box to guide the user what to pick on.
+		 * An optional string to show as placeholder in the input box to guide the user what to pick on.
 		 */
 		placeHolder?: string;
 
@@ -1688,7 +1698,7 @@ declare module 'vscode' {
 		canSelectMany?: boolean;
 
 		/**
-		 * A set of file filters that are used by the dialog. Each entry is a human readable label,
+		 * A set of file filters that are used by the dialog. Each entry is a human-readable label,
 		 * like "TypeScript", and an array of extensions, e.g.
 		 * ```ts
 		 * {
@@ -1715,7 +1725,7 @@ declare module 'vscode' {
 		saveLabel?: string;
 
 		/**
-		 * A set of file filters that are used by the dialog. Each entry is a human readable label,
+		 * A set of file filters that are used by the dialog. Each entry is a human-readable label,
 		 * like "TypeScript", and an array of extensions, e.g.
 		 * ```ts
 		 * {
@@ -1791,12 +1801,12 @@ declare module 'vscode' {
 		prompt?: string;
 
 		/**
-		 * An optional string to show as place holder in the input box to guide the user what to type.
+		 * An optional string to show as placeholder in the input box to guide the user what to type.
 		 */
 		placeHolder?: string;
 
 		/**
-		 * Set to `true` to show a password prompt that will not show the typed value.
+		 * Controls if a password input is shown. Password input hides the typed text.
 		 */
 		password?: boolean;
 
@@ -1810,7 +1820,7 @@ declare module 'vscode' {
 		 * to the user.
 		 *
 		 * @param value The current value of the input box.
-		 * @return A human readable string which is presented as diagnostic message.
+		 * @return A human-readable string which is presented as diagnostic message.
 		 * Return `undefined`, `null`, or the empty string when 'value' is valid.
 		 */
 		validateInput?(value: string): string | undefined | null | Thenable<string | undefined | null>;
@@ -2010,7 +2020,7 @@ declare module 'vscode' {
 		 * Base kind for source actions: `source`
 		 *
 		 * Source code actions apply to the entire file. They must be explicitly requested and will not show in the
-		 * normal [light bulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action) menu. Source actions
+		 * normal [lightbulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action) menu. Source actions
 		 * can be run on save using `editor.codeActionsOnSave` and are also shown in the `source` context menu.
 		 */
 		static readonly Source: CodeActionKind;
@@ -2076,7 +2086,7 @@ declare module 'vscode' {
 		/**
 		 * Requested kind of actions to return.
 		 *
-		 * Actions not of this kind are filtered out before being shown by the lightbulb.
+		 * Actions not of this kind are filtered out before being shown by the [lightbulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action).
 		 */
 		readonly only?: CodeActionKind;
 	}
@@ -2106,6 +2116,9 @@ declare module 'vscode' {
 
 		/**
 		 * A [command](#Command) this code action executes.
+		 *
+		 * If this command throws an exception, VS Code displays the exception message to users in the editor at the
+		 * current cursor position.
 		 */
 		command?: Command;
 
@@ -2126,6 +2139,28 @@ declare module 'vscode' {
 		isPreferred?: boolean;
 
 		/**
+		 * Marks that the code action cannot currently be applied.
+		 *
+		 * - Disabled code actions are not shown in automatic [lightbulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action)
+		 * code action menu.
+		 *
+		 * - Disabled actions are shown as faded out in the code action menu when the user request a more specific type
+		 * of code action, such as refactorings.
+		 *
+		 * - If the user has a [keybinding](https://code.visualstudio.com/docs/editor/refactoring#_keybindings-for-code-actions)
+		 * that auto applies a code action and only a disabled code actions are returned, VS Code will show the user an
+		 * error message with `reason` in the editor.
+		 */
+		disabled?: {
+			/**
+			 * Human readable description of why the code action is currently disabled.
+			 *
+			 * This is displayed in the code actions UI.
+			 */
+			readonly reason: string;
+		};
+
+		/**
 		 * Creates a new code action.
 		 *
 		 * A code action must have at least a [title](#CodeAction.title) and [edits](#CodeAction.edit)
@@ -2139,7 +2174,7 @@ declare module 'vscode' {
 
 	/**
 	 * The code action interface defines the contract between extensions and
-	 * the [light bulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action) feature.
+	 * the [lightbulb](https://code.visualstudio.com/docs/editor/editingevolved#_code-action) feature.
 	 *
 	 * A code action can be any command that is [known](#commands.getCommands) to the system.
 	 */
@@ -2159,14 +2194,16 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * Metadata about the type of code actions that a [CodeActionProvider](#CodeActionProvider) providers
+	 * Metadata about the type of code actions that a [CodeActionProvider](#CodeActionProvider) providers.
 	 */
 	export interface CodeActionProviderMetadata {
 		/**
-		 * [CodeActionKinds](#CodeActionKind) that this provider may return.
+		 * List of [CodeActionKinds](#CodeActionKind) that a [CodeActionProvider](#CodeActionProvider) may return.
 		 *
-		 * The list of kinds may be generic, such as `CodeActionKind.Refactor`, or the provider
-		 * may list our every specific kind they provide, such as `CodeActionKind.Refactor.Extract.append('function`)`
+		 * This list is used to determine if a given `CodeActionProvider` should be invoked or not.
+		 * To avoid unnecessary computation, every `CodeActionProvider` should list use `providedCodeActionKinds`. The
+		 * list of kinds may either be generic, such as `[CodeActionKind.Refactor]`, or list out every kind provided,
+		 * such as `[CodeActionKind.Refactor.Extract.append('function'), CodeActionKind.Refactor.Extract.append('constant'), ...]`.
 		 */
 		readonly providedCodeActionKinds?: ReadonlyArray<CodeActionKind>;
 	}
@@ -2313,7 +2350,7 @@ declare module 'vscode' {
 
 	/**
 	 * The declaration of a symbol representation as one or many [locations](#Location)
-	 * or [location links][#LocationLink].
+	 * or [location links](#LocationLink).
 	 */
 	export type Declaration = Location | Location[] | LocationLink[];
 
@@ -2336,8 +2373,11 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * The MarkdownString represents human readable text that supports formatting via the
+	 * The MarkdownString represents human-readable text that supports formatting via the
 	 * markdown syntax. Standard markdown is supported, also tables, but no embedded html.
+	 *
+	 * When created with `supportThemeIcons` then rendering of [theme icons](#ThemeIcon) via
+	 * the `$(<name>)`-syntax is supported.
 	 */
 	export class MarkdownString {
 
@@ -2356,8 +2396,9 @@ declare module 'vscode' {
 		 * Creates a new markdown string with the given value.
 		 *
 		 * @param value Optional, initial value.
+		 * @param supportThemeIcons Optional, Specifies whether [ThemeIcons](#ThemeIcon) are supported within the [`MarkdownString`](#MarkdownString).
 		 */
-		constructor(value?: string);
+		constructor(value?: string, supportThemeIcons?: boolean);
 
 		/**
 		 * Appends and escapes the given string to this markdown string.
@@ -2366,7 +2407,7 @@ declare module 'vscode' {
 		appendText(value: string): MarkdownString;
 
 		/**
-		 * Appends the given string 'as is' to this markdown string.
+		 * Appends the given string 'as is' to this markdown string. When [`supportThemeIcons`](#MarkdownString.supportThemeIcons) is `true`, [ThemeIcons](#ThemeIcon) in the `value` will be iconified.
 		 * @param value Markdown string.
 		 */
 		appendMarkdown(value: string): MarkdownString;
@@ -2380,7 +2421,7 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * ~~MarkedString can be used to render human readable text. It is either a markdown string
+	 * ~~MarkedString can be used to render human-readable text. It is either a markdown string
 	 * or a code-block that provides a language and a code snippet. Note that
 	 * markdown strings will be sanitized - that means html will be escaped.~~
 	 *
@@ -2433,6 +2474,55 @@ declare module 'vscode' {
 		 * signaled by returning `undefined` or `null`.
 		 */
 		provideHover(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Hover>;
+	}
+
+	/**
+	 * An EvaluatableExpression represents an expression in a document that can be evaluated by an active debugger or runtime.
+	 * The result of this evaluation is shown in a tooltip-like widget.
+	 * If only a range is specified, the expression will be extracted from the underlying document.
+	 * An optional expression can be used to override the extracted expression.
+	 * In this case the range is still used to highlight the range in the document.
+	 */
+	export class EvaluatableExpression {
+
+		/*
+		 * The range is used to extract the evaluatable expression from the underlying document and to highlight it.
+		 */
+		readonly range: Range;
+
+		/*
+		 * If specified the expression overrides the extracted expression.
+		 */
+		readonly expression?: string;
+
+		/**
+		 * Creates a new evaluatable expression object.
+		 *
+		 * @param range The range in the underlying document from which the evaluatable expression is extracted.
+		 * @param expression If specified overrides the extracted expression.
+		 */
+		constructor(range: Range, expression?: string);
+	}
+
+	/**
+	 * The evaluatable expression provider interface defines the contract between extensions and
+	 * the debug hover. In this contract the provider returns an evaluatable expression for a given position
+	 * in a document and VS Code evaluates this expression in the active debug session and shows the result in a debug hover.
+	 */
+	export interface EvaluatableExpressionProvider {
+
+		/**
+		 * Provide an evaluatable expression for the given document and position.
+		 * VS Code will evaluate this expression in the active debug session and will show the result in the debug hover.
+		 * The expression can be implicitly specified by the range in the underlying document or by explicitly returning an expression.
+		 *
+		 * @param document The document for which the debug hover is about to appear.
+		 * @param position The line and character position in the document where the debug hover is about to appear.
+		 * @param token A cancellation token.
+		 * @return An EvaluatableExpression or a thenable that resolves to such. The lack of a result can be
+		 * signaled by returning `undefined` or `null`.
+		 */
+		provideEvaluatableExpression(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<EvaluatableExpression>;
 	}
 
 	/**
@@ -2677,7 +2767,7 @@ declare module 'vscode' {
 	 */
 	export interface DocumentSymbolProviderMetadata {
 		/**
-		 * A human readable string that is shown when multiple outlines trees show for one document.
+		 * A human-readable string that is shown when multiple outlines trees show for one document.
 		 */
 		label?: string;
 	}
@@ -2821,6 +2911,34 @@ declare module 'vscode' {
 	}
 
 	/**
+	 * Additional data for entries of a workspace edit. Supports to label entries and marks entries
+	 * as needing confirmation by the user. The editor groups edits with equal labels into tree nodes,
+	 * for instance all edits labelled with "Changes in Strings" would be a tree node.
+	 */
+	export interface WorkspaceEditEntryMetadata {
+
+		/**
+		 * A flag which indicates that user confirmation is needed.
+		 */
+		needsConfirmation: boolean;
+
+		/**
+		 * A human-readable string which is rendered prominent.
+		 */
+		label: string;
+
+		/**
+		 * A human-readable string which is rendered less prominent on the same line.
+		 */
+		description?: string;
+
+		/**
+		 * The icon path or [ThemeIcon](#ThemeIcon) for the edit.
+		 */
+		iconPath?: Uri | { light: Uri; dark: Uri } | ThemeIcon;
+	}
+
+	/**
 	 * A workspace edit is a collection of textual and files changes for
 	 * multiple resources and documents.
 	 *
@@ -2839,8 +2957,9 @@ declare module 'vscode' {
 		 * @param uri A resource identifier.
 		 * @param range A range.
 		 * @param newText A string.
+		 * @param metadata Optional metadata for the entry.
 		 */
-		replace(uri: Uri, range: Range, newText: string): void;
+		replace(uri: Uri, range: Range, newText: string, metadata?: WorkspaceEditEntryMetadata): void;
 
 		/**
 		 * Insert the given text at the given position.
@@ -2848,16 +2967,18 @@ declare module 'vscode' {
 		 * @param uri A resource identifier.
 		 * @param position A position.
 		 * @param newText A string.
+		 * @param metadata Optional metadata for the entry.
 		 */
-		insert(uri: Uri, position: Position, newText: string): void;
+		insert(uri: Uri, position: Position, newText: string, metadata?: WorkspaceEditEntryMetadata): void;
 
 		/**
 		 * Delete the text at the given range.
 		 *
 		 * @param uri A resource identifier.
 		 * @param range A range.
+		 * @param metadata Optional metadata for the entry.
 		 */
-		delete(uri: Uri, range: Range): void;
+		delete(uri: Uri, range: Range, metadata?: WorkspaceEditEntryMetadata): void;
 
 		/**
 		 * Check if a text edit for a resource exists.
@@ -2889,15 +3010,17 @@ declare module 'vscode' {
 		 * @param uri Uri of the new file..
 		 * @param options Defines if an existing file should be overwritten or be
 		 * ignored. When overwrite and ignoreIfExists are both set overwrite wins.
+		 * @param metadata Optional metadata for the entry.
 		 */
-		createFile(uri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean }): void;
+		createFile(uri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean }, metadata?: WorkspaceEditEntryMetadata): void;
 
 		/**
 		 * Delete a file or folder.
 		 *
 		 * @param uri The uri of the file that is to be deleted.
+		 * @param metadata Optional metadata for the entry.
 		 */
-		deleteFile(uri: Uri, options?: { recursive?: boolean, ignoreIfNotExists?: boolean }): void;
+		deleteFile(uri: Uri, options?: { recursive?: boolean, ignoreIfNotExists?: boolean }, metadata?: WorkspaceEditEntryMetadata): void;
 
 		/**
 		 * Rename a file or folder.
@@ -2906,8 +3029,9 @@ declare module 'vscode' {
 		 * @param newUri The new location.
 		 * @param options Defines if existing files should be overwritten or be
 		 * ignored. When overwrite and ignoreIfExists are both set overwrite wins.
+		 * @param metadata Optional metadata for the entry.
 		 */
-		renameFile(oldUri: Uri, newUri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean }): void;
+		renameFile(oldUri: Uri, newUri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean }, metadata?: WorkspaceEditEntryMetadata): void;
 
 
 		/**
@@ -3408,15 +3532,17 @@ declare module 'vscode' {
 		insertText?: string | SnippetString;
 
 		/**
-		 * A range of text that should be replaced by this completion item.
+		 * A range or a insert and replace range selecting the text that should be replaced by this completion item.
 		 *
-		 * Defaults to a range from the start of the [current word](#TextDocument.getWordRangeAtPosition) to the
-		 * current position.
+		 * When omitted, the range of the [current word](#TextDocument.getWordRangeAtPosition) is used as replace-range
+		 * and as insert-range the start of the [current word](#TextDocument.getWordRangeAtPosition) to the
+		 * current position is used.
 		 *
-		 * *Note:* The range must be a [single line](#Range.isSingleLine) and it must
+		 * *Note 1:* A range must be a [single line](#Range.isSingleLine) and it must
 		 * [contain](#Range.contains) the position at which completion has been [requested](#CompletionItemProvider.provideCompletionItems).
+		 * *Note 2:* A insert range must be a prefix of a replace range, that means it must be contained and starting at the same position.
 		 */
-		range?: Range;
+		range?: Range | { inserting: Range; replacing: Range; };
 
 		/**
 		 * An optional set of characters that when pressed while this completion is active will accept it first and
@@ -3976,7 +4102,7 @@ declare module 'vscode' {
 
 		/**
 		 * The range at which this item is called. This is the range relative to the caller, e.g the item
-		 * passed to [`provideCallHierarchyOutgoingCalls`](#CallHierarchyItemProvider.provideCallHierarchyOutgoingCalls)
+		 * passed to [`provideCallHierarchyOutgoingCalls`](#CallHierarchyProvider.provideCallHierarchyOutgoingCalls)
 		 * and not [`this.to`](#CallHierarchyOutgoingCall.to).
 		 */
 		fromRanges: Range[];
@@ -4008,7 +4134,7 @@ declare module 'vscode' {
 		 * @returns A call hierarchy item or a thenable that resolves to such. The lack of a result can be
 		 * signaled by returning `undefined` or `null`.
 		 */
-		prepareCallHierarchy(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<CallHierarchyItem>;
+		prepareCallHierarchy(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<CallHierarchyItem | CallHierarchyItem[]>;
 
 		/**
 		 * Provide all incoming calls for an item, e.g all callers for a method. In graph terms this describes directed
@@ -4233,16 +4359,52 @@ declare module 'vscode' {
 	/**
 	 * Represents the configuration. It is a merged view of
 	 *
-	 * - Default configuration
-	 * - Global configuration
-	 * - Workspace configuration (if available)
-	 * - Workspace folder configuration of the requested resource (if available)
+	 * - *Default Settings*
+	 * - *Global (User) Settings*
+	 * - *Workspace settings*
+	 * - *Workspace Folder settings* - From one of the [Workspace Folders](#workspace.workspaceFolders) under which requested resource belongs to.
+	 * - *Language settings* - Settings defined under requested language.
 	 *
-	 * *Global configuration* comes from User Settings and overrides Defaults.
+	 * The *effective* value (returned by [`get`](#WorkspaceConfiguration.get)) is computed by overriding or merging the values in the following order.
 	 *
-	 * *Workspace configuration* comes from Workspace Settings and overrides Global configuration.
+	 * ```
+	 * `defaultValue`
+	 * `globalValue` (if defined)
+	 * `workspaceValue` (if defined)
+	 * `workspaceFolderValue` (if defined)
+	 * `defaultLanguageValue` (if defined)
+	 * `globalLanguageValue` (if defined)
+	 * `workspaceLanguageValue` (if defined)
+	 * `workspaceFolderLanguageValue` (if defined)
+	 * ```
+	 * **Note:** Only `object` value types are merged and all other value types are overridden.
 	 *
-	 * *Workspace Folder configuration* comes from `.vscode` folder under one of the [workspace folders](#workspace.workspaceFolders) and overrides Workspace configuration.
+	 * Example 1: Overriding
+	 *
+	 * ```ts
+	 * defaultValue = 'on';
+	 * globalValue = 'relative'
+	 * workspaceFolderValue = 'off'
+	 * value = 'off'
+	 * ```
+	 *
+	 * Example 2: Language Values
+	 *
+	 * ```ts
+	 * defaultValue = 'on';
+	 * globalValue = 'relative'
+	 * workspaceFolderValue = 'off'
+	 * globalLanguageValue = 'on'
+	 * value = 'on'
+	 * ```
+	 *
+	 * Example 3: Object Values
+	 *
+	 * ```ts
+	 * defaultValue = { "a": 1, "b": 2 };
+	 * globalValue = { "b": 3, "c": 4 };
+	 * value = { "a": 1, "b": 3, "c": 4 };
+	 * ```
 	 *
 	 * *Note:* Workspace and Workspace Folder configurations contains `launch` and `tasks` settings. Their basename will be
 	 * part of the section identifier. The following snippets shows how to retrieve all configurations
@@ -4250,7 +4412,7 @@ declare module 'vscode' {
 	 *
 	 * ```ts
 	 * // launch.json configuration
-	 * const config = workspace.getConfiguration('launch', vscode.window.activeTextEditor.document.uri);
+	 * const config = workspace.getConfiguration('launch', vscode.workspace.workspaceFolders[0].uri);
 	 *
 	 * // retrieve values
 	 * const values = config.get('configurations');
@@ -4288,13 +4450,10 @@ declare module 'vscode' {
 		/**
 		 * Retrieve all information about a configuration setting. A configuration value
 		 * often consists of a *default* value, a global or installation-wide value,
-		 * a workspace-specific value and a folder-specific value.
+		 * a workspace-specific value, folder-specific value
+		 * and language-specific values (if [WorkspaceConfiguration](#WorkspaceConfiguration) is scoped to a language).
 		 *
-		 * The *effective* value (returned by [`get`](#WorkspaceConfiguration.get))
-		 * is computed like this: `defaultValue` overridden by `globalValue`,
-		 * `globalValue` overridden by `workspaceValue`. `workspaceValue` overwridden by `workspaceFolderValue`.
-		 * Refer to [Settings](https://code.visualstudio.com/docs/getstarted/settings)
-		 * for more information.
+		 * Also provides all language ids under which the given configuration setting is defined.
 		 *
 		 * *Note:* The configuration name must denote a leaf in the configuration tree
 		 * (`editor.fontSize` vs `editor`) otherwise no result is returned.
@@ -4302,43 +4461,53 @@ declare module 'vscode' {
 		 * @param section Configuration name, supports _dotted_ names.
 		 * @return Information about a configuration setting or `undefined`.
 		 */
-		inspect<T>(section: string): { key: string; defaultValue?: T; globalValue?: T; workspaceValue?: T, workspaceFolderValue?: T } | undefined;
+		inspect<T>(section: string): {
+			key: string;
+
+			defaultValue?: T;
+			globalValue?: T;
+			workspaceValue?: T,
+			workspaceFolderValue?: T,
+
+			defaultLanguageValue?: T;
+			globalLanguageValue?: T;
+			workspaceLanguageValue?: T;
+			workspaceFolderLanguageValue?: T;
+
+			languageIds?: string[];
+
+		} | undefined;
 
 		/**
 		 * Update a configuration value. The updated configuration values are persisted.
 		 *
 		 * A value can be changed in
 		 *
-		 * - [Global configuration](#ConfigurationTarget.Global): Changes the value for all instances of the editor.
-		 * - [Workspace configuration](#ConfigurationTarget.Workspace): Changes the value for current workspace, if available.
-		 * - [Workspace folder configuration](#ConfigurationTarget.WorkspaceFolder): Changes the value for the
-		 * [Workspace folder](#workspace.workspaceFolders) to which the current [configuration](#WorkspaceConfiguration) is scoped to.
+		 * - [Global settings](#ConfigurationTarget.Global): Changes the value for all instances of the editor.
+		 * - [Workspace settings](#ConfigurationTarget.Workspace): Changes the value for current workspace, if available.
+		 * - [Workspace folder settings](#ConfigurationTarget.WorkspaceFolder): Changes the value for settings from one of the [Workspace Folders](#workspace.workspaceFolders) under which the requested resource belongs to.
+		 * - Language settings: Changes the value for the requested languageId.
 		 *
-		 * *Note 1:* Setting a global value in the presence of a more specific workspace value
-		 * has no observable effect in that workspace, but in others. Setting a workspace value
-		 * in the presence of a more specific folder value has no observable effect for the resources
-		 * under respective [folder](#workspace.workspaceFolders), but in others. Refer to
-		 * [Settings Inheritance](https://code.visualstudio.com/docs/getstarted/settings) for more information.
-		 *
-		 * *Note 2:* To remove a configuration value use `undefined`, like so: `config.update('somekey', undefined)`
-		 *
-		 * Will throw error when
-		 * - Writing a configuration which is not registered.
-		 * - Writing a configuration to workspace or folder target when no workspace is opened
-		 * - Writing a configuration to folder target when there is no folder settings
-		 * - Writing to folder target without passing a resource when getting the configuration (`workspace.getConfiguration(section, resource)`)
-		 * - Writing a window configuration to folder target
+		 * *Note:* To remove a configuration value use `undefined`, like so: `config.update('somekey', undefined)`
 		 *
 		 * @param section Configuration name, supports _dotted_ names.
 		 * @param value The new value.
 		 * @param configurationTarget The [configuration target](#ConfigurationTarget) or a boolean value.
-		 *	- If `true` configuration target is `ConfigurationTarget.Global`.
-		 *	- If `false` configuration target is `ConfigurationTarget.Workspace`.
-		 *	- If `undefined` or `null` configuration target is
-		 *	`ConfigurationTarget.WorkspaceFolder` when configuration is resource specific
-		 *	`ConfigurationTarget.Workspace` otherwise.
+		 *	- If `true` updates [Global settings](#ConfigurationTarget.Global).
+		 *	- If `false` updates [Workspace settings](#ConfigurationTarget.Workspace).
+		 *	- If `undefined` or `null` updates to [Workspace folder settings](#ConfigurationTarget.WorkspaceFolder) if configuration is resource specific,
+		 * 	otherwise to [Workspace settings](#ConfigurationTarget.Workspace).
+		 * @param overrideInLanguage Whether to update the value in the scope of requested languageId or not.
+		 *	- If `true` updates the value under the requested languageId.
+		 *	- If `undefined` updates the value under the requested languageId only if the configuration is defined for the language.
+		 * @throws error while updating
+		 *	- configuration which is not registered.
+		 *	- window configuration to workspace folder
+		 *	- configuration to workspace or workspace folder when no workspace is opened.
+		 *	- configuration to workspace folder when there is no workspace folder settings.
+		 *	- configuration to workspace folder when [WorkspaceConfiguration](#WorkspaceConfiguration) is not scoped to a resource.
 		 */
-		update(section: string, value: any, configurationTarget?: ConfigurationTarget | boolean): Thenable<void>;
+		update(section: string, value: any, configurationTarget?: ConfigurationTarget | boolean, overrideInLanguage?: boolean): Thenable<void>;
 
 		/**
 		 * Readable dictionary that backs this configuration.
@@ -4519,7 +4688,18 @@ declare module 'vscode' {
 		 * A code or identifier for this diagnostic.
 		 * Should be used for later processing, e.g. when providing [code actions](#CodeActionContext).
 		 */
-		code?: string | number;
+		code?: string | number | {
+			/**
+			 * A code or identifier for this diagnostic.
+			 * Should be used for later processing, e.g. when providing [code actions](#CodeActionContext).
+			 */
+			value: string | number;
+
+			/**
+			 * A target URI to open with more information about the diagnostic error.
+			 */
+			target: Uri;
+		};
 
 		/**
 		 * An array of related diagnostic information, e.g. when symbol-names within
@@ -4782,7 +4962,7 @@ declare module 'vscode' {
 		 *
 		 * `My text $(icon-name) contains icons like $(icon-name) this one.`
 		 *
-		 * Where the icon-name is taken from the [octicon](https://octicons.github.com) icon set, e.g.
+		 * Where the icon-name is taken from the [codicon](https://microsoft.github.io/vscode-codicons/dist/codicon.html) icon set, e.g.
 		 * `light-bulb`, `thumbsup`, `zap` etc.
 		 */
 		text: string;
@@ -4798,10 +4978,11 @@ declare module 'vscode' {
 		color: string | ThemeColor | undefined;
 
 		/**
-		 * The identifier of a command to run on click. The command must be
-		 * [known](#commands.getCommands).
+		 * [`Command`](#Command) or identifier of a command to run on click.
+		 *
+		 * The command must be [known](#commands.getCommands).
 		 */
-		command: string | undefined;
+		command: string | Command | undefined;
 
 		/**
 		 * Shows the entry in the status bar.
@@ -4847,6 +5028,28 @@ declare module 'vscode' {
 		 * The process ID of the shell process.
 		 */
 		readonly processId: Thenable<number | undefined>;
+
+		/**
+		 * The object used to initialize the terminal, this is useful for example to detecting the
+		 * shell type of when the terminal was not launched by this extension or for detecting what
+		 * folder the shell was launched in.
+		 */
+		readonly creationOptions: Readonly<TerminalOptions | ExtensionTerminalOptions>;
+
+		/**
+		 * The exit status of the terminal, this will be undefined while the terminal is active.
+		 *
+		 * **Example:** Show a notification with the exit code when the terminal exits with a
+		 * non-zero exit code.
+		 * ```typescript
+		 * window.onDidCloseTerminal(t => {
+		 *   if (t.exitStatus && t.exitStatus.code) {
+		 *   	vscode.window.showInformationMessage(`Exit code: ${t.exitStatus.code}`);
+		 *   }
+		 * });
+		 * ```
+		 */
+		readonly exitStatus: TerminalExitStatus | undefined;
 
 		/**
 		 * Send text to the terminal. The text is written to the stdin of the underlying pty process
@@ -5500,8 +5703,8 @@ declare module 'vscode' {
 		isBackground: boolean;
 
 		/**
-		 * A human-readable string describing the source of this
-		 * shell task, e.g. 'gulp' or 'npm'.
+		 * A human-readable string describing the source of this shell task, e.g. 'gulp'
+		 * or 'npm'. Supports rendering of [theme icons](#ThemeIcon) via the `$(<name>)`-syntax.
 		 */
 		source: string;
 
@@ -5710,7 +5913,7 @@ declare module 'vscode' {
 
 	/**
 	 * Enumeration of file types. The types `File` and `Directory` can also be
-	 * a symbolic links, in that use `FileType.File | FileType.SymbolicLink` and
+	 * a symbolic links, in that case use `FileType.File | FileType.SymbolicLink` and
 	 * `FileType.Directory | FileType.SymbolicLink`.
 	 */
 	export enum FileType {
@@ -5739,6 +5942,8 @@ declare module 'vscode' {
 		/**
 		 * The type of the file, e.g. is a regular file, a directory, or symbolic link
 		 * to a file.
+		 *
+		 * *Note:* This value might be a bitmask, e.g. `FileType.File | FileType.SymbolicLink`.
 		 */
 		type: FileType;
 		/**
@@ -6123,7 +6328,7 @@ declare module 'vscode' {
 	}
 
 	/**
-	 * A webview displays html content, like an iframe.
+	 * Displays html content, similarly to an iframe.
 	 */
 	export interface Webview {
 		/**
@@ -6132,9 +6337,29 @@ declare module 'vscode' {
 		options: WebviewOptions;
 
 		/**
-		 * Contents of the webview.
+		 * HTML contents of the webview.
 		 *
-		 * Should be a complete html document.
+		 * This should be a complete, valid html document. Changing this property causes the webview to be reloaded.
+		 *
+		 * Webviews are sandboxed from normal extension process, so all communication with the webview must use
+		 * message passing. To send a message from the extension to the webview, use [`postMessage`](#Webview.postMessage).
+		 * To send message from the webview back to an extension, use the `acquireVsCodeApi` function inside the webview
+		 * to get a handle to VS Code's api and then call `.postMessage()`:
+		 *
+		 * ```html
+		 * <script>
+		 *     const vscode = acquireVsCodeApi(); // acquireVsCodeApi can only be invoked once
+		 *     vscode.postMessage({ message: 'hello!' });
+		 * </script>
+		 * ```
+		 *
+		 * To load a resources from the workspace inside a webview, use the `[asWebviewUri](#Webview.asWebviewUri)` method
+		 * and ensure the resource's directory is listed in [`WebviewOptions.localResourceRoots`](#WebviewOptions.localResourceRoots).
+		 *
+		 * Keep in mind that even though webviews are sandboxed, they still allow running scripts and loading arbitrary content,
+		 * so extensions must follow all standard web security best practices when working with webviews. This includes
+		 * properly sanitizing all untrusted input (including content from the workspace) and
+		 * setting a [content security policy](https://aka.ms/vscode-api-webview-csp).
 		 */
 		html: string;
 
@@ -6232,7 +6457,7 @@ declare module 'vscode' {
 		iconPath?: Uri | { light: Uri; dark: Uri };
 
 		/**
-		 * Webview belonging to the panel.
+		 * [`Webview`](#Webview) belonging to the panel.
 		 */
 		readonly webview: Webview;
 
@@ -7368,7 +7593,7 @@ declare module 'vscode' {
 		iconPath?: string | Uri | { light: string | Uri; dark: string | Uri } | ThemeIcon;
 
 		/**
-		 * A human readable string which is rendered less prominent.
+		 * A human-readable string which is rendered less prominent.
 		 * When `true`, it is derived from [resourceUri](#TreeItem.resourceUri) and when `falsy`, it is not shown.
 		 */
 		description?: string | boolean;
@@ -7543,7 +7768,7 @@ declare module 'vscode' {
 		onDidWrite: Event<string>;
 
 		/**
-		 * An event that when fired allows overriding the [dimensions](#Terminal.dimensions) of the
+		 * An event that when fired allows overriding the [dimensions](#Pseudoterminal.setDimensions) of the
 		 * terminal. Note that when set, the overridden dimensions will only take effect when they
 		 * are lower than the actual dimensions of the terminal (ie. there will never be a scroll
 		 * bar). Set to `undefined` for the terminal to go back to the regular dimensions (fit to
@@ -7660,6 +7885,20 @@ declare module 'vscode' {
 		 * The number of rows in the terminal.
 		 */
 		readonly rows: number;
+	}
+
+	/**
+	 * Represents how a terminal exited.
+	 */
+	export interface TerminalExitStatus {
+		/**
+		 * The exit code that a terminal exited with, it can have the following values:
+		 * - Zero: the terminal process or custom execution succeeded.
+		 * - Non-zero: the terminal process or custom execution failed.
+		 * - `undefined`: the user forcibly closed the terminal or a custom execution exited
+		 *   without providing an exit code.
+		 */
+		readonly code: number | undefined;
 	}
 
 	/**
@@ -7980,19 +8219,19 @@ declare module 'vscode' {
 		/**
 		 * The range that got replaced.
 		 */
-		range: Range;
+		readonly range: Range;
 		/**
 		 * The offset of the range that got replaced.
 		 */
-		rangeOffset: number;
+		readonly rangeOffset: number;
 		/**
 		 * The length of the range that got replaced.
 		 */
-		rangeLength: number;
+		readonly rangeLength: number;
 		/**
 		 * The new text for the range.
 		 */
-		text: string;
+		readonly text: string;
 	}
 
 	/**
@@ -8085,6 +8324,172 @@ declare module 'vscode' {
 	}
 
 	/**
+	 * An event that is fired when files are going to be created.
+	 *
+	 * To make modifications to the workspace before the files are created,
+	 * call the [`waitUntil](#FileWillCreateEvent.waitUntil)-function with a
+	 * thenable that resolves to a [workspace edit](#WorkspaceEdit).
+	 */
+	export interface FileWillCreateEvent {
+
+		/**
+		 * The files that are going to be created.
+		 */
+		readonly files: ReadonlyArray<Uri>;
+
+		/**
+		 * Allows to pause the event and to apply a [workspace edit](#WorkspaceEdit).
+		 *
+		 * *Note:* This function can only be called during event dispatch and not
+		 * in an asynchronous manner:
+		 *
+		 * ```ts
+		 * workspace.onWillCreateFiles(event => {
+		 * 	// async, will *throw* an error
+		 * 	setTimeout(() => event.waitUntil(promise));
+		 *
+		 * 	// sync, OK
+		 * 	event.waitUntil(promise);
+		 * })
+		 * ```
+		 *
+		 * @param thenable A thenable that delays saving.
+		 */
+		waitUntil(thenable: Thenable<WorkspaceEdit>): void;
+
+		/**
+		 * Allows to pause the event until the provided thenable resolves.
+		 *
+		 * *Note:* This function can only be called during event dispatch.
+		 *
+		 * @param thenable A thenable that delays saving.
+		 */
+		waitUntil(thenable: Thenable<any>): void;
+	}
+
+	/**
+	 * An event that is fired after files are created.
+	 */
+	export interface FileCreateEvent {
+
+		/**
+		 * The files that got created.
+		 */
+		readonly files: ReadonlyArray<Uri>;
+	}
+
+	/**
+	 * An event that is fired when files are going to be deleted.
+	 *
+	 * To make modifications to the workspace before the files are deleted,
+	 * call the [`waitUntil](#FileWillCreateEvent.waitUntil)-function with a
+	 * thenable that resolves to a [workspace edit](#WorkspaceEdit).
+	 */
+	export interface FileWillDeleteEvent {
+
+		/**
+		 * The files that are going to be deleted.
+		 */
+		readonly files: ReadonlyArray<Uri>;
+
+		/**
+		 * Allows to pause the event and to apply a [workspace edit](#WorkspaceEdit).
+		 *
+		 * *Note:* This function can only be called during event dispatch and not
+		 * in an asynchronous manner:
+		 *
+		 * ```ts
+		 * workspace.onWillCreateFiles(event => {
+		 * 	// async, will *throw* an error
+		 * 	setTimeout(() => event.waitUntil(promise));
+		 *
+		 * 	// sync, OK
+		 * 	event.waitUntil(promise);
+		 * })
+		 * ```
+		 *
+		 * @param thenable A thenable that delays saving.
+		 */
+		waitUntil(thenable: Thenable<WorkspaceEdit>): void;
+
+		/**
+		 * Allows to pause the event until the provided thenable resolves.
+		 *
+		 * *Note:* This function can only be called during event dispatch.
+		 *
+		 * @param thenable A thenable that delays saving.
+		 */
+		waitUntil(thenable: Thenable<any>): void;
+	}
+
+	/**
+	 * An event that is fired after files are deleted.
+	 */
+	export interface FileDeleteEvent {
+
+		/**
+		 * The files that got deleted.
+		 */
+		readonly files: ReadonlyArray<Uri>;
+	}
+
+	/**
+	 * An event that is fired when files are going to be renamed.
+	 *
+	 * To make modifications to the workspace before the files are renamed,
+	 * call the [`waitUntil](#FileWillCreateEvent.waitUntil)-function with a
+	 * thenable that resolves to a [workspace edit](#WorkspaceEdit).
+	 */
+	export interface FileWillRenameEvent {
+
+		/**
+		 * The files that are going to be renamed.
+		 */
+		readonly files: ReadonlyArray<{ oldUri: Uri, newUri: Uri }>;
+
+		/**
+		 * Allows to pause the event and to apply a [workspace edit](#WorkspaceEdit).
+		 *
+		 * *Note:* This function can only be called during event dispatch and not
+		 * in an asynchronous manner:
+		 *
+		 * ```ts
+		 * workspace.onWillCreateFiles(event => {
+		 * 	// async, will *throw* an error
+		 * 	setTimeout(() => event.waitUntil(promise));
+		 *
+		 * 	// sync, OK
+		 * 	event.waitUntil(promise);
+		 * })
+		 * ```
+		 *
+		 * @param thenable A thenable that delays saving.
+		 */
+		waitUntil(thenable: Thenable<WorkspaceEdit>): void;
+
+		/**
+		 * Allows to pause the event until the provided thenable resolves.
+		 *
+		 * *Note:* This function can only be called during event dispatch.
+		 *
+		 * @param thenable A thenable that delays saving.
+		 */
+		waitUntil(thenable: Thenable<any>): void;
+	}
+
+	/**
+	 * An event that is fired after files are renamed.
+	 */
+	export interface FileRenameEvent {
+
+		/**
+		 * The files that got renamed.
+		 */
+		readonly files: ReadonlyArray<{ oldUri: Uri, newUri: Uri }>;
+	}
+
+
+	/**
 	 * An event describing a change to the set of [workspace folders](#workspace.workspaceFolders).
 	 */
 	export interface WorkspaceFoldersChangeEvent {
@@ -8156,7 +8561,7 @@ declare module 'vscode' {
 		 * List of workspace folders or `undefined` when no folder is open.
 		 * *Note* that the first entry corresponds to the value of `rootPath`.
 		 */
-		export const workspaceFolders: WorkspaceFolder[] | undefined;
+		export const workspaceFolders: ReadonlyArray<WorkspaceFolder> | undefined;
 
 		/**
 		 * The name of the workspace. `undefined` when no folder
@@ -8315,8 +8720,8 @@ declare module 'vscode' {
 		 *
 		 * All changes of a workspace edit are applied in the same order in which they have been added. If
 		 * multiple textual inserts are made at the same position, these strings appear in the resulting text
-		 * in the order the 'inserts' were made. Invalid sequences like 'delete file a' -> 'insert text in file a'
-		 * cause failure of the operation.
+		 * in the order the 'inserts' were made, unless that are interleaved with resource edits. Invalid sequences
+		 * like 'delete file a' -> 'insert text in file a' cause failure of the operation.
 		 *
 		 * When applying a workspace edit that consists only of text edits an 'all-or-nothing'-strategy is used.
 		 * A workspace edit with resource creations or deletions aborts the operation, e.g. consecutive edits will
@@ -8330,7 +8735,7 @@ declare module 'vscode' {
 		/**
 		 * All text documents currently known to the system.
 		 */
-		export const textDocuments: TextDocument[];
+		export const textDocuments: ReadonlyArray<TextDocument>;
 
 		/**
 		 * Opens a document. Will return early if this document is already open. Otherwise
@@ -8434,19 +8839,89 @@ declare module 'vscode' {
 		export const onDidSaveTextDocument: Event<TextDocument>;
 
 		/**
+		 * An event that is emitted when files are being created.
+		 *
+		 * *Note 1:* This event is triggered by user gestures, like creating a file from the
+		 * explorer, or from the [`workspace.applyEdit`](#workspace.applyEdit)-api. This event is *not* fired when
+		 * files change on disk, e.g triggered by another application, or when using the
+		 * [`workspace.fs`](#FileSystem)-api.
+		 *
+		 * *Note 2:* When this event is fired, edits to files thare are being created cannot be applied.
+		 */
+		export const onWillCreateFiles: Event<FileWillCreateEvent>;
+
+		/**
+		 * An event that is emitted when files have been created.
+		 *
+		 * *Note:* This event is triggered by user gestures, like creating a file from the
+		 * explorer, or from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
+		 * files change on disk, e.g triggered by another application, or when using the
+		 * [`workspace.fs`](#FileSystem)-api.
+		 */
+		export const onDidCreateFiles: Event<FileCreateEvent>;
+
+		/**
+		 * An event that is emitted when files are being deleted.
+		 *
+		 * *Note 1:* This event is triggered by user gestures, like deleting a file from the
+		 * explorer, or from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
+		 * files change on disk, e.g triggered by another application, or when using the
+		 * [`workspace.fs`](#FileSystem)-api.
+		 *
+		 * *Note 2:* When deleting a folder with children only one event is fired.
+		 */
+		export const onWillDeleteFiles: Event<FileWillDeleteEvent>;
+
+		/**
+		 * An event that is emitted when files have been deleted.
+		 *
+		 * *Note 1:* This event is triggered by user gestures, like deleting a file from the
+		 * explorer, or from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
+		 * files change on disk, e.g triggered by another application, or when using the
+		 * [`workspace.fs`](#FileSystem)-api.
+		 *
+		 * *Note 2:* When deleting a folder with children only one event is fired.
+		 */
+		export const onDidDeleteFiles: Event<FileDeleteEvent>;
+
+		/**
+		 * An event that is emitted when files are being renamed.
+		 *
+		 * *Note 1:* This event is triggered by user gestures, like renaming a file from the
+		 * explorer, and from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
+		 * files change on disk, e.g triggered by another application, or when using the
+		 * [`workspace.fs`](#FileSystem)-api.
+		 *
+		 * *Note 2:* When renaming a folder with children only one event is fired.
+		 */
+		export const onWillRenameFiles: Event<FileWillRenameEvent>;
+
+		/**
+		 * An event that is emitted when files have been renamed.
+		 *
+		 * *Note 1:* This event is triggered by user gestures, like renaming a file from the
+		 * explorer, and from the [`workspace.applyEdit`](#workspace.applyEdit)-api, but this event is *not* fired when
+		 * files change on disk, e.g triggered by another application, or when using the
+		 * [`workspace.fs`](#FileSystem)-api.
+		 *
+		 * *Note 2:* When renaming a folder with children only one event is fired.
+		 */
+		export const onDidRenameFiles: Event<FileRenameEvent>;
+
+		/**
 		 * Get a workspace configuration object.
 		 *
 		 * When a section-identifier is provided only that part of the configuration
 		 * is returned. Dots in the section-identifier are interpreted as child-access,
 		 * like `{ myExt: { setting: { doIt: true }}}` and `getConfiguration('myExt.setting').get('doIt') === true`.
 		 *
-		 * When a resource is provided, configuration scoped to that resource is returned.
+		 * When a scope is provided configuraiton confined to that scope is returned. Scope can be a resource or a language identifier or both.
 		 *
 		 * @param section A dot-separated identifier.
-		 * @param resource A resource for which the configuration is asked for
+		 * @param scope A scope for which the configuration is asked for.
 		 * @return The full configuration or a subset.
 		 */
-		export function getConfiguration(section?: string, resource?: Uri | null): WorkspaceConfiguration;
+		export function getConfiguration(section?: string | undefined, scope?: ConfigurationScope | null): WorkspaceConfiguration;
 
 		/**
 		 * An event that is emitted when the [configuration](#WorkspaceConfiguration) changed.
@@ -8479,450 +8954,28 @@ declare module 'vscode' {
 	}
 
 	/**
+	 * The configuration scope which can be a
+	 * a 'resource' or a languageId or both or
+	 * a '[TextDocument](#TextDocument)' or
+	 * a '[WorkspaceFolder](#WorkspaceFolder)'
+	 */
+	export type ConfigurationScope = Uri | TextDocument | WorkspaceFolder | { uri?: Uri, languageId: string };
+
+	/**
 	 * An event describing the change in Configuration
 	 */
 	export interface ConfigurationChangeEvent {
 
 		/**
-		 * Returns `true` if the given section for the given resource (if provided) is affected.
+		 * Returns `true` if the given section is affected in the provided scope.
 		 *
 		 * @param section Configuration name, supports _dotted_ names.
-		 * @param resource A resource Uri.
-		 * @return `true` if the given section for the given resource (if provided) is affected.
+		 * @param scope A scope in which to check.
+		 * @return `true` if the given section is affected in the provided scope.
 		 */
-		affectsConfiguration(section: string, resource?: Uri): boolean;
+		affectsConfiguration(section: string, scope?: ConfigurationScope): boolean;
 	}
 
-	/**
-	 * Namespace for participating in language-specific editor [features](https://code.visualstudio.com/docs/editor/editingevolved),
-	 * like IntelliSense, code actions, diagnostics etc.
-	 *
-	 * Many programming languages exist and there is huge variety in syntaxes, semantics, and paradigms. Despite that, features
-	 * like automatic word-completion, code navigation, or code checking have become popular across different tools for different
-	 * programming languages.
-	 *
-	 * The editor provides an API that makes it simple to provide such common features by having all UI and actions already in place and
-	 * by allowing you to participate by providing data only. For instance, to contribute a hover all you have to do is provide a function
-	 * that can be called with a [TextDocument](#TextDocument) and a [Position](#Position) returning hover info. The rest, like tracking the
-	 * mouse, positioning the hover, keeping the hover stable etc. is taken care of by the editor.
-	 *
-	 * ```javascript
-	 * languages.registerHoverProvider('javascript', {
-	 * 	provideHover(document, position, token) {
-	 * 		return new Hover('I am a hover!');
-	 * 	}
-	 * });
-	 * ```
-	 *
-	 * Registration is done using a [document selector](#DocumentSelector) which is either a language id, like `javascript` or
-	 * a more complex [filter](#DocumentFilter) like `{ language: 'typescript', scheme: 'file' }`. Matching a document against such
-	 * a selector will result in a [score](#languages.match) that is used to determine if and how a provider shall be used. When
-	 * scores are equal the provider that came last wins. For features that allow full arity, like [hover](#languages.registerHoverProvider),
-	 * the score is only checked to be `>0`, for other features, like [IntelliSense](#languages.registerCompletionItemProvider) the
-	 * score is used for determining the order in which providers are asked to participate.
-	 */
-	// export namespace languages {
-
-		/**
-		 * Return the identifiers of all known languages.
-		 * @return Promise resolving to an array of identifier strings.
-		 */
-		// export function getLanguages(): Thenable<string[]>;
-
-		/**
-		 * Set (and change) the [language](#TextDocument.languageId) that is associated
-		 * with the given document.
-		 *
-		 * *Note* that calling this function will trigger the [`onDidCloseTextDocument`](#workspace.onDidCloseTextDocument) event
-		 * followed by the [`onDidOpenTextDocument`](#workspace.onDidOpenTextDocument) event.
-		 *
-		 * @param document The document which language is to be changed
-		 * @param languageId The new language identifier.
-		 * @returns A thenable that resolves with the updated document.
-		 */
-		// export function setTextDocumentLanguage(document: TextDocument, languageId: string): Thenable<TextDocument>;
-
-		/**
-		 * Compute the match between a document [selector](#DocumentSelector) and a document. Values
-		 * greater than zero mean the selector matches the document.
-		 *
-		 * A match is computed according to these rules:
-		 * 1. When [`DocumentSelector`](#DocumentSelector) is an array, compute the match for each contained `DocumentFilter` or language identifier and take the maximum value.
-		 * 2. A string will be desugared to become the `language`-part of a [`DocumentFilter`](#DocumentFilter), so `"fooLang"` is like `{ language: "fooLang" }`.
-		 * 3. A [`DocumentFilter`](#DocumentFilter) will be matched against the document by comparing its parts with the document. The following rules apply:
-		 *  1. When the `DocumentFilter` is empty (`{}`) the result is `0`
-		 *  2. When `scheme`, `language`, or `pattern` are defined but one doesn’t match, the result is `0`
-		 *  3. Matching against `*` gives a score of `5`, matching via equality or via a glob-pattern gives a score of `10`
-		 *  4. The result is the maximum value of each match
-		 *
-		 * Samples:
-		 * ```js
-		 * // default document from disk (file-scheme)
-		 * doc.uri; //'file:///my/file.js'
-		 * doc.languageId; // 'javascript'
-		 * match('javascript', doc); // 10;
-		 * match({language: 'javascript'}, doc); // 10;
-		 * match({language: 'javascript', scheme: 'file'}, doc); // 10;
-		 * match('*', doc); // 5
-		 * match('fooLang', doc); // 0
-		 * match(['fooLang', '*'], doc); // 5
-		 *
-		 * // virtual document, e.g. from git-index
-		 * doc.uri; // 'git:/my/file.js'
-		 * doc.languageId; // 'javascript'
-		 * match('javascript', doc); // 10;
-		 * match({language: 'javascript', scheme: 'git'}, doc); // 10;
-		 * match('*', doc); // 5
-		 * ```
-		 *
-		 * @param selector A document selector.
-		 * @param document A text document.
-		 * @return A number `>0` when the selector matches and `0` when the selector does not match.
-		 */
-		// export function match(selector: DocumentSelector, document: TextDocument): number;
-
-		/**
-		 * An [event](#Event) which fires when the global set of diagnostics changes. This is
-		 * newly added and removed diagnostics.
-		 */
-		// export const onDidChangeDiagnostics: Event<DiagnosticChangeEvent>;
-
-		/**
-		 * Get all diagnostics for a given resource.
-		 *
-		 * @param resource A resource
-		 * @returns An array of [diagnostics](#Diagnostic) objects or an empty array.
-		 */
-		// export function getDiagnostics(resource: Uri): Diagnostic[];
-
-		/**
-		 * Get all diagnostics.
-		 *
-		 * @returns An array of uri-diagnostics tuples or an empty array.
-		 */
-		// export function getDiagnostics(): [Uri, Diagnostic[]][];
-
-		/**
-		 * Create a diagnostics collection.
-		 *
-		 * @param name The [name](#DiagnosticCollection.name) of the collection.
-		 * @return A new diagnostic collection.
-		 */
-		// export function createDiagnosticCollection(name?: string): DiagnosticCollection;
-
-		/**
-		 * Register a completion provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and groups of equal score are sequentially asked for
-		 * completion items. The process stops when one or many providers of a group return a
-		 * result. A failing provider (rejected promise or exception) will not fail the whole
-		 * operation.
-		 *
-		 * A completion item provider can be associated with a set of `triggerCharacters`. When trigger
-		 * characters are being typed, completions are requested but only from providers that registered
-		 * the typed character. Because of that trigger characters should be different than [word characters](#LanguageConfiguration.wordPattern),
-		 * a common trigger character is `.` to trigger member completions.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A completion provider.
-		 * @param triggerCharacters Trigger completion when the user types one of the characters.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerCompletionItemProvider(selector: DocumentSelector, provider: CompletionItemProvider, ...triggerCharacters: string[]): Disposable;
-
-		/**
-		 * Register a code action provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A code action provider.
-		 * @param metadata Metadata about the kind of code actions the provider providers.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerCodeActionsProvider(selector: DocumentSelector, provider: CodeActionProvider, metadata?: CodeActionProviderMetadata): Disposable;
-
-		/**
-		 * Register a code lens provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A code lens provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerCodeLensProvider(selector: DocumentSelector, provider: CodeLensProvider): Disposable;
-
-		/**
-		 * Register a definition provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A definition provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerDefinitionProvider(selector: DocumentSelector, provider: DefinitionProvider): Disposable;
-
-		/**
-		 * Register an implementation provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider An implementation provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerImplementationProvider(selector: DocumentSelector, provider: ImplementationProvider): Disposable;
-
-		/**
-		 * Register a type definition provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A type definition provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerTypeDefinitionProvider(selector: DocumentSelector, provider: TypeDefinitionProvider): Disposable;
-
-		/**
-		 * Register a declaration provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A declaration provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerDeclarationProvider(selector: DocumentSelector, provider: DeclarationProvider): Disposable;
-
-		/**
-		 * Register a hover provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A hover provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerHoverProvider(selector: DocumentSelector, provider: HoverProvider): Disposable;
-
-		/**
-		 * Register a document highlight provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and groups sequentially asked for document highlights.
-		 * The process stops when a provider returns a `non-falsy` or `non-failure` result.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document highlight provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerDocumentHighlightProvider(selector: DocumentSelector, provider: DocumentHighlightProvider): Disposable;
-
-		/**
-		 * Register a document symbol provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document symbol provider.
-		 * @param metaData metadata about the provider
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerDocumentSymbolProvider(selector: DocumentSelector, provider: DocumentSymbolProvider, metaData?: DocumentSymbolProviderMetadata): Disposable;
-
-		/**
-		 * Register a workspace symbol provider.
-		 *
-		 * Multiple providers can be registered. In that case providers are asked in parallel and
-		 * the results are merged. A failing provider (rejected promise or exception) will not cause
-		 * a failure of the whole operation.
-		 *
-		 * @param provider A workspace symbol provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerWorkspaceSymbolProvider(provider: WorkspaceSymbolProvider): Disposable;
-
-		/**
-		 * Register a reference provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A reference provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerReferenceProvider(selector: DocumentSelector, provider: ReferenceProvider): Disposable;
-
-		/**
-		 * Register a rename provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A rename provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerRenameProvider(selector: DocumentSelector, provider: RenameProvider): Disposable;
-
-		/**
-		 * Register a formatting provider for a document.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document formatting edit provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerDocumentFormattingEditProvider(selector: DocumentSelector, provider: DocumentFormattingEditProvider): Disposable;
-
-		/**
-		 * Register a formatting provider for a document range.
-		 *
-		 * *Note:* A document range provider is also a [document formatter](#DocumentFormattingEditProvider)
-		 * which means there is no need to [register](#languages.registerDocumentFormattingEditProvider) a document
-		 * formatter when also registering a range provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document range formatting edit provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerDocumentRangeFormattingEditProvider(selector: DocumentSelector, provider: DocumentRangeFormattingEditProvider): Disposable;
-
-		/**
-		 * Register a formatting provider that works on type. The provider is active when the user enables the setting `editor.formatOnType`.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider An on type formatting edit provider.
-		 * @param firstTriggerCharacter A character on which formatting should be triggered, like `}`.
-		 * @param moreTriggerCharacter More trigger characters.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerOnTypeFormattingEditProvider(selector: DocumentSelector, provider: OnTypeFormattingEditProvider, firstTriggerCharacter: string, ...moreTriggerCharacter: string[]): Disposable;
-
-		/**
-		 * Register a signature help provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and called sequentially until a provider returns a
-		 * valid result.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A signature help provider.
-		 * @param triggerCharacters Trigger signature help when the user types one of the characters, like `,` or `(`.
-		 * @param metadata Information about the provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerSignatureHelpProvider(selector: DocumentSelector, provider: SignatureHelpProvider, ...triggerCharacters: string[]): Disposable;
-		// export function registerSignatureHelpProvider(selector: DocumentSelector, provider: SignatureHelpProvider, metadata: SignatureHelpProviderMetadata): Disposable;
-
-		/**
-		 * Register a document link provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A document link provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerDocumentLinkProvider(selector: DocumentSelector, provider: DocumentLinkProvider): Disposable;
-
-		/**
-		 * Register a color provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A color provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerColorProvider(selector: DocumentSelector, provider: DocumentColorProvider): Disposable;
-
-		/**
-		 * Register a folding range provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged.
-		 * If multiple folding ranges start at the same position, only the range of the first registered provider is used.
-		 * If a folding range overlaps with an other range that has a smaller position, it is also ignored.
-		 *
-		 * A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A folding range provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerFoldingRangeProvider(selector: DocumentSelector, provider: FoldingRangeProvider): Disposable;
-
-		/**
-		 * Register a selection range provider.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are asked in
-		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
-		 * not cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A selection range provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerSelectionRangeProvider(selector: DocumentSelector, provider: SelectionRangeProvider): Disposable;
-
-		/**
-		 * Register a call hierarchy provider.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider A call hierarchy provider.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		// export function registerCallHierarchyProvider(selector: DocumentSelector, provider: CallHierarchyProvider): Disposable;
-
-		/**
-		 * Set a [language configuration](#LanguageConfiguration) for a language.
-		 *
-		 * @param language A language identifier like `typescript`.
-		 * @param configuration Language configuration.
-		 * @return A [disposable](#Disposable) that unsets this configuration.
-		 */
-		// export function setLanguageConfiguration(language: string, configuration: LanguageConfiguration): Disposable;
-	// }
 
 	/**
 	 * Represents the input box in the Source Control viewlet.
@@ -8935,7 +8988,7 @@ declare module 'vscode' {
 		value: string;
 
 		/**
-		 * A string to show as place holder in the input box to guide the user.
+		 * A string to show as placeholder in the input box to guide the user.
 		 */
 		placeholder: string;
 	}
@@ -9155,7 +9208,7 @@ declare module 'vscode' {
 	 * 	return api;
 	 * }
 	 * ```
-	 * When depending on the API of another extension add an `extensionDependency`-entry
+	 * When depending on the API of another extension add an `extensionDependencies`-entry
 	 * to `package.json`, and use the [getExtension](#extensions.getExtension)-function
 	 * and the [exports](#Extension.exports)-property, like below:
 	 *
@@ -9177,7 +9230,7 @@ declare module 'vscode' {
 		export function getExtension(extensionId: string): Extension<any> | undefined;
 
 		/**
-		 * Get an extension its full identifier in the form of: `publisher.name`.
+		 * Get an extension by its full identifier in the form of: `publisher.name`.
 		 *
 		 * @param extensionId An extension identifier.
 		 * @return An extension or `undefined`.
@@ -9196,273 +9249,6 @@ declare module 'vscode' {
 		export const onDidChange: Event<void>;
 	}
 
-	//#region Comments
-
-	/**
-	 * Collapsible state of a [comment thread](#CommentThread)
-	 */
-	export enum CommentThreadCollapsibleState {
-		/**
-		 * Determines an item is collapsed
-		 */
-		Collapsed = 0,
-
-		/**
-		 * Determines an item is expanded
-		 */
-		Expanded = 1
-	}
-
-	/**
-	 * Comment mode of a [comment](#Comment)
-	 */
-	export enum CommentMode {
-		/**
-		 * Displays the comment editor
-		 */
-		Editing = 0,
-
-		/**
-		 * Displays the preview of the comment
-		 */
-		Preview = 1
-	}
-
-	/**
-	 * A collection of [comments](#Comment) representing a conversation at a particular range in a document.
-	 */
-	export interface CommentThread {
-		/**
-		 * The uri of the document the thread has been created on.
-		 */
-		readonly uri: Uri;
-
-		/**
-		 * The range the comment thread is located within the document. The thread icon will be shown
-		 * at the first line of the range.
-		 */
-		range: Range;
-
-		/**
-		 * The ordered comments of the thread.
-		 */
-		comments: ReadonlyArray<Comment>;
-
-		/**
-		 * Whether the thread should be collapsed or expanded when opening the document.
-		 * Defaults to Collapsed.
-		 */
-		collapsibleState: CommentThreadCollapsibleState;
-
-		/**
-		 * Context value of the comment thread. This can be used to contribute thread specific actions.
-		 * For example, a comment thread is given a context value as `editable`. When contributing actions to `comments/commentThread/title`
-		 * using `menus` extension point, you can specify context value for key `commentThread` in `when` expression like `commentThread == editable`.
-		 * ```
-		 *	"contributes": {
-		 *		"menus": {
-		 *			"comments/commentThread/title": [
-		 *				{
-		 *					"command": "extension.deleteCommentThread",
-		 *					"when": "commentThread == editable"
-		 *				}
-		 *			]
-		 *		}
-		 *	}
-		 * ```
-		 * This will show action `extension.deleteCommentThread` only for comment threads with `contextValue` is `editable`.
-		 */
-		contextValue?: string;
-
-		/**
-		 * The optional human-readable label describing the [Comment Thread](#CommentThread)
-		 */
-		label?: string;
-
-		/**
-		 * Dispose this comment thread.
-		 *
-		 * Once disposed, this comment thread will be removed from visible editors and Comment Panel when approriate.
-		 */
-		dispose(): void;
-	}
-
-	/**
-	 * Author information of a [comment](#Comment)
-	 */
-	export interface CommentAuthorInformation {
-		/**
-		 * The display name of the author of the comment
-		 */
-		name: string;
-
-		/**
-		 * The optional icon path for the author
-		 */
-		iconPath?: Uri;
-	}
-
-	/**
-	 * Reactions of a [comment](#Comment)
-	 */
-	export interface CommentReaction {
-		/**
-		 * The human-readable label for the reaction
-		 */
-		readonly label: string;
-
-		/**
-		 * Icon for the reaction shown in UI.
-		 */
-		readonly iconPath: string | Uri;
-
-		/**
-		 * The number of users who have reacted to this reaction
-		 */
-		readonly count: number;
-
-		/**
-		 * Whether the [author](CommentAuthorInformation) of the comment has reacted to this reaction
-		 */
-		readonly authorHasReacted: boolean;
-	}
-
-	/**
-	 * A comment is displayed within the editor or the Comments Panel, depending on how it is provided.
-	 */
-	export interface Comment {
-		/**
-		 * The human-readable comment body
-		 */
-		body: string | MarkdownString;
-
-		/**
-		 * [Comment mode](#CommentMode) of the comment
-		 */
-		mode: CommentMode;
-
-		/**
-		 * The [author information](#CommentAuthorInformation) of the comment
-		 */
-		author: CommentAuthorInformation;
-
-		/**
-		 * Context value of the comment. This can be used to contribute comment specific actions.
-		 * For example, a comment is given a context value as `editable`. When contributing actions to `comments/comment/title`
-		 * using `menus` extension point, you can specify context value for key `comment` in `when` expression like `comment == editable`.
-		 * ```json
-		 *	"contributes": {
-		 *		"menus": {
-		 *			"comments/comment/title": [
-		 *				{
-		 *					"command": "extension.deleteComment",
-		 *					"when": "comment == editable"
-		 *				}
-		 *			]
-		 *		}
-		 *	}
-		 * ```
-		 * This will show action `extension.deleteComment` only for comments with `contextValue` is `editable`.
-		 */
-		contextValue?: string;
-
-		/**
-		 * Optional reactions of the [comment](#Comment)
-		 */
-		reactions?: CommentReaction[];
-
-		/**
-		 * Optional label describing the [Comment](#Comment)
-		 * Label will be rendered next to authorName if exists.
-		 */
-		label?: string;
-	}
-
-	/**
-	 * Command argument for actions registered in `comments/commentThread/context`.
-	 */
-	export interface CommentReply {
-		/**
-		 * The active [comment thread](#CommentThread)
-		 */
-		thread: CommentThread;
-
-		/**
-		 * The value in the comment editor
-		 */
-		text: string;
-	}
-
-	/**
-	 * Commenting range provider for a [comment controller](#CommentController).
-	 */
-	export interface CommentingRangeProvider {
-		/**
-		 * Provide a list of ranges which allow new comment threads creation or null for a given document
-		 */
-		provideCommentingRanges(document: TextDocument, token: CancellationToken): ProviderResult<Range[]>;
-	}
-
-	/**
-	 * A comment controller is able to provide [comments](#CommentThread) support to the editor and
-	 * provide users various ways to interact with comments.
-	 */
-	export interface CommentController {
-		/**
-		 * The id of this comment controller.
-		 */
-		readonly id: string;
-
-		/**
-		 * The human-readable label of this comment controller.
-		 */
-		readonly label: string;
-
-		/**
-		 * Optional commenting range provider. Provide a list [ranges](#Range) which support commenting to any given resource uri.
-		 *
-		 * If not provided, users can leave comments in any document opened in the editor.
-		 */
-		commentingRangeProvider?: CommentingRangeProvider;
-
-		/**
-		 * Create a [comment thread](#CommentThread). The comment thread will be displayed in visible text editors (if the resource matches)
-		 * and Comments Panel once created.
-		 *
-		 * @param uri The uri of the document the thread has been created on.
-		 * @param range The range the comment thread is located within the document.
-		 * @param comments The ordered comments of the thread.
-		 */
-		createCommentThread(uri: Uri, range: Range, comments: Comment[]): CommentThread;
-
-		/**
-		 * Optional reaction handler for creating and deleting reactions on a [comment](#Comment).
-		 */
-		reactionHandler?: (comment: Comment, reaction: CommentReaction) => Promise<void>;
-
-		/**
-		 * Dispose this comment controller.
-		 *
-		 * Once disposed, all [comment threads](#CommentThread) created by this comment controller will also be removed from the editor
-		 * and Comments Panel.
-		 */
-		dispose(): void;
-	}
-
-
-	// namespace comments {
-		/**
-		 * Creates a new [comment controller](#CommentController) instance.
-		 *
-		 * @param id An `id` for the comment controller.
-		 * @param label A human-readable string for the comment controller.
-		 * @return An instance of [comment controller](#CommentController).
-		 */
-		// export function createCommentController(id: string, label: string): CommentController;
-	// }
-
-
-	//#endregion
 
 }
 

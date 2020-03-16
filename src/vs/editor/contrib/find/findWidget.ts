@@ -31,7 +31,7 @@ import { FindReplaceState, FindReplaceStateChangedEvent } from 'vs/editor/contri
 import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { contrastBorder, editorFindMatch, editorFindMatchBorder, editorFindMatchHighlight, editorFindMatchHighlightBorder, editorFindRangeHighlight, editorFindRangeHighlightBorder, editorWidgetBackground, editorWidgetBorder, editorWidgetResizeBorder, errorForeground, inputActiveOptionBorder, inputActiveOptionBackground, inputBackground, inputBorder, inputForeground, inputValidationErrorBackground, inputValidationErrorBorder, inputValidationErrorForeground, inputValidationInfoBackground, inputValidationInfoBorder, inputValidationInfoForeground, inputValidationWarningBackground, inputValidationWarningBorder, inputValidationWarningForeground, widgetShadow, editorWidgetForeground, focusBorder } from 'vs/platform/theme/common/colorRegistry';
-import { ITheme, IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
+import { IColorTheme, IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { ContextScopedFindInput, ContextScopedReplaceInput } from 'vs/platform/browser/contextScopedHistoryWidget';
 import { AccessibilitySupport } from 'vs/platform/accessibility/common/accessibility';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
@@ -56,14 +56,14 @@ const NLS_REPLACE_ALL_BTN_LABEL = nls.localize('label.replaceAllButton', "Replac
 const NLS_TOGGLE_REPLACE_MODE_BTN_LABEL = nls.localize('label.toggleReplaceButton', "Toggle Replace mode");
 const NLS_MATCHES_COUNT_LIMIT_TITLE = nls.localize('title.matchesCountLimit', "Only the first {0} results are highlighted, but all find operations work on the entire text.", MATCHES_LIMIT);
 const NLS_MATCHES_LOCATION = nls.localize('label.matchesLocation', "{0} of {1}");
-const NLS_NO_RESULTS = nls.localize('label.noResults', "No Results");
+const NLS_NO_RESULTS = nls.localize('label.noResults', "No results");
 
 const FIND_WIDGET_INITIAL_WIDTH = 419;
 const PART_WIDTH = 275;
 const FIND_INPUT_AREA_WIDTH = PART_WIDTH - 54;
 
 let MAX_MATCHES_COUNT_WIDTH = 69;
-let FIND_ALL_CONTROLS_WIDTH = 17/** Find Input margin-left */ + (MAX_MATCHES_COUNT_WIDTH + 3 + 1) /** Match Results */ + 23 /** Button */ * 4 + 2/** sash */;
+// let FIND_ALL_CONTROLS_WIDTH = 17/** Find Input margin-left */ + (MAX_MATCHES_COUNT_WIDTH + 3 + 1) /** Match Results */ + 23 /** Button */ * 4 + 2/** sash */;
 
 const FIND_INPUT_AREA_HEIGHT = 33; // The height of Find Widget when Replace Input is not visible.
 const ctrlEnterReplaceAllWarningPromptedKey = 'ctrlEnterReplaceAll.windows.donotask';
@@ -244,8 +244,8 @@ export class FindWidget extends Widget implements IOverlayWidget, IHorizontalSas
 			this._viewZone = new FindWidgetViewZone(0); // Put it before the first line then users can scroll beyond the first line.
 		}
 
-		this._applyTheme(themeService.getTheme());
-		this._register(themeService.onThemeChange(this._applyTheme.bind(this)));
+		this._applyTheme(themeService.getColorTheme());
+		this._register(themeService.onDidColorThemeChange(this._applyTheme.bind(this)));
 
 		this._register(this._codeEditor.onDidChangeModel(() => {
 			if (!this._isVisible) {
@@ -415,11 +415,20 @@ export class FindWidget extends Widget implements IOverlayWidget, IHorizontalSas
 		if (label === NLS_NO_RESULTS) {
 			return searchString === ''
 				? nls.localize('ariaSearchNoResultEmpty', "{0} found", label)
-				: nls.localize('ariaSearchNoResult', "{0} found for {1}", label, searchString);
+				: nls.localize('ariaSearchNoResult', "{0} found for '{1}'", label, searchString);
 		}
-		return currentMatch
-			? nls.localize('ariaSearchNoResultWithLineNum', "{0} found for {1} at {2}", label, searchString, currentMatch.startLineNumber + ':' + currentMatch.startColumn)
-			: nls.localize('ariaSearchNoResultWithLineNumNoCurrentMatch', "{0} found for {1}", label, searchString);
+		if (currentMatch) {
+			const ariaLabel = nls.localize('ariaSearchNoResultWithLineNum', "{0} found for '{1}', at {2}", label, searchString, currentMatch.startLineNumber + ':' + currentMatch.startColumn);
+			const model = this._codeEditor.getModel();
+			if (model && (currentMatch.startLineNumber <= model.getLineCount()) && (currentMatch.startLineNumber >= 1)) {
+				const lineContent = model.getLineContent(currentMatch.startLineNumber);
+				return `${lineContent}, ${ariaLabel}`;
+			}
+
+			return ariaLabel;
+		}
+
+		return nls.localize('ariaSearchNoResultWithLineNumNoCurrentMatch', "{0} found for '{1}'", label, searchString);
 	}
 
 	/**
@@ -603,7 +612,14 @@ export class FindWidget extends Widget implements IOverlayWidget, IHorizontalSas
 
 				return;
 			} else {
-				const scrollAdjustment = this._getHeight();
+				let scrollAdjustment = this._getHeight();
+
+				// if the editor has top padding, factor that into the zone height
+				scrollAdjustment -= this._codeEditor.getOption(EditorOption.padding).top;
+				if (scrollAdjustment <= 0) {
+					return;
+				}
+
 				viewZone.heightInPx = scrollAdjustment;
 				this._viewZoneId = accessor.addZone(viewZone);
 
@@ -627,7 +643,7 @@ export class FindWidget extends Widget implements IOverlayWidget, IHorizontalSas
 		});
 	}
 
-	private _applyTheme(theme: ITheme) {
+	private _applyTheme(theme: IColorTheme) {
 		let inputStyles: IFindInputStyles = {
 			inputActiveOptionBorder: theme.getColor(inputActiveOptionBorder),
 			inputActiveOptionBackground: theme.getColor(inputActiveOptionBackground),
@@ -706,10 +722,12 @@ export class FindWidget extends Widget implements IOverlayWidget, IHorizontalSas
 
 		if (this._resized) {
 			this._findInput.inputBox.layout();
-			let findInputWidth = this._findInput.inputBox.width;
+			let findInputWidth = this._findInput.inputBox.element.clientWidth;
 			if (findInputWidth > 0) {
 				this._replaceInput.width = findInputWidth;
 			}
+		} else if (this._isReplaceVisible) {
+			this._replaceInput.width = dom.getTotalWidth(this._findInput.domNode);
 		}
 	}
 
@@ -906,7 +924,6 @@ export class FindWidget extends Widget implements IOverlayWidget, IHorizontalSas
 					return null;
 				}
 				try {
-					/* tslint:disable-next-line:no-unused-expression */
 					new RegExp(value);
 					return null;
 				} catch (e) {
@@ -1159,13 +1176,11 @@ export class FindWidget extends Widget implements IOverlayWidget, IHorizontalSas
 				return;
 			}
 
-			const inputBoxWidth = width - FIND_ALL_CONTROLS_WIDTH;
 			const maxWidth = parseFloat(dom.getComputedStyle(this._domNode).maxWidth!) || 0;
 			if (width > maxWidth) {
 				return;
 			}
 			this._domNode.style.width = `${width}px`;
-			this._findInput.inputBox.width = inputBoxWidth;
 			if (this._isReplaceVisible) {
 				this._replaceInput.width = dom.getTotalWidth(this._findInput.domNode);
 			}
@@ -1197,10 +1212,8 @@ export class FindWidget extends Widget implements IOverlayWidget, IHorizontalSas
 				 */
 			}
 
-			const inputBoxWidth = width - FIND_ALL_CONTROLS_WIDTH;
 
 			this._domNode.style.width = `${width}px`;
-			this._findInput.inputBox.width = inputBoxWidth;
 			if (this._isReplaceVisible) {
 				this._replaceInput.width = dom.getTotalWidth(this._findInput.domNode);
 			}
@@ -1343,20 +1356,10 @@ registerThemingParticipant((theme, collector) => {
 		}
 	}
 
-	const inputActiveBorder = theme.getColor(inputActiveOptionBorder);
-	if (inputActiveBorder) {
-		collector.addRule(`.monaco-editor .find-widget .monaco-checkbox .checkbox:checked + .label { border: 1px solid ${inputActiveBorder.toString()}; }`);
-	}
-
-	const inputActiveBackground = theme.getColor(inputActiveOptionBackground);
-	if (inputActiveBackground) {
-		collector.addRule(`.monaco-editor .find-widget .monaco-checkbox .checkbox:checked + .label { background-color: ${inputActiveBackground.toString()}; }`);
-	}
-
 	// This rule is used to override the outline color for synthetic-focus find input.
 	const focusOutline = theme.getColor(focusBorder);
 	if (focusOutline) {
-		collector.addRule(`.monaco-workbench .monaco-editor .find-widget .monaco-inputbox.synthetic-focus { outline-color: ${focusOutline}; }`);
+		collector.addRule(`.monaco-editor .find-widget .monaco-inputbox.synthetic-focus { outline-color: ${focusOutline}; }`);
 
 	}
 });

@@ -6,7 +6,6 @@
 import { ResourceMap, TernarySearchTree, PathIterator, StringIterator, LinkedMap, Touch, LRUCache, mapToSerializable, serializableToMap } from 'vs/base/common/map';
 import * as assert from 'assert';
 import { URI } from 'vs/base/common/uri';
-import { IteratorResult } from 'vs/base/common/iterator';
 
 suite('Map', () => {
 
@@ -16,6 +15,8 @@ suite('Map', () => {
 		map.set('bk', 'bv');
 		assert.deepStrictEqual(map.keys(), ['ak', 'bk']);
 		assert.deepStrictEqual(map.values(), ['av', 'bv']);
+		assert.equal(map.first, 'av');
+		assert.equal(map.last, 'bv');
 	});
 
 	test('LinkedMap - Touch Old one', () => {

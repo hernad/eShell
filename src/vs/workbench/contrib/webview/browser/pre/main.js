@@ -233,23 +233,23 @@
 		 * @param {MouseEvent} event
 		 */
 		const handleAuxClick =
-		(event) => {
-			// Prevent middle clicks opening a broken link in the browser
-			if (!event.view || !event.view.document) {
-				return;
-			}
-
-			if (event.button === 1) {
-				let node = /** @type {any} */ (event.target);
-				while (node) {
-					if (node.tagName && node.tagName.toLowerCase() === 'a' && node.href) {
-						event.preventDefault();
-						break;
-					}
-					node = node.parentNode;
+			(event) => {
+				// Prevent middle clicks opening a broken link in the browser
+				if (!event.view || !event.view.document) {
+					return;
 				}
-			}
-		};
+
+				if (event.button === 1) {
+					let node = /** @type {any} */ (event.target);
+					while (node) {
+						if (node.tagName && node.tagName.toLowerCase() === 'a' && node.href) {
+							event.preventDefault();
+							break;
+						}
+						node = node.parentNode;
+					}
+				}
+			};
 
 		/**
 		 * @param {KeyboardEvent} e
@@ -268,6 +268,22 @@
 		};
 
 		let isHandlingScroll = false;
+
+		const handleWheel = (event) => {
+			if (isHandlingScroll) {
+				return;
+			}
+
+			host.postMessage('did-scroll-wheel', {
+				deltaMode: event.deltaMode,
+				deltaX: event.deltaX,
+				deltaY: event.deltaY,
+				deltaZ: event.deltaZ,
+				detail: event.detail,
+				type: event.type
+			});
+		};
+
 		const handleInnerScroll = (event) => {
 			if (!event.target || !event.target.body) {
 				return;
@@ -309,6 +325,7 @@
 			// apply default script
 			if (options.allowScripts) {
 				const defaultScript = newDocument.createElement('script');
+				defaultScript.id = '_vscodeApiScript';
 				defaultScript.textContent = getVsCodeApiScript(data.state);
 				newDocument.head.prepend(defaultScript);
 			}
@@ -450,10 +467,14 @@
 					}, 0);
 				});
 
+				/**
+				 * @param {Document} contentDocument
+				 * @param {Window} contentWindow
+				 */
 				const onLoad = (contentDocument, contentWindow) => {
 					if (contentDocument && contentDocument.body) {
 						// Workaround for https://github.com/Microsoft/vscode/issues/12865
-						// check new scrollY and reset if neccessary
+						// check new scrollY and reset if necessary
 						setInitialScrollPosition(contentDocument.body, contentWindow);
 					}
 
@@ -472,6 +493,7 @@
 						}
 
 						contentWindow.addEventListener('scroll', handleInnerScroll);
+						contentWindow.addEventListener('wheel', handleWheel);
 
 						pendingMessages.forEach((data) => {
 							contentWindow.postMessage(data, '*');
@@ -493,10 +515,12 @@
 					}, 200);
 
 					newFrame.contentWindow.addEventListener('load', function (e) {
+						const contentDocument = /** @type {Document} */ (e.target);
+
 						if (loadTimeout) {
 							clearTimeout(loadTimeout);
 							loadTimeout = undefined;
-							onLoad(e.target, this);
+							onLoad(contentDocument, this);
 						}
 					});
 
@@ -540,6 +564,13 @@
 				initData.initialScrollProgress = progress;
 			});
 
+			host.onMessage('execCommand', (_event, data) => {
+				const target = getActiveFrame();
+				if (!target) {
+					return;
+				}
+				target.contentDocument.execCommand(data);
+			});
 
 			trackFocus({
 				onFocus: () => host.postMessage('did-focus'),

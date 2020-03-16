@@ -7,13 +7,13 @@ import { coalesce, equals } from 'vs/base/common/arrays';
 import { illegalArgument } from 'vs/base/common/errors';
 import { IRelativePattern } from 'vs/base/common/glob';
 import { isMarkdownString } from 'vs/base/common/htmlContent';
-import { values } from 'vs/base/common/map';
 import { startsWith } from 'vs/base/common/strings';
 import { URI } from 'vs/base/common/uri';
 import { generateUuid } from 'vs/base/common/uuid';
-import * as vscode from 'vscode';
+import type * as vscode from 'vscode';
 import { FileSystemProviderErrorCode, markAsFileSystemProviderError } from 'vs/platform/files/common/files';
 import { RemoteAuthorityResolverErrorCode } from 'vs/platform/remote/common/remoteAuthorityResolver';
+import { escapeCodicons } from 'vs/base/common/codicons';
 
 function es5ClassCompat(target: Function): any {
 	///@ts-ignore
@@ -43,16 +43,16 @@ export class Disposable {
 		});
 	}
 
-	private _callOnDispose?: () => any;
+	#callOnDispose?: () => any;
 
 	constructor(callOnDispose: () => any) {
-		this._callOnDispose = callOnDispose;
+		this.#callOnDispose = callOnDispose;
 	}
 
 	dispose(): any {
-		if (typeof this._callOnDispose === 'function') {
-			this._callOnDispose();
-			this._callOnDispose = undefined;
+		if (typeof this.#callOnDispose === 'function') {
+			this.#callOnDispose();
+			this.#callOnDispose = undefined;
 		}
 	}
 }
@@ -563,7 +563,6 @@ export class TextEdit {
 	}
 }
 
-
 export interface IFileOperationOptions {
 	overwrite?: boolean;
 	ignoreIfExists?: boolean;
@@ -576,12 +575,14 @@ export interface IFileOperation {
 	from?: URI;
 	to?: URI;
 	options?: IFileOperationOptions;
+	metadata?: vscode.WorkspaceEditEntryMetadata;
 }
 
 export interface IFileTextEdit {
 	_type: 2;
 	uri: URI;
 	edit: TextEdit;
+	metadata?: vscode.WorkspaceEditEntryMetadata;
 }
 
 @es5ClassCompat
@@ -589,28 +590,28 @@ export class WorkspaceEdit implements vscode.WorkspaceEdit {
 
 	private _edits = new Array<IFileOperation | IFileTextEdit>();
 
-	renameFile(from: vscode.Uri, to: vscode.Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean; }): void {
-		this._edits.push({ _type: 1, from, to, options });
+	renameFile(from: vscode.Uri, to: vscode.Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean; }, metadata?: vscode.WorkspaceEditEntryMetadata): void {
+		this._edits.push({ _type: 1, from, to, options, metadata });
 	}
 
-	createFile(uri: vscode.Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean; }): void {
-		this._edits.push({ _type: 1, from: undefined, to: uri, options });
+	createFile(uri: vscode.Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean; }, metadata?: vscode.WorkspaceEditEntryMetadata): void {
+		this._edits.push({ _type: 1, from: undefined, to: uri, options, metadata });
 	}
 
-	deleteFile(uri: vscode.Uri, options?: { recursive?: boolean, ignoreIfNotExists?: boolean; }): void {
-		this._edits.push({ _type: 1, from: uri, to: undefined, options });
+	deleteFile(uri: vscode.Uri, options?: { recursive?: boolean, ignoreIfNotExists?: boolean; }, metadata?: vscode.WorkspaceEditEntryMetadata): void {
+		this._edits.push({ _type: 1, from: uri, to: undefined, options, metadata });
 	}
 
-	replace(uri: URI, range: Range, newText: string): void {
-		this._edits.push({ _type: 2, uri, edit: new TextEdit(range, newText) });
+	replace(uri: URI, range: Range, newText: string, metadata?: vscode.WorkspaceEditEntryMetadata): void {
+		this._edits.push({ _type: 2, uri, edit: new TextEdit(range, newText), metadata });
 	}
 
-	insert(resource: URI, position: Position, newText: string): void {
-		this.replace(resource, new Range(position, position), newText);
+	insert(resource: URI, position: Position, newText: string, metadata?: vscode.WorkspaceEditEntryMetadata): void {
+		this.replace(resource, new Range(position, position), newText, metadata);
 	}
 
-	delete(resource: URI, range: Range): void {
-		this.replace(resource, range, '');
+	delete(resource: URI, range: Range, metadata?: vscode.WorkspaceEditEntryMetadata): void {
+		this.replace(resource, range, '', metadata);
 	}
 
 	has(uri: URI): boolean {
@@ -659,20 +660,24 @@ export class WorkspaceEdit implements vscode.WorkspaceEdit {
 				textEdit[1].push(candidate.edit);
 			}
 		}
-		return values(textEdits);
+		return [...textEdits.values()];
 	}
 
-	_allEntries(): ([URI, TextEdit[]] | [URI?, URI?, IFileOperationOptions?])[] {
-		const res: ([URI, TextEdit[]] | [URI?, URI?, IFileOperationOptions?])[] = [];
-		for (let edit of this._edits) {
-			if (edit._type === 1) {
-				res.push([edit.from, edit.to, edit.options]);
-			} else {
-				res.push([edit.uri, [edit.edit]]);
-			}
-		}
-		return res;
+	allEntries(): ReadonlyArray<IFileTextEdit | IFileOperation> {
+		return this._edits;
 	}
+
+	// _allEntries(): ([URI, TextEdit] | [URI?, URI?, IFileOperationOptions?])[] {
+	// 	const res: ([URI, TextEdit] | [URI?, URI?, IFileOperationOptions?])[] = [];
+	// 	for (let edit of this._edits) {
+	// 		if (edit._type === 1) {
+	// 			res.push([edit.from, edit.to, edit.options]);
+	// 		} else {
+	// 			res.push([edit.uri, edit.edit]);
+	// 		}
+	// 	}
+	// 	return res;
+	// }
 
 	get size(): number {
 		return this.entries().length;
@@ -1231,21 +1236,25 @@ export class MarkdownString {
 
 	value: string;
 	isTrusted?: boolean;
+	readonly supportThemeIcons?: boolean;
 
-	constructor(value?: string) {
-		this.value = value || '';
+	constructor(value?: string, supportThemeIcons: boolean = false) {
+		this.value = value ?? '';
+		this.supportThemeIcons = supportThemeIcons;
 	}
 
 	appendText(value: string): MarkdownString {
 		// escape markdown syntax tokens: http://daringfireball.net/projects/markdown/syntax#backslash
-		this.value += value
+		this.value += (this.supportThemeIcons ? escapeCodicons(value) : value)
 			.replace(/[\\`*_{}[\]()#+\-.!]/g, '\\$&')
 			.replace('\n', '\n\n');
+
 		return this;
 	}
 
 	appendMarkdown(value: string): MarkdownString {
 		this.value += value;
+
 		return this;
 	}
 
@@ -1346,10 +1355,19 @@ export enum CompletionItemTag {
 	Deprecated = 1,
 }
 
+export interface CompletionItemLabel {
+	name: string;
+	signature?: string;
+	qualifier?: string;
+	type?: string;
+}
+
+
 @es5ClassCompat
 export class CompletionItem implements vscode.CompletionItem {
 
 	label: string;
+	label2?: CompletionItemLabel;
 	kind?: CompletionItemKind;
 	tags?: CompletionItemTag[];
 	detail?: string;
@@ -1359,8 +1377,7 @@ export class CompletionItem implements vscode.CompletionItem {
 	preselect?: boolean;
 	insertText?: string | SnippetString;
 	keepWhitespace?: boolean;
-	range?: Range;
-	range2?: Range | { inserting: Range; replacing: Range; };
+	range?: Range | { inserting: Range; replacing: Range; };
 	commitCharacters?: string[];
 	textEdit?: TextEdit;
 	additionalTextEdits?: TextEdit[];
@@ -1374,6 +1391,7 @@ export class CompletionItem implements vscode.CompletionItem {
 	toJSON(): any {
 		return {
 			label: this.label,
+			label2: this.label2,
 			kind: this.kind && CompletionItemKind[this.kind],
 			detail: this.detail,
 			documentation: this.documentation,
@@ -1390,7 +1408,6 @@ export class CompletionItem implements vscode.CompletionItem {
 export class CompletionList {
 
 	isIncomplete?: boolean;
-
 	items: vscode.CompletionItem[];
 
 	constructor(items: vscode.CompletionItem[] = [], isIncomplete: boolean = false) {
@@ -1820,6 +1837,7 @@ export class Task implements vscode.Task2 {
 	private static EmptyType: string = '$empty';
 
 	private __id: string | undefined;
+	private __deprecated: boolean = false;
 
 	private _definition: vscode.TaskDefinition;
 	private _scope: vscode.TaskScope.Global | vscode.TaskScope.Workspace | vscode.WorkspaceFolder | undefined;
@@ -1844,6 +1862,7 @@ export class Task implements vscode.Task2 {
 			this._source = this.source = arg3;
 			this.execution = arg4;
 			problemMatchers = arg5;
+			this.__deprecated = true;
 		} else if (arg2 === TaskScope.Global || arg2 === TaskScope.Workspace) {
 			this.target = arg2;
 			this._name = this.name = arg3;
@@ -1878,6 +1897,10 @@ export class Task implements vscode.Task2 {
 
 	set _id(value: string | undefined) {
 		this.__id = value;
+	}
+
+	get _deprecated(): boolean {
+		return this.__deprecated;
 	}
 
 	private clear(): void {
@@ -2059,7 +2082,8 @@ export class Task implements vscode.Task2 {
 export enum ProgressLocation {
 	SourceControl = 1,
 	Window = 10,
-	Notification = 15
+	Notification = 15,
+	View = 25
 }
 
 @es5ClassCompat
@@ -2252,6 +2276,17 @@ export class DebugAdapterServer implements vscode.DebugAdapterServer {
 }
 */
 
+@es5ClassCompat
+export class EvaluatableExpression implements vscode.EvaluatableExpression {
+	readonly range: vscode.Range;
+	readonly expression?: string;
+
+	constructor(range: vscode.Range, expression?: string) {
+		this.range = range;
+		this.expression = expression;
+	}
+}
+
 export enum LogLevel {
 	Trace = 1,
 	Debug = 2,
@@ -2292,8 +2327,12 @@ export class FileSystemError extends Error {
 		return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.Unavailable, FileSystemError.Unavailable);
 	}
 
+	readonly code: string;
+
 	constructor(uriOrMessage?: string | URI, code: FileSystemProviderErrorCode = FileSystemProviderErrorCode.Unknown, terminator?: Function) {
 		super(URI.isUri(uriOrMessage) ? uriOrMessage.toString(true) : uriOrMessage);
+
+		this.code = terminator?.name ?? 'Unknown';
 
 		// mark the error as file system provider error so that
 		// we can extract the error code on the receiving side
@@ -2361,7 +2400,7 @@ export enum CommentMode {
 
 //#region Semantic Coloring
 
-export class SemanticColoringLegend {
+export class SemanticTokensLegend {
 	public readonly tokenTypes: string[];
 	public readonly tokenModifiers: string[];
 
@@ -2371,21 +2410,74 @@ export class SemanticColoringLegend {
 	}
 }
 
-export class SemanticColoringArea {
-	public readonly line: number;
-	public readonly data: Uint32Array;
+export class SemanticTokensBuilder {
 
-	constructor(line: number, data: Uint32Array) {
-		this.line = line;
+	private _prevLine: number;
+	private _prevChar: number;
+	private _data: number[];
+	private _dataLen: number;
+
+	constructor() {
+		this._prevLine = 0;
+		this._prevChar = 0;
+		this._data = [];
+		this._dataLen = 0;
+	}
+
+	public push(line: number, char: number, length: number, tokenType: number, tokenModifiers: number): void {
+		let pushLine = line;
+		let pushChar = char;
+		if (this._dataLen > 0) {
+			pushLine -= this._prevLine;
+			if (pushLine === 0) {
+				pushChar -= this._prevChar;
+			}
+		}
+
+		this._data[this._dataLen++] = pushLine;
+		this._data[this._dataLen++] = pushChar;
+		this._data[this._dataLen++] = length;
+		this._data[this._dataLen++] = tokenType;
+		this._data[this._dataLen++] = tokenModifiers;
+
+		this._prevLine = line;
+		this._prevChar = char;
+	}
+
+	public build(): Uint32Array {
+		return new Uint32Array(this._data);
+	}
+}
+
+export class SemanticTokens {
+	readonly resultId?: string;
+	readonly data: Uint32Array;
+
+	constructor(data: Uint32Array, resultId?: string) {
+		this.resultId = resultId;
 		this.data = data;
 	}
 }
 
-export class SemanticColoring {
-	public readonly areas: SemanticColoringArea[];
+export class SemanticTokensEdit {
+	readonly start: number;
+	readonly deleteCount: number;
+	readonly data?: Uint32Array;
 
-	constructor(areas: SemanticColoringArea[]) {
-		this.areas = areas;
+	constructor(start: number, deleteCount: number, data?: Uint32Array) {
+		this.start = start;
+		this.deleteCount = deleteCount;
+		this.data = data;
+	}
+}
+
+export class SemanticTokensEdits {
+	readonly resultId?: string;
+	readonly edits: SemanticTokensEdit[];
+
+	constructor(edits: SemanticTokensEdit[], resultId?: string) {
+		this.resultId = resultId;
+		this.edits = edits;
 	}
 }
 
@@ -2443,3 +2535,29 @@ export enum WebviewContentState {
 	Unchanged = 2,
 	Dirty = 3,
 }
+
+
+//#region Theming
+
+@es5ClassCompat
+export class ColorTheme implements vscode.ColorTheme {
+	constructor(public readonly kind: ColorThemeKind) {
+	}
+}
+
+export enum ColorThemeKind {
+	Light = 1,
+	Dark = 2,
+	HighContrast = 3
+}
+
+//#endregion Theming
+
+//#region Timeline
+
+@es5ClassCompat
+export class TimelineItem implements vscode.TimelineItem {
+	constructor(public label: string, public timestamp: number) { }
+}
+
+//#endregion Timeline

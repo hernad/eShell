@@ -5,13 +5,15 @@
 
 import * as extpath from 'vs/base/common/extpath';
 import * as paths from 'vs/base/common/path';
-import { URI } from 'vs/base/common/uri';
+import { URI, originalFSPath as uriOriginalFSPath } from 'vs/base/common/uri';
 import { equalsIgnoreCase } from 'vs/base/common/strings';
 import { Schemas } from 'vs/base/common/network';
 import { isLinux, isWindows } from 'vs/base/common/platform';
 import { CharCode } from 'vs/base/common/charCode';
 import { ParsedExpression, IExpression, parse } from 'vs/base/common/glob';
 import { TernarySearchTree } from 'vs/base/common/map';
+
+export const originalFSPath = uriOriginalFSPath;
 
 export function getComparisonKey(resource: URI): string {
 	return hasToIgnoreCase(resource) ? resource.toString().toLowerCase() : resource.toString();
@@ -107,15 +109,7 @@ export function dirname(resource: URI): URI {
  * @returns The resulting URI.
  */
 export function joinPath(resource: URI, ...pathFragment: string[]): URI {
-	let joinedPath: string;
-	if (resource.scheme === Schemas.file) {
-		joinedPath = URI.file(paths.join(originalFSPath(resource), ...pathFragment)).path;
-	} else {
-		joinedPath = paths.posix.join(resource.path || '/', ...pathFragment);
-	}
-	return resource.with({
-		path: joinedPath
-	});
+	return URI.joinPaths(resource, ...pathFragment);
 }
 
 /**
@@ -140,33 +134,6 @@ export function normalizePath(resource: URI): URI {
 }
 
 /**
- * Returns the fsPath of an URI where the drive letter is not normalized.
- * See #56403.
- */
-export function originalFSPath(uri: URI): string {
-	let value: string;
-	const uriPath = uri.path;
-	if (uri.authority && uriPath.length > 1 && uri.scheme === Schemas.file) {
-		// unc path: file://shares/c$/far/boo
-		value = `//${uri.authority}${uriPath}`;
-	} else if (
-		isWindows
-		&& uriPath.charCodeAt(0) === CharCode.Slash
-		&& extpath.isWindowsDriveLetter(uriPath.charCodeAt(1))
-		&& uriPath.charCodeAt(2) === CharCode.Colon
-	) {
-		value = uriPath.substr(1);
-	} else {
-		// other path
-		value = uriPath;
-	}
-	if (isWindows) {
-		value = value.replace(/\//g, '\\');
-	}
-	return value;
-}
-
-/**
  * Returns true if the URI path is absolute.
  */
 export function isAbsolutePath(resource: URI): boolean {
@@ -182,7 +149,7 @@ export function hasTrailingPathSeparator(resource: URI, sep: string = paths.sep)
 		return fsp.length > extpath.getRoot(fsp).length && fsp[fsp.length - 1] === sep;
 	} else {
 		const p = resource.path;
-		return p.length > 1 && p.charCodeAt(p.length - 1) === CharCode.Slash; // ignore the slash at offset 0
+		return (p.length > 1 && p.charCodeAt(p.length - 1) === CharCode.Slash) && !(/^[a-zA-Z]:(\/$|\\$)/.test(resource.fsPath)); // ignore the slash at offset 0
 	}
 }
 
@@ -191,6 +158,7 @@ export function hasTrailingPathSeparator(resource: URI, sep: string = paths.sep)
  * Important: Doesn't remove the first slash, it would make the URI invalid
  */
 export function removeTrailingPathSeparator(resource: URI, sep: string = paths.sep): URI {
+	// Make sure that the path isn't a drive letter. A trailing separator there is not removable.
 	if (hasTrailingPathSeparator(resource, sep)) {
 		return resource.with({ path: resource.path.substr(0, resource.path.length - 1) });
 	}
@@ -226,7 +194,7 @@ export function relativePath(from: URI, to: URI, ignoreCase = hasToIgnoreCase(fr
 		return undefined;
 	}
 	if (from.scheme === Schemas.file) {
-		const relativePath = paths.relative(from.path, to.path);
+		const relativePath = paths.relative(originalFSPath(from), originalFSPath(to));
 		return isWindows ? extpath.toSlashes(relativePath) : relativePath;
 	}
 	let fromPath = from.path || '/', toPath = to.path || '/';

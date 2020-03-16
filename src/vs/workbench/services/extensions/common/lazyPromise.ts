@@ -17,8 +17,6 @@ export class LazyPromise implements Promise<any> {
 	private _hasErr: boolean;
 	private _err: any;
 
-	readonly [Symbol.toStringTag] = 'LazyPromise';
-
 	constructor() {
 		this._actual = null;
 		this._actualOk = null;
@@ -27,6 +25,10 @@ export class LazyPromise implements Promise<any> {
 		this._value = null;
 		this._hasErr = false;
 		this._err = null;
+	}
+
+	get [Symbol.toStringTag](): string {
+		return this.toString();
 	}
 
 	private _ensureActual(): Promise<any> {

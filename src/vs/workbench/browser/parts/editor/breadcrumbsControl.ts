@@ -47,6 +47,8 @@ import { IEditorGroupView } from 'vs/workbench/browser/parts/editor/editor';
 import { onDidChangeZoomLevel } from 'vs/base/browser/browser';
 import { withNullAsUndefined, withUndefinedAsNull } from 'vs/base/common/types';
 import { ILabelService } from 'vs/platform/label/common/label';
+import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
+import { TextEditorSelectionRevealType } from 'vs/platform/editor/common/editor';
 
 class Item extends BreadcrumbsItem {
 
@@ -168,6 +170,7 @@ export class BreadcrumbsControl {
 		@IThemeService private readonly _themeService: IThemeService,
 		@IQuickOpenService private readonly _quickOpenService: IQuickOpenService,
 		@IConfigurationService private readonly _configurationService: IConfigurationService,
+		@ITextResourceConfigurationService private readonly _textResourceConfigurationService: ITextResourceConfigurationService,
 		@IFileService private readonly _fileService: IFileService,
 		// @ITelemetryService private readonly _telemetryService: ITelemetryService,
 		@ILabelService private readonly _labelService: ILabelService,
@@ -228,7 +231,7 @@ export class BreadcrumbsControl {
 			input = input.master;
 		}
 
-		if (!input || !input.getResource() || !this._fileService.canHandleResource(input.getResource()!)) {
+		if (!input || !input.resource || !this._fileService.canHandleResource(input.resource!)) {
 			// cleanup and return when there is no input or when
 			// we cannot handle this input
 			this._ckBreadcrumbsPossible.set(false);
@@ -244,9 +247,14 @@ export class BreadcrumbsControl {
 		this._ckBreadcrumbsVisible.set(true);
 		this._ckBreadcrumbsPossible.set(true);
 
-		const uri = input.getResource()!;
+		const uri = input.resource;
 		const editor = this._getActiveCodeEditor();
-		const model = new EditorBreadcrumbsModel(uri, editor, this._configurationService, this._workspaceService);
+		const model = new EditorBreadcrumbsModel(
+			uri, editor,
+			this._configurationService,
+			this._textResourceConfigurationService,
+			this._workspaceService
+		);
 		dom.toggleClass(this.domNode, 'relative-path', model.isRelative());
 		dom.toggleClass(this.domNode, 'backslash-path', this._labelService.getSeparator(uri.scheme, uri.authority) === '\\');
 
@@ -282,10 +290,10 @@ export class BreadcrumbsControl {
 	}
 
 	private _getActiveCodeEditor(): ICodeEditor | undefined {
-		if (!this._editorGroup.activeControl) {
+		if (!this._editorGroup.activeEditorPane) {
 			return undefined;
 		}
-		let control = this._editorGroup.activeControl.getControl();
+		let control = this._editorGroup.activeEditorPane.getControl();
 		let editor: ICodeEditor | undefined;
 		if (isCodeEditor(control)) {
 			editor = control as ICodeEditor;
@@ -377,7 +385,7 @@ export class BreadcrumbsControl {
 						editorViewState = withNullAsUndefined(editor.saveViewState());
 					}
 					const { symbol } = data.target;
-					editor.revealRangeInCenter(symbol.range, ScrollType.Smooth);
+					editor.revealRangeInCenterIfOutsideViewport(symbol.range, ScrollType.Smooth);
 					editorDecorations = editor.deltaDecorations(editorDecorations, [{
 						range: symbol.range,
 						options: {
@@ -464,7 +472,7 @@ export class BreadcrumbsControl {
 		this._ckBreadcrumbsActive.set(value);
 	}
 
-	private _revealInEditor(event: IBreadcrumbsItemEvent, element: any, group: SIDE_GROUP_TYPE | ACTIVE_GROUP_TYPE | undefined, pinned: boolean = false): void {
+	private _revealInEditor(event: IBreadcrumbsItemEvent, element: BreadcrumbElement, group: SIDE_GROUP_TYPE | ACTIVE_GROUP_TYPE | undefined, pinned: boolean = false): void {
 		if (element instanceof FileElement) {
 			if (element.kind === FileKind.FILE) {
 				// open file in any editor
@@ -485,7 +493,7 @@ export class BreadcrumbsControl {
 					resource: model.textModel.uri,
 					options: {
 						selection: Range.collapseToStart(element.symbol.selectionRange),
-						revealInCenterIfOutsideViewport: true
+						selectionRevealType: TextEditorSelectionRevealType.CenterIfOutsideViewport
 					}
 				}, withUndefinedAsNull(this._getActiveCodeEditor()), group === SIDE_GROUP);
 			}
@@ -707,8 +715,8 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 		}
 		widget.setFocused(undefined);
 		widget.setSelection(undefined);
-		if (groups.activeGroup.activeControl) {
-			groups.activeGroup.activeControl.focus();
+		if (groups.activeGroup.activeEditorPane) {
+			groups.activeGroup.activeEditorPane.focus();
 		}
 	}
 });

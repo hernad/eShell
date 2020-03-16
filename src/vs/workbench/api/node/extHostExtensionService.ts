@@ -7,7 +7,7 @@ import { createApiFactoryAndRegisterActors } from 'vs/workbench/api/common/extHo
 import { RequireInterceptor } from 'vs/workbench/api/common/extHostRequireInterceptor';
 import { MainContext } from 'vs/workbench/api/common/extHost.protocol';
 import { ExtensionActivationTimesBuilder } from 'vs/workbench/api/common/extHostExtensionActivator';
-import { connectProxyResolver } from 'vs/workbench/services/extensions/node/proxyResolver';
+// import { connectProxyResolver } from 'vs/workbench/services/extensions/node/proxyResolver';
 import { AbstractExtHostExtensionService } from 'vs/workbench/api/common/extHostExtensionService';
 import { ExtHostDownloadService } from 'vs/workbench/api/node/extHostDownloadService';
 import { CLIServer } from 'vs/workbench/api/node/extHostCLIServer';
@@ -60,17 +60,15 @@ export class ExtHostExtensionService extends AbstractExtHostExtensionService {
 		await interceptor.install();
 
 		// Do this when extension service exists, but extensions are not being activated yet.
-		const configProvider = await this._extHostConfiguration.getConfigProvider();
-		//await connectProxyResolver(this._extHostWorkspace, configProvider, this, this._logService, this._mainThreadTelemetryProxy);
-		await connectProxyResolver(this._extHostWorkspace, configProvider, this, this._logService );
-
+		// const configProvider = await this._extHostConfiguration.getConfigProvider();
+		// await connectProxyResolver(this._extHostWorkspace, configProvider, this, this._logService, this._mainThreadTelemetryProxy, this._initData);
 
 		// Use IPC messages to forward console-calls, note that the console is
 		// already patched to use`process.send()`
 		const nativeProcessSend = process.send!;
 		const mainThreadConsole = this._extHostContext.getProxy(MainContext.MainThreadConsole);
-		process.send = (...args: any[]) => {
-			if (args.length === 0 || !args[0] || args[0].type !== '__$console') {
+		process.send = (...args) => {
+			if ((args as unknown[]).length === 0 || !args[0] || args[0].type !== '__$console') {
 				return nativeProcessSend.apply(process, args);
 			}
 			mainThreadConsole.$logExtensionHostMessage(args[0]);

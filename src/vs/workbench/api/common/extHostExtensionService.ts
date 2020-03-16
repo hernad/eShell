@@ -20,18 +20,19 @@ import { ExtensionActivationError } from 'vs/workbench/services/extensions/commo
 import { ExtensionDescriptionRegistry } from 'vs/workbench/services/extensions/common/extensionDescriptionRegistry';
 import { CancellationTokenSource } from 'vs/base/common/cancellation';
 import * as errors from 'vs/base/common/errors';
-import * as vscode from 'vscode';
+import type * as vscode from 'vscode';
 import { ExtensionIdentifier, IExtensionDescription } from 'vs/platform/extensions/common/extensions';
 import { Schemas } from 'vs/base/common/network';
 import { VSBuffer } from 'vs/base/common/buffer';
 import { ExtensionMemento } from 'vs/workbench/api/common/extHostMemento';
 import { RemoteAuthorityResolverError } from 'vs/workbench/api/common/extHostTypes';
-import { ResolvedAuthority, ResolvedOptions } from 'vs/platform/remote/common/remoteAuthorityResolver';
+import { ResolvedAuthority, ResolvedOptions, RemoteAuthorityResolverErrorCode } from 'vs/platform/remote/common/remoteAuthorityResolver';
 import { IInstantiationService, createDecorator } from 'vs/platform/instantiation/common/instantiation';
 import { IExtHostInitDataService } from 'vs/workbench/api/common/extHostInitDataService';
 import { IExtensionStoragePaths } from 'vs/workbench/api/common/extHostStoragePaths';
 import { IExtHostRpcService } from 'vs/workbench/api/common/extHostRpcService';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
+import { IExtHostTunnelService } from 'vs/workbench/api/common/extHostTunnelService';
 
 interface ITestRunner {
 	/** Old test runner API, as exported from `vscode/lib/testrunner` */
@@ -78,6 +79,7 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 	protected readonly _extHostWorkspace: ExtHostWorkspace;
 	protected readonly _extHostConfiguration: ExtHostConfiguration;
 	protected readonly _logService: ILogService;
+	protected readonly _extHostTunnelService: IExtHostTunnelService;
 
 	protected readonly _mainThreadWorkspaceProxy: MainThreadWorkspaceShape;
 	// protected readonly _mainThreadTelemetryProxy: MainThreadTelemetryShape;
@@ -106,7 +108,8 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 		@IExtHostConfiguration extHostConfiguration: IExtHostConfiguration,
 		@ILogService logService: ILogService,
 		@IExtHostInitDataService initData: IExtHostInitDataService,
-		@IExtensionStoragePaths storagePath: IExtensionStoragePaths
+		@IExtensionStoragePaths storagePath: IExtensionStoragePaths,
+		@IExtHostTunnelService extHostTunnelService: IExtHostTunnelService
 	) {
 		this._hostUtils = hostUtils;
 		this._extHostContext = extHostContext;
@@ -115,6 +118,7 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 		this._extHostWorkspace = extHostWorkspace;
 		this._extHostConfiguration = extHostConfiguration;
 		this._logService = logService;
+		this._extHostTunnelService = extHostTunnelService;
 		this._disposables = new DisposableStore();
 
 		this._mainThreadWorkspaceProxy = this._extHostContext.getProxy(MainContext.MainThreadWorkspace);
@@ -192,7 +196,7 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 		} catch (err) {
 			// TODO: write to log once we have one
 		}
-		await allPromises;
+		await Promise.all(allPromises);
 	}
 
 	public isActivated(extensionId: ExtensionIdentifier): boolean {
@@ -368,10 +372,12 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 				globalState,
 				workspaceState,
 				subscriptions: [],
+				get extensionUri() { return extensionDescription.extensionLocation; },
 				get extensionPath() { return extensionDescription.extensionLocation.fsPath; },
 				get storagePath() { return that._storagePath.workspaceValue(extensionDescription); },
 				get globalStoragePath() { return that._storagePath.globalValue(extensionDescription); },
-				asAbsolutePath: (relativePath: string) => { return path.join(extensionDescription.extensionLocation.fsPath, relativePath); },
+				asAbsolutePath(relativePath: string) { return path.join(extensionDescription.extensionLocation.fsPath, relativePath); },
+				asExtensionUri(relativePath: string) { return joinPath(extensionDescription.extensionLocation, relativePath); },
 				get logPath() { return path.join(that._initData.logsLocation.fsPath, extensionDescription.identifier.value); }
 			});
 		});
@@ -642,11 +648,19 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 
 		const resolver = this._resolvers[authorityPrefix];
 		if (!resolver) {
-			throw new Error(`No remote extension installed to resolve ${authorityPrefix}.`);
+			return {
+				type: 'error',
+				error: {
+					code: RemoteAuthorityResolverErrorCode.NoResolverFound,
+					message: `No remote extension installed to resolve ${authorityPrefix}.`,
+					detail: undefined
+				}
+			};
 		}
 
 		try {
 			const result = await resolver.resolve(remoteAuthority, { resolveAttempt });
+			this._disposables.add(await this._extHostTunnelService.setTunnelExtensionFunctions(resolver));
 
 			// Split merged API result into separate authority/options
 			const authority: ResolvedAuthority = {
@@ -662,7 +676,8 @@ export abstract class AbstractExtHostExtensionService implements ExtHostExtensio
 				type: 'ok',
 				value: {
 					authority,
-					options
+					options,
+					tunnelInformation: { environmentTunnels: result.environmentTunnels }
 				}
 			};
 		} catch (err) {

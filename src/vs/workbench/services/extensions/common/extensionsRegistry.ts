@@ -292,6 +292,11 @@ export const schema: IJSONSchema = {
 						description: nls.localize('vscode.extension.activationEvents.onUri', 'An activation event emitted whenever a system-wide Uri directed towards this extension is open.'),
 					},
 					{
+						label: 'onCustomEditor',
+						body: 'onCustomEditor:${9:viewType}',
+						description: nls.localize('vscode.extension.activationEvents.onCustomEditor', 'An activation event emitted whenever the specified custom editor becomes visible.'),
+					},
+					{
 						label: '*',
 						description: nls.localize('vscode.extension.activationEvents.star', 'An activation event emitted on VS Code startup. To ensure a great end user experience, please use this activation event in your extension only when no other activation events combination works in your use-case.'),
 						body: '*'
@@ -359,10 +364,19 @@ export const schema: IJSONSchema = {
 			}
 		},
 		extensionKind: {
-			description: nls.localize('extensionKind', "Define the kind of an extension. `ui` extensions are installed and run on the local machine while `workspace` extensions are run on the remote."),
-			oneOf: [{ type: 'array', items: extensionKindSchema }, extensionKindSchema],
-			default: 'workspace',
+			description: nls.localize('extensionKind', "Define the kind of an extension. `ui` extensions are installed and run on the local machine while `workspace` extensions run on the remote."),
+			type: 'array',
+			items: extensionKindSchema,
+			default: ['workspace'],
 			defaultSnippets: [
+				{
+					body: ['ui'],
+					description: nls.localize('extensionKind.ui', "Define an extension which can run only on the local machine when connected to remote window.")
+				},
+				{
+					body: ['workspace'],
+					description: nls.localize('extensionKind.workspace', "Define an extension which can run only on the remote machine when connected remote window.")
+				},
 				{
 					body: ['ui', 'workspace'],
 					description: nls.localize('extensionKind.ui-workspace', "Define an extension which can run on either side, with a preference towards running on the local machine.")

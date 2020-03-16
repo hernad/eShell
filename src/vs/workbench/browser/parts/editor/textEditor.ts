@@ -6,24 +6,23 @@
 import { localize } from 'vs/nls';
 import { URI } from 'vs/base/common/uri';
 import { distinct, deepClone, assign } from 'vs/base/common/objects';
+import { Event } from 'vs/base/common/event';
 import { isObject, assertIsDefined, withNullAsUndefined, isFunction } from 'vs/base/common/types';
 import { Dimension } from 'vs/base/browser/dom';
 import { CodeEditorWidget } from 'vs/editor/browser/widget/codeEditorWidget';
-import { EditorInput, EditorOptions, IEditorMemento, ITextEditor, TextEditorOptions } from 'vs/workbench/common/editor';
+import { EditorInput, EditorOptions, IEditorMemento, ITextEditorPane, TextEditorOptions } from 'vs/workbench/common/editor';
 import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
 import { IEditorViewState, IEditor, ScrollType } from 'vs/editor/common/editorCommon';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { ITextResourceConfigurationService } from 'vs/editor/common/services/resourceConfiguration';
+import { ITextResourceConfigurationService } from 'vs/editor/common/services/textResourceConfigurationService';
 import { IEditorOptions } from 'vs/editor/common/config/editorOptions';
 import { isCodeEditor, getCodeEditor } from 'vs/editor/browser/editorBrowser';
 import { IEditorGroupsService, IEditorGroup } from 'vs/workbench/services/editor/common/editorGroupsService';
 import { CancellationToken } from 'vs/base/common/cancellation';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-
-const TEXT_EDITOR_VIEW_STATE_PREFERENCE_KEY = 'textEditorViewState';
 
 export interface IEditorConfiguration {
 	editor: object;
@@ -34,7 +33,10 @@ export interface IEditorConfiguration {
  * The base class of editors that leverage the text editor for the editing experience. This class is only intended to
  * be subclassed and not instantiated.
  */
-export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
+export abstract class BaseTextEditor extends BaseEditor implements ITextEditorPane {
+
+	static readonly TEXT_EDITOR_VIEW_STATE_PREFERENCE_KEY = 'textEditorViewState';
+
 	private editorControl: IEditor | undefined;
 	private editorContainer: HTMLElement | undefined;
 	private hasPendingConfigurationChange: boolean | undefined;
@@ -44,30 +46,32 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 	constructor(
 		id: string,
 		// @ITelemetryService telemetryService: ITelemetryService,
-		@IInstantiationService private readonly _instantiationService: IInstantiationService,
+		@IInstantiationService protected readonly instantiationService: IInstantiationService,
 		@IStorageService storageService: IStorageService,
-		@ITextResourceConfigurationService private readonly _configurationService: ITextResourceConfigurationService,
+		@ITextResourceConfigurationService protected readonly textResourceConfigurationService: ITextResourceConfigurationService,
 		@IThemeService protected themeService: IThemeService,
 		@IEditorService protected editorService: IEditorService,
 		@IEditorGroupsService protected editorGroupService: IEditorGroupsService
 	) {
 		super(id, /*telemetryService,*/ themeService, storageService);
 
-		this.editorMemento = this.getEditorMemento<IEditorViewState>(editorGroupService, TEXT_EDITOR_VIEW_STATE_PREFERENCE_KEY, 100);
+		this.editorMemento = this.getEditorMemento<IEditorViewState>(editorGroupService, BaseTextEditor.TEXT_EDITOR_VIEW_STATE_PREFERENCE_KEY, 100);
 
-		this._register(this.configurationService.onDidChangeConfiguration(e => {
-			const resource = this.getResource();
-			const value = resource ? this.configurationService.getValue<IEditorConfiguration>(resource) : undefined;
+		this._register(this.textResourceConfigurationService.onDidChangeConfiguration(e => {
+			const resource = this.getActiveResource();
+			const value = resource ? this.textResourceConfigurationService.getValue<IEditorConfiguration>(resource) : undefined;
+
 			return this.handleConfigurationChangeEvent(value);
 		}));
-	}
 
-	protected get instantiationService(): IInstantiationService {
-		return this._instantiationService;
-	}
+		// ARIA: if a group is added or removed, update the editor's ARIA
+		// label so that it appears in the label for when there are > 1 groups
+		this._register(Event.any(this.editorGroupService.onDidAddGroup, this.editorGroupService.onDidRemoveGroup)(() => {
+			const ariaLabel = this.computeAriaLabel();
 
-	protected get configurationService(): ITextResourceConfigurationService {
-		return this._configurationService;
+			this.editorContainer?.setAttribute('aria-label', ariaLabel);
+			this.editorControl?.updateOptions({ ariaLabel });
+		}));
 	}
 
 	protected handleConfigurationChangeEvent(configuration?: IEditorConfiguration): void {
@@ -100,11 +104,11 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 	private computeAriaLabel(): string {
 		let ariaLabel = this.getAriaLabel();
 
-		// Apply group information to help identify in which group we are
-		if (ariaLabel) {
-			if (this.group) {
-				ariaLabel = localize('editorLabelWithGroup', "{0}, {1}.", ariaLabel, this.group.label);
-			}
+		// Apply group information to help identify in
+		// which group we are (only if more than one group
+		// is actually opened)
+		if (ariaLabel && this.group && this.editorGroupService.count > 1) {
+			ariaLabel = localize('editorLabelWithGroup', "{0}, {1}", ariaLabel, this.group.ariaLabel);
 		}
 
 		return ariaLabel;
@@ -115,7 +119,10 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 			overviewRulerLanes: 3,
 			lineNumbersMinChars: 3,
 			fixedOverflowWidgets: true,
-			readOnly: this.input?.isReadonly()
+			readOnly: this.input?.isReadonly(),
+			// render problems even in readonly editors
+			// https://github.com/microsoft/vscode/issues/89057
+			renderValidationDecorations: 'on'
 		};
 	}
 
@@ -123,7 +130,7 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 
 		// Editor for Text
 		this.editorContainer = parent;
-		this.editorControl = this._register(this.createEditorControl(parent, this.computeConfiguration(this.configurationService.getValue<IEditorConfiguration>(this.getResource()))));
+		this.editorControl = this._register(this.createEditorControl(parent, this.computeConfiguration(this.textResourceConfigurationService.getValue<IEditorConfiguration>(this.getActiveResource()))));
 
 		// Model & Language changes
 		const codeEditor = getCodeEditor(this.editorControl);
@@ -152,6 +159,7 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 		// editor input specific options (e.g. an ARIA label depending on the input showing)
 		this.updateEditorConfiguration();
 
+		// Update aria label on editor
 		const editorContainer = assertIsDefined(this.editorContainer);
 		editorContainer.setAttribute('aria-label', this.computeAriaLabel());
 	}
@@ -196,9 +204,6 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 		return this.editorControl;
 	}
 
-	/**
-	 * Saves the text editor view state for the given resource.
-	 */
 	protected saveTextEditorViewState(resource: URI): void {
 		const editorViewState = this.retrieveTextEditorViewState(resource);
 		if (!editorViewState || !this.group) {
@@ -209,7 +214,7 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 	}
 
 	getViewState(): IEditorViewState | undefined {
-		const resource = this.input?.getResource();
+		const resource = this.input?.resource;
 		if (resource) {
 			return withNullAsUndefined(this.retrieveTextEditorViewState(resource));
 		}
@@ -240,27 +245,25 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 		return control.saveViewState();
 	}
 
-	/**
-	 * Clears the text editor view state for the given resources.
-	 */
+	protected loadTextEditorViewState(resource: URI): IEditorViewState | undefined {
+		return this.group ? this.editorMemento.loadEditorState(this.group, resource) : undefined;
+	}
+
+	protected moveTextEditorViewState(source: URI, target: URI): void {
+		return this.editorMemento.moveEditorState(source, target);
+	}
+
 	protected clearTextEditorViewState(resources: URI[], group?: IEditorGroup): void {
 		resources.forEach(resource => {
 			this.editorMemento.clearEditorState(resource, group);
 		});
 	}
 
-	/**
-	 * Loads the text editor view state for the given resource and returns it.
-	 */
-	protected loadTextEditorViewState(resource: URI): IEditorViewState | undefined {
-		return this.group ? this.editorMemento.loadEditorState(this.group, resource) : undefined;
-	}
-
 	private updateEditorConfiguration(configuration?: IEditorConfiguration): void {
 		if (!configuration) {
-			const resource = this.getResource();
+			const resource = this.getActiveResource();
 			if (resource) {
-				configuration = this.configurationService.getValue<IEditorConfiguration>(resource);
+				configuration = this.textResourceConfigurationService.getValue<IEditorConfiguration>(resource);
 			}
 		}
 
@@ -284,7 +287,7 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 		}
 	}
 
-	protected getResource(): URI | undefined {
+	private getActiveResource(): URI | undefined {
 		const codeEditor = getCodeEditor(this.editorControl);
 		if (codeEditor) {
 			const model = codeEditor.getModel();
@@ -294,7 +297,7 @@ export abstract class BaseTextEditor extends BaseEditor implements ITextEditor {
 		}
 
 		if (this.input) {
-			return this.input.getResource();
+			return this.input.resource;
 		}
 
 		return undefined;

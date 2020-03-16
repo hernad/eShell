@@ -15,7 +15,7 @@ import { cloneAndChange } from 'vs/base/common/objects';
 import { escape } from 'vs/base/common/strings';
 import { URI } from 'vs/base/common/uri';
 import { Schemas } from 'vs/base/common/network';
-import { renderCodicons } from 'vs/base/browser/ui/codiconLabel/codiconLabel';
+import { renderCodicons, markdownEscapeEscapedCodicons } from 'vs/base/common/codicons';
 
 export interface MarkdownRenderOptions extends FormattedTextRenderOptions {
 	codeBlockRenderer?: (modeId: string, value: string) => Promise<string>;
@@ -25,7 +25,7 @@ export interface MarkdownRenderOptions extends FormattedTextRenderOptions {
 /**
  * Create html nodes for the given content element.
  */
-export function renderMarkdown(markdown: IMarkdownString, options: MarkdownRenderOptions = {}): HTMLElement {
+export function renderMarkdown(markdown: IMarkdownString, options: MarkdownRenderOptions = {}, markedOptions: marked.MarkedOptions = {}): HTMLElement {
 	const element = createElement(options);
 
 	const _uriMassage = function (part: string): string {
@@ -58,7 +58,11 @@ export function renderMarkdown(markdown: IMarkdownString, options: MarkdownRende
 			return href; // no tranformation performed
 		}
 		if (isDomUri) {
-			uri = DOM.asDomUri(uri);
+			// this URI will end up as "src"-attribute of a dom node
+			// and because of that special rewriting needs to be done
+			// so that the URI uses a protocol that's understood by
+			// browsers (like http or https)
+			return DOM.asDomUri(uri).toString(true);
 		}
 		if (uri.query) {
 			uri = uri.with({ query: _uriMassage(uri.query) });
@@ -73,10 +77,6 @@ export function renderMarkdown(markdown: IMarkdownString, options: MarkdownRende
 
 	const renderer = new marked.Renderer();
 	renderer.image = (href: string, title: string, text: string) => {
-		if (href && href.indexOf('vscode-icon://codicon/') === 0) {
-			return renderCodicons(`$(${URI.parse(href).path.substr(1)})`);
-		}
-
 		let dimensions: string[] = [];
 		let attributes: string[] = [];
 		if (href) {
@@ -123,7 +123,7 @@ export function renderMarkdown(markdown: IMarkdownString, options: MarkdownRende
 		}
 	};
 	renderer.paragraph = (text): string => {
-		return `<p>${text}</p>`;
+		return `<p>${markdown.supportThemeIcons ? renderCodicons(text) : text}</p>`;
 	};
 
 	if (options.codeBlockRenderer) {
@@ -173,17 +173,21 @@ export function renderMarkdown(markdown: IMarkdownString, options: MarkdownRende
 		}));
 	}
 
-	const markedOptions: marked.MarkedOptions = {
-		sanitize: true,
-		renderer
-	};
+	markedOptions.sanitize = true;
+	markedOptions.renderer = renderer;
 
-	const allowedSchemes = [Schemas.http, Schemas.https, Schemas.mailto, Schemas.data, Schemas.file, Schemas.vscodeRemote];
+	const allowedSchemes = [Schemas.http, Schemas.https, Schemas.mailto, Schemas.data, Schemas.file, Schemas.vscodeRemote, Schemas.vscodeRemoteResource];
 	if (markdown.isTrusted) {
 		allowedSchemes.push(Schemas.command);
 	}
 
-	const renderedMarkdown = marked.parse(markdown.value, markedOptions);
+	const renderedMarkdown = marked.parse(
+		markdown.supportThemeIcons
+			? markdownEscapeEscapedCodicons(markdown.value)
+			: markdown.value,
+		markedOptions
+	);
+
 	element.innerHTML = insane(renderedMarkdown, {
 		allowedSchemes,
 		allowedAttributes: {

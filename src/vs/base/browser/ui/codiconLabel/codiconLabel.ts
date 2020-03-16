@@ -4,18 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import 'vs/css!./codicon/codicon';
+import 'vs/css!./codicon/codicon-modifications';
 import 'vs/css!./codicon/codicon-animations';
 import { escape } from 'vs/base/common/strings';
-
-function expand(text: string): string {
-	return text.replace(/\$\((([a-z0-9\-]+?)(~([a-z0-9\-]*?))?)\)/gi, (_match, _g1, name, _g3, animation) => {
-		return `<span class="codicon codicon-${name} ${animation ? `codicon-animation-${animation}` : ''}"></span>`;
-	});
-}
-
-export function renderCodicons(label: string): string {
-	return expand(escape(label));
-}
+import { renderCodicons } from 'vs/base/common/codicons';
 
 export class CodiconLabel {
 
@@ -24,7 +16,7 @@ export class CodiconLabel {
 	) { }
 
 	set text(text: string) {
-		this._container.innerHTML = renderCodicons(text || '');
+		this._container.innerHTML = renderCodicons(escape(text ?? ''));
 	}
 
 	set title(title: string) {

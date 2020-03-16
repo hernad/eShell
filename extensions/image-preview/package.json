@@ -2,7 +2,7 @@
   "name": "image-preview",
   "displayName": "%displayName%",
   "description": "%description%",
-  "extensionKind": "ui",
+  "extensionKind": ["ui", "workspace"],
   "version": "1.0.0",
   "publisher": "vscode",
   "icon": "icon.png",
@@ -17,15 +17,15 @@
     "Other"
   ],
   "activationEvents": [
-    "onWebviewEditor:imagePreview.previewEditor",
+    "onCustomEditor:imagePreview.previewEditor",
     "onCommand:imagePreview.zoomIn",
     "onCommand:imagePreview.zoomOut"
   ],
   "contributes": {
-    "webviewEditors": [
+    "customEditors": [
       {
         "viewType": "imagePreview.previewEditor",
-        "displayName": "%webviewEditors.displayName%",
+        "displayName": "%customEditors.displayName%",
         "priority": "builtin",
         "selector": [
           {

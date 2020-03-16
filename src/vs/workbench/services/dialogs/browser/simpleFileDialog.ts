@@ -22,7 +22,7 @@ import { Schemas } from 'vs/base/common/network';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { IRemoteAgentService } from 'vs/workbench/services/remote/common/remoteAgentService';
 import { IContextKeyService, IContextKey } from 'vs/platform/contextkey/common/contextkey';
-import { equalsIgnoreCase, format, startsWithIgnoreCase } from 'vs/base/common/strings';
+import { equalsIgnoreCase, format, startsWithIgnoreCase, startsWith } from 'vs/base/common/strings';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { IRemoteAgentEnvironment } from 'vs/platform/remote/common/remoteAgentEnvironment';
 import { isValidBasename } from 'vs/base/common/extpath';
@@ -35,6 +35,7 @@ import { ICommandHandler } from 'vs/platform/commands/common/commands';
 import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { normalizeDriveLetter } from 'vs/base/common/labels';
 import { SaveReason } from 'vs/workbench/common/editor';
+import { IRemotePathService } from 'vs/workbench/services/path/common/remotePathService';
 
 export namespace OpenLocalFileCommand {
 	export const ID = 'workbench.action.files.openLocalFile';
@@ -53,9 +54,9 @@ export namespace SaveLocalFileCommand {
 	export function handler(): ICommandHandler {
 		return accessor => {
 			const editorService = accessor.get(IEditorService);
-			const activeControl = editorService.activeControl;
-			if (activeControl) {
-				return editorService.save({ groupId: activeControl.group.id, editor: activeControl.input }, { saveAs: true, availableFileSystems: [Schemas.file], reason: SaveReason.EXPLICIT });
+			const activeEditorPane = editorService.activeEditorPane;
+			if (activeEditorPane) {
+				return editorService.save({ groupId: activeEditorPane.group.id, editor: activeEditorPane.input }, { saveAs: true, availableFileSystems: [Schemas.file], reason: SaveReason.EXPLICIT });
 			}
 
 			return Promise.resolve(undefined);
@@ -134,6 +135,7 @@ export class SimpleFileDialog {
 		@IModeService private readonly modeService: IModeService,
 		@IWorkbenchEnvironmentService private readonly environmentService: IWorkbenchEnvironmentService,
 		@IRemoteAgentService private readonly remoteAgentService: IRemoteAgentService,
+		@IRemotePathService private readonly remotePathService: IRemotePathService,
 		@IKeybindingService private readonly keybindingService: IKeybindingService,
 		@IContextKeyService contextKeyService: IContextKeyService,
 	) {
@@ -155,7 +157,7 @@ export class SimpleFileDialog {
 	public async showOpenDialog(options: IOpenDialogOptions = {}): Promise<URI | undefined> {
 		this.scheme = this.getScheme(options.availableFileSystems, options.defaultUri);
 		this.userHome = await this.getUserHome();
-		const newOptions = await this.getOptions(options);
+		const newOptions = this.getOptions(options);
 		if (!newOptions) {
 			return Promise.resolve(undefined);
 		}
@@ -167,7 +169,7 @@ export class SimpleFileDialog {
 		this.scheme = this.getScheme(options.availableFileSystems, options.defaultUri);
 		this.userHome = await this.getUserHome();
 		this.requiresTrailing = true;
-		const newOptions = await this.getOptions(options, true);
+		const newOptions = this.getOptions(options, true);
 		if (!newOptions) {
 			return Promise.resolve(undefined);
 		}
@@ -205,8 +207,11 @@ export class SimpleFileDialog {
 	}
 
 	private remoteUriFrom(path: string): URI {
-		path = path.replace(/\\/g, '/');
-		return resources.toLocalResource(URI.from({ scheme: this.scheme, path }), this.scheme === Schemas.file ? undefined : this.remoteAuthority);
+		if (!startsWith(path, '\\\\')) {
+			path = path.replace(/\\/g, '/');
+		}
+		const uri: URI = this.scheme === Schemas.file ? URI.file(path) : URI.from({ scheme: this.scheme, path });
+		return resources.toLocalResource(uri, uri.scheme === Schemas.file ? undefined : this.remoteAuthority);
 	}
 
 	private getScheme(available: readonly string[] | undefined, defaultUri: URI | undefined): string {
@@ -228,10 +233,7 @@ export class SimpleFileDialog {
 
 	private async getUserHome(): Promise<URI> {
 		if (this.scheme !== Schemas.file) {
-			const env = await this.getRemoteAgentEnvironment();
-			if (env) {
-				return env.userHome;
-			}
+			return this.remotePathService.userHome;
 		}
 		return URI.from({ scheme: this.scheme, path: this.environmentService.userHome });
 	}
@@ -295,6 +297,8 @@ export class SimpleFileDialog {
 
 			function doResolve(dialog: SimpleFileDialog, uri: URI | undefined) {
 				if (uri) {
+					uri = resources.addTrailingPathSeparator(uri, dialog.separator); // Ensures that c: is c:/ since this comes from user input and can be incorrect.
+					// To be consistent, we should never have a trailing path separator on directories (or anything else). Will not remove from c:/.
 					uri = resources.removeTrailingPathSeparator(uri);
 				}
 				resolve(uri);
@@ -862,8 +866,10 @@ export class SimpleFileDialog {
 	}
 
 	private createBackItem(currFolder: URI): FileQuickPickItem | null {
-		const parentFolder = resources.dirname(currFolder);
-		if (!resources.isEqual(currFolder, parentFolder, true)) {
+		const fileRepresentationCurr = this.currentFolder.with({ scheme: Schemas.file });
+		const fileRepresentationParent = resources.dirname(fileRepresentationCurr);
+		if (!resources.isEqual(fileRepresentationCurr, fileRepresentationParent, true)) {
+			const parentFolder = resources.dirname(currFolder);
 			return { label: '..', uri: resources.addTrailingPathSeparator(parentFolder, this.separator), isFolder: true };
 		}
 		return null;

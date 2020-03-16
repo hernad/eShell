@@ -5,6 +5,8 @@
 
 import { isWindows } from 'vs/base/common/platform';
 import { CharCode } from 'vs/base/common/charCode';
+import * as paths from 'vs/base/common/path';
+import * as extpath from 'vs/base/common/extpath';
 
 const _schemePattern = /^\w[\w\d+.-]*$/;
 const _singleSlashStart = /^\//;
@@ -83,6 +85,7 @@ const _regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
  * (http://tools.ietf.org/html/rfc3986#section-3) with minimal validation
  * and encoding.
  *
+ * ```txt
  *       foo://example.com:8042/over/there?name=ferret#nose
  *       \_/   \______________/\_________/ \_________/ \__/
  *        |           |            |            |        |
@@ -90,6 +93,7 @@ const _regexp = /^(([^:/?#]+?):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
  *        |   _____________________|__
  *       / \ /                        \
  *       urn:example:animal:ferret:nose
+ * ```
  */
 export class URI implements UriComponents {
 
@@ -333,6 +337,25 @@ export class URI implements UriComponents {
 		);
 	}
 
+	/**
+	 * Join a URI path with path fragments and normalizes the resulting path.
+	 *
+	 * @param resource The input URI.
+	 * @param pathFragment The path fragment to add to the URI path.
+	 * @returns The resulting URI.
+	 */
+	static joinPaths(resource: URI, ...pathFragment: string[]): URI {
+		let joinedPath: string;
+		if (resource.scheme === 'file') {
+			joinedPath = URI.file(paths.join(originalFSPath(resource), ...pathFragment)).path;
+		} else {
+			joinedPath = paths.posix.join(resource.path || '/', ...pathFragment);
+		}
+		return resource.with({
+			path: joinedPath
+		});
+	}
+
 	// ---- printing/externalize ---------------------------
 
 	/**
@@ -389,7 +412,7 @@ interface UriState extends UriComponents {
 
 const _pathSepMarker = isWindows ? 1 : undefined;
 
-// tslint:disable-next-line:class-name
+// eslint-disable-next-line @typescript-eslint/class-name-casing
 class _URI extends URI {
 
 	_formatted: string | null = null;
@@ -670,4 +693,30 @@ function percentDecode(str: string): string {
 		return str;
 	}
 	return str.replace(_rEncodedAsHex, (match) => decodeURIComponentGraceful(match));
+}
+
+
+// --- utils
+
+export function originalFSPath(uri: URI): string {
+	let value: string;
+	const uriPath = uri.path;
+	if (uri.authority && uriPath.length > 1 && uri.scheme === 'file') {
+		// unc path: file://shares/c$/far/boo
+		value = `//${uri.authority}${uriPath}`;
+	} else if (
+		isWindows
+		&& uriPath.charCodeAt(0) === CharCode.Slash
+		&& extpath.isWindowsDriveLetter(uriPath.charCodeAt(1))
+		&& uriPath.charCodeAt(2) === CharCode.Colon
+	) {
+		value = uriPath.substr(1);
+	} else {
+		// other path
+		value = uriPath;
+	}
+	if (isWindows) {
+		value = value.replace(/\//g, '\\');
+	}
+	return value;
 }

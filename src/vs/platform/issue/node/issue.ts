@@ -32,6 +32,8 @@ export interface IssueReporterStyles extends WindowStyles {
 	inputForeground?: string;
 	inputBorder?: string;
 	inputErrorBorder?: string;
+	inputErrorBackground?: string;
+	inputErrorForeground?: string;
 	inputActiveBorder?: string;
 	buttonBackground?: string;
 	buttonForeground?: string;
@@ -47,6 +49,7 @@ export interface IssueReporterExtensionData {
 	version: string;
 	id: string;
 	isTheme: boolean;
+	isBuiltin: boolean;
 	displayName: string | undefined;
 	repositoryUrl: string | undefined;
 	bugsUrl: string | undefined;
@@ -57,6 +60,8 @@ export interface IssueReporterData extends WindowData {
 	enabledExtensions: IssueReporterExtensionData[];
 	issueType?: IssueType;
 	extensionId?: string;
+	readonly issueTitle?: string;
+	readonly issueBody?: string;
 }
 
 export interface ISettingSearchResult {
