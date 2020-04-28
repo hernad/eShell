@@ -359,11 +359,7 @@ export class ExtensionsViewPaneContainer extends ViewPaneContainer implements IE
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
 		@IPreferencesService private readonly preferencesService: IPreferencesService
 	) {
-<<<<<<< HEAD
-		super(VIEWLET_ID, `${VIEWLET_ID}.state`, { mergeViewWithContainerWhenSingleView: true }, instantiationService, configurationService, layoutService, contextMenuService, /*telemetryService,*/ extensionService, themeService, storageService, contextService, viewDescriptorService);
-=======
-		super(VIEWLET_ID, { mergeViewWithContainerWhenSingleView: true }, instantiationService, configurationService, layoutService, contextMenuService, telemetryService, extensionService, themeService, storageService, contextService, viewDescriptorService);
->>>>>>> electron-7
+		super(VIEWLET_ID, { mergeViewWithContainerWhenSingleView: true }, instantiationService, configurationService, layoutService, contextMenuService, /*telemetryService,*/ extensionService, themeService, storageService, contextService, viewDescriptorService);
 
 		this.searchDelayer = new Delayer(500);
 		this.nonEmptyWorkspaceContextKey = NonEmptyWorkspaceContext.bindTo(contextKeyService);

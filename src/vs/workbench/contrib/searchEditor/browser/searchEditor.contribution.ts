@@ -68,17 +68,7 @@ class SearchEditorContribution implements IWorkbenchContribution {
 					return undefined;
 				}
 
-<<<<<<< HEAD
-			if (group.isOpened(editor)) {
-				return undefined;
-			}
-
-			if (endsWith(resource.path, '.code-search')) {
 				// this.telemetryService.publicLog2('searchEditor/openSavedSearchEditor');
-			}
-=======
-				this.telemetryService.publicLog2('searchEditor/openSavedSearchEditor');
->>>>>>> electron-7
 
 				return {
 					override: (async () => {

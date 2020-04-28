@@ -14,15 +14,11 @@ import { IConfigurationService } from 'vs/platform/configuration/common/configur
 import { merge } from 'vs/platform/userDataSync/common/extensionsMerge';
 import { isNonEmptyArray } from 'vs/base/common/arrays';
 import { AbstractSynchroniser, IRemoteUserData, ISyncData } from 'vs/platform/userDataSync/common/abstractSynchronizer';
-<<<<<<< HEAD
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-=======
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { URI } from 'vs/base/common/uri';
 import { joinPath, dirname, basename } from 'vs/base/common/resources';
 import { format } from 'vs/base/common/jsonFormatter';
 import { applyEdits } from 'vs/base/common/jsonEdit';
->>>>>>> electron-7
 
 interface IExtensionsSyncPreviewResult extends ISyncPreviewResult {
 	readonly localExtensions: ISyncExtension[];

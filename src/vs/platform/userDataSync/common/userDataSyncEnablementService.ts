@@ -30,13 +30,8 @@ export class UserDataSyncEnablementService extends Disposable implements IUserDa
 
 	constructor(
 		@IStorageService private readonly storageService: IStorageService,
-<<<<<<< HEAD
 		// @ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IEnvironmentService environmentService: IEnvironmentService,
-=======
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
->>>>>>> electron-7
 	) {
 		super();
 		this._register(storageService.onDidChangeStorage(e => this.onDidStorageChange(e)));

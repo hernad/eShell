@@ -259,16 +259,12 @@ export class PlaceHolderViewletActivityAction extends ViewletActivityAction {
 		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService,
 		// @ITelemetryService telemetryService: ITelemetryService
 	) {
-<<<<<<< HEAD
-		super({ id, name: id, iconUrl }, viewletService, layoutService /*, telemetryService*/ );
-=======
 		super({
 			id,
 			name: id,
 			iconUrl: URI.isUri(icon) ? icon : undefined,
 			cssClass: isString(icon) ? icon : undefined
-		}, viewletService, layoutService, telemetryService);
->>>>>>> electron-7
+		}, viewletService, layoutService /*, telemetryService*/ );
 	}
 }
 

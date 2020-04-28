@@ -44,12 +44,8 @@ export class LocalizationWorkbenchContribution extends Disposable implements IWo
 		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
 		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
 		@IViewletService private readonly viewletService: IViewletService,
-<<<<<<< HEAD
-		// @ITelemetryService private readonly telemetryService: ITelemetryService
-=======
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService
->>>>>>> electron-7
 	) {
 		super();
 

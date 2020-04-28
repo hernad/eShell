@@ -27,17 +27,12 @@ import { IDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
 import { IQuickInputService, IQuickPickItem, IQuickPickSeparator } from 'vs/platform/quickinput/common/quickInput';
-<<<<<<< HEAD
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { CONTEXT_SYNC_STATE, getUserDataSyncStore, ISyncConfiguration, IUserDataAutoSyncService, IUserDataSyncService, IUserDataSyncStore, registerConfiguration, SyncResource, SyncStatus, UserDataSyncError, UserDataSyncErrorCode, USER_DATA_SYNC_SCHEME, IUserDataSyncEnablementService, getSyncSourceFromPreviewResource, CONTEXT_SYNC_ENABLEMENT, PREVIEW_QUERY, resolveSyncResource, toRemoteSyncResource } from 'vs/platform/userDataSync/common/userDataSync';
-=======
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import {
 	CONTEXT_SYNC_STATE, IUserDataAutoSyncService, IUserDataSyncService, registerConfiguration,
 	SyncResource, SyncStatus, UserDataSyncError, UserDataSyncErrorCode, USER_DATA_SYNC_SCHEME, IUserDataSyncEnablementService, CONTEXT_SYNC_ENABLEMENT,
 	SyncResourceConflicts, Conflict, getSyncResourceFromLocalPreview
 } from 'vs/platform/userDataSync/common/userDataSync';
->>>>>>> electron-7
 import { FloatingClickWidget } from 'vs/workbench/browser/parts/editor/editorWidgets';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
 import { IEditorInput, toResource, SideBySideEditor } from 'vs/workbench/common/editor';
@@ -140,12 +135,7 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 		@IUserDataAutoSyncService userDataAutoSyncService: IUserDataAutoSyncService,
 		@ITextModelService private readonly textModelResolverService: ITextModelService,
 		@IPreferencesService private readonly preferencesService: IPreferencesService,
-<<<<<<< HEAD
 		// @ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IFileService private readonly fileService: IFileService,
-=======
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
->>>>>>> electron-7
 		@IProductService private readonly productService: IProductService,
 		@IStorageService private readonly storageService: IStorageService,
 		@IOpenerService private readonly openerService: IOpenerService,
@@ -183,73 +173,8 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 			textModelResolverService.registerTextModelContentProvider(USER_DATA_SYNC_SCHEME, instantiationService.createInstance(UserDataRemoteContentProvider));
 			registerEditorContribution(AcceptChangesContribution.ID, AcceptChangesContribution);
 
-<<<<<<< HEAD
-	private async initializeActiveAccount(): Promise<void> {
-		const sessions = await this.authenticationService.getSessions(this.userDataSyncStore!.authenticationProviderId);
-		// Auth provider has not yet been registered
-		if (!sessions) {
-			return;
-		}
-
-		if (sessions.length === 0) {
-			await this.setActiveAccount(undefined);
-			return;
-		}
-
-		if (sessions.length === 1) {
-			this.logAuthenticatedEvent(sessions[0]);
-			await this.setActiveAccount(sessions[0]);
-			return;
-		}
-
-		const selectedAccount = await this.quickInputService.pick(sessions.map(session => {
-			return {
-				id: session.id,
-				label: session.accountName
-			};
-		}), { canPickMany: false });
-
-		if (selectedAccount) {
-			const selected = sessions.filter(account => selectedAccount.id === account.id)[0];
-			this.logAuthenticatedEvent(selected);
-			await this.setActiveAccount(selected);
-		}
-	}
-
-	private logAuthenticatedEvent(session: AuthenticationSession): void {
-		/*
-		type UserAuthenticatedClassification = {
-			id: { classification: 'EndUserPseudonymizedInformation', purpose: 'BusinessInsight' };
-		};
-
-		type UserAuthenticatedEvent = {
-			id: string;
-		};
-		*/
-
-		// const id = session.id.split('/')[1];
-		// this.telemetryService.publicLog2<UserAuthenticatedEvent, UserAuthenticatedClassification>('user.authenticated', { id });
-	}
-
-	get activeAccount(): AuthenticationSession | undefined {
-		return this._activeAccount;
-	}
-
-	async setActiveAccount(account: AuthenticationSession | undefined) {
-		this._activeAccount = account;
-
-		if (account) {
-			try {
-				const token = await account.getAccessToken();
-				this.authTokenService.setToken(token);
-				this.authenticationState.set(AuthStatus.SignedIn);
-			} catch (e) {
-				this.authTokenService.setToken(undefined);
-				this.authenticationState.set(AuthStatus.Unavailable);
-=======
 			if (!isWeb) {
 				this._register(instantiationService.createInstance(UserDataSyncTrigger).onDidTriggerSync(source => userDataAutoSyncService.triggerAutoSync([source])));
->>>>>>> electron-7
 			}
 		}
 	}
@@ -307,37 +232,22 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 							{
 								label: localize('accept remote', "Accept Remote"),
 								run: () => {
-<<<<<<< HEAD
-									//this.telemetryService.publicLog2<{ source: string, action: string }, SyncConflictsClassification>('sync/handleConflicts', { source: conflictsSource, action: 'acceptRemote' });
-									this.acceptRemote(conflictsSource);
-=======
-									this.telemetryService.publicLog2<{ source: string, action: string }, SyncConflictsClassification>('sync/handleConflicts', { source: syncResource, action: 'acceptRemote' });
+									// this.telemetryService.publicLog2<{ source: string, action: string }, SyncConflictsClassification>('sync/handleConflicts', { source: syncResource, action: 'acceptRemote' });
 									this.acceptRemote(syncResource, conflicts);
->>>>>>> electron-7
 								}
 							},
 							{
 								label: localize('accept local', "Accept Local"),
 								run: () => {
-<<<<<<< HEAD
-									//this.telemetryService.publicLog2<{ source: string, action: string }, SyncConflictsClassification>('sync/handleConflicts', { source: conflictsSource, action: 'acceptLocal' });
-									this.acceptLocal(conflictsSource);
-=======
-									this.telemetryService.publicLog2<{ source: string, action: string }, SyncConflictsClassification>('sync/handleConflicts', { source: syncResource, action: 'acceptLocal' });
+									// this.telemetryService.publicLog2<{ source: string, action: string }, SyncConflictsClassification>('sync/handleConflicts', { source: syncResource, action: 'acceptLocal' });
 									this.acceptLocal(syncResource, conflicts);
->>>>>>> electron-7
 								}
 							},
 							{
 								label: localize('show conflicts', "Show Conflicts"),
 								run: () => {
-<<<<<<< HEAD
-									//this.telemetryService.publicLog2<{ source: string, action?: string }, SyncConflictsClassification>('sync/showConflicts', { source: conflictsSource });
-									this.handleConflicts(conflictsSource);
-=======
-									this.telemetryService.publicLog2<{ source: string, action?: string }, SyncConflictsClassification>('sync/showConflicts', { source: syncResource });
+									// this.telemetryService.publicLog2<{ source: string, action?: string }, SyncConflictsClassification>('sync/showConflicts', { source: syncResource });
 									this.handleConflicts({ syncResource, conflicts });
->>>>>>> electron-7
 								}
 							}
 						],
@@ -704,17 +614,7 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 			}
 		});
 		if (result.confirmed) {
-<<<<<<< HEAD
-			if (result.checkboxChecked) {
-				//this.telemetryService.publicLog2('sync/turnOffEveryWhere');
-				await this.userDataSyncService.reset();
-			} else {
-				await this.userDataSyncService.resetLocal();
-			}
-			this.disableSync();
-=======
 			return this.doTurnOff(!!result.checkboxChecked);
->>>>>>> electron-7
 		}
 	}
 
@@ -726,7 +626,7 @@ export class UserDataSyncWorkbenchContribution extends Disposable implements IWo
 			return;
 		}
 		if (turnOffEveryWhere) {
-			this.telemetryService.publicLog2('sync/turnOffEveryWhere');
+			// this.telemetryService.publicLog2('sync/turnOffEveryWhere');
 			await this.userDataSyncService.reset();
 		} else {
 			await this.userDataSyncService.resetLocal();
@@ -1244,14 +1144,8 @@ class AcceptChangesContribution extends Disposable implements IEditorContributio
 			this._register(this.acceptChangesButton.onClick(async () => {
 				const model = this.editor.getModel();
 				if (model) {
-<<<<<<< HEAD
-					const conflictsSource = (getSyncSourceFromPreviewResource(model.uri, this.environmentService) || resolveSyncResource(model.uri)!.resource)!;
-					//this.telemetryService.publicLog2<{ source: string, action: string }, SyncConflictsClassification>('sync/handleConflicts', { source: conflictsSource, action: isRemote ? 'acceptRemote' : 'acceptLocal' });
-					const syncAreaLabel = getSyncAreaLabel(conflictsSource);
-=======
-					this.telemetryService.publicLog2<{ source: string, action: string }, SyncConflictsClassification>('sync/handleConflicts', { source: syncResourceConflicts.syncResource, action: isRemote ? 'acceptRemote' : 'acceptLocal' });
+					// this.telemetryService.publicLog2<{ source: string, action: string }, SyncConflictsClassification>('sync/handleConflicts', { source: syncResourceConflicts.syncResource, action: isRemote ? 'acceptRemote' : 'acceptLocal' });
 					const syncAreaLabel = getSyncAreaLabel(syncResourceConflicts.syncResource);
->>>>>>> electron-7
 					const result = await this.dialogService.confirm({
 						type: 'info',
 						title: isRemote

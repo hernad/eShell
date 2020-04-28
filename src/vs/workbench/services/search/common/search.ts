@@ -11,15 +11,9 @@ import * as objects from 'vs/base/common/objects';
 import * as extpath from 'vs/base/common/extpath';
 import { fuzzyContains, getNLines } from 'vs/base/common/strings';
 import { URI, UriComponents } from 'vs/base/common/uri';
-<<<<<<< HEAD
-import { IFilesConfiguration } from 'vs/platform/files/common/files';
-import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
-// import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
-=======
 import { IFilesConfiguration, FILES_EXCLUDE_CONFIG } from 'vs/platform/files/common/files';
 import { createDecorator, IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
->>>>>>> electron-7
+// import { ITelemetryData } from 'vs/platform/telemetry/common/telemetry';
 import { Event } from 'vs/base/common/event';
 import { relative } from 'vs/base/common/path';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';

@@ -99,11 +99,7 @@ export class TabsTitleControl extends TitleControl {
 		@IEditorService private readonly editorService: EditorServiceImpl,
 		@IPathService private readonly pathService: IPathService
 	) {
-<<<<<<< HEAD
-		super(parent, accessor, group, contextMenuService, instantiationService, contextKeyService, keybindingService, /*telemetryService,*/ notificationService, menuService, quickOpenService, themeService, extensionService, configurationService, fileService);
-=======
-		super(parent, accessor, group, contextMenuService, instantiationService, contextKeyService, keybindingService, telemetryService, notificationService, menuService, quickInputService, themeService, extensionService, configurationService, fileService);
->>>>>>> electron-7
+		super(parent, accessor, group, contextMenuService, instantiationService, contextKeyService, keybindingService, /*telemetryService,*/ notificationService, menuService, quickInputService, themeService, extensionService, configurationService, fileService);
 
 		this.tabResourceLabels = this._register(this.instantiationService.createInstance(ResourceLabels, DEFAULT_LABELS_CONTAINER));
 		this.closeOneEditorAction = this._register(this.instantiationService.createInstance(CloseOneEditorAction, CloseOneEditorAction.ID, CloseOneEditorAction.LABEL));

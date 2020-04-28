@@ -328,34 +328,18 @@ export async function main(argv: ParsedArgs): Promise<void> {
 	const instantiationService: IInstantiationService = new InstantiationService(services);
 
 	return instantiationService.invokeFunction(async accessor => {
-<<<<<<< HEAD
-		const envService = accessor.get(IEnvironmentService);
 		// const stateService = accessor.get(IStateService);
 
-		const { /*appRoot, extensionsPath, extensionDevelopmentLocationURI, isBuilt, installSourcePath*/ } = envService;
+		const { /*appRoot, extensionsPath, extensionDevelopmentLocationURI, isBuilt, installSourcePath*/ } = environmentService;
 
 		const services = new ServiceCollection();
-
-=======
-		const stateService = accessor.get(IStateService);
-
-		const { appRoot, extensionsPath, extensionDevelopmentLocationURI, isBuilt, installSourcePath } = environmentService;
-
-		const services = new ServiceCollection();
->>>>>>> electron-7
 		services.set(IRequestService, new SyncDescriptor(RequestService));
 		services.set(IExtensionManagementService, new SyncDescriptor(ExtensionManagementService));
 		services.set(IExtensionGalleryService, new SyncDescriptor(ExtensionGalleryService));
 
-<<<<<<< HEAD
-		// const appenders: AppInsightsAppender[] = [];
 		/*
-		if (isBuilt && !extensionDevelopmentLocationURI && !envService.args['disable-telemetry'] && product.enableTelemetry) {
-
-=======
 		const appenders: AppInsightsAppender[] = [];
 		if (isBuilt && !extensionDevelopmentLocationURI && !environmentService.disableTelemetry && product.enableTelemetry) {
->>>>>>> electron-7
 			if (product.aiConfig && product.aiConfig.asimovKey) {
 				appenders.push(new AppInsightsAppender(eventPrefix, null, product.aiConfig.asimovKey, logService));
 			}

@@ -17,3 +17,7 @@ rm src/vs/workbench/api/browser/mainThreadSCM.ts
 rm src/vs/workbench/api/node/extHostDebugService.ts
 
 rm -rf .github
+
+rm -rf src/vs/platform/telemetry/common
+
+rm -rf src/vs/workbench/api/common/extHostComments.ts

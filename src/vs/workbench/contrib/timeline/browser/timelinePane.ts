@@ -39,13 +39,7 @@ import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { IActionViewItemProvider, ActionBar, ActionViewItem } from 'vs/base/browser/ui/actionbar/actionbar';
 import { ContextAwareMenuEntryActionViewItem, createAndFillInContextMenuActions } from 'vs/platform/actions/browser/menuEntryActionViewItem';
 import { MenuItemAction, IMenuService, MenuId, registerAction2, Action2, MenuRegistry } from 'vs/platform/actions/common/actions';
-<<<<<<< HEAD
-import { fromNow } from 'vs/base/common/date';
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { escapeRegExpCharacters } from 'vs/base/common/strings';
-=======
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
->>>>>>> electron-7
 
 const ItemHeight = 22;
 

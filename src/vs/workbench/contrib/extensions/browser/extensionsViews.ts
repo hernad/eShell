@@ -101,13 +101,8 @@ export class ExtensionsListView extends ViewPane {
 		@IExtensionService private readonly extensionService: IExtensionService,
 		@IExtensionsWorkbenchService protected extensionsWorkbenchService: IExtensionsWorkbenchService,
 		@IEditorService private readonly editorService: IEditorService,
-<<<<<<< HEAD
-		@IExtensionTipsService protected tipsService: IExtensionTipsService,
-		// @ITelemetryService telemetryService: ITelemetryService,
-=======
 		@IExtensionRecommendationsService protected tipsService: IExtensionRecommendationsService,
-		@ITelemetryService telemetryService: ITelemetryService,
->>>>>>> electron-7
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IWorkspaceContextService protected contextService: IWorkspaceContextService,
 		@IExperimentService private readonly experimentService: IExperimentService,
@@ -564,17 +559,10 @@ export class ExtensionsListView extends ViewPane {
 				const othersPromise = this.tipsService.getOtherRecommendations();
 				const workspacePromise = this.tipsService.getWorkspaceRecommendations();
 
-<<<<<<< HEAD
-				return Promise.all([othersPromise, workspacePromise])
-					.then(([others, workspaceRecommendations]) => {
-						const names = this.getTrimmedRecommendations(local, value, fileBasedRecommendations, others, workspaceRecommendations);
-						// const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
-=======
 				return Promise.all([othersPromise, workspacePromise, configBasedRecommendationsPromise])
 					.then(([others, workspaceRecommendations, configBasedRecommendations]) => {
 						const names = this.getTrimmedRecommendations(local, value, fileBasedRecommendations, configBasedRecommendations, others, workspaceRecommendations);
-						const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
->>>>>>> electron-7
+						// const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
 						/* __GDPR__
 							"extensionAllRecommendations:open" : {
 								"count" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
@@ -635,13 +623,8 @@ export class ExtensionsListView extends ViewPane {
 						fileBasedRecommendations = fileBasedRecommendations.filter(x => workspaceRecommendations.every(({ extensionId }) => x.extensionId !== extensionId));
 						others = others.filter(x => workspaceRecommendations.every(({ extensionId }) => x.extensionId !== extensionId));
 
-<<<<<<< HEAD
-						const names = this.getTrimmedRecommendations(local, value, fileBasedRecommendations, others, []);
-						// const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
-=======
 						const names = this.getTrimmedRecommendations(local, value, fileBasedRecommendations, configBasedRecommendations, others, []);
-						const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
->>>>>>> electron-7
+						// const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
 
 						/* __GDPR__
 							"extensionRecommendations:open" : {
@@ -914,13 +897,8 @@ export class ServerExtensionsView extends ExtensionsListView {
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IExtensionService extensionService: IExtensionService,
 		@IEditorService editorService: IEditorService,
-<<<<<<< HEAD
-		@IExtensionTipsService tipsService: IExtensionTipsService,
-		// @ITelemetryService telemetryService: ITelemetryService,
-=======
 		@IExtensionRecommendationsService tipsService: IExtensionRecommendationsService,
-		@ITelemetryService telemetryService: ITelemetryService,
->>>>>>> electron-7
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IWorkspaceContextService contextService: IWorkspaceContextService,
 		@IExperimentService experimentService: IExperimentService,
@@ -934,11 +912,7 @@ export class ServerExtensionsView extends ExtensionsListView {
 		@IPreferencesService preferencesService: IPreferencesService,
 	) {
 		options.server = server;
-<<<<<<< HEAD
-		super(options, notificationService, keybindingService, contextMenuService, instantiationService, themeService, extensionService, extensionsWorkbenchService, editorService, tipsService, /*telemetryService,*/ configurationService, contextService, experimentService, workbenchThemeService, extensionManagementServerService, productService, contextKeyService, viewDescriptorService, menuService, openerService);
-=======
-		super(options, notificationService, keybindingService, contextMenuService, instantiationService, themeService, extensionService, extensionsWorkbenchService, editorService, tipsService, telemetryService, configurationService, contextService, experimentService, extensionManagementServerService, productService, contextKeyService, viewDescriptorService, menuService, openerService, preferencesService);
->>>>>>> electron-7
+		super(options, notificationService, keybindingService, contextMenuService, instantiationService, themeService, extensionService, extensionsWorkbenchService, editorService, tipsService, /*telemetryService,*/ configurationService, contextService, experimentService, extensionManagementServerService, productService, contextKeyService, viewDescriptorService, menuService, openerService, preferencesService);
 		this._register(onDidChangeTitle(title => this.updateTitle(title)));
 	}
 

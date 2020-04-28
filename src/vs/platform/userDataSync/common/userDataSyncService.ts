@@ -17,13 +17,9 @@ import { localize } from 'vs/nls';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { URI } from 'vs/base/common/uri';
 import { SettingsSynchroniser } from 'vs/platform/userDataSync/common/settingsSync';
-<<<<<<< HEAD
-/*
-=======
 import { isEqual } from 'vs/base/common/resources';
 import { SnippetsSynchroniser } from 'vs/platform/userDataSync/common/snippetsSync';
-
->>>>>>> electron-7
+/*
 type SyncErrorClassification = {
 	source: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 };
@@ -69,13 +65,8 @@ export class UserDataSyncService extends Disposable implements IUserDataSyncServ
 		@IUserDataSyncStoreService private readonly userDataSyncStoreService: IUserDataSyncStoreService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@IUserDataSyncLogService private readonly logService: IUserDataSyncLogService,
-<<<<<<< HEAD
 		// @ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IStorageService private readonly storageService: IStorageService,
-=======
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IStorageService private readonly storageService: IStorageService
->>>>>>> electron-7
 	) {
 		super();
 		this.settingsSynchroniser = this._register(this.instantiationService.createInstance(SettingsSynchroniser));

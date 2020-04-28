@@ -830,7 +830,7 @@ class SuggestAdapter {
 		private readonly _provider: vscode.CompletionItemProvider,
 		private readonly _logService: ILogService,
 		private readonly _apiDeprecation: IExtHostApiDeprecationService,
-		private readonly _telemetry: extHostProtocol.MainThreadTelemetryShape,
+		// private readonly _telemetry: extHostProtocol.MainThreadTelemetryShape,
 		private readonly _extension: IExtensionDescription,
 	) { }
 
@@ -1384,7 +1384,7 @@ export class ExtHostLanguageFeatures implements extHostProtocol.ExtHostLanguageF
 
 	private readonly _uriTransformer: IURITransformer | null;
 	private readonly _proxy: extHostProtocol.MainThreadLanguageFeaturesShape;
-	private readonly _telemetryShape: extHostProtocol.MainThreadTelemetryShape;
+	// private readonly _telemetryShape: extHostProtocol.MainThreadTelemetryShape;
 	private _documents: ExtHostDocuments;
 	private _commands: ExtHostCommands;
 	private _diagnostics: ExtHostDiagnostics;

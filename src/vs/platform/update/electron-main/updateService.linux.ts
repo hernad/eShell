@@ -23,13 +23,8 @@ export class LinuxUpdateService extends AbstractUpdateService {
 	constructor(
 		@ILifecycleMainService lifecycleMainService: ILifecycleMainService,
 		@IConfigurationService configurationService: IConfigurationService,
-<<<<<<< HEAD
 		// @ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IEnvironmentService environmentService: IEnvironmentService,
-=======
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IEnvironmentService environmentService: INativeEnvironmentService,
->>>>>>> electron-7
 		@IRequestService requestService: IRequestService,
 		@ILogService logService: ILogService
 	) {

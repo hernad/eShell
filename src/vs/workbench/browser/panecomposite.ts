@@ -35,14 +35,9 @@ export class PaneComposite extends Composite implements IPaneComposite {
 		@IExtensionService
 		protected extensionService: IExtensionService,
 		@IWorkspaceContextService
-<<<<<<< HEAD
-		protected contextService: IWorkspaceContextService) {
-		super(id, /*telemetryService,*/ themeService, storageService);
-=======
 		protected contextService: IWorkspaceContextService
 	) {
-		super(id, telemetryService, themeService, storageService);
->>>>>>> electron-7
+		super(id, /*telemetryService,*/ themeService, storageService);
 
 		this._register(this.viewPaneContainer.onTitleAreaUpdate(() => this.updateTitleArea()));
 	}

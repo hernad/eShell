@@ -67,13 +67,8 @@ export class Menubar {
 		@IUpdateService private readonly updateService: IUpdateService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IWindowsMainService private readonly windowsMainService: IWindowsMainService,
-<<<<<<< HEAD
-		@IEnvironmentService private readonly environmentService: IEnvironmentService,
-		// @ITelemetryService private readonly telemetryService: ITelemetryService,
-=======
 		@IEnvironmentService private readonly environmentService: INativeEnvironmentService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
->>>>>>> electron-7
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IWorkspacesHistoryMainService private readonly workspacesHistoryMainService: IWorkspacesHistoryMainService,
 		@IStateService private readonly stateService: IStateService,
 		@ILifecycleMainService private readonly lifecycleMainService: ILifecycleMainService,

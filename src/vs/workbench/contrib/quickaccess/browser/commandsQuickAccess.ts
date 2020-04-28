@@ -56,13 +56,7 @@ export class CommandsQuickAccessProvider extends AbstractEditorCommandsQuickAcce
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IKeybindingService keybindingService: IKeybindingService,
 		@ICommandService commandService: ICommandService,
-<<<<<<< HEAD
 		// @ITelemetryService telemetryService: ITelemetryService,
-		@INotificationService notificationService: INotificationService
-	) {
-		super({ showAlias: !Language.isDefaultVariant() }, instantiationService, keybindingService, commandService, /*telemetryService,*/ notificationService);
-=======
-		@ITelemetryService telemetryService: ITelemetryService,
 		@INotificationService notificationService: INotificationService,
 		@IConfigurationService private readonly configurationService: IConfigurationService
 	) {
@@ -81,7 +75,6 @@ export class CommandsQuickAccessProvider extends AbstractEditorCommandsQuickAcce
 		return {
 			preserveInput: commandPaletteConfig.preserveInput
 		};
->>>>>>> electron-7
 	}
 
 	protected async getCommandPicks(disposables: DisposableStore, token: CancellationToken): Promise<Array<ICommandQuickPick>> {

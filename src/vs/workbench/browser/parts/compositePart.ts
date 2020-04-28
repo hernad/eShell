@@ -13,12 +13,7 @@ import * as errors from 'vs/base/common/errors';
 import { ToolBar } from 'vs/base/browser/ui/toolbar/toolbar';
 import { IActionViewItem, ActionsOrientation, prepareActions } from 'vs/base/browser/ui/actionbar/actionbar';
 import { ProgressBar } from 'vs/base/browser/ui/progressbar/progressbar';
-<<<<<<< HEAD
-import { prepareActions } from 'vs/workbench/browser/actions';
-import { IAction, /*WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification*/ } from 'vs/base/common/actions';
-=======
-import { IAction, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
->>>>>>> electron-7
+import { IAction /*, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification*/ } from 'vs/base/common/actions';
 import { Part, IPartOptions } from 'vs/workbench/browser/part';
 import { Composite, CompositeRegistry } from 'vs/workbench/browser/composite';
 import { IComposite } from 'vs/workbench/common/composite';
@@ -77,25 +72,9 @@ export abstract class CompositePart<T extends Composite> extends Part {
 	private currentCompositeOpenToken: string | undefined;
 
 	constructor(
-<<<<<<< HEAD
-		private notificationService: INotificationService,
-		protected storageService: IStorageService,
-		// private telemetryService: ITelemetryService,
-		protected contextMenuService: IContextMenuService,
-		protected layoutService: IWorkbenchLayoutService,
-		protected keybindingService: IKeybindingService,
-		protected instantiationService: IInstantiationService,
-		themeService: IThemeService,
-		protected readonly registry: CompositeRegistry<T>,
-		private activeCompositeSettingsKey: string,
-		private defaultCompositeId: string,
-		// private nameForTelemetry: string,
-		private compositeCSSClass: string,
-		private titleForegroundColor: string | undefined,
-=======
 		private readonly notificationService: INotificationService,
 		protected readonly storageService: IStorageService,
-		private readonly telemetryService: ITelemetryService,
+		// private readonly telemetryService: ITelemetryService,
 		protected readonly contextMenuService: IContextMenuService,
 		protected readonly layoutService: IWorkbenchLayoutService,
 		protected readonly keybindingService: IKeybindingService,
@@ -104,10 +83,9 @@ export abstract class CompositePart<T extends Composite> extends Part {
 		protected readonly registry: CompositeRegistry<T>,
 		private readonly activeCompositeSettingsKey: string,
 		private readonly defaultCompositeId: string,
-		private readonly nameForTelemetry: string,
+		// private readonly nameForTelemetry: string,
 		private readonly compositeCSSClass: string,
 		private readonly titleForegroundColor: string | undefined,
->>>>>>> electron-7
 		id: string,
 		options: IPartOptions
 	) {

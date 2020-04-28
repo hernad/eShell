@@ -28,12 +28,7 @@ import * as perf from 'vs/base/common/performance';
 import { resolveMarketplaceHeaders } from 'vs/platform/extensionManagement/common/extensionGalleryService';
 import { IThemeMainService } from 'vs/platform/theme/electron-main/themeMainService';
 import { RunOnceScheduler } from 'vs/base/common/async';
-<<<<<<< HEAD
-import { IFileService } from 'vs/platform/files/common/files';
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-=======
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
->>>>>>> electron-7
 import { IDialogMainService } from 'vs/platform/dialogs/electron-main/dialogs';
 import { mnemonicButtonLabel } from 'vs/base/common/labels';
 import { ThemeIcon } from 'vs/platform/theme/common/themeService';

@@ -485,19 +485,11 @@ export class CodeApplication extends Disposable {
 
 		// Telemetry
 		if (!this.environmentService.isExtensionDevelopment && !this.environmentService.args['disable-telemetry'] && !!product.enableTelemetry) {
-<<<<<<< HEAD
 			// const channel = getDelayedChannel(sharedProcessReady.then(client => client.getChannel('telemetryAppender')));
 			// const appender = combinedAppender(new TelemetryAppenderClient(channel), new LogAppender(this.logService));
 			// const commonProperties = resolveCommonProperties(product.commit, product.version, machineId, product.msftInternalDomains, this.environmentService.installSourcePath);
 			// const piiPaths = this.environmentService.extensionsPath ? [this.environmentService.appRoot, this.environmentService.extensionsPath] : [this.environmentService.appRoot];
-			// const config: ITelemetryServiceConfig = { appender, commonProperties, piiPaths, trueMachineId };
-=======
-			const channel = getDelayedChannel(sharedProcessReady.then(client => client.getChannel('telemetryAppender')));
-			const appender = combinedAppender(new TelemetryAppenderClient(channel), new LogAppender(this.logService));
-			const commonProperties = resolveCommonProperties(product.commit, product.version, machineId, product.msftInternalDomains, this.environmentService.installSourcePath);
-			const piiPaths = this.environmentService.extensionsPath ? [this.environmentService.appRoot, this.environmentService.extensionsPath] : [this.environmentService.appRoot];
-			const config: ITelemetryServiceConfig = { appender, commonProperties, piiPaths, trueMachineId, sendErrorTelemetry: true };
->>>>>>> electron-7
+			// const config: ITelemetryServiceConfig = { appender, commonProperties, piiPaths, trueMachineId, sendErrorTelemetry: true };
 
 			// services.set(ITelemetryService, new SyncDescriptor(TelemetryService, [config]));
 		} else {

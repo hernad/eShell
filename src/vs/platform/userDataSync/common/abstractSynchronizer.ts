@@ -20,12 +20,8 @@ import { IStringDictionary } from 'vs/base/common/collections';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { isString } from 'vs/base/common/types';
 import { uppercaseFirstLetter } from 'vs/base/common/strings';
-<<<<<<< HEAD
-/*
-=======
 import { equals } from 'vs/base/common/arrays';
-
->>>>>>> electron-7
+/*
 type SyncSourceClassification = {
 	source?: { classification: 'SystemMetaData', purpose: 'FeatureInsight', isMeasurement: true };
 };
@@ -98,9 +94,7 @@ export abstract class AbstractSynchroniser extends Disposable {
 				// Log to telemetry when conflicts are resolved
 				this.telemetryService.publicLog2<{ source: string }, SyncSourceClassification>('sync/conflictsResolved', { source: this.resource });
 			}
-<<<<<<< HEAD
 			*/
-=======
 			if (this.status !== SyncStatus.HasConflicts) {
 				this.setConflicts([]);
 			}
@@ -111,7 +105,6 @@ export abstract class AbstractSynchroniser extends Disposable {
 		if (!equals(this._conflicts, conflicts, (a, b) => isEqual(a.local, b.local) && isEqual(a.remote, b.remote))) {
 			this._conflicts = conflicts;
 			this._onDidChangeConflicts.fire(this._conflicts);
->>>>>>> electron-7
 		}
 	}
 

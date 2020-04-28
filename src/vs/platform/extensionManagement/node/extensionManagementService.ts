@@ -21,11 +21,7 @@ import {
 	INSTALL_ERROR_MALICIOUS,
 	INSTALL_ERROR_INCOMPATIBLE
 } from 'vs/platform/extensionManagement/common/extensionManagement';
-<<<<<<< HEAD
-import { areSameExtensions, getGalleryExtensionId, groupByExtension, getMaliciousExtensionsSet, /* getGalleryExtensionTelemetryData, getLocalExtensionTelemetryData,*/ ExtensionIdentifierWithVersion, parseBuiltInExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-=======
-import { areSameExtensions, getGalleryExtensionId, groupByExtension, getMaliciousExtensionsSet, getGalleryExtensionTelemetryData, getLocalExtensionTelemetryData, ExtensionIdentifierWithVersion } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
->>>>>>> electron-7
+import { areSameExtensions, getGalleryExtensionId, groupByExtension, getMaliciousExtensionsSet, /*getGalleryExtensionTelemetryData, getLocalExtensionTelemetryData,*/ ExtensionIdentifierWithVersion } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { localizeManifest } from '../common/extensionNls';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { INativeEnvironmentService } from 'vs/platform/environment/node/environmentService';
@@ -138,13 +134,8 @@ export class ExtensionManagementService extends Disposable implements IExtension
 		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
 		@ILogService private readonly logService: ILogService,
 		@optional(IDownloadService) private downloadService: IDownloadService,
-<<<<<<< HEAD
 		// @ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IProductService private readonly productService: IProductService,
-=======
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IInstantiationService instantiationService: IInstantiationService,
->>>>>>> electron-7
 	) {
 		super();
 		this.systemExtensionsPath = environmentService.builtinExtensionsPath;
@@ -1002,11 +993,6 @@ export class ExtensionManagementService extends Disposable implements IExtension
 				]
 			}
 		*/
-<<<<<<< HEAD
-	//	this.telemetryService.publicLog(eventName, assign(extensionData, { success: !error, duration, errorcode }));
+		//this.telemetryService.publicLogError(eventName, assign(extensionData, { success: !error, duration, errorcode }));
 	//}
-=======
-		this.telemetryService.publicLogError(eventName, assign(extensionData, { success: !error, duration, errorcode }));
-	}
->>>>>>> electron-7
 }

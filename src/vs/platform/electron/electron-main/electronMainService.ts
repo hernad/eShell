@@ -35,13 +35,8 @@ export class ElectronMainService implements IElectronMainService {
 		@IWindowsMainService private readonly windowsMainService: IWindowsMainService,
 		@IDialogMainService private readonly dialogMainService: IDialogMainService,
 		@ILifecycleMainService private readonly lifecycleMainService: ILifecycleMainService,
-<<<<<<< HEAD
-		@IEnvironmentService private readonly environmentService: IEnvironmentService,
-		// @ITelemetryService private readonly telemetryService: ITelemetryService,
-=======
 		@IEnvironmentService private readonly environmentService: INativeEnvironmentService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
->>>>>>> electron-7
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@ILogService private readonly logService: ILogService
 	) {
 	}

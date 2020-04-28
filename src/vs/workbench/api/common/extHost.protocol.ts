@@ -552,10 +552,12 @@ export interface MainThreadStorageShape extends IDisposable {
 	$setValue(shared: boolean, key: string, value: object): Promise<void>;
 }
 
+/*
 export interface MainThreadTelemetryShape extends IDisposable {
 	$publicLog(eventName: string, data?: any): void;
 	// $publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>): void;
 }
+*/
 
 export interface MainThreadEditorInsetsShape extends IDisposable {
 	$createEditorInset(handle: number, id: string, uri: UriComponents, line: number, height: number, options: modes.IWebviewOptions, extensionId: ExtensionIdentifier, extensionLocation: UriComponents): Promise<void>;

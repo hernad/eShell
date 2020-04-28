@@ -162,12 +162,7 @@ import 'vs/workbench/contrib/bulkEdit/browser/bulkEdit.contribution';
 
 // Search
 import 'vs/workbench/contrib/search/browser/search.contribution';
-<<<<<<< HEAD
 // import 'vs/workbench/contrib/search/browser/searchView';
-// import 'vs/workbench/contrib/search/browser/openAnythingHandler';
-=======
-import 'vs/workbench/contrib/search/browser/searchView';
->>>>>>> electron-7
 
 // Search Editor
 import 'vs/workbench/contrib/searchEditor/browser/searchEditor.contribution';

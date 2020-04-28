@@ -9,15 +9,8 @@ import { onUnexpectedError } from 'vs/base/common/errors';
 import { KeyCode, KeyMod } from 'vs/base/common/keyCodes';
 import * as objects from 'vs/base/common/objects';
 import * as platform from 'vs/base/common/platform';
-<<<<<<< HEAD
 // import { dirname } from 'vs/base/common/resources';
 // import { URI } from 'vs/base/common/uri';
-import { ICodeEditorService } from 'vs/editor/browser/services/codeEditorService';
-import { getSelectionSearchString } from 'vs/editor/contrib/find/findController';
-=======
-import { dirname } from 'vs/base/common/resources';
-import { URI } from 'vs/base/common/uri';
->>>>>>> electron-7
 import { ToggleCaseSensitiveKeybinding, ToggleRegexKeybinding, ToggleWholeWordKeybinding } from 'vs/editor/contrib/find/findModel';
 import * as nls from 'vs/nls';
 import { ICommandAction, MenuId, MenuRegistry, SyncActionDescriptor } from 'vs/platform/actions/common/actions';
@@ -29,42 +22,26 @@ import { ContextKeyExpr /*, IContextKeyService*/ } from 'vs/platform/contextkey/
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { KeybindingsRegistry, KeybindingWeight } from 'vs/platform/keybinding/common/keybindingsRegistry';
-<<<<<<< HEAD
 // import { LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
 // import { IListService, WorkbenchListFocusContextKey, WorkbenchObjectTree } from 'vs/platform/list/browser/listService';
-import { IQuickOpenService } from 'vs/platform/quickOpen/common/quickOpen';
-=======
-import { LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
-import { IListService, WorkbenchListFocusContextKey, WorkbenchObjectTree } from 'vs/platform/list/browser/listService';
->>>>>>> electron-7
 import { Registry } from 'vs/platform/registry/common/platform';
 import { defaultQuickAccessContextKeyValue } from 'vs/workbench/browser/quickaccess';
 import { Extensions as ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
-<<<<<<< HEAD
 // import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-// import { Extensions as ViewExtensions, IViewsRegistry, IViewContainersRegistry, ViewContainerLocation, IViewDescriptorService, IViewsService } from 'vs/workbench/common/views';
+import { /*Extensions as ViewExtensions, IViewsRegistry, IViewContainersRegistry, ViewContainerLocation, IViewDescriptorService,*/ IViewsService } from 'vs/workbench/common/views';
 // import { getMultiSelectedResources } from 'vs/workbench/contrib/files/browser/files';
 import { /*ExplorerFolderContext, ExplorerRootContext, FilesExplorerFocusCondition,*/ IExplorerService, VIEWLET_ID as VIEWLET_ID_FILES } from 'vs/workbench/contrib/files/common/files';
-import { OpenAnythingHandler } from 'vs/workbench/contrib/search/browser/openAnythingHandler';
-import { OpenSymbolHandler } from 'vs/workbench/contrib/search/browser/openSymbolHandler';
-=======
-import { Extensions as WorkbenchExtensions, IWorkbenchContribution, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { Extensions as ViewExtensions, IViewsRegistry, IViewContainersRegistry, ViewContainerLocation, IViewDescriptorService, IViewsService } from 'vs/workbench/common/views';
-import { getMultiSelectedResources } from 'vs/workbench/contrib/files/browser/files';
-import { ExplorerFolderContext, ExplorerRootContext, FilesExplorerFocusCondition, IExplorerService, VIEWLET_ID as VIEWLET_ID_FILES } from 'vs/workbench/contrib/files/common/files';
->>>>>>> electron-7
 import { registerContributions as replaceContributions } from 'vs/workbench/contrib/search/browser/replaceContributions';
-import { clearHistoryCommand, ClearSearchResultsAction, /*CloseReplaceAction,*/ CollapseDeepestExpandedLevelAction, copyAllCommand, /* copyMatchCommand, copyPathCommand, FocusNextInputAction,*/ FocusNextSearchResultAction, /*FocusPreviousInputAction,*/ FocusPreviousSearchResultAction, focusSearchListCommand, /*getSearchView, openSearchView,*/ OpenSearchViewletAction, RefreshAction, /*RemoveAction, ReplaceAction, ReplaceAllAction, ReplaceAllInFolderAction,*/ ReplaceInFilesAction, toggleCaseSensitiveCommand, toggleRegexCommand, toggleWholeWordCommand, FindInFilesCommand, ToggleSearchOnTypeAction, ExpandAllAction } from 'vs/workbench/contrib/search/browser/searchActions';
+import { clearHistoryCommand, ClearSearchResultsAction, /*CloseReplaceAction,*/ CollapseDeepestExpandedLevelAction, copyAllCommand, /* copyMatchCommand, copyPathCommand, FocusNextInputAction,*/ FocusNextSearchResultAction, /*FocusPreviousInputAction,*/ FocusPreviousSearchResultAction, focusSearchListCommand, getSearchView, /*openSearchView,*/ OpenSearchViewletAction, RefreshAction, /*RemoveAction, ReplaceAction, ReplaceAllAction, ReplaceAllInFolderAction,*/ ReplaceInFilesAction, toggleCaseSensitiveCommand, toggleRegexCommand, toggleWholeWordCommand, FindInFilesCommand, ToggleSearchOnTypeAction, ExpandAllAction } from 'vs/workbench/contrib/search/browser/searchActions';
 // import { SearchView } from 'vs/workbench/contrib/search/browser/searchView';
 import { registerContributions as searchWidgetContributions } from 'vs/workbench/contrib/search/browser/searchWidget';
 import * as Constants from 'vs/workbench/contrib/search/common/constants';
 import * as SearchEditorConstants from 'vs/workbench/contrib/searchEditor/browser/constants';
 import { getWorkspaceSymbols } from 'vs/workbench/contrib/search/common/search';
 import { ISearchHistoryService, SearchHistoryService } from 'vs/workbench/contrib/search/common/searchHistoryService';
-<<<<<<< HEAD
-import { /*FileMatchOrMatch,*/ ISearchWorkbenchService, /*RenderableMatch,*/ SearchWorkbenchService, FileMatch /*, Match, FolderMatch*/ } from 'vs/workbench/contrib/search/common/searchModel';
+import { /*FileMatchOrMatch,*/ ISearchWorkbenchService, /*RenderableMatch,*/ SearchWorkbenchService, FileMatch, Match, FolderMatch } from 'vs/workbench/contrib/search/common/searchModel';
 // import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { VIEWLET_ID, /*VIEW_ID,*/ SearchSortOrder } from 'vs/workbench/services/search/common/search';
+import { VIEWLET_ID, /*VIEW_ID,*/ SEARCH_EXCLUDE_CONFIG, SearchSortOrder } from 'vs/workbench/services/search/common/search';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { ExplorerViewPaneContainer } from 'vs/workbench/contrib/files/browser/explorerViewlet';
@@ -72,17 +49,6 @@ import { assertType /*, assertIsDefined*/ } from 'vs/base/common/types';
 // import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 // import { SearchEditor } from 'vs/workbench/contrib/searchEditor/browser/searchEditor';
 // import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
-=======
-import { FileMatchOrMatch, ISearchWorkbenchService, RenderableMatch, SearchWorkbenchService, FileMatch, Match, FolderMatch } from 'vs/workbench/contrib/search/common/searchModel';
-import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
-import { VIEWLET_ID, VIEW_ID, SEARCH_EXCLUDE_CONFIG, SearchSortOrder } from 'vs/workbench/services/search/common/search';
-import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
-import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { ExplorerViewPaneContainer } from 'vs/workbench/contrib/files/browser/explorerViewlet';
-import { assertType, assertIsDefined } from 'vs/base/common/types';
-import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
-import { SearchEditor } from 'vs/workbench/contrib/searchEditor/browser/searchEditor';
-import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
 import { IQuickAccessRegistry, Extensions as QuickAccessExtensions } from 'vs/platform/quickinput/common/quickAccess';
 import { SymbolsQuickAccessProvider } from 'vs/workbench/contrib/search/browser/symbolsQuickAccess';
 import { AnythingQuickAccessProvider } from 'vs/workbench/contrib/search/browser/anythingQuickAccess';
@@ -90,7 +56,6 @@ import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 import { AbstractGotoLineQuickAccessProvider } from 'vs/editor/contrib/quickAccess/gotoLineQuickAccess';
 import { GotoSymbolQuickAccessProvider } from 'vs/workbench/contrib/codeEditor/browser/quickaccess/gotoSymbolQuickAccess';
 import { searchViewIcon } from 'vs/workbench/contrib/search/browser/searchIcons';
->>>>>>> electron-7
 
 registerSingleton(ISearchWorkbenchService, SearchWorkbenchService, true);
 registerSingleton(ISearchHistoryService, SearchHistoryService, true);

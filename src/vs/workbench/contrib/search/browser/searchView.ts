@@ -67,13 +67,9 @@ import { Color, RGBA } from 'vs/base/common/color';
 import { IViewDescriptorService } from 'vs/workbench/common/views';
 import { OpenSearchEditorAction, createEditorFromSearchResult } from 'vs/workbench/contrib/searchEditor/browser/searchEditorActions';
 import { ServiceCollection } from 'vs/platform/instantiation/common/serviceCollection';
-<<<<<<< HEAD
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-=======
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { Orientation } from 'vs/base/browser/ui/sash/sash';
 import { searchDetailsIcon } from 'vs/workbench/contrib/search/browser/searchIcons';
->>>>>>> electron-7
 
 const $ = dom.$;
 

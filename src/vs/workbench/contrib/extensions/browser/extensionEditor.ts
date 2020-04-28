@@ -347,13 +347,8 @@ export class ExtensionEditor extends BaseEditor {
 		template.version.textContent = extension.version;
 		template.description.textContent = extension.description;
 
-<<<<<<< HEAD
-		const extRecommendations = this.extensionTipsService.getAllRecommendationsWithReason();
-		// let recommendationsData = {};
-=======
 		const extRecommendations = this.extensionRecommendationsService.getAllRecommendationsWithReason();
-		let recommendationsData = {};
->>>>>>> electron-7
+		// let recommendationsData = {};
 		if (extRecommendations[extension.identifier.id.toLowerCase()]) {
 			// recommendationsData = { recommendationReason: extRecommendations[extension.identifier.id.toLowerCase()].reasonId };
 		}

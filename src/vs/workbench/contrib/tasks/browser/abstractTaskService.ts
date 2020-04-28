@@ -183,14 +183,7 @@ class TaskMap {
 	}
 }
 
-<<<<<<< HEAD
-interface TaskQuickPickEntry extends IQuickPickItem {
-	task: Task | undefined | null;
-}
-
 /*
-=======
->>>>>>> electron-7
 interface ProblemMatcherDisableMetrics {
 	type: string;
 }

@@ -6,15 +6,9 @@
 import { IAction } from 'vs/base/common/actions';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-<<<<<<< HEAD
-import { IViewDescriptor, IViewDescriptorService } from 'vs/workbench/common/views';
-// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IThemeService, IFileIconTheme } from 'vs/platform/theme/common/themeService';
-=======
 import { IViewDescriptor, IViewDescriptorService, IAddedViewDescriptorRef } from 'vs/workbench/common/views';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
->>>>>>> electron-7
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
@@ -46,11 +40,7 @@ export abstract class FilterViewPaneContainer extends ViewPaneContainer {
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService
 	) {
 
-<<<<<<< HEAD
-		super(viewletId, `${viewletId}.state`, { mergeViewWithContainerWhenSingleView: false }, instantiationService, configurationService, layoutService, contextMenuService, /*telemetryService,*/ extensionService, themeService, storageService, contextService, viewDescriptorService);
-=======
-		super(viewletId, { mergeViewWithContainerWhenSingleView: false }, instantiationService, configurationService, layoutService, contextMenuService, telemetryService, extensionService, themeService, storageService, contextService, viewDescriptorService);
->>>>>>> electron-7
+		super(viewletId, { mergeViewWithContainerWhenSingleView: false }, instantiationService, configurationService, layoutService, contextMenuService, /*telemetryService,*/ extensionService, themeService, storageService, contextService, viewDescriptorService);
 		this._register(onDidChangeFilterValue(newFilterValue => {
 			this.filterValue = newFilterValue;
 			this.onFilterChanged(newFilterValue);

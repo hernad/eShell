@@ -148,17 +148,7 @@ export abstract class AbstractCommandsQuickAccessProvider extends PickerQuickAcc
 					// Add to history
 					this.commandsHistory.push(commandPick.commandId);
 
-<<<<<<< HEAD
-					if (!isFirefox) {
-						// Use a timeout to give the quick open widget a chance to close itself first
-						// Firefox: since the browser is quite picky for certain commands, we do not
-						// use a timeout (https://github.com/microsoft/vscode/issues/83288)
-						await timeout(50);
-					}
-
 					/*
-=======
->>>>>>> electron-7
 					// Telementry
 					this.telemetryService.publicLog2<WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification>('workbenchActionExecuted', {
 						id: commandPick.commandId,

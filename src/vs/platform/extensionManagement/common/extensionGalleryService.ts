@@ -546,14 +546,8 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 
 	download(extension: IGalleryExtension, location: URI, operation: InstallOperation): Promise<void> {
 		this.logService.trace('ExtensionGalleryService#download', extension.identifier.id);
-<<<<<<< HEAD
-		const zip = joinPath(location, generateUuid());
 		// const data = getGalleryExtensionTelemetryData(extension);
 		// const startTime = new Date().getTime();
-=======
-		const data = getGalleryExtensionTelemetryData(extension);
-		const startTime = new Date().getTime();
->>>>>>> electron-7
 		/* __GDPR__
 			"galleryService:downloadVSIX" : {
 				"duration": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "isMeasurement": true },
@@ -571,14 +565,9 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 		} : extension.assets.download;
 
 		return this.getAsset(downloadAsset)
-<<<<<<< HEAD
-			.then(context => this.fileService.writeFile(zip, context.stream))
-			//.then(() => log(new Date().getTime() - startTime))
-			.then(() => zip);
-=======
 			.then(context => this.fileService.writeFile(location, context.stream))
-			.then(() => log(new Date().getTime() - startTime));
->>>>>>> electron-7
+			.then( () => {});
+			//.then(() => log(new Date().getTime() - startTime));
 	}
 
 	getReadme(extension: IGalleryExtension, token: CancellationToken): Promise<string> {

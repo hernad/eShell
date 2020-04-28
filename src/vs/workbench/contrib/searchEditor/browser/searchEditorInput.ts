@@ -17,20 +17,13 @@ import { localize } from 'vs/nls';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IFileDialogService } from 'vs/platform/dialogs/common/dialogs';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-<<<<<<< HEAD
-// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { EditorInput, GroupIdentifier, IEditorInput, IRevertOptions, ISaveOptions, IMoveResult } from 'vs/workbench/common/editor';
-import { SearchEditorFindMatchClass, SearchEditorScheme, SearchEditorBodyScheme } from 'vs/workbench/contrib/searchEditor/browser/constants';
-import { extractSearchQuery, serializeSearchConfiguration } from 'vs/workbench/contrib/searchEditor/browser/searchEditorSerialization';
-=======
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { EditorInput, GroupIdentifier, IEditorInput, IMoveResult, IRevertOptions, ISaveOptions } from 'vs/workbench/common/editor';
 import { Memento } from 'vs/workbench/common/memento';
 import { FileEditorInput } from 'vs/workbench/contrib/files/common/editors/fileEditorInput';
 import { SearchEditorFindMatchClass, SearchEditorScheme } from 'vs/workbench/contrib/searchEditor/browser/constants';
 import { defaultSearchConfig, extractSearchQueryFromModel, parseSavedSearchEditor, serializeSearchConfiguration } from 'vs/workbench/contrib/searchEditor/browser/searchEditorSerialization';
->>>>>>> electron-7
 import { IBackupFileService } from 'vs/workbench/services/backup/common/backup';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
 import { AutoSaveMode, IFilesConfigurationService } from 'vs/workbench/services/filesConfiguration/common/filesConfigurationService';
@@ -92,15 +85,9 @@ export class SearchEditorInput extends EditorInput {
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@IWorkingCopyService private readonly workingCopyService: IWorkingCopyService,
 		@IFilesConfigurationService private readonly filesConfigurationService: IFilesConfigurationService,
-<<<<<<< HEAD
 		// @ITelemetryService private readonly telemetryService: ITelemetryService,
-		@IModeService readonly modeService: IModeService,
-		@IRemotePathService private readonly remotePathService: IRemotePathService
-=======
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IPathService private readonly pathService: IPathService,
 		@IStorageService storageService: IStorageService,
->>>>>>> electron-7
 	) {
 		super();
 
@@ -159,14 +146,9 @@ export class SearchEditorInput extends EditorInput {
 	async saveAs(group: GroupIdentifier, options?: ITextFileSaveOptions): Promise<IEditorInput | undefined> {
 		const path = await this.fileDialogService.pickFileToSave(await this.suggestFileName(), options?.availableFileSystems);
 		if (path) {
-<<<<<<< HEAD
 			// this.telemetryService.publicLog2('searchEditor/saveSearchResults');
-			if (await this.textFileService.create(path, await this.serializeForDisk())) {
-=======
-			this.telemetryService.publicLog2('searchEditor/saveSearchResults');
 			const toWrite = await this.serializeForDisk();
 			if (await this.textFileService.create(path, toWrite, { overwrite: true })) {
->>>>>>> electron-7
 				this.setDirty(false);
 				if (!isEqual(path, this.modelUri)) {
 					const input = this.instantiationService.invokeFunction(getOrMakeSearchEditorInput, { config: this.config, backingUri: path });

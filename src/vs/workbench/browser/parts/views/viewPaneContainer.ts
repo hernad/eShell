@@ -18,15 +18,9 @@ import { Registry } from 'vs/platform/registry/common/platform';
 import { ToolBar } from 'vs/base/browser/ui/toolbar/toolbar';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
-<<<<<<< HEAD
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
-import { IThemeService } from 'vs/platform/theme/common/themeService';
-import { PaneView, IPaneViewOptions, IPaneOptions, Pane, DefaultPaneDndController } from 'vs/base/browser/ui/splitview/paneview';
-=======
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IThemeService, Themable } from 'vs/platform/theme/common/themeService';
 import { PaneView, IPaneViewOptions, IPaneOptions, Pane } from 'vs/base/browser/ui/splitview/paneview';
->>>>>>> electron-7
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IWorkbenchLayoutService, Position } from 'vs/workbench/services/layout/browser/layoutService';
 import { StandardMouseEvent } from 'vs/base/browser/mouseEvent';
@@ -69,18 +63,7 @@ export interface IViewPaneOptions extends IPaneOptions {
 	titleMenuId?: MenuId;
 }
 
-<<<<<<< HEAD
-export class DraggedViewIdentifier {
-	constructor(private _viewId: string) { }
-
-	get id(): string {
-		return this._viewId;
-	}
-}
-
 /*
-=======
->>>>>>> electron-7
 type WelcomeActionClassification = {
 	viewId: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 	uri: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
@@ -475,39 +458,12 @@ export abstract class ViewPane extends Pane implements IView {
 
 				const linkedText = parseLinkedText(line);
 
-<<<<<<< HEAD
-				for (const node of linkedText.nodes) {
-					if (typeof node === 'string') {
-						append(p, document.createTextNode(node));
-					} else if (linkedText.nodes.length === 1) {
-						const button = new Button(p, { title: node.title });
-						button.label = node.label;
-						button.onDidClick(_ => {
-							// this.telemetryService.publicLog2<{ viewId: string, uri: string }, WelcomeActionClassification>('views.welcomeAction', { viewId: this.id, uri: node.href });
-							this.openerService.open(node.href);
-						}, null, disposables);
-						disposables.add(button);
-						disposables.add(attachButtonStyler(button, this.themeService));
-
-						if (preconditions) {
-							const precondition = preconditions[buttonIndex];
-
-							if (precondition) {
-								const updateEnablement = () => button.enabled = this.contextKeyService.contextMatchesRules(precondition);
-								updateEnablement();
-
-								const keys = new Set();
-								precondition.keys().forEach(key => keys.add(key));
-								const onDidChangeContext = Event.filter(this.contextKeyService.onDidChangeContext, e => e.affectsSome(keys));
-								onDidChangeContext(updateEnablement, null, disposables);
-							}
-=======
 				if (linkedText.nodes.length === 1 && typeof linkedText.nodes[0] !== 'string') {
 					const node = linkedText.nodes[0];
 					const button = new Button(this.viewWelcomeContainer, { title: node.title, supportCodicons: true });
 					button.label = node.label;
 					button.onDidClick(_ => {
-						this.telemetryService.publicLog2<{ viewId: string, uri: string }, WelcomeActionClassification>('views.welcomeAction', { viewId: this.id, uri: node.href });
+						// this.telemetryService.publicLog2<{ viewId: string, uri: string }, WelcomeActionClassification>('views.welcomeAction', { viewId: this.id, uri: node.href });
 						this.openerService.open(node.href);
 					}, null, disposables);
 					disposables.add(button);
@@ -524,7 +480,6 @@ export abstract class ViewPane extends Pane implements IView {
 							precondition.keys().forEach(key => keys.add(key));
 							const onDidChangeContext = Event.filter(this.contextKeyService.onDidChangeContext, e => e.affectsSome(keys));
 							onDidChangeContext(updateEnablement, null, disposables);
->>>>>>> electron-7
 						}
 					}
 
@@ -1251,28 +1206,18 @@ export class ViewPaneContainer extends Component implements IViewPaneContainer {
 	}
 
 	protected toggleViewVisibility(viewId: string): void {
-<<<<<<< HEAD
-		const visible = !this.viewsModel.isVisible(viewId);
-		/*
-		type ViewsToggleVisibilityClassification = {
-			viewId: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
-			visible: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
-		};
-		*/
-		// this.telemetryService.publicLog2<{ viewId: String, visible: boolean }, ViewsToggleVisibilityClassification>('views.toggleVisibility', { viewId, visible });
-		this.viewsModel.setVisible(viewId, visible);
-=======
 		// Check if view is active
 		if (this.viewContainerModel.activeViewDescriptors.some(viewDescriptor => viewDescriptor.id === viewId)) {
 			const visible = !this.viewContainerModel.isVisible(viewId);
+			/*
 			type ViewsToggleVisibilityClassification = {
 				viewId: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 				visible: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 			};
 			this.telemetryService.publicLog2<{ viewId: String, visible: boolean }, ViewsToggleVisibilityClassification>('views.toggleVisibility', { viewId, visible });
+			*/
 			this.viewContainerModel.setVisible(viewId, visible);
 		}
->>>>>>> electron-7
 	}
 
 	private addPane(pane: ViewPane, size: number, index = this.paneItems.length - 1): void {

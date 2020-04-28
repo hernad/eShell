@@ -9,13 +9,8 @@ import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
 import { Button } from 'vs/base/browser/ui/button/button';
 import { ITreeElement } from 'vs/base/browser/ui/tree/tree';
 import { Action } from 'vs/base/common/actions';
-<<<<<<< HEAD
 // import * as arrays from 'vs/base/common/arrays';
-import { Delayer, ThrottledDelayer, timeout } from 'vs/base/common/async';
-=======
-import * as arrays from 'vs/base/common/arrays';
 import { Delayer, ThrottledDelayer, timeout, IntervalTimer } from 'vs/base/common/async';
->>>>>>> electron-7
 import { CancellationToken, CancellationTokenSource } from 'vs/base/common/cancellation';
 import * as collections from 'vs/base/common/collections';
 import { getErrorMessage, isPromiseCanceledError } from 'vs/base/common/errors';
@@ -1369,11 +1364,7 @@ export class SettingsEditor2 extends BaseEditor {
 					const message = getErrorMessage(err).trim();
 					if (message && message !== 'Error') {
 						// "Error" = any generic network error
-<<<<<<< HEAD
-						// this.telemetryService.publicLog('settingsEditor.searchError', { message });
-=======
-						this.telemetryService.publicLogError('settingsEditor.searchError', { message });
->>>>>>> electron-7
+						// this.telemetryService.publicLogError('settingsEditor.searchError', { message });
 						this.logService.info('Setting search error: ' + message);
 					}
 					return null;
