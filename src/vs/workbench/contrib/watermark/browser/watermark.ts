@@ -15,14 +15,12 @@ import { IWorkspaceContextService, WorkbenchState } from 'vs/platform/workspace/
 import { IWorkbenchContribution, IWorkbenchContributionsRegistry, Extensions as WorkbenchExtensions } from 'vs/workbench/common/contributions';
 import { ILifecycleService, LifecyclePhase } from 'vs/platform/lifecycle/common/lifecycle';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-// import { OpenRecentAction } from 'vs/workbench/electron-browser/actions';
-// import { GlobalNewUntitledFileAction } from 'vs/workbench/parts/files/electron-browser/fileActions';
+// import { GlobalNewUntitledFileAction } from 'vs/workbench/contrib/files/browser/fileActions';
 // import { OpenFolderAction, OpenFileFolderAction, OpenFileAction } from 'vs/workbench/browser/actions/workspaceActions';
-import { ShowAllCommandsAction } from 'vs/workbench/contrib/quickopen/browser/commandsHandler';
+import { ShowAllCommandsAction } from 'vs/workbench/contrib/quickaccess/browser/commandsQuickAccess';
 import { Parts, IWorkbenchLayoutService } from 'vs/workbench/services/layout/browser/layoutService';
 // import { StartAction } from 'vs/workbench/contrib/debug/browser/debugActions';
 // import { FindInFilesActionId } from 'vs/workbench/contrib/search/common/constants';
-// import { QUICKOPEN_ACTION_ID } from 'vs/workbench/browser/parts/quickopen/quickopen';
 import * as dom from 'vs/base/browser/dom';
 // import { StartAction } from 'vs/workbench/parts/debug/browser/debugActions';
 // import { FindInFilesActionId } from 'vs/workbench/parts/search/common/constants';
@@ -45,7 +43,7 @@ interface WatermarkEntry {
 
 const showCommands: WatermarkEntry = { text: nls.localize('watermark.showCommands', "Show All Commands"), id: ShowAllCommandsAction.ID };
 /*
-const quickOpen: WatermarkEntry = { text: nls.localize('watermark.quickOpen', "Go to File"), id: QUICKOPEN_ACTION_ID };
+const quickAccess: WatermarkEntry = { text: nls.localize('watermark.quickAccess', "Go to File"), id: 'workbench.action.quickOpen' };
 const openFileNonMacOnly: WatermarkEntry = { text: nls.localize('watermark.openFile', "Open File"), id: OpenFileAction.ID, mac: false };
 const openFolderNonMacOnly: WatermarkEntry = { text: nls.localize('watermark.openFolder', "Open Folder"), id: OpenFolderAction.ID, mac: false };
 const openFileOrFolderMacOnly: WatermarkEntry = { text: nls.localize('watermark.openFileFolder', "Open File or Folder"), id: OpenFileFolderAction.ID, mac: true };
@@ -62,7 +60,11 @@ const noFolderEntries = [
 ];
 
 const folderEntries = [
-	showCommands
+	showCommands,
+//	quickAccess,
+//	findInFiles,
+//	startDebugging,
+//	toggleTerminal
 ];
 
 const WORKBENCH_TIPS_ENABLED_KEY = 'workbench.tips.enabled';

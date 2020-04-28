@@ -32,10 +32,11 @@ import { InMemoryFileSystemProvider } from 'vs/platform/files/common/inMemoryFil
 import { ConfigurationService } from 'vs/platform/configuration/common/configurationService';
 import { Disposable } from 'vs/base/common/lifecycle';
 import { Emitter } from 'vs/base/common/event';
-import { IAuthenticationTokenService } from 'vs/platform/authentication/common/authentication';
+import { IAuthenticationTokenService, IUserDataSyncAuthToken } from 'vs/platform/authentication/common/authentication';
 import product from 'vs/platform/product/common/product';
 import { IProductService } from 'vs/platform/product/common/productService';
 import { UserDataSyncBackupStoreService } from 'vs/platform/userDataSync/common/userDataSyncBackupStoreService';
+import { IStorageKeysSyncRegistryService, StorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 
 export class UserDataSyncClient extends Disposable {
 
@@ -52,10 +53,9 @@ export class UserDataSyncClient extends Disposable {
 		const environmentService = this.instantiationService.stub(IEnvironmentService, <Partial<IEnvironmentService>>{
 			userDataSyncHome,
 			settingsResource: joinPath(userDataDirectory, 'settings.json'),
-			settingsSyncPreviewResource: joinPath(userDataSyncHome, 'settings.json'),
 			keybindingsResource: joinPath(userDataDirectory, 'keybindings.json'),
-			keybindingsSyncPreviewResource: joinPath(userDataSyncHome, 'keybindings.json'),
-			argvResource: joinPath(userDataDirectory, 'argv.json'),
+			snippetsHome: joinPath(userDataDirectory, 'snippets'),
+			argvResource: joinPath(userDataDirectory, 'argv.json')
 		});
 
 		const logService = new NullLogService();
@@ -65,7 +65,7 @@ export class UserDataSyncClient extends Disposable {
 			_serviceBrand: undefined, ...product, ...{
 				'configurationSync.store': {
 					url: this.testServer.url,
-					authenticationProviderId: 'test'
+					authenticationProviders: { 'test': { scopes: [] } }
 				}
 			}
 		});
@@ -82,8 +82,8 @@ export class UserDataSyncClient extends Disposable {
 
 		this.instantiationService.stub(IRequestService, this.testServer);
 		this.instantiationService.stub(IAuthenticationTokenService, <Partial<IAuthenticationTokenService>>{
-			onDidChangeToken: new Emitter<string | undefined>().event,
-			async getToken() { return 'token'; }
+			onDidChangeToken: new Emitter<IUserDataSyncAuthToken | undefined>().event,
+			async getToken() { return { authenticationProviderId: 'id', token: 'token' }; }
 		});
 
 		this.instantiationService.stub(IUserDataSyncLogService, logService);
@@ -92,6 +92,7 @@ export class UserDataSyncClient extends Disposable {
 		this.instantiationService.stub(IUserDataSyncBackupStoreService, this.instantiationService.createInstance(UserDataSyncBackupStoreService));
 		this.instantiationService.stub(IUserDataSyncUtilService, new TestUserDataSyncUtilService());
 		this.instantiationService.stub(IUserDataSyncEnablementService, this.instantiationService.createInstance(UserDataSyncEnablementService));
+		this.instantiationService.stub(IStorageKeysSyncRegistryService, this.instantiationService.createInstance(StorageKeysSyncRegistryService));
 
 		this.instantiationService.stub(IGlobalExtensionEnablementService, this.instantiationService.createInstance(GlobalExtensionEnablementService));
 		this.instantiationService.stub(IExtensionManagementService, <Partial<IExtensionManagementService>>{
@@ -109,6 +110,7 @@ export class UserDataSyncClient extends Disposable {
 		if (!empty) {
 			await fileService.writeFile(environmentService.settingsResource, VSBuffer.fromString(JSON.stringify({})));
 			await fileService.writeFile(environmentService.keybindingsResource, VSBuffer.fromString(JSON.stringify([])));
+			await fileService.writeFile(joinPath(environmentService.snippetsHome, 'c.json'), VSBuffer.fromString(`{}`));
 			await fileService.writeFile(environmentService.argvResource, VSBuffer.fromString(JSON.stringify({ 'locale': 'en' })));
 		}
 		await configurationService.reloadConfiguration();
@@ -202,16 +204,13 @@ export class UserDataSyncTestServer implements IRequestService {
 	}
 
 	private async writeData(resource: string, content: string = '', headers: IHeaders = {}): Promise<IRequestContext> {
-		if (!headers['If-Match']) {
-			return this.toResponse(428);
-		}
 		if (!this.session) {
 			this.session = generateUuid();
 		}
 		const resourceKey = ALL_SYNC_RESOURCES.find(key => key === resource);
 		if (resourceKey) {
 			const data = this.data.get(resourceKey);
-			if (headers['If-Match'] !== (data ? data.ref : '0')) {
+			if (headers['If-Match'] !== undefined && headers['If-Match'] !== (data ? data.ref : '0')) {
 				return this.toResponse(412);
 			}
 			const ref = `${parseInt(data?.ref || '0') + 1}`;
