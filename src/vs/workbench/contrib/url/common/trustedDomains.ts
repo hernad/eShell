@@ -14,6 +14,9 @@ import { IEditorService } from 'vs/workbench/services/editor/common/editorServic
 
 const TRUSTED_DOMAINS_URI = URI.parse('trustedDomains:/Trusted Domains');
 
+export const TRUSTED_DOMAINS_STORAGE_KEY = 'http.linkProtectionTrustedDomains';
+export const TRUSTED_DOMAINS_CONTENT_STORAGE_KEY = 'http.linkProtectionTrustedDomainsContent';
+
 export const manageTrustedDomainSettingsCommand = {
 	id: 'workbench.action.manageTrustedDomain',
 	description: {
@@ -101,9 +104,9 @@ export async function configureOpenerTrustedDomainsHandler(
 					: pickedResult.id === 'trustSubdomain' ? topLevelDomain : '*';
 
 				if (trustedDomains.indexOf(itemToTrust) === -1) {
-					storageService.remove('http.linkProtectionTrustedDomainsContent', StorageScope.GLOBAL);
+					storageService.remove(TRUSTED_DOMAINS_CONTENT_STORAGE_KEY, StorageScope.GLOBAL);
 					storageService.store(
-						'http.linkProtectionTrustedDomains',
+						TRUSTED_DOMAINS_STORAGE_KEY,
 						JSON.stringify([...trustedDomains, itemToTrust]),
 						StorageScope.GLOBAL
 					);
@@ -123,7 +126,7 @@ export function readTrustedDomains(storageService: IStorageService, productServi
 
 	let trustedDomains: string[] = [];
 	try {
-		const trustedDomainsSrc = storageService.get('http.linkProtectionTrustedDomains', StorageScope.GLOBAL);
+		const trustedDomainsSrc = storageService.get(TRUSTED_DOMAINS_STORAGE_KEY, StorageScope.GLOBAL);
 		if (trustedDomainsSrc) {
 			trustedDomains = JSON.parse(trustedDomainsSrc);
 		}

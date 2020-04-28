@@ -10,6 +10,7 @@ import { URI } from 'vs/base/common/uri';
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 // import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
 import { IWorkbenchContribution } from 'vs/workbench/common/contributions';
+<<<<<<< HEAD
 import { endsWith } from 'vs/base/common/strings';
 // import { ITextFileService, } from 'vs/workbench/services/textfile/common/textfiles';
 // import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
@@ -131,6 +132,15 @@ export function getRemotes(text: string, stripEndingDotGit: boolean = false): st
 	}
 	return remotes;
 }
+=======
+import { ITextFileService, } from 'vs/workbench/services/textfile/common/textfiles';
+import { ISharedProcessService } from 'vs/platform/ipc/electron-browser/sharedProcessService';
+import { IWorkspaceTagsService, Tags } from 'vs/workbench/contrib/tags/common/workspaceTags';
+import { IWorkspaceInformation } from 'vs/platform/diagnostics/common/diagnostics';
+import { IRequestService } from 'vs/platform/request/common/request';
+import { isWindows } from 'vs/base/common/platform';
+import { getRemotes, SecondLevelDomainWhitelist, getDomainsOfRemotes } from 'vs/platform/extensionManagement/common/configRemotes';
+>>>>>>> electron-7
 
 export function getHashedRemotesFromConfig(text: string, stripEndingDotGit: boolean = false): string[] {
 	return getRemotes(text, stripEndingDotGit).map(r => {

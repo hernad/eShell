@@ -30,6 +30,7 @@ import { IWorkbenchActionRegistry, Extensions as ActionExtensions } from 'vs/wor
 import { SyncActionDescriptor } from 'vs/platform/actions/common/actions';
 import { ViewPaneContainer } from 'vs/workbench/browser/parts/views/viewPaneContainer';
 import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
+import { Codicon } from 'vs/base/common/codicons';
 
 export interface IUserFriendlyViewsContainerDescriptor {
 	id: string;
@@ -53,7 +54,8 @@ const viewsContainerSchema: IJSONSchema = {
 			description: localize('vscode.extension.contributes.views.containers.icon', "Path to the container icon. Icons are 24x24 centered on a 50x40 block and have a fill color of 'rgb(215, 218, 224)' or '#d7dae0'. It is recommended that icons be in SVG, though any image file type is accepted."),
 			type: 'string'
 		}
-	}
+	},
+	required: ['id', 'title', 'icon']
 };
 
 export const viewsContainersContribution: IJSONSchema = {
@@ -62,6 +64,11 @@ export const viewsContainersContribution: IJSONSchema = {
 	properties: {
 		'activitybar': {
 			description: localize('views.container.activitybar', "Contribute views containers to Activity Bar"),
+			type: 'array',
+			items: viewsContainerSchema
+		},
+		'panel': {
+			description: localize('views.container.panel', "Contribute views containers to Panel"),
 			type: 'array',
 			items: viewsContainerSchema
 		}
@@ -216,7 +223,8 @@ class ViewsExtensionHandler implements IWorkbenchContribution {
 
 	private addCustomViewContainers(extensionPoints: readonly IExtensionPointUser<ViewContainerExtensionPointType>[], existingViewContainers: ViewContainer[]): void {
 		const viewContainersRegistry = Registry.as<IViewContainersRegistry>(ViewContainerExtensions.ViewContainersRegistry);
-		let order = TEST_VIEW_CONTAINER_ORDER + viewContainersRegistry.all.filter(v => !!v.extensionId).length + 1;
+		let activityBarOrder = TEST_VIEW_CONTAINER_ORDER + viewContainersRegistry.all.filter(v => !!v.extensionId && viewContainersRegistry.getViewContainerLocation(v) === ViewContainerLocation.Sidebar).length + 1;
+		let panelOrder = 5 + viewContainersRegistry.all.filter(v => !!v.extensionId && viewContainersRegistry.getViewContainerLocation(v) === ViewContainerLocation.Panel).length + 1;
 		for (let { value, collector, description } of extensionPoints) {
 			forEach(value, entry => {
 				if (!this.isValidViewsContainer(entry.value, collector)) {
@@ -224,7 +232,10 @@ class ViewsExtensionHandler implements IWorkbenchContribution {
 				}
 				switch (entry.key) {
 					case 'activitybar':
-						order = this.registerCustomViewContainers(entry.value, description, order, existingViewContainers);
+						activityBarOrder = this.registerCustomViewContainers(entry.value, description, activityBarOrder, existingViewContainers, ViewContainerLocation.Sidebar);
+						break;
+					case 'panel':
+						panelOrder = this.registerCustomViewContainers(entry.value, description, panelOrder, existingViewContainers, ViewContainerLocation.Panel);
 						break;
 				}
 			});
@@ -248,9 +259,9 @@ class ViewsExtensionHandler implements IWorkbenchContribution {
 
 	private registerTestViewContainer(): void {
 		const title = localize('test', "Test");
-		const icon = URI.parse(require.toUrl('./media/test.svg'));
+		const icon = Codicon.beaker.classNames;
 
-		this.registerCustomViewContainer(TEST_VIEW_CONTAINER_ID, title, icon, TEST_VIEW_CONTAINER_ORDER, undefined);
+		this.registerCustomViewContainer(TEST_VIEW_CONTAINER_ID, title, icon, TEST_VIEW_CONTAINER_ORDER, undefined, ViewContainerLocation.Sidebar);
 	}
 
 	private isValidViewsContainer(viewsContainersDescriptors: IUserFriendlyViewsContainerDescriptor[], collector: ExtensionMessageCollector): boolean {
@@ -281,11 +292,11 @@ class ViewsExtensionHandler implements IWorkbenchContribution {
 		return true;
 	}
 
-	private registerCustomViewContainers(containers: IUserFriendlyViewsContainerDescriptor[], extension: IExtensionDescription, order: number, existingViewContainers: ViewContainer[]): number {
+	private registerCustomViewContainers(containers: IUserFriendlyViewsContainerDescriptor[], extension: IExtensionDescription, order: number, existingViewContainers: ViewContainer[], location: ViewContainerLocation): number {
 		containers.forEach(descriptor => {
 			const icon = resources.joinPath(extension.extensionLocation, descriptor.icon);
 			const id = `workbench.view.extension.${descriptor.id}`;
-			const viewContainer = this.registerCustomViewContainer(id, descriptor.title, icon, order++, extension.identifier);
+			const viewContainer = this.registerCustomViewContainer(id, descriptor.title, icon, order++, extension.identifier, location);
 
 			// Move those views that belongs to this container
 			if (existingViewContainers.length) {
@@ -303,7 +314,7 @@ class ViewsExtensionHandler implements IWorkbenchContribution {
 		return order;
 	}
 
-	private registerCustomViewContainer(id: string, title: string, icon: URI, order: number, extensionId: ExtensionIdentifier | undefined): ViewContainer {
+	private registerCustomViewContainer(id: string, title: string, icon: URI | string, order: number, extensionId: ExtensionIdentifier | undefined, location: ViewContainerLocation): ViewContainer {
 		let viewContainer = this.viewContainersRegistry.get(id);
 
 		if (!viewContainer) {
@@ -313,12 +324,12 @@ class ViewsExtensionHandler implements IWorkbenchContribution {
 				name: title, extensionId,
 				ctorDescriptor: new SyncDescriptor(
 					ViewPaneContainer,
-					[id, `${id}.state`, { mergeViewWithContainerWhenSingleView: true }]
+					[id, { mergeViewWithContainerWhenSingleView: true }]
 				),
 				hideIfEmpty: true,
 				order,
 				icon,
-			}, ViewContainerLocation.Sidebar);
+			}, location);
 
 			// Register Action to Open Viewlet
 			class OpenCustomViewletAction extends ShowViewletAction {

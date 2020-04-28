@@ -55,7 +55,12 @@ import './mainThreadUrls';
 import './mainThreadWindow';
 import './mainThreadWebview';
 import './mainThreadWorkspace';
+<<<<<<< HEAD
 // import './mainThreadComments';
+=======
+import './mainThreadComments';
+import './mainThreadNotebook';
+>>>>>>> electron-7
 import './mainThreadTask';
 import './mainThreadLabelService';
 import './mainThreadTunnelService';

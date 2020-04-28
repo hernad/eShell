@@ -11,10 +11,14 @@ import * as strings from 'vs/base/common/strings';
 import { Emitter } from 'vs/base/common/event';
 import * as errors from 'vs/base/common/errors';
 import { ToolBar } from 'vs/base/browser/ui/toolbar/toolbar';
-import { IActionViewItem, ActionsOrientation } from 'vs/base/browser/ui/actionbar/actionbar';
+import { IActionViewItem, ActionsOrientation, prepareActions } from 'vs/base/browser/ui/actionbar/actionbar';
 import { ProgressBar } from 'vs/base/browser/ui/progressbar/progressbar';
+<<<<<<< HEAD
 import { prepareActions } from 'vs/workbench/browser/actions';
 import { IAction, /*WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification*/ } from 'vs/base/common/actions';
+=======
+import { IAction, WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
+>>>>>>> electron-7
 import { Part, IPartOptions } from 'vs/workbench/browser/part';
 import { Composite, CompositeRegistry } from 'vs/workbench/browser/composite';
 import { IComposite } from 'vs/workbench/common/composite';
@@ -61,11 +65,11 @@ export abstract class CompositePart<T extends Composite> extends Part {
 	protected toolBar: ToolBar | undefined;
 	protected titleLabelElement: HTMLElement | undefined;
 
-	private mapCompositeToCompositeContainer = new Map<string, HTMLElement>();
-	private mapActionsBindingToComposite = new Map<string, () => void>();
+	private readonly mapCompositeToCompositeContainer = new Map<string, HTMLElement>();
+	private readonly mapActionsBindingToComposite = new Map<string, () => void>();
 	private activeComposite: Composite | undefined;
 	private lastActiveCompositeId: string;
-	private instantiatedCompositeItems: Map<string, CompositeItem>;
+	private readonly instantiatedCompositeItems = new Map<string, CompositeItem>();
 	private titleLabel: ICompositeTitleLabel | undefined;
 	private progressBar: ProgressBar | undefined;
 	private contentAreaSize: Dimension | undefined;
@@ -73,6 +77,7 @@ export abstract class CompositePart<T extends Composite> extends Part {
 	private currentCompositeOpenToken: string | undefined;
 
 	constructor(
+<<<<<<< HEAD
 		private notificationService: INotificationService,
 		protected storageService: IStorageService,
 		// private telemetryService: ITelemetryService,
@@ -87,12 +92,27 @@ export abstract class CompositePart<T extends Composite> extends Part {
 		// private nameForTelemetry: string,
 		private compositeCSSClass: string,
 		private titleForegroundColor: string | undefined,
+=======
+		private readonly notificationService: INotificationService,
+		protected readonly storageService: IStorageService,
+		private readonly telemetryService: ITelemetryService,
+		protected readonly contextMenuService: IContextMenuService,
+		protected readonly layoutService: IWorkbenchLayoutService,
+		protected readonly keybindingService: IKeybindingService,
+		protected readonly instantiationService: IInstantiationService,
+		themeService: IThemeService,
+		protected readonly registry: CompositeRegistry<T>,
+		private readonly activeCompositeSettingsKey: string,
+		private readonly defaultCompositeId: string,
+		private readonly nameForTelemetry: string,
+		private readonly compositeCSSClass: string,
+		private readonly titleForegroundColor: string | undefined,
+>>>>>>> electron-7
 		id: string,
 		options: IPartOptions
 	) {
 		super(id, options, themeService, storageService, layoutService);
 
-		this.instantiatedCompositeItems = new Map<string, CompositeItem>();
 		this.lastActiveCompositeId = storageService.get(activeCompositeSettingsKey, StorageScope.WORKSPACE, this.defaultCompositeId);
 	}
 
@@ -169,7 +189,7 @@ export abstract class CompositePart<T extends Composite> extends Part {
 		// Instantiate composite from registry otherwise
 		const compositeDescriptor = this.registry.getComposite(id);
 		if (compositeDescriptor) {
-			const compositeProgressIndicator = this.instantiationService.createInstance(CompositeProgressIndicator, assertIsDefined(this.progressBar), compositeDescriptor.id, !!isActive, undefined);
+			const compositeProgressIndicator = this.instantiationService.createInstance(CompositeProgressIndicator, assertIsDefined(this.progressBar), compositeDescriptor.id, !!isActive);
 			const compositeInstantiationService = this.instantiationService.createChild(new ServiceCollection(
 				[IEditorProgressService, compositeProgressIndicator] // provide the editor progress service for any editors instantiated within the composite
 			));

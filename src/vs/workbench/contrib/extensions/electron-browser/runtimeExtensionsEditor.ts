@@ -21,7 +21,7 @@ import { append, $, addClass, toggleClass, Dimension, clearNode } from 'vs/base/
 import { ActionBar, Separator } from 'vs/base/browser/ui/actionbar/actionbar';
 import { dispose, IDisposable } from 'vs/base/common/lifecycle';
 import { RunOnceScheduler } from 'vs/base/common/async';
-import { clipboard } from 'electron';
+import { IClipboardService } from 'vs/platform/clipboard/common/clipboardService';
 import { EnablementState } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
 import { IElectronService } from 'vs/platform/electron/node/electron';
@@ -48,6 +48,7 @@ import { IOpenerService } from 'vs/platform/opener/common/opener';
 import { URI } from 'vs/base/common/uri';
 import { editorBackground } from 'vs/platform/theme/common/colorRegistry';
 import { domEvent } from 'vs/base/browser/event';
+import { IListAccessibilityProvider } from 'vs/base/browser/ui/list/listWidget';
 
 export const IExtensionHostProfileService = createDecorator<IExtensionHostProfileService>(
 	'extensionHostProfileService'
@@ -129,7 +130,8 @@ export class RuntimeExtensionsEditor extends BaseEditor {
 		@IStorageService storageService: IStorageService,
 		@ILabelService private readonly _labelService: ILabelService,
 		@IWorkbenchEnvironmentService private readonly _environmentService: IWorkbenchEnvironmentService,
-		@IOpenerService private readonly _openerService: IOpenerService
+		@IOpenerService private readonly _openerService: IOpenerService,
+		@IClipboardService private readonly _clipboardService: IClipboardService
 	) {
 		super(RuntimeExtensionsEditor.ID, /*telemetryService,*/ themeService, storageService);
 
@@ -343,7 +345,7 @@ export class RuntimeExtensionsEditor extends BaseEditor {
 					data.actionbar.push(this._instantiationService.createInstance(SlowExtensionAction, element.description, element.unresponsiveProfile), { icon: true, label: true });
 				}
 				if (isNonEmptyArray(element.status.runtimeErrors)) {
-					data.actionbar.push(new ReportExtensionIssueAction(element, this._openerService), { icon: true, label: true });
+					data.actionbar.push(new ReportExtensionIssueAction(element, this._openerService, this._clipboardService), { icon: true, label: true });
 				}
 
 				let title: string;
@@ -441,7 +443,8 @@ export class RuntimeExtensionsEditor extends BaseEditor {
 			horizontalScrolling: false,
 			overrideStyles: {
 				listBackground: editorBackground
-			}
+			},
+			accessibilityProvider: new RuntimeExtensionsEditorAccessibilityProvider()
 		});
 
 		this._list.splice(0, this._list.length, this._elements || undefined);
@@ -453,7 +456,7 @@ export class RuntimeExtensionsEditor extends BaseEditor {
 
 			const actions: IAction[] = [];
 
-			actions.push(new ReportExtensionIssueAction(e.element, this._openerService));
+			actions.push(new ReportExtensionIssueAction(e.element, this._openerService, this._clipboardService));
 			actions.push(new Separator());
 
 			if (e.element.marketplaceInfo) {
@@ -530,25 +533,29 @@ export class ReportExtensionIssueAction extends Action {
 
 	private readonly _url: string;
 
-	constructor(extension: {
-		description: IExtensionDescription;
-		marketplaceInfo: IExtension;
-		status?: IExtensionsStatus;
-		unresponsiveProfile?: IExtensionHostProfile
-	}, @IOpenerService private readonly openerService: IOpenerService) {
+	constructor(
+		extension: {
+			description: IExtensionDescription;
+			marketplaceInfo: IExtension;
+			status?: IExtensionsStatus;
+			unresponsiveProfile?: IExtensionHostProfile
+		},
+		@IOpenerService private readonly openerService: IOpenerService,
+		@IClipboardService private readonly clipboardService: IClipboardService
+	) {
 		super(ReportExtensionIssueAction._id, ReportExtensionIssueAction._label, 'extension-action report-issue');
 		this.enabled = extension.marketplaceInfo
 			&& extension.marketplaceInfo.type === ExtensionType.User
 			&& !!extension.description.repository && !!extension.description.repository.url;
 
-		this._url = ReportExtensionIssueAction._generateNewIssueUrl(extension);
+		this._url = this._generateNewIssueUrl(extension);
 	}
 
 	async run(): Promise<void> {
 		this.openerService.open(URI.parse(this._url));
 	}
 
-	private static _generateNewIssueUrl(extension: {
+	private _generateNewIssueUrl(extension: {
 		description: IExtensionDescription;
 		marketplaceInfo: IExtension;
 		status?: IExtensionsStatus;
@@ -564,7 +571,7 @@ export class ReportExtensionIssueAction extends Action {
 		let reason = 'Bug';
 		let title = 'Extension issue';
 		let message = ':warning: We have written the needed data into your clipboard. Please paste! :warning:';
-		clipboard.writeText('```json \n' + JSON.stringify(extension.status, null, '\t') + '\n```');
+		this.clipboardService.writeText('```json \n' + JSON.stringify(extension.status, null, '\t') + '\n```');
 
 		const osVersion = `${os.type()} ${os.arch()} ${os.release()}`;
 		const queryStringPrefix = baseUrl.indexOf('?') === -1 ? '?' : '&';
@@ -713,5 +720,15 @@ export class SaveExtensionHostProfileAction extends Action {
 		}
 
 		return writeFile(savePath, JSON.stringify(profileInfo ? profileInfo.data : {}, null, '\t'));
+	}
+}
+
+class RuntimeExtensionsEditorAccessibilityProvider implements IListAccessibilityProvider<IRuntimeExtension> {
+	getWidgetAriaLabel(): string {
+		return nls.localize('runtimeExtensions', "Runtime Extensions");
+	}
+
+	getAriaLabel(element: IRuntimeExtension): string | null {
+		return element.description.name;
 	}
 }

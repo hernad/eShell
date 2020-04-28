@@ -7,7 +7,8 @@ import * as nls from 'vs/nls';
 import { isMacintosh, language } from 'vs/base/common/platform';
 import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { app, shell, Menu, MenuItem, BrowserWindow, MenuItemConstructorOptions, WebContents, Event, KeyboardEvent } from 'electron';
-import { OpenContext, IRunActionInWindowRequest, getTitleBarStyle, IRunKeybindingInWindowRequest, IWindowOpenable } from 'vs/platform/windows/common/windows';
+import { getTitleBarStyle, IWindowOpenable } from 'vs/platform/windows/common/windows';
+import { OpenContext, IRunActionInWindowRequest, IRunKeybindingInWindowRequest } from 'vs/platform/windows/node/window';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IUpdateService, StateType } from 'vs/platform/update/common/update';
@@ -23,6 +24,7 @@ import { IStateService } from 'vs/platform/state/node/state';
 import { ILifecycleMainService } from 'vs/platform/lifecycle/electron-main/lifecycleMainService';
 // import { WorkbenchActionExecutedEvent, WorkbenchActionExecutedClassification } from 'vs/base/common/actions';
 import { IElectronMainService } from 'vs/platform/electron/electron-main/electronMainService';
+import { INativeEnvironmentService } from 'vs/platform/environment/node/environmentService';
 
 // const telemetryFrom = 'menu';
 
@@ -65,8 +67,13 @@ export class Menubar {
 		@IUpdateService private readonly updateService: IUpdateService,
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IWindowsMainService private readonly windowsMainService: IWindowsMainService,
+<<<<<<< HEAD
 		@IEnvironmentService private readonly environmentService: IEnvironmentService,
 		// @ITelemetryService private readonly telemetryService: ITelemetryService,
+=======
+		@IEnvironmentService private readonly environmentService: INativeEnvironmentService,
+		@ITelemetryService private readonly telemetryService: ITelemetryService,
+>>>>>>> electron-7
 		@IWorkspacesHistoryMainService private readonly workspacesHistoryMainService: IWorkspacesHistoryMainService,
 		@IStateService private readonly stateService: IStateService,
 		@ILifecycleMainService private readonly lifecycleMainService: ILifecycleMainService,
@@ -525,6 +532,7 @@ export class Menubar {
 		[
 			minimize,
 			zoom,
+			__separator__(),
 			switchWindow,
 			...nativeTabMenuItems,
 			__separator__(),
