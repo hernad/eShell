@@ -164,6 +164,7 @@
     "vsce": "1.48.0",
     "vscode-debugprotocol": "^1.40.0",
     "vscode-nls-dev": "^3.3.1",
+    "vscode-windows-registry": "^1.0.2",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.3.8",
     "webpack-stream": "^5.1.1",
@@ -178,7 +179,6 @@
   },
   "optionalDependencies": {
     "vscode-windows-ca-certs": "0.2.0",
-    "vscode-windows-registry": "1.0.2",
     "windows-foreground-love": "0.2.0",
     "windows-mutex": "0.3.0",
     "windows-process-tree": "0.2.4"

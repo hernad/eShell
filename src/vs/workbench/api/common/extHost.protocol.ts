@@ -55,7 +55,7 @@ import { INotebookMimeTypeSelector, IOutput, INotebookDisplayOrder, NotebookCell
 import { CallHierarchyItem } from 'vs/workbench/contrib/callHierarchy/common/callHierarchy';
 import { Dto } from 'vs/base/common/types';
 import { ISerializableEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-import { DebugConfigurationProviderTriggerKind } from 'vs/workbench/api/common/extHostTypes';
+// import { DebugConfigurationProviderTriggerKind } from 'vs/workbench/api/common/extHostTypes';
 
 export interface IEnvironment {
 	isExtensionDevelopmentDebug: boolean;
