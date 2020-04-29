@@ -49,6 +49,7 @@ rm -rf src/vs/workbench/contrib/comments
 rm -rf src/vs/workbench/contrib/scm
 
 rm src/vs/workbench/services/telemetry/browser/telemetryService.ts
+rm src/vs/workbench/services/telemetry/electron-browser/telemetryService.ts
 
 rm -rf src/vs/workbench/contrib/telemetry
 
@@ -62,4 +63,7 @@ rm -rf src/vs/workbench/services/configurationResolver/test
 
 rm -rf src/vs/platform/userDataSync/test
 
+
 find src -name test -type d -exec rm -rf \{\} +
+
+git checkout electron-7 -- src/vs/platform/telemetry/common/telemetry.ts
