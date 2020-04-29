@@ -153,7 +153,7 @@ export class WebWorkerExtensionHostStarter implements IExtensionHostStarter {
 			resolvedExtensions: [],
 			hostExtensions: [],
 			extensions: extensionDescriptions,
-			/* telemetryInfo, */
+			// telemetryInfo,
 			logLevel: this._logService.getLevel(),
 			logsLocation: this._extensionHostLogsLocation,
 			logFile: this._extensionHostLogFile,

@@ -22,7 +22,7 @@ import { IContextKey, IContextKeyService } from 'vs/platform/contextkey/common/c
 import { IResourceEditorInput } from 'vs/platform/editor/common/editor';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { IStorageService } from 'vs/platform/storage/common/storage';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { contrastBorder, editorBackground, focusBorder, foreground, registerColor, textBlockQuoteBackground, textBlockQuoteBorder, textLinkActiveForeground, textLinkForeground, textPreformatForeground } from 'vs/platform/theme/common/colorRegistry';
 import { IThemeService, registerThemingParticipant } from 'vs/platform/theme/common/themeService';
 import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
@@ -114,7 +114,7 @@ export class NotebookEditor extends BaseEditor implements INotebookEditor {
 	private scrollBeyondLastLine: boolean;
 
 	constructor(
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IThemeService themeService: IThemeService,
 		@IInstantiationService private readonly instantiationService: IInstantiationService,
 		@IStorageService storageService: IStorageService,
@@ -123,7 +123,7 @@ export class NotebookEditor extends BaseEditor implements INotebookEditor {
 		@IConfigurationService private readonly configurationService: IConfigurationService,
 		@IContextKeyService private readonly contextKeyService: IContextKeyService
 	) {
-		super(NotebookEditor.ID, telemetryService, themeService, storageService);
+		super(NotebookEditor.ID, /*telemetryService,*/ themeService, storageService);
 
 		this.editorMemento = this.getEditorMemento<INotebookEditorViewState>(editorGroupService, NOTEBOOK_EDITOR_VIEW_STATE_PREFERENCE_KEY);
 		this.outputRenderer = new OutputRenderer(this, this.instantiationService);

@@ -149,19 +149,19 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
 	const extHostMessageService = new ExtHostMessageService(rpcProtocol, extHostLogService);
 	const extHostDialogs = new ExtHostDialogs(rpcProtocol);
 	const extHostStatusBar = new ExtHostStatusBar(rpcProtocol, extHostCommands.converter);
-	// const extHostLanguages = new ExtHostLanguages(rpcProtocol, extHostDocuments);
+	//const extHostLanguages = new ExtHostLanguages(rpcProtocol, extHostDocuments);
 
 	// Register API-ish commands
 	ExtHostApiCommands.register(extHostCommands);
 
 	return function (extension: IExtensionDescription, extensionRegistry: ExtensionDescriptionRegistry, configProvider: ExtHostConfigProvider): typeof vscode {
 
+		/*
 		// Check document selectors for being overly generic. Technically this isn't a problem but
 		// in practice many extensions say they support `fooLang` but need fs-access to do so. Those
 		// extension should specify then the `file`-scheme, e.g. `{ scheme: 'fooLang', language: 'fooLang' }`
 		// We only inform once, it is not a warning because we just want to raise awareness and because
 		// we cannot say if the extension is doing it right or wrong...
-		/*
 		const checkSelector = (function () {
 			let done = (!extension.isUnderDevelopment);
 			function informOnce(selector: vscode.DocumentSelector) {
@@ -257,8 +257,8 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
 
 		// namespace: env
 		const env: typeof vscode.env = {
-			get machineId() { return /* initData.telemetryInfo.machineId;*/ '0'; },
-			get sessionId() { return /*initData.telemetryInfo.sessionId;*/ '0'; },
+			get machineId() { return /*initData.telemetryInfo.machineId;*/ '0'; },
+			get sessionId() { return /*initData.telemetryInfo.sessionId;*/ '1'; },
 			get language() { return initData.environment.appLanguage; },
 			get appName() { return initData.environment.appName; },
 			get appRoot() { return initData.environment.appRoot!.fsPath; },
@@ -825,7 +825,7 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
 		*/
 
 		// const comments = comment;
-/*
+        /*
 		// namespace: debug
 		const debug: typeof vscode.debug = {
 			get activeDebugSession() {
@@ -877,7 +877,7 @@ export function createApiFactoryAndRegisterActors(accessor: ServicesAccessor): I
 				return extHostDebugService.asDebugSourceUri(source, session);
 			}
 		};
-*/
+        */
 		const tasks: typeof vscode.tasks = {
 			registerTaskProvider: (type: string, provider: vscode.TaskProvider) => {
 				return extHostTask.registerTaskProvider(extension, type, provider);

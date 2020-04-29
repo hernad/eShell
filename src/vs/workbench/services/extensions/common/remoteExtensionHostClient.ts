@@ -227,7 +227,7 @@ export class RemoteExtensionHostClient extends Disposable implements IExtensionH
 				resolvedExtensions: resolvedExtensions,
 				hostExtensions: hostExtensions,
 				extensions: remoteExtensionHostData.extensions,
-				/* telemetryInfo,*/
+				// telemetryInfo,
 				logLevel: this._logService.getLevel(),
 				logsLocation: remoteExtensionHostData.extensionHostLogsPath,
 				logFile: joinPath(remoteExtensionHostData.extensionHostLogsPath, `${ExtensionHostLogFileName}.log`),

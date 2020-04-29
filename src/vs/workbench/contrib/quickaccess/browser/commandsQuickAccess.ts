@@ -66,7 +66,7 @@ export class CommandsQuickAccessProvider extends AbstractEditorCommandsQuickAcce
 				label: localize('noCommandResults', "No matching commands"),
 				commandId: ''
 			}
-		}, instantiationService, keybindingService, commandService, telemetryService, notificationService);
+		}, instantiationService, keybindingService, commandService, /*telemetryService,*/ notificationService);
 	}
 
 	private get configuration() {

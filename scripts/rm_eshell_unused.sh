@@ -66,4 +66,7 @@ rm -rf src/vs/platform/userDataSync/test
 
 find src -name test -type d -exec rm -rf \{\} +
 
-git checkout electron-7 -- src/vs/platform/telemetry/common/telemetry.ts
+# git checkout electron-7 -- src/vs/platform/telemetry/common/telemetry.ts
+
+git checkout electron-7 -- src/vs/base/test/common/utils.ts
+git checkout electron-7 -- src/vs/workbench/contrib/themes/test/electron-browser/themes.test.contribution.ts

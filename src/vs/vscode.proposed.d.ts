@@ -1260,21 +1260,22 @@ declare module 'vscode' {
 		provideOnTypeRenameRanges(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Range[]>;
 	}
 
-	namespace languages {
-		/**
-		 * Register a rename provider that works on type.
-		 *
-		 * Multiple providers can be registered for a language. In that case providers are sorted
-		 * by their [score](#languages.match) and the best-matching provider is used. Failure
-		 * of the selected provider will cause a failure of the whole operation.
-		 *
-		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider An on type rename provider.
-		 * @param stopPattern Stop on type renaming when input text matches the regular expression. Defaults to `^\s`.
-		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
-		 */
-		export function registerOnTypeRenameProvider(selector: DocumentSelector, provider: OnTypeRenameProvider, stopPattern?: RegExp): Disposable;
-	}
+
+	// namespace languages {
+	// 	/**
+	// 	 * Register a rename provider that works on type.
+	// 	 *
+	// 	 * Multiple providers can be registered for a language. In that case providers are sorted
+	// 	 * by their [score](#languages.match) and the best-matching provider is used. Failure
+	// 	 * of the selected provider will cause a failure of the whole operation.
+	// 	 *
+	// 	 * @param selector A selector that defines the documents this provider is applicable to.
+	// 	 * @param provider An on type rename provider.
+	// 	 * @param stopPattern Stop on type renaming when input text matches the regular expression. Defaults to `^\s`.
+	// 	 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
+	// 	 */
+	// 	export function registerOnTypeRenameProvider(selector: DocumentSelector, provider: OnTypeRenameProvider, stopPattern?: RegExp): Disposable;
+	// }
 
 	//#endregion
 

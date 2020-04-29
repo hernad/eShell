@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
+import { createDecorator } from 'vs/platform/instantiation/common/instantiation';
 // import { ClassifiedEvent, StrictPropertyCheck, GDPRClassification } from 'vs/platform/telemetry/common/gdprTypings';
 
-/*
 export const ITelemetryService = createDecorator<ITelemetryService>('telemetryService');
+
 
 export interface ITelemetryInfo {
 	sessionId: string;
@@ -22,6 +22,7 @@ export interface ITelemetryData {
 	[key: string]: any;
 }
 
+
 export interface ITelemetryService {
 
 	_serviceBrand: undefined;
@@ -29,11 +30,11 @@ export interface ITelemetryService {
 
 	publicLog(eventName: string, data?: ITelemetryData, anonymizeFilePaths?: boolean): Promise<void>;
 
-	publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>, anonymizeFilePaths?: boolean): Promise<void>;
+	// publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>, anonymizeFilePaths?: boolean): Promise<void>;
 
 	publicLogError(errorEventName: string, data?: ITelemetryData): Promise<void>;
 
-	publicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>): Promise<void>;
+	// publicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>): Promise<void>;
 
 	setEnabled(value: boolean): void;
 
@@ -41,7 +42,7 @@ export interface ITelemetryService {
 
 	isOptedIn: boolean;
 }
-*/
+
 
 // Keys
 export const instanceStorageKey = 'telemetry.instanceId';

@@ -14,7 +14,7 @@ import { SyncDescriptor } from 'vs/platform/instantiation/common/descriptors';
 import { registerSingleton } from 'vs/platform/instantiation/common/extensions';
 import { Event, Emitter } from 'vs/base/common/event';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { generateUuid } from 'vs/base/common/uuid';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { ViewContainerModel } from 'vs/workbench/services/views/common/viewContainerModel';
@@ -89,7 +89,7 @@ export class ViewDescriptorService extends Disposable implements IViewDescriptor
 		@IContextKeyService private readonly contextKeyService: IContextKeyService,
 		@IStorageService private readonly storageService: IStorageService,
 		@IExtensionService private readonly extensionService: IExtensionService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
 	) {
 		super();
@@ -353,6 +353,7 @@ export class ViewDescriptorService extends Disposable implements IViewDescriptor
 		if (!skipCacheUpdate) {
 			this.saveViewPositionsToCache();
 
+			/*
 			const containerToString = (container: ViewContainer): string => {
 				if (container.id.startsWith(ViewDescriptorService.COMMON_CONTAINER_ID_PREFIX)) {
 					return 'custom';
@@ -387,8 +388,9 @@ export class ViewDescriptorService extends Disposable implements IViewDescriptor
 				fromLocation: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 				toLocation: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 			};
+			*/
 
-			this.telemetryService.publicLog2<ViewDescriptorServiceMoveViewsEvent, ViewDescriptorServiceMoveViewsClassification>('viewDescriptorService.moveViews', { viewCount, fromContainer, toContainer, fromLocation, toLocation });
+			// this.telemetryService.publicLog2<ViewDescriptorServiceMoveViewsEvent, ViewDescriptorServiceMoveViewsClassification>('viewDescriptorService.moveViews', { viewCount, fromContainer, toContainer, fromLocation, toLocation });
 		}
 	}
 

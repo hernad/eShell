@@ -20,7 +20,7 @@ import { ILogService } from 'vs/platform/log/common/log';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { flatten } from 'vs/base/common/arrays';
 import { IWorkbenchEnvironmentService } from 'vs/workbench/services/environment/common/environmentService';
-
+/*
 type UserAccountClassification = {
 	id: { classification: 'EndUserPseudonymizedInformation', purpose: 'BusinessInsight' };
 };
@@ -28,7 +28,7 @@ type UserAccountClassification = {
 type UserAccountEvent = {
 	id: string;
 };
-
+*/
 type AccountQuickPickItem = { label: string, authenticationProvider: IAuthenticationProvider, account?: UserDataSyncAccount, description?: string };
 
 export class UserDataSyncAccount {
@@ -287,7 +287,7 @@ export class UserDataSyncAccounts extends Disposable {
 			// accounts are switched while sync is enabled.
 		}
 		this.currentSessionId = sessionId;
-		this.telemetryService.publicLog2<UserAccountEvent, UserAccountClassification>('sync.userAccount', { id: accountId });
+		// this.telemetryService.publicLog2<UserAccountEvent, UserAccountClassification>('sync.userAccount', { id: accountId });
 		await this.update();
 	}
 
