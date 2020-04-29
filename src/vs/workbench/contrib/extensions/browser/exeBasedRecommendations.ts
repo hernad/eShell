@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { IExtensionTipsService, IExecutableBasedExtensionTip, IExtensionManagementService, ILocalExtension } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
 import { timeout } from 'vs/base/common/async';
 import { localize } from 'vs/nls';
@@ -17,12 +17,12 @@ import { ExtensionRecommendationReason } from 'vs/workbench/services/extensionMa
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
-
+/*
 type ExeExtensionRecommendationsClassification = {
 	extensionId: { classification: 'PublicNonPersonalData', purpose: 'FeatureInsight' };
 	exeName: { classification: 'PublicNonPersonalData', purpose: 'FeatureInsight' };
 };
-
+*/
 export class ExeBasedRecommendations extends ExtensionRecommendations {
 
 	readonly _recommendations: ExtensionRecommendation[] = [];
@@ -35,11 +35,11 @@ export class ExeBasedRecommendations extends ExtensionRecommendations {
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@INotificationService notificationService: INotificationService,
-		@ITelemetryService telemetryService: ITelemetryService,
+		// @ITelemetryService telemetryService: ITelemetryService,
 		@IStorageService storageService: IStorageService,
 		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
 	) {
-		super(isExtensionAllowedToBeRecommended, instantiationService, configurationService, notificationService, telemetryService, storageService, storageKeysSyncRegistryService);
+		super(isExtensionAllowedToBeRecommended, instantiationService, configurationService, notificationService, /*telemetryService,*/ storageService, storageKeysSyncRegistryService);
 
 		/*
 			3s has come out to be the good number to fetch and prompt important exe based recommendations
@@ -67,11 +67,11 @@ export class ExeBasedRecommendations extends ExtensionRecommendations {
 		/* Log installed and uninstalled exe based recommendations */
 		for (const extensionId of installed) {
 			const tip = importantExeBasedRecommendations[extensionId];
-			this.telemetryService.publicLog2<{ exeName: string, extensionId: string }, ExeExtensionRecommendationsClassification>('exeExtensionRecommendations:alreadyInstalled', { extensionId, exeName: basename(tip.windowsPath!) });
+			// this.telemetryService.publicLog2<{ exeName: string, extensionId: string }, ExeExtensionRecommendationsClassification>('exeExtensionRecommendations:alreadyInstalled', { extensionId, exeName: basename(tip.windowsPath!) });
 		}
 		for (const extensionId of uninstalled) {
 			const tip = importantExeBasedRecommendations[extensionId];
-			this.telemetryService.publicLog2<{ exeName: string, extensionId: string }, ExeExtensionRecommendationsClassification>('exeExtensionRecommendations:notInstalled', { extensionId, exeName: basename(tip.windowsPath!) });
+			// this.telemetryService.publicLog2<{ exeName: string, extensionId: string }, ExeExtensionRecommendationsClassification>('exeExtensionRecommendations:notInstalled', { extensionId, exeName: basename(tip.windowsPath!) });
 		}
 
 		this.promptImportantExeBasedRecommendations(uninstalled, importantExeBasedRecommendations);

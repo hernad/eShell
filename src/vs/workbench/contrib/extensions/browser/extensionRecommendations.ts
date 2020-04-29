@@ -5,7 +5,7 @@
 
 import { Disposable } from 'vs/base/common/lifecycle';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { localize } from 'vs/nls';
 import { InstallRecommendedExtensionAction, ShowRecommendedExtensionsAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
@@ -15,11 +15,12 @@ import { IConfigurationService, ConfigurationTarget } from 'vs/platform/configur
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 
+/*
 type ExtensionRecommendationsNotificationClassification = {
 	userReaction: { classification: 'SystemMetaData', purpose: 'FeatureInsight' };
 	extensionId: { classification: 'PublicNonPersonalData', purpose: 'FeatureInsight' };
 };
-
+*/
 const ignoreImportantExtensionRecommendation = 'extensionsAssistant/importantRecommendationsIgnore';
 const choiceNever = localize('neverShowAgain', "Don't Show Again");
 
@@ -39,7 +40,7 @@ export abstract class ExtensionRecommendations extends Disposable {
 		@IInstantiationService protected readonly instantiationService: IInstantiationService,
 		@IConfigurationService protected readonly configurationService: IConfigurationService,
 		@INotificationService protected readonly notificationService: INotificationService,
-		@ITelemetryService protected readonly telemetryService: ITelemetryService,
+		// @ITelemetryService protected readonly telemetryService: ITelemetryService,
 		@IStorageService protected readonly storageService: IStorageService,
 		@IStorageKeysSyncRegistryService storageKeysSyncRegistryService: IStorageKeysSyncRegistryService,
 	) {
@@ -61,13 +62,13 @@ export abstract class ExtensionRecommendations extends Disposable {
 			[{
 				label: localize('install', 'Install'),
 				run: () => {
-					this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'install', extensionId });
+					// this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'install', extensionId });
 					this.instantiationService.createInstance(InstallRecommendedExtensionAction, extensionId).run();
 				}
 			}, {
 				label: localize('showRecommendations', "Show Recommendations"),
 				run: () => {
-					this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'show', extensionId });
+					// this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'show', extensionId });
 
 					const recommendationsAction = this.instantiationService.createInstance(ShowRecommendedExtensionsAction, ShowRecommendedExtensionsAction.ID, localize('showRecommendations', "Show Recommendations"));
 					recommendationsAction.run();
@@ -78,7 +79,7 @@ export abstract class ExtensionRecommendations extends Disposable {
 				isSecondary: true,
 				run: () => {
 					this.addToImportantRecommendationsIgnore(extensionId);
-					this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'neverShowAgain', extensionId });
+					// this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'neverShowAgain', extensionId });
 					this.notificationService.prompt(
 						Severity.Info,
 						localize('ignoreExtensionRecommendations', "Do you want to ignore all extension recommendations?"),
@@ -95,7 +96,7 @@ export abstract class ExtensionRecommendations extends Disposable {
 			{
 				sticky: true,
 				onCancel: () => {
-					this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'cancelled', extensionId });
+					// this.telemetryService.publicLog2<{ userReaction: string, extensionId: string }, ExtensionRecommendationsNotificationClassification>('extensionRecommendations:popup', { userReaction: 'cancelled', extensionId });
 				}
 			}
 		);

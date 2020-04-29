@@ -39,7 +39,7 @@ import * as Constants from 'vs/workbench/contrib/search/common/constants';
 import * as SearchEditorConstants from 'vs/workbench/contrib/searchEditor/browser/constants';
 import { getWorkspaceSymbols } from 'vs/workbench/contrib/search/common/search';
 import { ISearchHistoryService, SearchHistoryService } from 'vs/workbench/contrib/search/common/searchHistoryService';
-import { /*FileMatchOrMatch,*/ ISearchWorkbenchService, /*RenderableMatch,*/ SearchWorkbenchService, FileMatch, Match, FolderMatch } from 'vs/workbench/contrib/search/common/searchModel';
+import { /*FileMatchOrMatch,*/ ISearchWorkbenchService, /*RenderableMatch,*/ SearchWorkbenchService, FileMatch /*, Match, FolderMatch*/ } from 'vs/workbench/contrib/search/common/searchModel';
 // import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
 import { VIEWLET_ID, /*VIEW_ID,*/ SEARCH_EXCLUDE_CONFIG, SearchSortOrder } from 'vs/workbench/services/search/common/search';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';

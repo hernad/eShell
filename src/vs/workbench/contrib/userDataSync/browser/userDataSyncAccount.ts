@@ -14,7 +14,7 @@ import { AuthenticationSession, AuthenticationSessionsChangeEvent } from 'vs/edi
 import { Event, Emitter } from 'vs/base/common/event';
 import { getUserDataSyncStore, IUserDataSyncEnablementService, IAuthenticationProvider, isAuthenticationProvider } from 'vs/platform/userDataSync/common/userDataSync';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
-import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
+// import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { values } from 'vs/base/common/map';
 import { ILogService } from 'vs/platform/log/common/log';
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
@@ -75,7 +75,7 @@ export class UserDataSyncAccounts extends Disposable {
 		@IQuickInputService private readonly quickInputService: IQuickInputService,
 		@IStorageService private readonly storageService: IStorageService,
 		@IUserDataSyncEnablementService private readonly userDataSyncEnablementService: IUserDataSyncEnablementService,
-		@ITelemetryService private readonly telemetryService: ITelemetryService,
+		// @ITelemetryService private readonly telemetryService: ITelemetryService,
 		@ILogService private readonly logService: ILogService,
 		@IProductService productService: IProductService,
 		@IConfigurationService configurationService: IConfigurationService,
