@@ -10,7 +10,9 @@
 	"scripts": {
 		"update": "node ./build/update-icon-theme.js"
 	},
-	"engines": { "vscode": "*" },
+	"engines": {
+		"vscode": "*"
+	},
 	"contributes": {
 		"iconThemes": [
 			{
@@ -19,5 +21,10 @@
 				"path": "./icons/vs-seti-icon-theme.json"
 			}
 		]
+	},
+	"__metadata": {
+		"id": "429",
+		"publisherDisplayName": null,
+		"publisherId": "408"
 	}
 }

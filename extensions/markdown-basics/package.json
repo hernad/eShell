@@ -91,5 +91,10 @@
 	},
 	"scripts": {
 		"update-grammar": "node ../../build/npm/update-grammar.js microsoft/vscode-markdown-tm-grammar syntaxes/markdown.tmLanguage ./syntaxes/markdown.tmLanguage.json"
+	},
+	"__metadata": {
+		"id": "625",
+		"publisherDisplayName": null,
+		"publisherId": "408"
 	}
 }

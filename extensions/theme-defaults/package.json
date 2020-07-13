@@ -2,11 +2,15 @@
 	"name": "theme-defaults",
 	"displayName": "%displayName%",
 	"description": "%description%",
-	"categories": [ "Themes" ],
+	"categories": [
+		"Themes"
+	],
 	"version": "1.0.0",
 	"publisher": "vscode",
 	"license": "MIT",
-	"engines": { "vscode": "*" },
+	"engines": {
+		"vscode": "*"
+	},
 	"contributes": {
 		"themes": [
 			{
@@ -47,5 +51,10 @@
 				"path": "./fileicons/vs_minimal-icon-theme.json"
 			}
 		]
+	},
+	"__metadata": {
+		"id": "413",
+		"publisherDisplayName": null,
+		"publisherId": "408"
 	}
 }

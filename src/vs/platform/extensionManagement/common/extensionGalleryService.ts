@@ -432,7 +432,7 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 			.withFlags(Flags.IncludeLatestVersionOnly, Flags.IncludeAssetUri, Flags.IncludeStatistics, Flags.IncludeFiles, Flags.IncludeVersionProperties)
 			.withPage(1, pageSize)
 			.withFilter(FilterType.Target, 'Microsoft.VisualStudio.Code')
-			.withFilter(FilterType.Tag, 'eShell')
+			//.withFilter(FilterType.Tag, 'eShell')
 			.withFilter(FilterType.ExcludeWithFlags, flagsToString(Flags.Unpublished));
 
 

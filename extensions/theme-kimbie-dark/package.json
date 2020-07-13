@@ -5,7 +5,9 @@
 	"version": "1.0.0",
 	"publisher": "vscode",
 	"license": "MIT",
-	"engines": { "vscode": "*" },
+	"engines": {
+		"vscode": "*"
+	},
 	"contributes": {
 		"themes": [
 			{
@@ -14,5 +16,10 @@
 				"path": "./themes/kimbie-dark-color-theme.json"
 			}
 		]
+	},
+	"__metadata": {
+		"id": "607",
+		"publisherDisplayName": null,
+		"publisherId": "408"
 	}
 }
