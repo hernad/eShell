@@ -12,12 +12,12 @@ C:\dev\eShell>git branch -l
 * upstream-master
 </pre>
 
+Merge last release:
 
-<pre>
-git merge upstream/release/1.47
-</pre>
+  git merge upstream/release/1.47
+
 
 
 ## light-electron-7
 
-git merge electron-7
+  git merge electron-7
