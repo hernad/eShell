@@ -3,23 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EXTENSION_IDENTIFIER_PATTERN, IExtensionGalleryService, IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
+import { EXTENSION_IDENTIFIER_PATTERN, IExtensionGalleryService /*, IExtensionManagementService*/ } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { IWorkspaceContextService, IWorkspaceFolder, IWorkspace, IWorkspaceFoldersChangeEvent } from 'vs/platform/workspace/common/workspace';
 import { IFileService } from 'vs/platform/files/common/files';
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { distinct, flatten, coalesce } from 'vs/base/common/arrays';
 import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
-import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
-import { IExtensionsConfigContent, ExtensionRecommendationSource, ExtensionRecommendationReason, IWorkbenchExtensionEnablementService, EnablementState } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+import { INotificationService /*, Severity*/ } from 'vs/platform/notification/common/notification';
+import { IExtensionsConfigContent, ExtensionRecommendationSource, ExtensionRecommendationReason, /*IWorkbenchExtensionEnablementService, EnablementState*/ } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
 import { parse } from 'vs/base/common/json';
 import { EXTENSIONS_CONFIG } from 'vs/workbench/contrib/extensions/common/extensions';
 import { ILogService } from 'vs/platform/log/common/log';
 import { CancellationToken } from 'vs/base/common/cancellation';
 import { localize } from 'vs/nls';
-import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
-import { InstallWorkspaceRecommendedExtensionsAction, ShowRecommendedExtensionsAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
-import { StorageScope, IStorageService } from 'vs/platform/storage/common/storage';
+// import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
+// import { InstallWorkspaceRecommendedExtensionsAction, ShowRecommendedExtensionsAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { /*StorageScope,*/ IStorageService } from 'vs/platform/storage/common/storage';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 
@@ -29,8 +29,8 @@ type ExtensionWorkspaceRecommendationsNotificationClassification = {
 };
 */
 
-const choiceNever = localize('neverShowAgain', "Don't Show Again");
-const ignoreWorkspaceRecommendationsStorageKey = 'extensionsAssistant/workspaceRecommendationsIgnore';
+// const choiceNever = localize('neverShowAgain', "Don't Show Again");
+// const ignoreWorkspaceRecommendationsStorageKey = 'extensionsAssistant/workspaceRecommendationsIgnore';
 
 export class WorkspaceRecommendations extends ExtensionRecommendations {
 
@@ -46,8 +46,8 @@ export class WorkspaceRecommendations extends ExtensionRecommendations {
 		@IExtensionGalleryService private readonly galleryService: IExtensionGalleryService,
 		@ILogService private readonly logService: ILogService,
 		@IFileService private readonly fileService: IFileService,
-		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
-		@IWorkbenchExtensionEnablementService private readonly extensionEnablementService: IWorkbenchExtensionEnablementService,
+		// @IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
+		// @IWorkbenchExtensionEnablementService private readonly extensionEnablementService: IWorkbenchExtensionEnablementService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@INotificationService notificationService: INotificationService,
@@ -61,7 +61,7 @@ export class WorkspaceRecommendations extends ExtensionRecommendations {
 	protected async doActivate(): Promise<void> {
 		await this.fetch();
 		this._register(this.contextService.onDidChangeWorkspaceFolders(e => this.onWorkspaceFoldersChanged(e)));
-		this.promptWorkspaceRecommendations();
+		// this.promptWorkspaceRecommendations();
 	}
 
 	/**
@@ -99,6 +99,7 @@ export class WorkspaceRecommendations extends ExtensionRecommendations {
 		}
 	}
 
+	/*
 	private async promptWorkspaceRecommendations(): Promise<void> {
 		const allowedRecommendations = this.recommendations.filter(rec => this.isExtensionAllowedToBeRecommended(rec.extensionId));
 
@@ -153,8 +154,10 @@ export class WorkspaceRecommendations extends ExtensionRecommendations {
 					}
 				}
 			);
+
 		});
 	}
+	*/
 
 	private async fetchExtensionsConfigBySource(): Promise<{ contents: IExtensionsConfigContent, source: ExtensionRecommendationSource }[]> {
 		const workspace = this.contextService.getWorkspace();
@@ -233,12 +236,12 @@ export class WorkspaceRecommendations extends ExtensionRecommendations {
 
 	private async onWorkspaceFoldersChanged(event: IWorkspaceFoldersChangeEvent): Promise<void> {
 		if (event.added.length) {
-			const oldWorkspaceRecommended = this._recommendations;
-			await this.fetch();
+			// const oldWorkspaceRecommended = this._recommendations;
+			// await this.fetch();
 			// Suggest only if at least one of the newly added recommendations was not suggested before
-			if (this._recommendations.some(current => oldWorkspaceRecommended.every(old => current.extensionId !== old.extensionId))) {
-				this.promptWorkspaceRecommendations();
-			}
+			//if (this._recommendations.some(current => oldWorkspaceRecommended.every(old => current.extensionId !== old.extensionId))) {
+				// this.promptWorkspaceRecommendations();
+			//}
 		}
 	}
 
@@ -252,8 +255,10 @@ export class WorkspaceRecommendations extends ExtensionRecommendations {
 		return null;
 	}
 
+	/*
 	private hasToIgnoreWorkspaceRecommendationNotifications(): boolean {
 		return this.hasToIgnoreRecommendationNotifications() || this.storageService.getBoolean(ignoreWorkspaceRecommendationsStorageKey, StorageScope.WORKSPACE, false);
 	}
+	*/
 }
 

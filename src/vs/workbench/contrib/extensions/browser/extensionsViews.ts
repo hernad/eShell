@@ -10,14 +10,14 @@ import { Event, Emitter } from 'vs/base/common/event';
 import { isPromiseCanceledError, getErrorMessage } from 'vs/base/common/errors';
 import { PagedModel, IPagedModel, IPager, DelayedPagedModel } from 'vs/base/common/paging';
 import { SortBy, SortOrder, IQueryOptions } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IExtensionManagementServer, IExtensionManagementServerService, IExtensionRecommendationsService, IExtensionRecommendation, EnablementState } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+import { IExtensionManagementServer, IExtensionManagementServerService, /*IExtensionRecommendationsService,*/ /*IExtensionRecommendation, EnablementState*/ } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { IContextMenuService } from 'vs/platform/contextview/browser/contextView';
 import { append, $, toggleClass, addClass } from 'vs/base/browser/dom';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
 import { Delegate, Renderer, IExtensionsViewState } from 'vs/workbench/contrib/extensions/browser/extensionsList';
-import { IExtension, IExtensionsWorkbenchService, ExtensionState } from 'vs/workbench/contrib/extensions/common/extensions';
+import { IExtension, IExtensionsWorkbenchService, /*ExtensionState*/ } from 'vs/workbench/contrib/extensions/common/extensions';
 import { Query } from 'vs/workbench/contrib/extensions/common/extensionQuery';
 import { IExtensionService, toExtension } from 'vs/workbench/services/extensions/common/extensions';
 import { IThemeService } from 'vs/platform/theme/common/themeService';
@@ -26,13 +26,13 @@ import { IViewletViewOptions } from 'vs/workbench/browser/parts/views/viewsViewl
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { CountBadge } from 'vs/base/browser/ui/countBadge/countBadge';
 import { Separator } from 'vs/base/browser/ui/actionbar/actionbar';
-import { InstallWorkspaceRecommendedExtensionsAction, ConfigureWorkspaceFolderRecommendedExtensionsAction, ManageExtensionAction, InstallLocalExtensionsInRemoteAction, getContextMenuActions } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { /*InstallWorkspaceRecommendedExtensionsAction, ConfigureWorkspaceFolderRecommendedExtensionsAction,*/ ManageExtensionAction, InstallLocalExtensionsInRemoteAction, getContextMenuActions } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
 import { WorkbenchPagedList, ListResourceNavigator } from 'vs/platform/list/browser/listService';
 import { IConfigurationService } from 'vs/platform/configuration/common/configuration';
 import { INotificationService, Severity } from 'vs/platform/notification/common/notification';
 import { ViewPane, IViewPaneOptions } from 'vs/workbench/browser/parts/views/viewPaneContainer';
 import { IWorkspaceContextService } from 'vs/platform/workspace/common/workspace';
-import { distinct, coalesce } from 'vs/base/common/arrays';
+import { /*distinct,*/ coalesce } from 'vs/base/common/arrays';
 import { IExperimentService, IExperiment, ExperimentActionType } from 'vs/workbench/contrib/experiments/common/experimentService';
 import { alert } from 'vs/base/browser/ui/aria/aria';
 import { IListContextMenuEvent } from 'vs/base/browser/ui/list/list';
@@ -99,7 +99,7 @@ export class ExtensionsListView extends ViewPane {
 		@IThemeService themeService: IThemeService,
 		@IExtensionService private readonly extensionService: IExtensionService,
 		@IExtensionsWorkbenchService protected extensionsWorkbenchService: IExtensionsWorkbenchService,
-		@IExtensionRecommendationsService protected tipsService: IExtensionRecommendationsService,
+		// @IExtensionRecommendationsService protected tipsService: IExtensionRecommendationsService,
 		// @ITelemetryService telemetryService: ITelemetryService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IWorkspaceContextService protected contextService: IWorkspaceContextService,
@@ -452,6 +452,7 @@ export class ExtensionsListView extends ViewPane {
 			options.sortBy = SortBy.InstallCount;
 		}
 
+		/*
 		if (ExtensionsListView.isWorkspaceRecommendedExtensionsQuery(query.value)) {
 			return this.getWorkspaceRecommendationsModel(query, options, token);
 		} else if (ExtensionsListView.isKeymapsRecommendedExtensionsQuery(query.value)) {
@@ -461,6 +462,7 @@ export class ExtensionsListView extends ViewPane {
 		} else if (ExtensionsListView.isRecommendedExtensionsQuery(query.value)) {
 			return this.getRecommendationsModel(query, options, token);
 		}
+		*/
 
 		if (/\bcurated:([^\s]+)\b/.test(query.value)) {
 			return this.getCuratedModel(query, options, token);
@@ -536,6 +538,7 @@ export class ExtensionsListView extends ViewPane {
 		return extensions;
 	}
 
+	/*
 	// Get All types of recommendations, trimmed to show a max of 8 at any given time
 	private getAllRecommendationsModel(query: Query, options: IQueryOptions, token: CancellationToken): Promise<IPagedModel<IExtension>> {
 		const value = query.value.replace(/@recommended:all/g, '').replace(/@recommended/g, '').trim().toLowerCase();
@@ -543,32 +546,16 @@ export class ExtensionsListView extends ViewPane {
 		return this.extensionsWorkbenchService.queryLocal(this.server)
 			.then(result => result.filter(e => e.type === ExtensionType.User))
 			.then(local => {
-				const fileBasedRecommendations = this.tipsService.getFileBasedRecommendations();
-				const configBasedRecommendationsPromise = this.tipsService.getConfigBasedRecommendations();
-				const othersPromise = this.tipsService.getOtherRecommendations();
-				const workspacePromise = this.tipsService.getWorkspaceRecommendations();
+				// const fileBasedRecommendations = this.tipsService.getFileBasedRecommendations();
+				// const configBasedRecommendationsPromise = this.tipsService.getConfigBasedRecommendations();
+				// const othersPromise = this.tipsService.getOtherRecommendations();
+				// const workspacePromise = this.tipsService.getWorkspaceRecommendations();
 
 				return Promise.all([othersPromise, workspacePromise, configBasedRecommendationsPromise])
 					.then(([others, workspaceRecommendations, configBasedRecommendations]) => {
-						const names = this.getTrimmedRecommendations(local, value, fileBasedRecommendations, configBasedRecommendations, others, workspaceRecommendations);
+						// const names = this.getTrimmedRecommendations(local, value, fileBasedRecommendations, configBasedRecommendations, others, workspaceRecommendations);
 						// const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
-						/* __GDPR__
-							"extensionAllRecommendations:open" : {
-								"count" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-								"recommendations": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-							}
-						*/
-						/*
-						this.telemetryService.publicLog('extensionAllRecommendations:open', {
-							count: names.length,
-							recommendations: names.map(id => {
-								return {
-									id,
-									recommendationReason: recommendationsWithReason[id.toLowerCase()].reasonId
-								};
-							})
-						});
-						*/
+
 						if (!names.length) {
 							return Promise.resolve(new PagedModel([]));
 						}
@@ -581,6 +568,7 @@ export class ExtensionsListView extends ViewPane {
 					});
 			});
 	}
+	*/
 
 	private async getCuratedModel(query: Query, options: IQueryOptions, token: CancellationToken): Promise<IPagedModel<IExtension>> {
 		const value = query.value.replace(/curated:/g, '').trim();
@@ -594,6 +582,7 @@ export class ExtensionsListView extends ViewPane {
 		return new PagedModel([]);
 	}
 
+	/*
 	// Get All types of recommendations other than Workspace recommendations, trimmed to show a max of 8 at any given time
 	private getRecommendationsModel(query: Query, options: IQueryOptions, token: CancellationToken): Promise<IPagedModel<IExtension>> {
 		const value = query.value.replace(/@recommended/g, '').trim().toLowerCase();
@@ -615,23 +604,6 @@ export class ExtensionsListView extends ViewPane {
 						const names = this.getTrimmedRecommendations(local, value, fileBasedRecommendations, configBasedRecommendations, others, []);
 						// const recommendationsWithReason = this.tipsService.getAllRecommendationsWithReason();
 
-						/* __GDPR__
-							"extensionRecommendations:open" : {
-								"count" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-								"recommendations": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-							}
-						*/
-						/*
-						this.telemetryService.publicLog('extensionRecommendations:open', {
-							count: names.length,
-							recommendations: names.map(id => {
-								return {
-									id,
-									recommendationReason: recommendationsWithReason[id.toLowerCase()].reasonId
-								};
-							})
-						});
-						*/
 
 						if (!names.length) {
 							return Promise.resolve(new PagedModel([]));
@@ -645,6 +617,7 @@ export class ExtensionsListView extends ViewPane {
 					});
 			});
 	}
+
 
 	// Given all recommendations, trims and returns recommendations in the relevant order after filtering out installed extensions
 	private getTrimmedRecommendations(installedExtensions: IExtension[], value: string, fileBasedRecommendations: IExtensionRecommendation[], configBasedRecommendations: IExtensionRecommendation[], otherRecommendations: IExtensionRecommendation[], workspaceRecommendations: IExtensionRecommendation[]): string[] {
@@ -692,12 +665,6 @@ export class ExtensionsListView extends ViewPane {
 		return this.tipsService.getWorkspaceRecommendations()
 			.then(recommendations => {
 				const names = recommendations.map(({ extensionId }) => extensionId).filter(name => name.toLowerCase().indexOf(value) > -1);
-				/* __GDPR__
-					"extensionWorkspaceRecommendations:open" : {
-						"count" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
-					}
-				*/
-				// this.telemetryService.publicLog('extensionWorkspaceRecommendations:open', { count: names.length });
 
 				if (!names.length) {
 					return Promise.resolve(new PagedModel([]));
@@ -720,6 +687,7 @@ export class ExtensionsListView extends ViewPane {
 		return this.extensionsWorkbenchService.queryGallery(assign(options, { names, pageSize: names.length }), token)
 			.then(result => this.getPagedModel(result));
 	}
+	*/
 
 	// Sorts the firstPage of the pager in the same order as given array of extension ids
 	private sortFirstPage(pager: IPager<IExtension>, ids: string[]) {
@@ -877,7 +845,7 @@ export class ServerExtensionsView extends ExtensionsListView {
 		@IViewDescriptorService viewDescriptorService: IViewDescriptorService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IExtensionService extensionService: IExtensionService,
-		@IExtensionRecommendationsService tipsService: IExtensionRecommendationsService,
+		// @IExtensionRecommendationsService tipsService: IExtensionRecommendationsService,
 		// @ITelemetryService telemetryService: ITelemetryService,
 		@IConfigurationService configurationService: IConfigurationService,
 		@IWorkspaceContextService contextService: IWorkspaceContextService,
@@ -892,7 +860,7 @@ export class ServerExtensionsView extends ExtensionsListView {
 		@IPreferencesService preferencesService: IPreferencesService,
 	) {
 		options.server = server;
-		super(options, notificationService, keybindingService, contextMenuService, instantiationService, themeService, extensionService, extensionsWorkbenchService, tipsService, /*telemetryService,*/ configurationService, contextService, experimentService, extensionManagementServerService, productService, contextKeyService, viewDescriptorService, menuService, openerService, preferencesService);
+		super(options, notificationService, keybindingService, contextMenuService, instantiationService, themeService, extensionService, extensionsWorkbenchService, /*tipsService,*/ /*telemetryService,*/ configurationService, contextService, experimentService, extensionManagementServerService, productService, contextKeyService, viewDescriptorService, menuService, openerService, preferencesService);
 		this._register(onDidChangeTitle(title => this.updateTitle(title)));
 	}
 
@@ -948,6 +916,7 @@ export class BuiltInBasicsExtensionsView extends ExtensionsListView {
 	}
 }
 
+/*
 export class DefaultRecommendedExtensionsView extends ExtensionsListView {
 	private readonly recommendedExtensionsQuery = '@recommended:all';
 
@@ -1046,3 +1015,5 @@ export class WorkspaceRecommendedExtensionsView extends ExtensionsListView {
 			}));
 	}
 }
+
+*/

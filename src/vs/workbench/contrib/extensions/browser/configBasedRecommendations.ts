@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IExtensionTipsService, IExtensionManagementService, ILocalExtension, IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
+import { IExtensionTipsService, /*IExtensionManagementService, ILocalExtension,*/ IConfigBasedExtensionTip } from 'vs/platform/extensionManagement/common/extensionManagement';
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { ExtensionRecommendations, ExtensionRecommendation } from 'vs/workbench/contrib/extensions/browser/extensionRecommendations';
 import { localize } from 'vs/nls';
@@ -14,7 +14,7 @@ import { IConfigurationService } from 'vs/platform/configuration/common/configur
 import { IStorageService } from 'vs/platform/storage/common/storage';
 import { IStorageKeysSyncRegistryService } from 'vs/platform/userDataSync/common/storageKeys';
 import { IWorkspaceContextService, IWorkspaceFoldersChangeEvent } from 'vs/platform/workspace/common/workspace';
-import { distinct } from 'vs/base/common/arrays';
+// import { distinct } from 'vs/base/common/arrays';
 import { values } from 'vs/base/common/map';
 
 export class ConfigBasedRecommendations extends ExtensionRecommendations {
@@ -28,7 +28,7 @@ export class ConfigBasedRecommendations extends ExtensionRecommendations {
 	constructor(
 		isExtensionAllowedToBeRecommended: (extensionId: string) => boolean,
 		@IExtensionTipsService private readonly extensionTipsService: IExtensionTipsService,
-		@IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
+		// @IExtensionManagementService private readonly extensionManagementService: IExtensionManagementService,
 		@IWorkspaceContextService private readonly workspaceContextService: IWorkspaceContextService,
 		@IInstantiationService instantiationService: IInstantiationService,
 		@IConfigurationService configurationService: IConfigurationService,
@@ -43,7 +43,7 @@ export class ConfigBasedRecommendations extends ExtensionRecommendations {
 	protected async doActivate(): Promise<void> {
 		await this.fetch();
 		this._register(this.workspaceContextService.onDidChangeWorkspaceFolders(e => this.onWorkspaceFoldersChanged(e)));
-		this.promptWorkspaceRecommendations();
+		// this.promptWorkspaceRecommendations();
 	}
 
 	private async fetch(): Promise<void> {
@@ -65,6 +65,7 @@ export class ConfigBasedRecommendations extends ExtensionRecommendations {
 		this._recommendations = [...this.importantTips, ...this.otherTips].map(tip => this.toExtensionRecommendation(tip));
 	}
 
+	/*
 	private async promptWorkspaceRecommendations(): Promise<void> {
 		if (this.hasToIgnoreRecommendationNotifications()) {
 			return;
@@ -105,6 +106,7 @@ export class ConfigBasedRecommendations extends ExtensionRecommendations {
 		});
 		return { installed, uninstalled };
 	}
+	*/
 
 	private async onWorkspaceFoldersChanged(event: IWorkspaceFoldersChangeEvent): Promise<void> {
 		if (event.added.length) {
@@ -112,7 +114,7 @@ export class ConfigBasedRecommendations extends ExtensionRecommendations {
 			await this.fetch();
 			// Suggest only if at least one of the newly added recommendations was not suggested before
 			if (this.importantTips.some(current => oldImportantRecommended.every(old => current.extensionId !== old.extensionId))) {
-				return this.promptWorkspaceRecommendations();
+				// return this.promptWorkspaceRecommendations();
 			}
 		}
 	}

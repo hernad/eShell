@@ -19,7 +19,7 @@ import { BaseEditor } from 'vs/workbench/browser/parts/editor/baseEditor';
 import { IViewletService } from 'vs/workbench/services/viewlet/browser/viewlet';
 // import { ITelemetryService } from 'vs/platform/telemetry/common/telemetry';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
-import { IExtensionRecommendationsService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+// import { IExtensionRecommendationsService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
 import { IExtensionManifest, IKeyBinding, IView, IViewContainer, ExtensionType } from 'vs/platform/extensions/common/extensions';
 import { ResolvedKeybinding, KeyMod, KeyCode } from 'vs/base/common/keyCodes';
 import { ExtensionsInput } from 'vs/workbench/contrib/extensions/common/extensionsInput';
@@ -27,7 +27,7 @@ import { IExtensionsWorkbenchService, IExtensionsViewPaneContainer, VIEWLET_ID, 
 import { RatingsWidget, InstallCountWidget, RemoteBadgeWidget } from 'vs/workbench/contrib/extensions/browser/extensionsWidgets';
 import { EditorOptions } from 'vs/workbench/common/editor';
 import { ActionBar } from 'vs/base/browser/ui/actionbar/actionbar';
-import { CombinedInstallAction, UpdateAction, ExtensionEditorDropDownAction, ReloadAction, MaliciousStatusLabelAction, IgnoreExtensionRecommendationAction, UndoIgnoreExtensionRecommendationAction, EnableDropDownAction, DisableDropDownAction, StatusLabelAction, SetFileIconThemeAction, SetColorThemeAction, RemoteInstallAction, ExtensionToolTipAction, SystemDisabledWarningAction, LocalInstallAction, SyncIgnoredIconAction, SetProductIconThemeAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { CombinedInstallAction, UpdateAction, ExtensionEditorDropDownAction, ReloadAction, MaliciousStatusLabelAction, /*IgnoreExtensionRecommendationAction, UndoIgnoreExtensionRecommendationAction,*/ EnableDropDownAction, DisableDropDownAction, StatusLabelAction, SetFileIconThemeAction, SetColorThemeAction, RemoteInstallAction, ExtensionToolTipAction, SystemDisabledWarningAction, LocalInstallAction, SyncIgnoredIconAction, SetProductIconThemeAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
 import { IKeybindingService } from 'vs/platform/keybinding/common/keybinding';
 import { DomScrollableElement } from 'vs/base/browser/ui/scrollbar/scrollableElement';
 import { IOpenerService, matchesScheme } from 'vs/platform/opener/common/opener';
@@ -189,7 +189,7 @@ export class ExtensionEditor extends BaseEditor {
 		@IKeybindingService private readonly keybindingService: IKeybindingService,
 		@INotificationService private readonly notificationService: INotificationService,
 		@IOpenerService private readonly openerService: IOpenerService,
-		@IExtensionRecommendationsService private readonly extensionRecommendationsService: IExtensionRecommendationsService,
+		// @IExtensionRecommendationsService private readonly extensionRecommendationsService: IExtensionRecommendationsService,
 		@IStorageService storageService: IStorageService,
 		@IExtensionService private readonly extensionService: IExtensionService,
 		@IWorkbenchThemeService private readonly workbenchThemeService: IWorkbenchThemeService,
@@ -347,11 +347,11 @@ export class ExtensionEditor extends BaseEditor {
 		template.version.textContent = `v${extension.version}`;
 		template.description.textContent = extension.description;
 
-		const extRecommendations = this.extensionRecommendationsService.getAllRecommendationsWithReason();
+		//const extRecommendations = this.extensionRecommendationsService.getAllRecommendationsWithReason();
 		// let recommendationsData = {};
-		if (extRecommendations[extension.identifier.id.toLowerCase()]) {
+		//if (extRecommendations[extension.identifier.id.toLowerCase()]) {
 			// recommendationsData = { recommendationReason: extRecommendations[extension.identifier.id.toLowerCase()].reasonId };
-		}
+		//}
 
 		/* __GDPR__
 		"extensionGallery:openExtension" : {
@@ -462,16 +462,17 @@ export class ExtensionEditor extends BaseEditor {
 	private setSubText(extension: IExtension, reloadAction: ReloadAction, template: IExtensionEditorTemplate): void {
 		hide(template.subtextContainer);
 
-		const ignoreAction = this.instantiationService.createInstance(IgnoreExtensionRecommendationAction, extension);
-		const undoIgnoreAction = this.instantiationService.createInstance(UndoIgnoreExtensionRecommendationAction, extension);
-		ignoreAction.enabled = false;
-		undoIgnoreAction.enabled = false;
+		//const ignoreAction = this.instantiationService.createInstance(IgnoreExtensionRecommendationAction, extension);
+		//const undoIgnoreAction = this.instantiationService.createInstance(UndoIgnoreExtensionRecommendationAction, extension);
+		//ignoreAction.enabled = false;
+		//undoIgnoreAction.enabled = false;
 
 		template.ignoreActionbar.clear();
-		template.ignoreActionbar.push([ignoreAction, undoIgnoreAction], { icon: true, label: true });
-		this.transientDisposables.add(ignoreAction);
-		this.transientDisposables.add(undoIgnoreAction);
+		//template.ignoreActionbar.push([ignoreAction, undoIgnoreAction], { icon: true, label: true });
+		//this.transientDisposables.add(ignoreAction);
+		//this.transientDisposables.add(undoIgnoreAction);
 
+		/*
 		const extRecommendations = this.extensionRecommendationsService.getAllRecommendationsWithReason();
 		if (extRecommendations[extension.identifier.id.toLowerCase()]) {
 			ignoreAction.enabled = true;
@@ -502,13 +503,14 @@ export class ExtensionEditor extends BaseEditor {
 				}
 			}
 		});
+		*/
 
 		this.transientDisposables.add(reloadAction.onDidChange(e => {
 			if (e.tooltip) {
 				template.subtext.textContent = reloadAction.tooltip;
 				show(template.subtextContainer);
-				ignoreAction.enabled = false;
-				undoIgnoreAction.enabled = false;
+				//ignoreAction.enabled = false;
+				//undoIgnoreAction.enabled = false;
 			}
 			if (e.enabled === true) {
 				show(template.subtextContainer);

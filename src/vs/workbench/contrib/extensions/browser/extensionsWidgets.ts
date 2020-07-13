@@ -9,10 +9,10 @@ import { IExtension, IExtensionsWorkbenchService, IExtensionContainer } from 'vs
 import { append, $, addClass, removeNode } from 'vs/base/browser/dom';
 import * as platform from 'vs/base/common/platform';
 import { localize } from 'vs/nls';
-import { IExtensionRecommendationsService, IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+import { /*IExtensionRecommendationsService,*/ IExtensionManagementServerService } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
 import { ILabelService } from 'vs/platform/label/common/label';
-import { extensionButtonProminentBackground, extensionButtonProminentForeground, ExtensionToolTipAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
-import { IThemeService, IColorTheme } from 'vs/platform/theme/common/themeService';
+import { /*extensionButtonProminentBackground, extensionButtonProminentForeground,*/ ExtensionToolTipAction } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
+import { IThemeService, /*IColorTheme*/ } from 'vs/platform/theme/common/themeService';
 import { EXTENSION_BADGE_REMOTE_BACKGROUND, EXTENSION_BADGE_REMOTE_FOREGROUND } from 'vs/workbench/common/theme';
 import { Emitter, Event } from 'vs/base/common/event';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
@@ -192,13 +192,13 @@ export class RecommendationWidget extends ExtensionWidget {
 
 	constructor(
 		private parent: HTMLElement,
-		@IThemeService private readonly themeService: IThemeService,
-		@IExtensionRecommendationsService private readonly extensionRecommendationsService: IExtensionRecommendationsService
+		// @IThemeService private readonly themeService: IThemeService,
+		// @IExtensionRecommendationsService private readonly extensionRecommendationsService: IExtensionRecommendationsService
 	) {
 		super();
 		this.render();
 		this._register(toDisposable(() => this.clear()));
-		this._register(this.extensionRecommendationsService.onRecommendationChange(() => this.render()));
+		// this._register(this.extensionRecommendationsService.onRecommendationChange(() => this.render()));
 	}
 
 	private clear(): void {
@@ -215,6 +215,7 @@ export class RecommendationWidget extends ExtensionWidget {
 		if (!this.extension) {
 			return;
 		}
+		/*
 		const extRecommendations = this.extensionRecommendationsService.getAllRecommendationsWithReason();
 		if (extRecommendations[this.extension.identifier.id.toLowerCase()]) {
 			this.element = append(this.parent, $('div.extension-bookmark'));
@@ -230,6 +231,7 @@ export class RecommendationWidget extends ExtensionWidget {
 			this.themeService.onDidColorThemeChange(applyBookmarkStyle, this, this.disposables);
 			this.tooltip = extRecommendations[this.extension.identifier.id.toLowerCase()].reasonText;
 		}
+		*/
 	}
 
 }

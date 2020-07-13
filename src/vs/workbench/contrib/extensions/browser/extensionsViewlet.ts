@@ -20,14 +20,14 @@ import { IInstantiationService } from 'vs/platform/instantiation/common/instanti
 import { IExtensionService } from 'vs/workbench/services/extensions/common/extensions';
 import { IExtensionsWorkbenchService, IExtensionsViewPaneContainer, VIEWLET_ID, AutoUpdateConfigurationKey, ShowRecommendationsOnlyOnDemandKey, CloseExtensionDetailsOnViewChangeKey } from '../common/extensions';
 import {
-	ShowEnabledExtensionsAction, ShowInstalledExtensionsAction, ShowRecommendedExtensionsAction, ShowPopularExtensionsAction, ShowDisabledExtensionsAction,
+	ShowEnabledExtensionsAction, ShowInstalledExtensionsAction, /*ShowRecommendedExtensionsAction,*/ ShowPopularExtensionsAction, ShowDisabledExtensionsAction,
 	ShowOutdatedExtensionsAction, ClearExtensionsInputAction, ChangeSortAction, UpdateAllAction, CheckForUpdatesAction, DisableAllAction, EnableAllAction,
 	EnableAutoUpdateAction, DisableAutoUpdateAction, ShowBuiltInExtensionsAction, InstallVSIXAction
 } from 'vs/workbench/contrib/extensions/browser/extensionsActions';
 import { IExtensionManagementService } from 'vs/platform/extensionManagement/common/extensionManagement';
 import { IWorkbenchExtensionEnablementService, IExtensionManagementServerService, IExtensionManagementServer } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
 import { ExtensionsInput } from 'vs/workbench/contrib/extensions/common/extensionsInput';
-import { ExtensionsListView, EnabledExtensionsView, DisabledExtensionsView, RecommendedExtensionsView, WorkspaceRecommendedExtensionsView, BuiltInExtensionsView, BuiltInThemesExtensionsView, BuiltInBasicsExtensionsView, ServerExtensionsView, DefaultRecommendedExtensionsView } from 'vs/workbench/contrib/extensions/browser/extensionsViews';
+import { ExtensionsListView, EnabledExtensionsView, DisabledExtensionsView, /*RecommendedExtensionsView, WorkspaceRecommendedExtensionsView,*/ BuiltInExtensionsView, BuiltInThemesExtensionsView, BuiltInBasicsExtensionsView, ServerExtensionsView /*, DefaultRecommendedExtensionsView*/ } from 'vs/workbench/contrib/extensions/browser/extensionsViews';
 import { IProgressService, ProgressLocation } from 'vs/platform/progress/common/progress';
 import { IEditorGroupsService } from 'vs/workbench/services/editor/common/editorGroupsService';
 import Severity from 'vs/base/common/severity';
@@ -112,9 +112,9 @@ export class ExtensionsViewletViewsContribution implements IWorkbenchContributio
 		viewDescriptors.push(this.createBuiltInExtensionsListViewDescriptor());
 		viewDescriptors.push(this.createBuiltInBasicsExtensionsListViewDescriptor());
 		viewDescriptors.push(this.createBuiltInThemesExtensionsListViewDescriptor());
-		viewDescriptors.push(this.createDefaultRecommendedExtensionsListViewDescriptor());
-		viewDescriptors.push(this.createOtherRecommendedExtensionsListViewDescriptor());
-		viewDescriptors.push(this.createWorkspaceRecommendedExtensionsListViewDescriptor());
+		// viewDescriptors.push(this.createDefaultRecommendedExtensionsListViewDescriptor());
+		// viewDescriptors.push(this.createOtherRecommendedExtensionsListViewDescriptor());
+		// viewDescriptors.push(this.createWorkspaceRecommendedExtensionsListViewDescriptor());
 
 		if (this.extensionManagementServerService.localExtensionManagementServer) {
 			viewDescriptors.push(...this.createExtensionsViewDescriptorsForServer(this.extensionManagementServerService.localExtensionManagementServer));
@@ -219,6 +219,7 @@ export class ExtensionsViewletViewsContribution implements IWorkbenchContributio
 	// Separate view for recommended extensions required as we need to show it along with other views when there is no search text.
 	// When user has installed extensions, this is shown along with the views for enabled & disabled extensions
 	// When user has no installed extensions, this is shown along with the view for popular extensions
+	/*
 	private createDefaultRecommendedExtensionsListViewDescriptor(): IViewDescriptor {
 		const id = 'extensions.recommendedList';
 		return {
@@ -231,9 +232,11 @@ export class ExtensionsViewletViewsContribution implements IWorkbenchContributio
 			canToggleVisibility: true
 		};
 	}
+	*/
 
 	// Separate view for recommedations that are not workspace recommendations.
 	// Shown along with view for workspace recommendations, when using the command that shows recommendations
+	/*
 	private createOtherRecommendedExtensionsListViewDescriptor(): IViewDescriptor {
 		const id = 'extensions.otherrecommendedList';
 		return {
@@ -245,9 +248,11 @@ export class ExtensionsViewletViewsContribution implements IWorkbenchContributio
 			order: 2
 		};
 	}
+	*/
 
 	// Separate view for workspace recommendations.
 	// Shown along with view for other recommendations, when using the command that shows recommendations
+	/*
 	private createWorkspaceRecommendedExtensionsListViewDescriptor(): IViewDescriptor {
 		const id = 'extensions.workspaceRecommendedList';
 		return {
@@ -259,6 +264,7 @@ export class ExtensionsViewletViewsContribution implements IWorkbenchContributio
 			order: 1
 		};
 	}
+	*/
 
 	private createEnabledExtensionsListViewDescriptor(): IViewDescriptor {
 		const id = 'extensions.enabledExtensionList2';
@@ -521,7 +527,7 @@ export class ExtensionsViewPaneContainer extends ViewPaneContainer implements IE
 				this.instantiationService.createInstance(ShowEnabledExtensionsAction, ShowEnabledExtensionsAction.ID, ShowEnabledExtensionsAction.LABEL),
 				this.instantiationService.createInstance(ShowDisabledExtensionsAction, ShowDisabledExtensionsAction.ID, ShowDisabledExtensionsAction.LABEL),
 				this.instantiationService.createInstance(ShowBuiltInExtensionsAction, ShowBuiltInExtensionsAction.ID, ShowBuiltInExtensionsAction.LABEL),
-				this.instantiationService.createInstance(ShowRecommendedExtensionsAction, ShowRecommendedExtensionsAction.ID, ShowRecommendedExtensionsAction.LABEL),
+				// this.instantiationService.createInstance(ShowRecommendedExtensionsAction, ShowRecommendedExtensionsAction.ID, ShowRecommendedExtensionsAction.LABEL),
 				this.instantiationService.createInstance(ShowPopularExtensionsAction, ShowPopularExtensionsAction.ID, ShowPopularExtensionsAction.LABEL),
 				new Separator(),
 				this.instantiationService.createInstance(ChangeSortAction, 'extensions.sort.install', localize('sort by installs', "Sort By: Install Count"), this.onSearchChange, 'installs'),

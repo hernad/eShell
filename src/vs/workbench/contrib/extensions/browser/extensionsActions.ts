@@ -16,7 +16,7 @@ import { dispose, Disposable } from 'vs/base/common/lifecycle';
 import { IExtension, ExtensionState, IExtensionsWorkbenchService, VIEWLET_ID, IExtensionsViewPaneContainer, AutoUpdateConfigurationKey, IExtensionContainer, EXTENSIONS_CONFIG, TOGGLE_IGNORE_EXTENSION_ACTION_ID } from 'vs/workbench/contrib/extensions/common/extensions';
 import { ExtensionsConfigurationInitialContent } from 'vs/workbench/contrib/extensions/common/extensionsFileTemplate';
 import { IGalleryExtension, IExtensionGalleryService, INSTALL_ERROR_MALICIOUS, INSTALL_ERROR_INCOMPATIBLE, IGalleryExtensionVersion, ILocalExtension, INSTALL_ERROR_NOT_SUPPORTED } from 'vs/platform/extensionManagement/common/extensionManagement';
-import { IWorkbenchExtensionEnablementService, EnablementState, IExtensionManagementServerService, IExtensionRecommendationsService, IExtensionsConfigContent, IExtensionManagementServer } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
+import { IWorkbenchExtensionEnablementService, EnablementState, IExtensionManagementServerService, /*IExtensionRecommendationsService,*/ IExtensionsConfigContent, IExtensionManagementServer } from 'vs/workbench/services/extensionManagement/common/extensionManagement';
 import { areSameExtensions } from 'vs/platform/extensionManagement/common/extensionManagementUtil';
 import { ExtensionType, ExtensionIdentifier, IExtensionDescription, IExtensionManifest, isLanguagePackExtension } from 'vs/platform/extensions/common/extensions';
 import { IInstantiationService, ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
@@ -1754,6 +1754,7 @@ export class ShowPopularExtensionsAction extends Action {
 	}
 }
 
+/*
 export class ShowRecommendedExtensionsAction extends Action {
 
 	static readonly ID = 'workbench.extensions.action.showRecommendedExtensions';
@@ -1776,6 +1777,7 @@ export class ShowRecommendedExtensionsAction extends Action {
 			});
 	}
 }
+*/
 
 export class InstallWorkspaceRecommendedExtensionsAction extends Action {
 
@@ -1840,6 +1842,7 @@ export class InstallWorkspaceRecommendedExtensionsAction extends Action {
 	}
 }
 
+/*
 export class ShowRecommendedExtensionAction extends Action {
 
 	static readonly ID = 'workbench.extensions.action.showRecommendedExtension';
@@ -1914,6 +1917,7 @@ export class InstallRecommendedExtensionAction extends Action {
 	}
 }
 
+
 export class IgnoreExtensionRecommendationAction extends Action {
 
 	static readonly ID = 'extensions.ignore';
@@ -1982,6 +1986,7 @@ export class ShowRecommendedKeymapExtensionsAction extends Action {
 			});
 	}
 }
+*/
 
 export class ShowLanguageExtensionsAction extends Action {
 
