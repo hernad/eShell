@@ -1,12 +1,7 @@
 {
   "name": "code-oss-dev",
-<<<<<<< HEAD
-  "version": "1.45.100",
-  "distro": "59e59ecea2dc92bd7d084fbaccc266ede9f6d553",
-=======
   "version": "1.47.0",
   "distro": "805dcb641373964d569e29bb3ff662f8d3cda469",
->>>>>>> upstream-master
   "author": {
     "name": "bring.out"
   },
@@ -172,16 +167,9 @@
     "vsce": "1.48.0",
     "vscode-debugprotocol": "1.41.0",
     "vscode-nls-dev": "^3.3.1",
-<<<<<<< HEAD
-    "vscode-windows-registry": "^1.0.2",
-    "webpack": "^4.16.5",
-    "webpack-cli": "^3.3.8",
-    "webpack-stream": "^5.1.1",
-=======
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12",
     "webpack-stream": "^5.2.1",
->>>>>>> upstream-master
     "yaserver": "^0.2.0"
   },
   "repository": {

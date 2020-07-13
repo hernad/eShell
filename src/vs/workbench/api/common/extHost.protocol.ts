@@ -55,12 +55,8 @@ import { INotebookMimeTypeSelector, IProcessedOutput, INotebookDisplayOrder, Not
 import { CallHierarchyItem } from 'vs/workbench/contrib/callHierarchy/common/callHierarchy';
 import { Dto } from 'vs/base/common/types';
 import { ISerializableEnvironmentVariableCollection } from 'vs/workbench/contrib/terminal/common/environmentVariable';
-<<<<<<< HEAD
 // import { DebugConfigurationProviderTriggerKind } from 'vs/workbench/api/common/extHostTypes';
-=======
-import { DebugConfigurationProviderTriggerKind } from 'vs/workbench/api/common/extHostTypes';
 import { IAccessibilityInformation } from 'vs/platform/accessibility/common/accessibility';
->>>>>>> upstream-master
 
 export interface IEnvironment {
 	isExtensionDevelopmentDebug: boolean;

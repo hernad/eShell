@@ -427,13 +427,9 @@ export class ExtensionGalleryService implements IExtensionGalleryService {
 		let query = new Query()
 			.withFlags(Flags.IncludeLatestVersionOnly, Flags.IncludeAssetUri, Flags.IncludeStatistics, Flags.IncludeFiles, Flags.IncludeVersionProperties)
 			.withPage(1, pageSize)
-<<<<<<< HEAD
 			.withFilter(FilterType.Target, 'Microsoft.VisualStudio.Code')
 			.withFilter(FilterType.Tag, 'eShell')
 			.withFilter(FilterType.ExcludeWithFlags, flagsToString(Flags.Unpublished));
-=======
-			.withFilter(FilterType.Target, 'Microsoft.VisualStudio.Code');
->>>>>>> upstream-master
 
 
 		if (text) {
