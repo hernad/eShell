@@ -31,6 +31,7 @@ export interface IActionViewItem extends IDisposable {
 export interface IBaseActionViewItemOptions {
 	draggable?: boolean;
 	isMenu?: boolean;
+	useEventAsContext?: boolean;
 }
 
 export class BaseActionViewItem extends Disposable implements IActionViewItem {
@@ -178,17 +179,7 @@ export class BaseActionViewItem extends Disposable implements IActionViewItem {
 	onClick(event: DOM.EventLike): void {
 		DOM.EventHelper.stop(event, true);
 
-		let context: any;
-		if (types.isUndefinedOrNull(this._context)) {
-			context = event;
-		} else {
-			context = this._context;
-
-			if (types.isObject(context)) {
-				context.event = event;
-			}
-		}
-
+		const context = types.isUndefinedOrNull(this._context) ? this.options?.useEventAsContext ? event : undefined : this._context;
 		this.actionRunner.run(this._action, context);
 	}
 
@@ -414,6 +405,7 @@ export interface IActionBarOptions {
 	ariaLabel?: string;
 	animated?: boolean;
 	triggerKeys?: ActionTrigger;
+	allowContextMenu?: boolean;
 }
 
 const defaultOptions: IActionBarOptions = {
@@ -643,9 +635,11 @@ export class ActionBar extends Disposable implements IActionRunner {
 			actionViewItemElement.setAttribute('role', 'presentation');
 
 			// Prevent native context menu on actions
-			this._register(DOM.addDisposableListener(actionViewItemElement, DOM.EventType.CONTEXT_MENU, (e: DOM.EventLike) => {
-				DOM.EventHelper.stop(e, true);
-			}));
+			if (!this.options.allowContextMenu) {
+				this._register(DOM.addDisposableListener(actionViewItemElement, DOM.EventType.CONTEXT_MENU, (e: DOM.EventLike) => {
+					DOM.EventHelper.stop(e, true);
+				}));
+			}
 
 			let item: IActionViewItem | undefined;
 
@@ -702,7 +696,8 @@ export class ActionBar extends Disposable implements IActionRunner {
 	}
 
 	clear(): void {
-		this.viewItems = dispose(this.viewItems);
+		dispose(this.viewItems);
+		this.viewItems = [];
 		DOM.clearNode(this.actionsList);
 	}
 

@@ -5,7 +5,7 @@
 
 import * as assert from 'assert';
 import { URI } from 'vs/base/common/uri';
-import { ITextFileService, snapshotToString, TextFileOperationResult, TextFileOperationError } from 'vs/workbench/services/textfile/common/textfiles';
+import { ITextFileService, snapshotToString, TextFileOperationResult, TextFileOperationError, stringToSnapshot } from 'vs/workbench/services/textfile/common/textfiles';
 import { IFileService } from 'vs/platform/files/common/files';
 import { TextFileEditorModelManager } from 'vs/workbench/services/textfile/common/textFileEditorModelManager';
 import { Schemas } from 'vs/base/common/network';
@@ -20,13 +20,16 @@ import { DiskFileSystemProvider } from 'vs/platform/files/node/diskFileSystemPro
 import { generateUuid } from 'vs/base/common/uuid';
 import { join, basename } from 'vs/base/common/path';
 import { getPathFromAmdModule } from 'vs/base/common/amd';
-import { UTF16be, UTF16le, UTF8_with_bom, UTF8 } from 'vs/base/node/encoding';
+import { UTF16be, UTF16le, UTF8_with_bom, UTF8, UTF16le_BOM, UTF16be_BOM, UTF8_BOM } from 'vs/workbench/services/textfile/common/encoding';
 import { DefaultEndOfLine, ITextSnapshot } from 'vs/editor/common/model';
 import { createTextModel } from 'vs/editor/test/common/editorTestUtils';
 import { isWindows } from 'vs/base/common/platform';
 import { readFileSync, statSync } from 'fs';
-import { detectEncodingByBOM } from 'vs/base/test/node/encoding/encoding.test';
+import { detectEncodingByBOM } from 'vs/workbench/services/textfile/test/node/encoding/encoding.test';
 import { workbenchInstantiationService, TestNativeTextFileServiceWithEncodingOverrides } from 'vs/workbench/test/electron-browser/workbenchTestServices';
+import { WorkingCopyFileService, IWorkingCopyFileService } from 'vs/workbench/services/workingCopy/common/workingCopyFileService';
+import { TestWorkingCopyService } from 'vs/workbench/test/common/workbenchTestServices';
+import { UriIdentityService } from 'vs/workbench/services/uriIdentity/common/uriIdentityService';
 
 suite('Files - TextFileService i/o', function () {
 	const parentDir = getRandomTestPath(tmpdir(), 'vsctests', 'textfileservice');
@@ -57,6 +60,8 @@ suite('Files - TextFileService i/o', function () {
 		const collection = new ServiceCollection();
 		collection.set(IFileService, fileService);
 
+		collection.set(IWorkingCopyFileService, new WorkingCopyFileService(fileService, new TestWorkingCopyService(), instantiationService, new UriIdentityService(fileService)));
+
 		service = instantiationService.createChild(collection).createInstance(TestNativeTextFileServiceWithEncodingOverrides);
 
 		const id = generateUuid();
@@ -79,16 +84,28 @@ suite('Files - TextFileService i/o', function () {
 
 		await service.create(resource);
 
-		assert.equal(await exists(resource.fsPath), true);
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.byteLength, 0 /* no BOM */);
 	});
 
-	test('create - no encoding - content provided', async () => {
+	test('create - no encoding - content provided (string)', async () => {
 		const resource = URI.file(join(testDir, 'small_new.txt'));
 
 		await service.create(resource, 'Hello World');
 
-		assert.equal(await exists(resource.fsPath), true);
-		assert.equal((await readFile(resource.fsPath)).toString(), 'Hello World');
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.toString(), 'Hello World');
+		assert.equal(res.byteLength, 'Hello World'.length);
+	});
+
+	test('create - no encoding - content provided (snapshot)', async () => {
+		const resource = URI.file(join(testDir, 'small_new.txt'));
+
+		await service.create(resource, stringToSnapshot('Hello World'));
+
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.toString(), 'Hello World');
+		assert.equal(res.byteLength, 'Hello World'.length);
 	});
 
 	test('create - UTF 16 LE - no content', async () => {
@@ -100,6 +117,9 @@ suite('Files - TextFileService i/o', function () {
 
 		const detectedEncoding = await detectEncodingByBOM(resource.fsPath);
 		assert.equal(detectedEncoding, UTF16le);
+
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.byteLength, UTF16le_BOM.length);
 	});
 
 	test('create - UTF 16 LE - content provided', async () => {
@@ -111,6 +131,9 @@ suite('Files - TextFileService i/o', function () {
 
 		const detectedEncoding = await detectEncodingByBOM(resource.fsPath);
 		assert.equal(detectedEncoding, UTF16le);
+
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.byteLength, 'Hello World'.length * 2 /* UTF16 2bytes per char */ + UTF16le_BOM.length);
 	});
 
 	test('create - UTF 16 BE - no content', async () => {
@@ -122,6 +145,9 @@ suite('Files - TextFileService i/o', function () {
 
 		const detectedEncoding = await detectEncodingByBOM(resource.fsPath);
 		assert.equal(detectedEncoding, UTF16be);
+
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.byteLength, UTF16le_BOM.length);
 	});
 
 	test('create - UTF 16 BE - content provided', async () => {
@@ -133,6 +159,9 @@ suite('Files - TextFileService i/o', function () {
 
 		const detectedEncoding = await detectEncodingByBOM(resource.fsPath);
 		assert.equal(detectedEncoding, UTF16be);
+
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.byteLength, 'Hello World'.length * 2 /* UTF16 2bytes per char */ + UTF16be_BOM.length);
 	});
 
 	test('create - UTF 8 BOM - no content', async () => {
@@ -144,6 +173,9 @@ suite('Files - TextFileService i/o', function () {
 
 		const detectedEncoding = await detectEncodingByBOM(resource.fsPath);
 		assert.equal(detectedEncoding, UTF8_with_bom);
+
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.byteLength, UTF8_BOM.length);
 	});
 
 	test('create - UTF 8 BOM - content provided', async () => {
@@ -155,6 +187,9 @@ suite('Files - TextFileService i/o', function () {
 
 		const detectedEncoding = await detectEncodingByBOM(resource.fsPath);
 		assert.equal(detectedEncoding, UTF8_with_bom);
+
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.byteLength, 'Hello World'.length + UTF8_BOM.length);
 	});
 
 	test('create - UTF 8 BOM - empty content - snapshot', async () => {
@@ -166,6 +201,9 @@ suite('Files - TextFileService i/o', function () {
 
 		const detectedEncoding = await detectEncodingByBOM(resource.fsPath);
 		assert.equal(detectedEncoding, UTF8_with_bom);
+
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.byteLength, UTF8_BOM.length);
 	});
 
 	test('create - UTF 8 BOM - content provided - snapshot', async () => {
@@ -177,6 +215,9 @@ suite('Files - TextFileService i/o', function () {
 
 		const detectedEncoding = await detectEncodingByBOM(resource.fsPath);
 		assert.equal(detectedEncoding, UTF8_with_bom);
+
+		const res = await readFile(resource.fsPath);
+		assert.equal(res.byteLength, 'Hello World'.length + UTF8_BOM.length);
 	});
 
 	test('write - use encoding (UTF 16 BE) - small content as string', async () => {

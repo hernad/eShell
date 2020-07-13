@@ -36,7 +36,7 @@ export interface INativeEnvironmentService extends IEnvironmentService {
 	installSourcePath: string;
 
 	extensionsPath?: string;
-	extensionsDownloadPath?: string;
+	extensionsDownloadPath: string;
 	builtinExtensionsPath: string;
 
 	globalStorageHome: string;
@@ -50,7 +50,7 @@ export interface INativeEnvironmentService extends IEnvironmentService {
 
 export class EnvironmentService implements INativeEnvironmentService {
 
-	_serviceBrand: undefined;
+	declare readonly _serviceBrand: undefined;
 
 	get args(): ParsedArgs { return this._args; }
 
@@ -151,8 +151,13 @@ export class EnvironmentService implements INativeEnvironmentService {
 		}
 	}
 
-	get extensionsDownloadPath(): string | undefined {
-		return parsePathArg(this._args['extensions-download-dir'], process);
+	get extensionsDownloadPath(): string {
+		const fromArgs = parsePathArg(this._args['extensions-download-dir'], process);
+		if (fromArgs) {
+			return fromArgs;
+		} else {
+			return path.join(this.userDataPath, 'CachedExtensionVSIXs');
+		}
 	}
 
 	@memoize
@@ -253,6 +258,7 @@ export class EnvironmentService implements INativeEnvironmentService {
 
 	get disableUpdates(): boolean { return !!this._args['disable-updates']; }
 	get disableCrashReporter(): boolean { return !!this._args['disable-crash-reporter']; }
+	get crashReporterDirectory(): string | undefined { return this._args['crash-reporter-directory']; }
 
 	get driverHandle(): string | undefined { return this._args['driver']; }
 	get driverVerbose(): boolean { return !!this._args['driver-verbose']; }

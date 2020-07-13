@@ -17,6 +17,7 @@ import { Event, Emitter } from 'vs/base/common/event';
 import { Disposable, IDisposable } from 'vs/base/common/lifecycle';
 import { IWorkspaceProvider, IWorkspace } from 'vs/workbench/services/host/browser/browserHostService';
 import { CommandsRegistry } from 'vs/platform/commands/common/commands';
+import { IProductConfiguration } from 'vs/platform/product/common/productService';
 
 interface IResourceUriProvider {
 	(uri: URI): URI;
@@ -25,6 +26,7 @@ interface IResourceUriProvider {
 interface IStaticExtension {
 	packageJSON: IExtensionManifest;
 	extensionLocation: URI;
+	isBuiltin?: boolean;
 }
 
 interface ICommontTelemetryPropertiesResolver {
@@ -33,6 +35,17 @@ interface ICommontTelemetryPropertiesResolver {
 
 interface IExternalUriResolver {
 	(uri: URI): Promise<URI>;
+}
+
+interface ITunnelProvider {
+	/**
+	 * Support for creating tunnels.
+	 */
+	tunnelFactory?: ITunnelFactory;
+	/**
+	 * Support for filtering candidate ports
+	 */
+	showPortCandidate?: IShowPortCandidate;
 }
 
 interface ITunnelFactory {
@@ -89,9 +102,14 @@ interface ICommand {
 interface IHomeIndicator {
 
 	/**
-	 * The identifier of the command to run when clicking the home indicator.
+	 * The link to open when clicking the home indicator.
 	 */
-	command: string;
+	href: string;
+
+	/**
+	 * @deprecated use `href` instead.
+	 */
+	command?: string;
 
 	/**
 	 * The icon name for the home indicator. This needs to be one of the existing
@@ -145,19 +163,23 @@ interface IDefaultPanelLayout {
 	})[];
 }
 
+interface IDefaultView {
+	readonly id: string;
+}
+
 interface IDefaultEditor {
-	path: string;
-	scheme: string;
-	active?: boolean;
+	readonly uri: UriComponents;
+	readonly openOnlyIfExists?: boolean;
+	readonly openWith?: string;
 }
 
 interface IDefaultLayout {
-	sidebar?: IDefaultSideBarLayout;
-	panel?: IDefaultPanelLayout;
-	editors?: IDefaultEditor[];
-
-	// Internal only
-	firstRun?: boolean;
+	/** @deprecated Use views instead */
+	readonly sidebar?: IDefaultSideBarLayout;
+	/** @deprecated Use views instead */
+	readonly panel?: IDefaultPanelLayout;
+	readonly views?: IDefaultView[];
+	readonly editors?: IDefaultEditor[];
 }
 
 interface IWorkbenchConstructionOptions {
@@ -197,14 +219,10 @@ interface IWorkbenchConstructionOptions {
 	readonly resolveExternalUri?: IExternalUriResolver;
 
 	/**
-	 * Support for creating tunnels.
+	 * A provider for supplying tunneling functionality,
+	 * such as creating tunnels and showing candidate ports to forward.
 	 */
-	readonly tunnelFactory?: ITunnelFactory;
-
-	/**
-	 * Support for filtering candidate ports
-	 */
-	readonly showCandidate?: IShowPortCandidate;
+	readonly tunnelProvider?: ITunnelProvider;
 
 	//#endregion
 
@@ -243,6 +261,11 @@ interface IWorkbenchConstructionOptions {
 	readonly staticExtensions?: ReadonlyArray<IStaticExtension>;
 
 	/**
+	 * Service end-point hosting builtin extensions
+	 */
+	readonly builtinExtensionsServiceUrl?: string;
+
+	/**
 	 * Support for URL callbacks.
 	 */
 	readonly urlCallbackProvider?: IURLCallbackProvider;
@@ -266,9 +289,24 @@ interface IWorkbenchConstructionOptions {
 	readonly commands?: readonly ICommand[];
 
 	/**
+	 * Optional default layout to apply on first time the workspace is opened.
+	 */
+	readonly defaultLayout?: IDefaultLayout;
+
+	//#endregion
+
+
+	//#region Branding
+
+	/**
 	 * Optional home indicator to appear above the hamburger menu in the activity bar.
 	 */
 	readonly homeIndicator?: IHomeIndicator;
+
+	/**
+	 * Optional override for the product configuration properties.
+	 */
+	readonly productConfiguration?: Partial<IProductConfiguration>;
 
 	//#endregion
 
@@ -286,8 +324,6 @@ interface IWorkbenchConstructionOptions {
 	readonly driver?: boolean;
 
 	//#endregion
-
-	defaultLayout?: IDefaultLayout;
 }
 
 interface IWorkbench {
@@ -406,6 +442,7 @@ export {
 	IExternalUriResolver,
 
 	// Tunnel
+	ITunnelProvider,
 	ITunnelFactory,
 	ITunnel,
 	ITunnelOptions,
@@ -417,13 +454,16 @@ export {
 	ICommand,
 	commands,
 
-	// Home Indicator
+	// Branding
 	IHomeIndicator,
+	IProductConfiguration,
 
 	// Default layout
+	IDefaultView,
+	IDefaultEditor,
 	IDefaultLayout,
 	IDefaultPanelLayout,
-	IDefaultSideBarLayout,
+	IDefaultSideBarLayout
 };
 
 //#endregion
