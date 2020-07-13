@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 # eShell
 
 ## Downloads
 <!-- [![Build Status](https://dev.azure.com/vscode/VSCode/_apis/build/status/VS%20Code?branchName=master)](https://aka.ms/vscode-builds) -->
 [![Build Status](https://dev.azure.com/vscode/VSCode/_apis/build/status/VS%20Code?branchName=master)](https://dev.azure.com/vscode/VSCode/_build/latest?definitionId=12)
+=======
+# Visual Studio Code - Open Source ("Code - OSS")
+[![Build Status](https://dev.azure.com/vscode/VSCode/_apis/build/status/VS%20Code?branchName=master)](https://aka.ms/vscode-builds)
+>>>>>>> upstream-master
 [![Feature Requests](https://img.shields.io/github/issues/Microsoft/vscode/feature-request.svg)](https://github.com/Microsoft/vscode/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
 [![Bugs](https://img.shields.io/github/issues/Microsoft/vscode/bug.svg)](https://github.com/Microsoft/vscode/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-yellow.svg)](https://gitter.im/Microsoft/vscode)
@@ -55,4 +60,22 @@ sudo apt-get -y update
 sudo apt-get install -y --allow-unauthenticated eshell
 echo "ok"
 
+<<<<<<< HEAD
 </pre>
+=======
+VS Code includes a set of built-in extensions located in the [extensions](extensions) folder, including grammars and snippets for many languages. Extensions that provide rich language support (code completion, Go to Definition) for a language have the suffix `language-features`. For example, the `json` extension provides coloring for `JSON` and the `json-language-features` provides rich language support for `JSON`.
+
+## Development Container
+
+This repository includes a Visual Studio Code Remote - Containers / Codespaces development container. You can open it using the **Remote-Containers: Open Repository in Container...** from the [Remote - Containers](https://aka.ms/vscode-remote/download/containers) extension or by referencing the repository Git URL when creating a cloud-based environment using the [Visual Studio Codespaces](https://aka.ms/vscs-ext-vscode) extension. See the [development container README](.devcontainer/README.md) for more details on its use.
+
+## Code of Conduct
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## License
+
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Licensed under the [MIT](LICENSE.txt) license.
+>>>>>>> upstream-master
