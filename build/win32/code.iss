@@ -150,7 +150,7 @@ begin
   #endif
 
   #if "user" == InstallTarget
-    #if "ia32" == Arch
+    #if "ia32" == Arch || "arm64" == Arch
       #define IncompatibleArchRootKey "HKLM32"
     #else
       #define IncompatibleArchRootKey "HKLM64"
@@ -260,7 +260,7 @@ begin
   end;
 end;
 
-// http://stackoverflow.com/a/23838239/261019
+// https://stackoverflow.com/a/23838239/261019
 procedure Explode(var Dest: TArrayOfString; Text: String; Separator: String);
 var
   i, p: Integer;

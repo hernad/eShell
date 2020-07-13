@@ -9,7 +9,7 @@ import * as errors from 'vs/base/common/errors';
 import { Emitter, Event } from 'vs/base/common/event';
 import { getBaseLabel } from 'vs/base/common/labels';
 import { Disposable, IDisposable, DisposableStore } from 'vs/base/common/lifecycle';
-import { ResourceMap, TernarySearchTree, values } from 'vs/base/common/map';
+import { ResourceMap, TernarySearchTree } from 'vs/base/common/map';
 import * as objects from 'vs/base/common/objects';
 import { lcut } from 'vs/base/common/strings';
 import { URI } from 'vs/base/common/uri';
@@ -293,7 +293,7 @@ export class FileMatch extends Disposable implements IFileMatch {
 			endLineNumber: lineNumber,
 			endColumn: this._model.getLineMaxColumn(lineNumber)
 		};
-		const oldMatches = values(this._matches).filter(match => match.range().startLineNumber === lineNumber);
+		const oldMatches = Array.from(this._matches.values()).filter(match => match.range().startLineNumber === lineNumber);
 		oldMatches.forEach(match => this._matches.delete(match.id()));
 
 		const wordSeparators = this._query.isWordMatch && this._query.wordSeparators ? this._query.wordSeparators : null;
@@ -351,7 +351,7 @@ export class FileMatch extends Disposable implements IFileMatch {
 	}
 
 	matches(): Match[] {
-		return values(this._matches);
+		return Array.from(this._matches.values());
 	}
 
 	remove(match: Match): void {
@@ -562,7 +562,7 @@ export class FolderMatch extends Disposable {
 	}
 
 	matches(): FileMatch[] {
-		return this._fileMatches.values();
+		return [...this._fileMatches.values()];
 	}
 
 	isEmpty(): boolean {
@@ -620,8 +620,8 @@ export class FolderMatch extends Disposable {
 	}
 
 	private disposeMatches(): void {
-		this._fileMatches.values().forEach((fileMatch: FileMatch) => fileMatch.dispose());
-		this._unDisposedFileMatches.values().forEach((fileMatch: FileMatch) => fileMatch.dispose());
+		[...this._fileMatches.values()].forEach((fileMatch: FileMatch) => fileMatch.dispose());
+		[...this._unDisposedFileMatches.values()].forEach((fileMatch: FileMatch) => fileMatch.dispose());
 		this._fileMatches.clear();
 		this._unDisposedFileMatches.clear();
 	}
@@ -702,7 +702,7 @@ export class SearchResult extends Disposable {
 	private _rangeHighlightDecorations: RangeHighlightDecorations;
 	private disposePastResults: () => void = () => { };
 
-	private _hasRemovedResults = false;
+	private _isDirty = false;
 
 	constructor(
 		private _searchModel: SearchModel,
@@ -718,13 +718,13 @@ export class SearchResult extends Disposable {
 
 		this._register(this.onChange(e => {
 			if (e.removed) {
-				this._hasRemovedResults = true;
+				this._isDirty = !this.isEmpty();
 			}
 		}));
 	}
 
-	get hasRemovedResults(): boolean {
-		return this._hasRemovedResults;
+	get isDirty(): boolean {
+		return this._isDirty;
 	}
 
 	get query(): ITextQuery | null {
@@ -737,7 +737,7 @@ export class SearchResult extends Disposable {
 		new Promise(resolve => this.disposePastResults = resolve)
 			.then(() => oldFolderMatches.forEach(match => match.clear()))
 			.then(() => oldFolderMatches.forEach(match => match.dispose()))
-			.then(() => this._hasRemovedResults = false);
+			.then(() => this._isDirty = false);
 
 		this._rangeHighlightDecorations.removeHighlightRange();
 		this._folderMatchesMap = TernarySearchTree.forUris<FolderMatchWithResource>();
@@ -1183,7 +1183,7 @@ export type RenderableMatch = FolderMatch | FolderMatchWithResource | FileMatch 
 
 export class SearchWorkbenchService implements ISearchWorkbenchService {
 
-	_serviceBrand: undefined;
+	declare readonly _serviceBrand: undefined;
 	private _searchModel: SearchModel | null = null;
 
 	constructor(@IInstantiationService private readonly instantiationService: IInstantiationService) {
@@ -1200,7 +1200,7 @@ export class SearchWorkbenchService implements ISearchWorkbenchService {
 export const ISearchWorkbenchService = createDecorator<ISearchWorkbenchService>('searchWorkbenchService');
 
 export interface ISearchWorkbenchService {
-	_serviceBrand: undefined;
+	readonly _serviceBrand: undefined;
 
 	readonly searchModel: SearchModel;
 }

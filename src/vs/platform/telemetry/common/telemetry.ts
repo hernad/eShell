@@ -25,7 +25,12 @@ export interface ITelemetryData {
 
 export interface ITelemetryService {
 
-	_serviceBrand: undefined;
+	/**
+	 * Whether error telemetry will get sent. If false, `publicLogError` will no-op.
+	 */
+	readonly sendErrorTelemetry: boolean;
+
+	readonly _serviceBrand: undefined;
 
 
 	publicLog(eventName: string, data?: ITelemetryData, anonymizeFilePaths?: boolean): Promise<void>;
@@ -50,5 +55,4 @@ export const currentSessionDateStorageKey = 'telemetry.currentSessionDate';
 export const firstSessionDateStorageKey = 'telemetry.firstSessionDate';
 export const lastSessionDateStorageKey = 'telemetry.lastSessionDate';
 export const machineIdKey = 'telemetry.machineId';
-export const trueMachineIdKey = 'telemetry.trueMachineId';
 export const crashReporterIdStorageKey = 'crashReporter.guid';
