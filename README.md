@@ -1,32 +1,32 @@
 # eShell
 
-## Downloads
-<!-- [![Build Status](https://dev.azure.com/vscode/VSCode/_apis/build/status/VS%20Code?branchName=master)](https://aka.ms/vscode-builds) -->
-[![Build Status](https://dev.azure.com/vscode/VSCode/_apis/build/status/VS%20Code?branchName=master)](https://dev.azure.com/vscode/VSCode/_build/latest?definitionId=12)
-[![Feature Requests](https://img.shields.io/github/issues/Microsoft/vscode/feature-request.svg)](https://github.com/Microsoft/vscode/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request+sort%3Areactions-%2B1-desc)
-[![Bugs](https://img.shields.io/github/issues/Microsoft/vscode/bug.svg)](https://github.com/Microsoft/vscode/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Gitter](https://img.shields.io/badge/chat-on%20gitter-yellow.svg)](https://gitter.im/Microsoft/vscode)
+### Linux Centos7
 
+#### build
 
-### Windows
+	cd $HOME
+	source set_developer_toolset.sh
+	cd eShell
+	# PREREQUISITES:
+	centos7_yum_install.sh
+	yarn
+	yarn compile
+	scripts/code.sh
 
-Potrebno: Windows 7, Windows 10
+### build rpm
 
-#### 64-bit
+	scripts/centos7_build_rpm.sh
 
-[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x64/images/download.svg?version=1.41.303) ](https://dl.bintray.com/bringout/eShell/eShellSetup-x64-1.41.303.exe)
+### upload rpm
 
-eShellSetup-x64-1.41.303.exe
-#### 32-bit
+	# time: cca 10min 65 MB
+	scripts/upload_rpm.sh
 
-[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x86/images/download.svg?version=1.41.303) ](https://dl.bintray.com/bringout/eShell/eShellSetup-x86-1.41.303.exe)
+### Download
 
+[Centos7 RPM x64 1.47.101](https://bintray.com/bringout/rpm-x64/download_file?file_path=eShell-1.47.101-1594834543.el7.x86_64.rpm)
 
-### Linux
-
-#### rpm x64 bazirane distribucije
-
-Testirano na Centos7 x64, Fedora28 x64
+### rpm x64 repository setup
 
 <pre>
 REPO=bintray-bringout-rpm-x64.repo
@@ -42,18 +42,22 @@ sudo dnf -y update --repo bintraybintray-bringout-rpm-x64 --refresh || sudo yum 
 echo "'bintraybintray-bringout-rpm-x64' repo setup finished :)"
 sudo dnf -y install eShell || sudo yum -y install eShell
 echo "ok"
-
 </pre>
 
 
-#### deb x86
+## Windows
 
-Testirano na Ubuntu trusty 14.04 i386, Ubuntu xenial 16.04 i386
+Potrebno: Windows 7, Windows 10
 
-<pre>
-echo "deb https://dl.bintray.com/bringout/deb-x86 bout main" | sudo tee -a /etc/apt/sources.list
-sudo apt-get -y update
-sudo apt-get install -y --allow-unauthenticated eshell
-echo "ok"
+### 64-bit
 
-</pre>
+[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x64/images/download.svg?version=1.41.303) ](https://dl.bintray.com/bringout/eShell/eShellSetup-x64-1.41.303.exe)
+
+
+### 32-bit
+
+[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x86/images/download.svg?version=1.41.303) ](https://dl.bintray.com/bringout/eShell/eShellSetup-x86-1.41.303.exe)
+
+
+
+
