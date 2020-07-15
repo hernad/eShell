@@ -281,9 +281,9 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
 				.pipe(replace('@@APPNAME@@', product.applicationName))
 				.pipe(rename(function (f) { f.basename = product.applicationName; })));
 
-			result = es.merge(result, gulp.src('resources/completions/zsh/_code', { base: '.' })
-				.pipe(replace('@@APPNAME@@', product.applicationName))
-				.pipe(rename(function (f) { f.basename = '_' + product.applicationName; })));
+			//result = es.merge(result, gulp.src('resources/completions/zsh/_code', { base: '.' })
+			//	.pipe(replace('@@APPNAME@@', product.applicationName))
+			//	.pipe(rename(function (f) { f.basename = '_' + product.applicationName; })));
 		}
 
 		if (platform === 'win32') {

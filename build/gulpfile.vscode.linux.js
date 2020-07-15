@@ -150,9 +150,9 @@ function prepareRpmPackage(arch) {
 			.pipe(replace('@@APPNAME@@', product.applicationName))
 			.pipe(rename('BUILD/usr/share/bash-completion/completions/' + product.applicationName));
 
-		const zsh_completion = gulp.src('resources/completions/zsh/_code')
-			.pipe(replace('@@APPNAME@@', product.applicationName))
-			.pipe(rename('BUILD/usr/share/zsh/site-functions/_' + product.applicationName));
+		//const zsh_completion = gulp.src('resources/completions/zsh/_code')
+		//	.pipe(replace('@@APPNAME@@', product.applicationName))
+		//	.pipe(rename('BUILD/usr/share/zsh/site-functions/_' + product.applicationName));
 
 		const code = gulp.src(binaryDir + '/**/*', { base: binaryDir })
 			.pipe(rename(function (p) { p.dirname = 'BUILD/usr/share/' + product.applicationName + '/' + p.dirname; }));

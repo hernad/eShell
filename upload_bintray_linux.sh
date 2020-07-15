@@ -3,18 +3,21 @@
 # https://github.com/$BINTRAY_OWNER/greenbox/blob/apps_modular/upload_app.sh
 
 if [[ ! `which curl` ]] ; then
-    sudo apt-get install -y curl
+	sudo apt-get install -y curl
 fi
 
-BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
-BINTRAY_OWNER=bringout
+if [[ -z "$BINTRAY_API_KEY" ]] ; then
+	BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
+	BINTRAY_OWNER=bringout
+fi
+
 
 if [ "$VSCODE_ARCH" == "x64" ]; then
-  BINTRAY_REPOS=rpm-x64
-  RPM_LOC=x86_64
+	BINTRAY_REPOS=rpm-x64
+	RPM_LOC=x86_64
 else
-  BINTRAY_REPOS=rpm-x86
-  RPM_LOC=i386
+	BINTRAY_REPOS=rpm-x86
+	RPM_LOC=i386
 fi
 
 BINTRAY_PACKAGE=eShell

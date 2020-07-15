@@ -2,7 +2,7 @@
 Name=@@NAME_LONG@@
 Comment=eShell
 GenericName=eShell
-Exec=/usr/share/@@NAME@@/@@NAME@@ --reuse-window %F
+Exec=/usr/share/@@NAME@@/bin/@@NAME@@ --reuse-window %F
 Icon=@@ICON@@
 Type=Application
 StartupNotify=false
