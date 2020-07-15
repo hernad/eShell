@@ -1,0 +1,1 @@
+sudo yum install  -y libX11-devel libxkbfile-devel libsecret-devel fakeroot rpm
