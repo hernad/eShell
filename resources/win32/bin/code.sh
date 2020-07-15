@@ -11,8 +11,8 @@ APP_NAME="@@APPNAME@@"
 QUALITY="@@QUALITY@@"
 NAME="@@NAME@@"
 DATAFOLDER="@@DATAFOLDER@@"
-VSCODE_PATH="$(dirname "$(dirname "$(realpath "$0")")")"
-ELECTRON="$VSCODE_PATH/$NAME.exe"
+ESHELL_PATH="$(dirname "$(dirname "$(realpath "$0")")")"
+ELECTRON="$ESHELL_PATH/$NAME.exe"
 
 IN_WSL=false
 if [ -n "$WSL_DISTRO_NAME" ]; then
@@ -38,7 +38,7 @@ fi
 if [ $IN_WSL = true ]; then
 
 	export WSLENV=ELECTRON_RUN_AS_NODE/w:$WSLENV
-	CLI=$(wslpath -m "$VSCODE_PATH/resources/app/out/cli.js")
+	CLI=$(wslpath -m "$ESHELL_PATH/resources/app/out/cli.js")
 
 	# use the Remote WSL extension if installed
 	WSL_EXT_ID="ms-vscode-remote.remote-wsl"
@@ -54,9 +54,9 @@ if [ $IN_WSL = true ]; then
 	fi
 
 elif [ -x "$(command -v cygpath)" ]; then
-	CLI=$(cygpath -m "$VSCODE_PATH/resources/app/out/cli.js")
+	CLI=$(cygpath -m "$ESHELL_PATH/resources/app/out/cli.js")
 else
-	CLI="$VSCODE_PATH/resources/app/out/cli.js"
+	CLI="$ESHELL_PATH/resources/app/out/cli.js"
 fi
 ELECTRON_RUN_AS_NODE=1 "$ELECTRON" "$CLI" "$@"
 exit $?
