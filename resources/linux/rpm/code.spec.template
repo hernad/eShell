@@ -32,6 +32,7 @@ if [ "@@NAME@@" = "code" ]; then
 	rm -f /usr/local/bin/code
 fi
 
+# https://docs.fedoraproject.org/en-US/packaging-guidelines/RPMMacros/
 # Symlink bin command to /usr/bin
 ln -sf /usr/share/@@NAME@@/bin/@@NAME@@ %{_bindir}/@@NAME@@
 
@@ -59,4 +60,3 @@ fi
 /usr/share/applications/@@NAME@@-url-handler.desktop
 /usr/share/pixmaps/@@ICON@@.png
 /usr/share/bash-completion/completions/@@NAME@@
-/usr/share/zsh/site-functions/_@@NAME@@
