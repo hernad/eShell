@@ -32,3 +32,4 @@ test_data/
 test-results/
 yarn-error.log
 extensions/F18/data
+build/lib/task.js

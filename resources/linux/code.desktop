@@ -7,7 +7,7 @@ Icon=@@ICON@@
 Type=Application
 StartupNotify=false
 StartupWMClass=@@NAME_SHORT@@
-Categories=Utility;
+Categories=Utility;X-GNOME-Utilities;
 MimeType=text/plain;inode/directory;
 Keywords=eShell;
 

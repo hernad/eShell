@@ -59,9 +59,9 @@ function prepareDebPackage(arch) {
 			.pipe(replace('@@APPNAME@@', product.applicationName))
 			.pipe(rename('usr/share/bash-completion/completions/' + product.applicationName));
 
-		const zsh_completion = gulp.src('resources/completions/zsh/_code')
-			.pipe(replace('@@APPNAME@@', product.applicationName))
-			.pipe(rename('usr/share/zsh/vendor-completions/_' + product.applicationName));
+		//const zsh_completion = gulp.src('resources/completions/zsh/_code')
+		//	.pipe(replace('@@APPNAME@@', product.applicationName))
+		//	.pipe(rename('usr/share/zsh/vendor-completions/_' + product.applicationName));
 
 		const code = gulp.src(binaryDir + '/**/*', { base: binaryDir })
 			.pipe(rename(function (p) { p.dirname = 'usr/share/' + product.applicationName + '/' + p.dirname; }));
@@ -173,7 +173,7 @@ function prepareRpmPackage(arch) {
 		const specIcon = gulp.src('resources/linux/rpm/code.xpm', { base: '.' })
 			.pipe(rename('SOURCES/' + product.applicationName + '.xpm'));
 
-		const all = es.merge(code, desktops, appdata, icon, bash_completion, zsh_completion, spec, specIcon);
+		const all = es.merge(code, desktops, appdata, icon, bash_completion, spec, specIcon);
 
 		return all.pipe(vfs.dest(getRpmBuildPath(rpmArch)));
 	};
