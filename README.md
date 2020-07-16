@@ -1,8 +1,8 @@
 # eShell
 
-### Linux Centos7
+## == Linux Centos7 ==
 
-#### build
+### build
 
 	cd $HOME
 	source set_developer_toolset.sh
@@ -10,7 +10,7 @@
 	# PREREQUISITES:
 	centos7_yum_install.sh
 	yarn
-	yarn compile
+	yarn compile # or yarn watch-client
 	scripts/code.sh
 
 ### build rpm
@@ -22,11 +22,11 @@
 	# time: cca 10min 65 MB
 	scripts/upload_rpm.sh
 
-### Download
+### Centos7 direct download
 
-[Centos7 RPM x64 1.47.101](https://bintray.com/bringout/rpm-x64/download_file?file_path=eShell-1.47.101-1594834543.el7.x86_64.rpm)
+- [Centos7 RPM x64 1.47.101](https://bintray.com/bringout/rpm-x64/download_file?file_path=eShell-1.47.101-1594834543.el7.x86_64.rpm)
 
-### rpm x64 repository setup
+### Centos7 repository setup
 
 <pre>
 REPO=bintray-bringout-rpm-x64.repo
@@ -45,18 +45,46 @@ echo "ok"
 </pre>
 
 
-## Windows
+## == Windows ==
 
-Potrebno: Windows 7, Windows 10
+### set developer environment x64
 
-### 64-bit
+   	cd c:\dev
+   	set_developer_toolset.cmd
+   	cd c:\dev\eShell
 
-[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x64/images/download.svg?version=1.41.303) ](https://dl.bintray.com/bringout/eShell/eShellSetup-x64-1.41.303.exe)
+### set developer environment x86
+
+   	cd c:\dev
+   	set_developer_toolset_x86.cmd
+   	cd c:\dev\eShell
+
+### build debug
+
+	yarn
+	yarn compile REM ili yarn watch-client
+
+### build release
+
+   	yarn
+   	scripts\build_windows_installer.cmd
+
+### start windows installer
+
+   	scripts\run_eshell_installer.cmd
+
+### push to bintray
+
+   	scripts/upload_windows.cmd
 
 
-### 32-bit
 
-[ ![Download](https://api.bintray.com/packages/bringout/eShell/eShell-windows-x86/images/download.svg?version=1.41.303) ](https://dl.bintray.com/bringout/eShell/eShellSetup-x86-1.41.303.exe)
+### Windows setup download
+
+- [Windows setup 64-bit 1.47.101](https://bintray.com/bringout/eShell/download_file?file_path=eShellSetup-x64-1.47.101.exe)
+
+- [Windows setup 32-bit 1.47.101](https://bintray.com/bringout/eShell/download_file?file_path=eShellSetup-x86-1.47.101.exe)
+
 
 
 

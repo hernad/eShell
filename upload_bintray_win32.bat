@@ -1,3 +1,5 @@
+@echo off
+
 REM BINTRAY_API_KEY=${BINTRAY_API_KEY:-`cat bintray_api_key`}
 
 set BINTRAY_OWNER=bringout
@@ -35,3 +37,5 @@ echo uploading %FILE% to bintray ...
 
 %CURL% -s -u %BINTRAY_OWNER%:%BINTRAY_API_KEY% ^
    -X POST https://api.bintray.com/content/%BINTRAY_OWNER%/%BINTRAY_REPOS%/%BINTRAY_PACKAGE%/%BINTRAY_PACKAGE_VER%/publish
+
+echo upload_bintray_win32 kraj ...

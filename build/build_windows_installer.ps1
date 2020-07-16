@@ -26,7 +26,7 @@ function Exec
 	}
 }
 
-$env:VSCODE_ARCH = "x64"
+#$env:VSCODE_ARCH = "x64"
 exec { yarn gulp "compile-build" }
 exec { yarn gulp "compile-extensions-build" }
 exec { yarn gulp "minify-vscode" }

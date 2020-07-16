@@ -25,7 +25,7 @@
     "watch-extensions": "gulp watch-extensions --max_old_space_size=4095",
     "mocha": "mocha test/unit/node/all.js --delay",
     "precommit": "node build/gulpfile.hygiene.js",
-    "gulp": "gulp --max_old_space_size=8192",
+    "gulp": "gulp --max_old_space_size=5120",
     "electron": "node build/lib/electron",
     "7z": "7z",
     "update-grammars": "node build/npm/update-all-grammars.js",

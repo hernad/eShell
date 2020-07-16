@@ -78,14 +78,14 @@ function buildWin32Setup(arch, target) {
 		fs.writeFileSync(productJsonPath, JSON.stringify(productJson, undefined, '\t'));
 
 		const definitions = {
-			NameLong: product.nameLong,
-			NameShort: product.nameShort,
-			DirName: product.win32DirName,
+			NameLong: product.nameLong + (arch == 'x64' ? '' : ' 32-bit'),
+			NameShort: product.nameShort + (arch == 'x64' ? '' : ' 32-bit'),
+			DirName: product.win32DirName + (arch == 'x64' ? '' : '-32'),
 			Version: pkg.version,
 			RawVersion: pkg.version.replace(/-\w+$/, ''),
 			NameVersion: product.win32NameVersion + (target === 'user' ? ' (User)' : ''),
 			ExeBasename: product.nameShort,
-			RegValueName: product.win32RegValueName,
+			RegValueName: product.win32RegValueName  + (arch == 'x64' ? '' : '-32'),
 			ShellNameShort: product.win32ShellNameShort,
 			AppMutex: product.win32MutexName,
 			Arch: arch,
