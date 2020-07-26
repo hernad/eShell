@@ -81,6 +81,9 @@ echo "ok"
 
 ### Windows setup download
 
+
+- [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145)
+
 - [Windows setup 64-bit 1.47.101](https://bintray.com/bringout/eShell/download_file?file_path=eShellSetup-x64-1.47.101.exe)
 
 - [Windows setup 32-bit 1.47.101](https://bintray.com/bringout/eShell/download_file?file_path=eShellSetup-x86-1.47.101.exe)
