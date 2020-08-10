@@ -1,0 +1,5 @@
+1) This application does not collect and use any personal information.
+
+2) This application does not store any persional data.
+
+3) This application does not share its data to third parties.
