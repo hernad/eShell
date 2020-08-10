@@ -3,6 +3,9 @@
 echo check PowerShell execution policy:
 powershell -Command "& {Get-ExecutionPolicy}"
 
+echo set PowerShell execution policy (elevataed cmd):
+powershell -Command "& {Set-ExecutionPolicy Unrestricted}"
+
 REM get architecture x64, x32
 set NODE_PROG=console.log( process.arch === "x64" ? "x64" : "ia32");
 echo %NODE_PROG% | node > tmpFile
