@@ -1,0 +1,9 @@
+CN=B9D2D498-C27D-41B8-9544-985F9C8571C9
+
+20326bring.outdooSarajevo.eShell
+
+
+bring.out doo Sarajevo
+
+
+https://raw.githubusercontent.com/hernad/eShell/light-electron-7/PRIVACY.txt
