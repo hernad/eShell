@@ -1,8 +1,11 @@
-CN=B9D2D498-C27D-41B8-9544-985F9C8571C9
+Publisher name: CN=B9D2D498-C27D-41B8-9544-985F9C8571C9
+
+PackageName:
 
 20326bring.outdooSarajevo.eShell
 
 
+Publisher display name:
 bring.out doo Sarajevo
 
 
