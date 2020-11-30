@@ -4,6 +4,7 @@ npm-debug.log
 Thumbs.db
 node_modules/
 .build/
+build/
 extensions/**/dist/
 out/
 out-build/
